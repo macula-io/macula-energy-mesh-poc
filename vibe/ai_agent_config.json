@@ -1,0 +1,126 @@
+{
+  "agent_configuration": {
+    "version": "1.0.0",
+    "memory_instructions": {
+      "priority": "high",
+      "persistence": "session",
+      "description": "Maintain these structures in memory throughout the entire session for quick access to Reckon ecosystem information"
+    },
+    "structure_definitions": {
+      "documentation_paths": {
+        "type": "map",
+        "base_path": "~/work/github.com/reckon-db-org/reckon_docs/",
+        "subpaths": {
+          "behavior": "behavior/",
+          "implementation": "implementation/",
+          "configuration": "configuration/",
+          "deployment": "deployment/"
+        }
+      },
+      "application_categories": {
+        "base_applications": {
+          "type": "collection",
+          "items": {
+            "ex_esdb": {
+              "location": "~/work/github.com/beam-campus/ex-esdb/package/",
+              "synonyms": ["ExESDBServer", ":ex_esdb"],
+              "description": "Core EventStoreDB interface"
+            },
+            "ex_esdb_gater": {
+              "location": "~/work/github.com/beam-campus/ex-esdb-gater/system/",
+              "synonyms": ["ExESDBGater", ":ex_esdb_gater", "ExESDB Gateway"],
+              "description": "EventStoreDB Gateway service"
+            },
+            "ex_esdb_commanded": {
+              "location": "~/work/github.com/beam-campus/ex-esdb-commanded-adapter/package/",
+              "synonyms": ["EsESDB Commanded Adapter", ":ex_esdb_commanded"],
+              "description": "Commanded adapter for EventStoreDB"
+            },
+            "bc_utils": {
+              "location": "~/work/github.com/beam-campus/bc-utils/package/",
+              "synonyms": ["BCUtils", ":bc_utils"],
+              "description": "Beam Campus utility library"
+            },
+            "bc_apis": {
+              "location": "~/work/github.com/beam-campus/bc_apis/package/",
+              "synonyms": ["BCApis", ":bc_apis"],
+              "description": "Beam Campus API library"
+            }
+          }
+        },
+        "reckon_applications": {
+          "type": "collection",
+          "items": {
+            "reckon_portal": {
+              "location": "~/work/github.com/reckon-db-org/reckon_portal/",
+              "synonyms": [":reckon_portal", "The Reckon Portal application(s)"],
+              "description": "The Reckon Portal application(s)"
+            },
+            "reckon_admin": {
+              "location": "~/work/github.com/reckon-db-org/reckon_admin/",
+              "synonyms": [":reckon_admin", "The Reckon ExESDB Administration application"],
+              "description": "The Reckon ExESDB Administration application"
+            },
+            "reckon_community": {
+              "location": "~/work/github.com/reckon-db-org/reckon_community/",
+              "synonyms": [":reckon_community", "The Reckon Community application(s)"],
+              "description": "The Reckon Community application(s)"
+            },
+            "reckon_aether": {
+              "location": "~/work/github.com/reckon-db-org/reckon_aether/",
+              "synonyms": [":reckon_aether", "The Reckon Aether application(s)"],
+              "description": "The Reckon Aether application(s)"
+            },
+            "greenhouse_tycoon": {
+              "location": "~/work/github.com/reckon-db-org/greenhouse_tycoon/",
+              "synonyms": [":greenhouse_tycoon", "The Reckon 'Greenhouse Tycoon' Demo application"],
+              "description": "The Reckon 'Greenhouse Tycoon' Demo application"
+            },
+            "poll_master": {
+              "location": "~/work/github.com/reckon-db-org/poll_master/",
+              "synonyms": [":poll_master", "The Reckon 'Poll Master' Demo Application"],
+              "description": "The Reckon 'Poll Master' Demo Application"
+            },
+            "reckon_identity": {
+              "location": "~/work/github.com/reckon-db-org/reckon_identity/",
+              "synonyms": [":reckon_identity", "The Reckon Identity Management System"],
+              "description": "The Reckon Identity Management System for user registration, activation and basic activity/session/usage management"
+            }
+          }
+        }
+      }
+    },
+    "usage_instructions": {
+      "memory_management": {
+        "load_on_start": true,
+        "keep_in_working_memory": true,
+        "refresh_on_changes": true
+      },
+      "path_resolution": {
+        "use_absolute_paths": true,
+        "expand_home_directory": true,
+        "handle_synonyms": true
+      },
+      "search_behavior": {
+        "search_documentation_first": true,
+        "prefer_exact_matches": true,
+        "fallback_to_synonyms": true
+      }
+    },
+    "maintenance_instructions": {
+      "new_applications": {
+        "registration_required": true,
+        "update_both_files": true,
+        "files_to_update": [
+          "./vibe/ai_entrypoint.ex",
+          "./vibe/ai_agent_config.json"
+        ]
+      },
+      "synchronization": {
+        "check_paths_exist": true,
+        "verify_documentation_links": true,
+        "maintain_consistency": true
+      }
+    }
+  }
+}
