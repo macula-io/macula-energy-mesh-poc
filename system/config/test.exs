@@ -5,26 +5,26 @@ import Config
 # The MIX_TEST_PARTITION environment variable can be used
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
-config :mesh, Mesh.Repo,
+config :mesh_hub, MeshHub.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
-  database: "mesh_test#{System.get_env("MIX_TEST_PARTITION")}",
+  database: "mesh_hub_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :mesh_web, MeshWeb.Endpoint,
+config :mesh_hub_web, MeshHubWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "CCVokTtLjBoceLyKO2/3jzbIIUA1MOOVk9RRBI11OmqhOQw6wDJ35w5D12uAtUDp",
+  secret_key_base: "PTFOPuOKHi/fGV9/vBw69GuEFMUdpGVHYDPbfnmOw3v2fSuxjtobllcBhKk11m3k",
   server: false
 
 # Print only warnings and errors during test
 config :logger, level: :warning
 
 # In test we don't send emails
-config :mesh, Mesh.Mailer, adapter: Swoosh.Adapters.Test
+config :mesh_hub, MeshHub.Mailer, adapter: Swoosh.Adapters.Test
 
 # Disable swoosh api client as it is only required for production adapters
 config :swoosh, :api_client, false

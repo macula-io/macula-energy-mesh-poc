@@ -1,4 +1,4 @@
-defmodule Mesh.Umbrella.MixProject do
+defmodule MeshHub.Umbrella.MixProject do
   use Mix.Project
 
   def project do
@@ -8,6 +8,7 @@ defmodule Mesh.Umbrella.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
+      releases: releases(),
       listeners: [Phoenix.CodeReloader]
     ]
   end
@@ -51,6 +52,44 @@ defmodule Mesh.Umbrella.MixProject do
       # run `mix setup` in all child apps
       setup: ["cmd mix setup"],
       precommit: ["compile --warning-as-errors", "deps.unlock --unused", "format", "test"]
+    ]
+  end
+
+  defp releases do
+    [
+      mesh_hub_web: [
+        version: "0.1.0",
+        applications: [
+          mesh_core: :permanent,
+          mesh_wamp: :permanent,
+          mesh_hub: :permanent,
+          mesh_hub_web: :permanent
+        ],
+        include_executables_for: [:unix],
+        steps: [:assemble, :tar]
+      ],
+      mesh_edge_homes: [
+        version: "0.1.0",
+        applications: [
+          mesh_core: :permanent,
+          mesh_wamp: :permanent,
+          mesh_edge: :permanent,
+          mesh_edge_homes: :permanent
+        ],
+        include_executables_for: [:unix],
+        steps: [:assemble, :tar]
+      ],
+      mesh_edge_utilities: [
+        version: "0.1.0",
+        applications: [
+          mesh_core: :permanent,
+          mesh_wamp: :permanent,
+          mesh_edge: :permanent,
+          mesh_edge_utilities: :permanent
+        ],
+        include_executables_for: [:unix],
+        steps: [:assemble, :tar]
+      ]
     ]
   end
 end

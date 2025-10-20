@@ -1,0 +1,5 @@
+{
+  "bondyUrl": "http://localhost:18081",
+  "userKeysMax": 10,
+  "keyMaxCharacters": 256
+}

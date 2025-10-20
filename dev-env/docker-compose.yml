@@ -1,0 +1,144 @@
+version: '3.8'
+
+services:
+  bondy:
+    image: leapsight/bondy:latest
+    container_name: mesh_bondy
+    user: "root"  # Run as root to avoid permission issues (for dev only)
+    ports:
+      - "18080:18080"  # API Gateway (HTTP + WebSocket WAMP)
+      - "18081:18081"  # Admin API
+      - "18082:18082"  # Raw TCP WAMP
+      - "18083:18083"  # TLS
+    environment:
+      - BONDY_ERL_NODENAME=bondy@bondy
+      - BONDY_ERL_DISTRIBUTED_COOKIE=bondy
+    volumes:
+      - bondy_data:/bondy/data
+      - bondy_log:/bondy/log
+      - bondy_tmp:/bondy/tmp
+      - ./bondy.conf:/bondy/etc/bondy.conf:ro
+    networks:
+      - mesh_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18080/api/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  bondy_console:
+    image: leapsight/bondy-console:latest
+    container_name: mesh_bondy_console
+    ports:
+      - "3000:8080"  # Console web UI (nginx inside listens on 8080)
+    environment:
+      - BONDY_URL=http://localhost:18081
+      # Console connects from browser, needs Admin API (18081) not API Gateway (18080)
+    volumes:
+      - ./console-config.json:/usr/share/nginx/html/config/settings.json:ro
+    depends_on:
+      - bondy
+    networks:
+      - mesh_network
+
+  # Hub container (mesh_hub + mesh_hub_web)
+  mesh_hub_web:
+    build:
+      context: ..
+      dockerfile: Dockerfile.hub
+    container_name: mesh_hub_web
+    ports:
+      - "4000:4000"  # Phoenix dashboard
+    environment:
+      - BONDY_URL=ws://bondy:18080/ws
+      - BONDY_REALM=com.energy.mesh
+      - BONDY_ADMIN_URL=http://bondy:18081
+      - DATABASE_URL=ecto://postgres:postgres@postgres:5432/mesh_hub_dev
+      - SECRET_KEY_BASE=your-secret-key-base-here-change-in-production
+      - PHX_HOST=localhost
+    depends_on:
+      - bondy
+      - postgres
+    networks:
+      - mesh_network
+    restart: unless-stopped
+
+  # PostgreSQL database for hub
+  postgres:
+    image: postgres:16-alpine
+    container_name: mesh_postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=mesh_hub_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mesh_network
+    restart: unless-stopped
+
+  # Edge homes container 1
+  mesh_edge_homes_1:
+    build:
+      context: ..
+      dockerfile: Dockerfile.edge
+      target: mesh_edge_homes
+    container_name: mesh_edge_homes_1
+    environment:
+      - BONDY_URL=ws://bondy:18080/ws
+      - BONDY_REALM=com.energy.mesh
+      - INSTANCE_ID=homes_1
+      - HOME_COUNT=25  # Half of the 50 homes
+      - HOME_ID_OFFSET=0
+    depends_on:
+      - bondy
+    networks:
+      - mesh_network
+    restart: unless-stopped
+
+  # Edge homes container 2
+  mesh_edge_homes_2:
+    build:
+      context: ..
+      dockerfile: Dockerfile.edge
+      target: mesh_edge_homes
+    container_name: mesh_edge_homes_2
+    environment:
+      - BONDY_URL=ws://bondy:18080/ws
+      - BONDY_REALM=com.energy.mesh
+      - INSTANCE_ID=homes_2
+      - HOME_COUNT=25  # Other half of the 50 homes
+      - HOME_ID_OFFSET=25
+    depends_on:
+      - bondy
+    networks:
+      - mesh_network
+    restart: unless-stopped
+
+  # Edge utilities container (provider bots)
+  mesh_edge_utilities:
+    build:
+      context: ..
+      dockerfile: Dockerfile.edge
+      target: mesh_edge_utilities
+    container_name: mesh_edge_utilities
+    environment:
+      - BONDY_URL=ws://bondy:18080/ws
+      - BONDY_REALM=com.energy.mesh
+      - PROVIDER_COUNT=5
+    depends_on:
+      - bondy
+    networks:
+      - mesh_network
+    restart: unless-stopped
+
+networks:
+  mesh_network:
+    driver: bridge
+
+volumes:
+  bondy_data:
+  bondy_log:
+  bondy_tmp:
+  postgres_data:

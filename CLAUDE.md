@@ -25,8 +25,9 @@ Create a compelling proof-of-concept that showcases how Bondy's WAMP-based event
 - **Charting**: ApexCharts (prettier charts for investors)
 - **Styling**: Tailwind CSS + custom dark theme
 - **Visualization**: D3.js for network topology
-- **WAMP Client**: awre library (fallback to custom if needed)
-- **Infrastructure**: Bondy 3-node cluster via Docker Compose
+- **WAMP Client**: Custom client via mesh_wamp
+- **Infrastructure**: Bondy embedded in hub nodes, Docker Compose for deployment
+- **Deployment**: Hub-and-spoke architecture with containerized edges
 
 ### 2. Architecture Choice
 **Elixir Umbrella Application (Option A)** - Monorepo with multiple apps for:
@@ -108,7 +109,7 @@ energy.region_{N}.home.{home_id}.production
 energy.region_{N}.home.{home_id}.consumption
 energy.region_{N}.home.{home_id}.storage
 energy.region_{N}.home.{home_id}.contract
-energy.region_{N}.provider.{provider_id}.tariff
+energy.region_{N}.utility.{provider_id}.tariff
 energy.market.switch
 ```
 
@@ -130,95 +131,235 @@ energy.market.switch
 {"home_id": "home_001", "from_provider": "provider_a", "to_provider": "provider_b", "reason": "cost_optimization", "savings": 0.23}
 ```
 
-## Proposed Umbrella Structure
+## Actual Umbrella Structure
 
 ```
 macula-energy-mesh-poc/
-├── apps/
-│   ├── mesh_core/              # Core domain logic (models, events)
-│   ├── mesh_bots/              # Bot implementations (Home, Provider)
-│   ├── mesh_wamp/              # WAMP client, Bondy integration
-│   └── mesh_web/               # Phoenix LiveView dashboard
-├── config/                     # Shared configuration
+├── system/                        # Umbrella application root
+│   ├── apps/
+│   │   ├── mesh_core/             # Core domain models (structs, events)
+│   │   ├── mesh_wamp/             # WAMP client library
+│   │   ├── mesh_hub/              # Hub infrastructure (Bondy, realm management)
+│   │   ├── mesh_hub_web/          # Phoenix LiveView dashboard
+│   │   ├── mesh_edge/             # Generic edge runtime (bot OS)
+│   │   ├── mesh_edge_homes/       # Home bot implementation
+│   │   └── mesh_edge_utilities/   # Utility provider bot implementation
+│   ├── config/                    # Shared configuration
+│   └── mix.exs                    # Umbrella root
 ├── dev-env/
-│   ├── docker-compose.yml      # 3-node Bondy cluster
-│   └── bondy/                  # Node configurations
+│   └── docker-compose.yml         # Hub + Edge containers
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   ├── DEMO_SCRIPT.md
 │   └── screenshots/
-├── mix.exs                     # Umbrella root
-└── start_demo.sh               # One-command startup
+└── start_demo.sh                  # One-command startup
 ```
+
+**Edge Runtime Architecture**:
+- **mesh_edge**: Generic edge runtime ("Edge OS")
+  - Bot lifecycle management (start, stop, reload)
+  - WAMP connection management via mesh_wamp
+  - Dynamic bot loading (future: remote deployment)
+  - Health monitoring and telemetry
+  - **Roadmap**: Load bot modules dynamically and remotely
+
+- **mesh_edge_homes**, **mesh_edge_utilities**: Domain-specific bot implementations
+  - Current: Statically compiled with specific bots
+  - Future: Deployed as modules into mesh_edge runtime
+  - Think: Docker containers (mesh_edge) vs Images (mesh_edge_homes)
+
+**Future Extensibility**:
+- `mesh_edge_commercial/` - Commercial analytics bots
+- `mesh_edge_aggregators/` - Data aggregation services
+- `mesh_edge_analytics/` - Real-time analytics engines
+- All deployable to `mesh_edge` runtime dynamically
 
 ## App Responsibilities
 
 ### mesh_core
-- Domain models: Realm, Home, Provider, Market
-- Event schemas
-- Business logic utilities
-- No processes, pure data structures
-
-### mesh_bots
-- `MeshBots.Application` - Supervision tree
-- `MeshBots.BotSupervisor` - Manages all bot instances
-- `MeshBots.HomeBot` - GenServer per home (50 instances)
-- `MeshBots.ProviderBot` - GenServer per provider (5 instances)
-- `MeshBots.Simulation.Clock` - 100x time acceleration
-- `MeshBots.Simulation.Solar` - Solar production logic
-- `MeshBots.Simulation.Consumption` - Consumption patterns
-- `MeshBots.Simulation.Battery` - Battery simulation
+- Domain models: Home, Provider, Realm, Market (pure structs)
+- Event schemas: ProductionEvent, ConsumptionEvent, TariffEvent, ContractSwitchEvent
+- Business logic utilities (pure functions)
+- **No processes, pure data structures**
+- Shared by all applications
 
 ### mesh_wamp
 - `MeshWamp.Client` - WAMP client wrapper
 - `MeshWamp.Connection` - WebSocket connection management
-- `MeshWamp.Publisher` - Publish helper
-- `MeshWamp.Subscriber` - Subscribe helper
-- `MeshWamp.RealmManager` - Realm setup via Bondy API
+- `MeshWamp.Publisher` - Publish helper (events to topics)
+- `MeshWamp.Subscriber` - Subscribe helper (topics to callbacks)
+- WAMP protocol implementation (HELLO, WELCOME, PUBLISH, SUBSCRIBE, etc.)
+- Used by all edge applications to connect to hub
 
-### mesh_web
-- `MeshWeb.OverviewLive` - Main dashboard
-- `MeshWeb.RealmsLive` - Realms view
-- `MeshWeb.HomesLive` - Homes list/detail
-- `MeshWeb.ProvidersLive` - Providers view
-- `MeshWeb.HomeDetailLive` - Individual home detail
+### mesh_hub
+- `MeshHub.Application` - Supervision tree
+- **Embeds Bondy** - Starts Bondy WAMP router in supervision tree
+- **Hosts WAMP realm** - `energy.hub` (or `energy.region_N`)
+- Realm management and configuration
+- **Pure infrastructure - no domain bots**
+- Optional: Simulation clock (shared time reference)
+- Optional: Aggregation helpers for analytics
+- Depends on: mesh_core
+
+### mesh_hub_web
+- `MeshHubWeb.Endpoint` - Phoenix endpoint (HTTP/WebSocket for dashboard)
+- `MeshHubWeb.OverviewLive` - Main dashboard
+- `MeshHubWeb.RealmsLive` - Realms view
+- `MeshHubWeb.HomesLive` - Homes list/detail
+- `MeshHubWeb.ProvidersLive` - Providers view
 - Components: topology_map, metrics_card, activity_feed, charts
+- **Subscribes to events via WAMP** (not local queries)
+- Aggregates and visualizes mesh-wide activity
+- Depends on: mesh_hub
+
+### mesh_edge
+- `MeshEdge.Application` - Generic edge runtime supervision tree
+- `MeshEdge.BotSupervisor` - Dynamic supervisor for bot instances
+- `MeshEdge.Runtime` - Bot lifecycle management (start, stop, reload)
+- `MeshEdge.Connection` - WAMP connection management (via mesh_wamp)
+- `MeshEdge.Health` - Health checks and telemetry
+- `MeshEdge.Loader` - Dynamic module loading (future: remote deployment)
+- **Provides**: Generic bot runtime environment
+- **Roadmap**: Remote bot deployment, hot-code reloading, A/B testing bots
+- Depends on: mesh_wamp, mesh_core
+
+### mesh_edge_homes
+- `MeshEdgeHomes.Application` - Supervision tree
+- `MeshEdgeHomes.HomeBot` - GenServer per home (N homes, configurable via ENV)
+- `MeshEdgeHomes.Simulation.Solar` - Solar production calculations
+- `MeshEdgeHomes.Simulation.Consumption` - Consumption patterns (base + peaks)
+- `MeshEdgeHomes.Simulation.Battery` - Battery charge/discharge logic
+- `MeshEdgeHomes.Optimization` - Contract switching decisions
+- **Publishes**: production, consumption, storage, contract events
+- **Subscribes**: provider tariff updates
+- **Current**: Standalone application
+- **Future**: Deployable module for mesh_edge runtime
+- Depends on: mesh_wamp, mesh_core (future: mesh_edge)
+
+### mesh_edge_utilities
+- `MeshEdgeUtilities.Application` - Supervision tree
+- `MeshEdgeUtilities.ProviderBot` - GenServer per provider (N providers, configurable via ENV)
+- `MeshEdgeUtilities.Simulation.Pricing` - Pricing strategies per provider
+  - "Steady Eddie", "Night Owl", "Solar Surfer", "Peak Predator", "Random Racer"
+- **Publishes**: tariff updates (price per kWh, buy-back rates)
+- **Subscribes**: (optional) market events for dynamic pricing
+- **Current**: Standalone application
+- **Future**: Deployable module for mesh_edge runtime
+- Depends on: mesh_wamp, mesh_core (future: mesh_edge)
 
 ## Communication Architecture
 
-**Dashboard ↔ Bots** (Hybrid approach):
-1. **Direct queries** (via Registry): LiveView mounts → get initial state
-2. **PubSub updates** (via Phoenix.PubSub): Bots broadcast state changes
+**Hub-and-Spoke Topology**:
+```
+┌──────────────────────────────────────────────────────┐
+│  Hub Container (mesh_hub + mesh_hub_web)             │
+│  ┌────────────────────────────────────────────────┐  │
+│  │  mesh_hub                                      │  │
+│  │  ┌──────────────────────────────────────────┐ │  │
+│  │  │  Bondy (WAMP Router)                     │ │  │
+│  │  │  Realm: energy.hub                       │ │  │
+│  │  └──────────────────────────────────────────┘ │  │
+│  └────────────────────────────────────────────────┘  │
+│  ┌────────────────────────────────────────────────┐  │
+│  │  mesh_hub_web                                  │  │
+│  │  ┌──────────────────────────────────────────┐ │  │
+│  │  │  Phoenix Dashboard (subscribes via WAMP) │ │  │
+│  │  └──────────────────────────────────────────┘ │  │
+│  └────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────┘
+         ▲                    ▲                  ▲
+         │ WAMP               │ WAMP             │ WAMP
+         │                    │                  │
+┌────────┴─────────┐  ┌───────┴──────────┐  ┌───┴──────────────┐
+│ mesh_edge_homes  │  │ mesh_edge_homes  │  │ mesh_edge_       │
+│   (Container 1)  │  │   (Container 2)  │  │   utilities      │
+│                  │  │                  │  │                  │
+│ Home Bots (3)    │  │ Home Bots (3)    │  │ Provider Bots(5) │
+└──────────────────┘  └──────────────────┘  └──────────────────┘
 
-**Bots → Bondy**:
-- Bots publish events to WAMP topics
-- Bots subscribe to provider tariffs via WAMP
+Future: Add more edge types
+┌──────────────────┐
+│ mesh_edge_       │
+│   commercial     │  ← New participant type!
+│                  │
+│ Analytics Bots   │
+└──────────────────┘
+```
+
+**Communication Patterns**:
+
+1. **mesh_edge_homes → Bondy (WAMP Publish)**:
+   - Home bots publish production/consumption/storage/contract events
+   - Topics: `energy.hub.home.{home_id}.{event_type}`
+   - Example: `energy.hub.home.home_001.production`
+
+2. **mesh_edge_utilities → Bondy (WAMP Publish)**:
+   - Provider bots publish tariff updates
+   - Topics: `energy.hub.utility.{provider_id}.tariff`
+   - Example: `energy.hub.utility.provider_a.tariff`
+
+3. **mesh_edge_homes subscribes (via mesh_wamp)**:
+   - Home bots subscribe to ALL provider tariffs
+   - Pattern: `energy.hub.utility.*.tariff`
+   - Triggers contract optimization when prices change
+
+4. **mesh_hub_web subscribes (via mesh_wamp)**:
+   - Dashboard subscribes to ALL events for visualization
+   - Patterns: `energy.hub.home.*.production`, `energy.hub.utility.*.tariff`, etc.
+   - Aggregates real-time data for charts and metrics
+
+5. **Pure Event-Driven**:
+   - No direct communication between edges
+   - All communication flows through Bondy (in mesh_hub)
+   - Easy to add new participants - just subscribe/publish
 
 **Data Flow**:
 ```
-Simulation Clock (1/sec = 100 sim sec)
+Simulation Clock (in mesh_hub) → broadcasts time tick
     ↓
-Home/Provider Bots calculate state
+mesh_edge_utilities: Provider Bots calculate prices
     ↓
-    ├─→ WAMP publish to Bondy (mesh events)
-    └─→ PubSub broadcast (dashboard updates)
-         ↓
-    Dashboard LiveView (re-render)
+Provider publishes tariff → Bondy → mesh_edge_homes subscribes
+    ↓
+mesh_edge_homes: Home Bot receives tariff → Recalculates optimization
+    ↓
+Home publishes events → Bondy → mesh_hub_web subscribes
+    ↓
+Dashboard LiveView aggregates and displays in real-time
 ```
 
-## Open Questions to Resolve
+## Architecture Decisions Made
 
-1. **WAMP Library**: Try `awre` first or build minimal custom client?
-   - **Recommendation**: Try awre, fall back to custom if issues
+1. **WAMP Library**: ✅ Custom implementation via mesh_wamp
+   - More control over protocol details
+   - Tailored to our specific needs
 
-2. **Database**: Needed for history/persistence?
-   - **Recommendation**: No DB for PoC (keeps it simple, all in-memory)
+2. **Bot Configuration**: ✅ Environment variables at container startup
+   - `NUM_HOMES` per edge container
+   - `NUM_PROVIDERS` in hub container
+   - Easy scaling via docker-compose
 
-3. **Bot Configuration**: How to configure 50 homes and 5 providers?
-   - **Recommendation**: Generated on startup with configurable counts
+3. **WAMP Subscriptions**: ✅ Yes, homes subscribe to provider tariffs
+   - Makes demo more realistic
+   - Shows true mesh communication
 
-4. **WAMP Subscriptions**: Should home bots subscribe to provider tariffs?
-   - **Recommendation**: Yes, makes demo more realistic (homes react to price changes)
+4. **Bondy Deployment**: ✅ Embedded in mesh_hub (not mesh_hub_web)
+   - Standard umbrella pattern: infrastructure in core app
+   - mesh_hub = pure infrastructure (Bondy + realm management)
+   - mesh_hub_web = presentation layer (subscribes via WAMP like any edge)
+   - Keeps option open for headless hubs
+
+5. **Edge Application Pattern**: ✅ Runtime + Bot separation
+   - mesh_edge - Generic edge runtime ("Edge OS")
+   - mesh_edge_homes, mesh_edge_utilities - Bot implementations
+   - Current: Standalone apps (for simplicity in PoC)
+   - Future: Dynamic bot loading into mesh_edge runtime
+   - Vision: Deploy new bots remotely without redeploying containers
+
+6. **Extensible Ecosystem**: ✅ Demonstrates event-driven growth
+   - New participant types just subscribe/publish
+   - No changes to existing participants
+   - mesh_edge runtime enables dynamic ecosystem evolution
 
 ## Development Phases
 
@@ -271,15 +412,31 @@ The dashboard should make these points visually obvious:
 
 ## Current Status
 
-**Project State**: Architecture and strategy defined, ready to begin implementation
+**Project State**: Phase 1 - Setting up infrastructure
+
+**Completed**:
+- ✅ Umbrella app structure created in `system/`
+- ✅ Seven apps created:
+  - Infrastructure: mesh_core, mesh_wamp, mesh_hub, mesh_hub_web
+  - Edge runtime: mesh_edge (generic bot OS)
+  - Bot implementations: mesh_edge_homes, mesh_edge_utilities
+- ✅ Architecture decisions finalized (hub-spoke, embedded Bondy, edge runtime pattern)
+
+**Current Task**:
+- 🔄 Setting up minimal working mesh
+  - Containerize mesh_hub_web with embedded Bondy
+  - Containerize mesh_edge
+  - Docker Compose with 1 hub + 2 edge containers
+  - Single realm (`energy.hub`)
+  - Test WAMP connections
 
 **Next Steps**:
-1. Create umbrella app structure (`mix new macula_energy_mesh_poc --umbrella`)
-2. Create four child apps (mesh_core, mesh_bots, mesh_wamp, mesh_web)
-3. Set up Bondy docker-compose configuration
-4. Begin Phase 1 implementation
-
-**Decisions Pending**: None - all major decisions made, ready to build
+1. Configure app dependencies in mix.exs files
+2. Implement basic WAMP client in mesh_wamp
+3. Embed Bondy in mesh_hub_web
+4. Create Dockerfiles for hub and edge
+5. Set up docker-compose.yml
+6. Test end-to-end connectivity
 
 ## Notes
 

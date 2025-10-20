@@ -10,8 +10,8 @@
 import Config
 
 # Configure Mix tasks and generators
-config :mesh,
-  ecto_repos: [Mesh.Repo]
+config :mesh_hub,
+  ecto_repos: [MeshHub.Repo]
 
 # Configures the mailer
 #
@@ -20,42 +20,42 @@ config :mesh,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :mesh, Mesh.Mailer, adapter: Swoosh.Adapters.Local
+config :mesh_hub, MeshHub.Mailer, adapter: Swoosh.Adapters.Local
 
-config :mesh_web,
-  ecto_repos: [Mesh.Repo],
-  generators: [context_app: :mesh]
+config :mesh_hub_web,
+  ecto_repos: [MeshHub.Repo],
+  generators: [context_app: :mesh_hub]
 
 # Configures the endpoint
-config :mesh_web, MeshWeb.Endpoint,
+config :mesh_hub_web, MeshHubWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [html: MeshWeb.ErrorHTML, json: MeshWeb.ErrorJSON],
+    formats: [html: MeshHubWeb.ErrorHTML, json: MeshHubWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: Mesh.PubSub,
-  live_view: [signing_salt: "q2SOWwNG"]
+  pubsub_server: MeshHub.PubSub,
+  live_view: [signing_salt: "xfQ3khAf"]
 
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.25.4",
-  mesh_web: [
+  mesh_hub_web: [
     args:
       ~w(js/app.js --bundle --target=es2022 --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/* --alias:@=.),
-    cd: Path.expand("../apps/mesh_web/assets", __DIR__),
+    cd: Path.expand("../apps/mesh_hub_web/assets", __DIR__),
     env: %{"NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build_path()]}
   ]
 
 # Configure tailwind (the version is required)
 config :tailwind,
   version: "4.1.7",
-  mesh_web: [
+  mesh_hub_web: [
     args: ~w(
       --input=assets/css/app.css
       --output=priv/static/assets/css/app.css
     ),
-    cd: Path.expand("../apps/mesh_web", __DIR__)
+    cd: Path.expand("../apps/mesh_hub_web", __DIR__)
   ]
 
 # Configures Elixir's Logger

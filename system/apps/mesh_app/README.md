@@ -1,3 +1,0 @@
-# Mesh
-
-**TODO: Add description**

@@ -1,11 +1,11 @@
 import Config
 
 # Configure your database
-config :mesh, Mesh.Repo,
+config :mesh_hub, MeshHub.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
-  database: "mesh_dev",
+  database: "mesh_hub_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -16,17 +16,17 @@ config :mesh, Mesh.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
-config :mesh_web, MeshWeb.Endpoint,
+config :mesh_hub_web, MeshHubWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}, port: String.to_integer(System.get_env("PORT") || "4000")],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "EL37lprX7ZezfpExgHFKKZqlJf35NDimcXXZmyq4pk4Q26pkiA+NSmmu3sFyrdbN",
+  secret_key_base: "fG5p0/eLcFHZTe9A91yrlwAn1xal7VoXwQ+VnnlrTMwjoIx6iA8zfusceV0+WZqB",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:mesh_web, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:mesh_web, ~w(--watch)]}
+    esbuild: {Esbuild, :install_and_run, [:mesh_hub_web, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:mesh_hub_web, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -53,18 +53,18 @@ config :mesh_web, MeshWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :mesh_web, MeshWeb.Endpoint,
+config :mesh_hub_web, MeshHubWeb.Endpoint,
   live_reload: [
     web_console_logger: true,
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/mesh_web/(?:controllers|live|components|router)/?.*\.(ex|heex)$"
+      ~r"lib/mesh_hub_web/(?:controllers|live|components|router)/?.*\.(ex|heex)$"
     ]
   ]
 
 # Enable dev routes for dashboard and mailbox
-config :mesh_web, dev_routes: true
+config :mesh_hub_web, dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :default_formatter, format: "[$level] $message\n"

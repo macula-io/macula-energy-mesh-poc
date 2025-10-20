@@ -1,0 +1,77 @@
+# Dockerfile for mesh_hub and mesh_hub_web (Phoenix dashboard)
+# Multi-stage build for optimal image size
+
+# Stage 1: Build
+FROM hexpm/elixir:1.18.1-erlang-27.2.1-alpine-3.21.3 AS build
+
+# Install build dependencies
+RUN apk add --no-cache build-base git nodejs npm
+
+# Set working directory
+WORKDIR /app
+
+# Install hex and rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
+
+# Set build environment
+ENV MIX_ENV=prod
+
+# Copy mix files
+COPY system/mix.exs system/mix.lock ./
+COPY system/config config
+
+# Copy all app mix files
+COPY system/apps/mesh_core/mix.exs ./apps/mesh_core/
+COPY system/apps/mesh_wamp/mix.exs ./apps/mesh_wamp/
+COPY system/apps/mesh_hub/mix.exs ./apps/mesh_hub/
+COPY system/apps/mesh_hub_web/mix.exs ./apps/mesh_hub_web/
+
+# Get dependencies
+RUN mix deps.get --only prod
+RUN mix deps.compile
+
+# Copy application code
+COPY system/apps/mesh_core ./apps/mesh_core
+COPY system/apps/mesh_wamp ./apps/mesh_wamp
+COPY system/apps/mesh_hub ./apps/mesh_hub
+COPY system/apps/mesh_hub_web ./apps/mesh_hub_web
+
+# Install npm dependencies and build assets (Phoenix)
+RUN cd apps/mesh_hub_web/assets && \
+    npm install && \
+    npm run deploy
+
+# Compile the project
+RUN mix compile
+
+# Build assets
+RUN mix assets.deploy
+
+# Build release
+RUN mix release mesh_hub_web
+
+# Stage 2: Runtime
+FROM alpine:3.21.3 AS runtime
+
+RUN apk add --no-cache libstdc++ openssl ncurses-libs
+
+WORKDIR /app
+
+# Copy the release from build stage
+COPY --from=build /app/_build/prod/rel/mesh_hub_web ./
+
+# Set environment
+ENV HOME=/app
+ENV MIX_ENV=prod
+ENV PORT=4000
+
+# Run as non-root user
+RUN addgroup -S app && adduser -S app -G app
+RUN chown -R app:app /app
+USER app
+
+# Expose Phoenix port
+EXPOSE 4000
+
+CMD ["/app/bin/mesh_hub_web", "start"]

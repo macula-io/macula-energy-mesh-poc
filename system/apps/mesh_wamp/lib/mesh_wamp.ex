@@ -1,18 +1,56 @@
 defmodule MeshWamp do
   @moduledoc """
-  Documentation for `MeshWamp`.
-  """
+  WAMP (Web Application Messaging Protocol) client library.
 
-  @doc """
-  Hello world.
+  Provides a simple interface for connecting to WAMP routers (like Bondy)
+  and performing pub/sub operations.
 
   ## Examples
 
-      iex> MeshWamp.hello()
-      :world
+      # Start a client
+      {:ok, client} = MeshWamp.start_link(
+        url: "ws://localhost:18082/ws",
+        realm: "energy.hub"
+      )
 
+      # Subscribe to a topic
+      MeshWamp.subscribe(client, "energy.hub.utility.*.tariff", fn topic, event ->
+        IO.inspect({topic, event})
+      end)
+
+      # Publish an event
+      MeshWamp.publish(client, "energy.hub.home.home_001.production", [3500])
   """
-  def hello do
-    :world
-  end
+
+  alias MeshWamp.Client
+
+  @doc """
+  Start a WAMP client connection.
+
+  ## Options
+  - `:url` - WebSocket URL (default: ws://localhost:18082/ws)
+  - `:realm` - WAMP realm to join (required)
+  - `:name` - GenServer name (optional)
+  """
+  defdelegate start_link(opts \\ []), to: Client
+
+  @doc """
+  Publish a message to a topic.
+  """
+  defdelegate publish(client, topic, args \\ [], kwargs \\ %{}, options \\ %{}), to: Client
+
+  @doc """
+  Subscribe to a topic with a handler function.
+  """
+  defdelegate subscribe(client, topic, handler_fun, options \\ %{}), to: Client
+
+  @doc """
+  Get client connection status.
+  """
+  defdelegate status(client), to: Client
+
+  @doc """
+  Stop the client.
+  """
+  defdelegate stop(client), to: Client
 end
