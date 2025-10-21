@@ -12,6 +12,8 @@ defmodule MeshEdgeHomes.HomeBot do
   require Logger
 
   alias MeshWamp
+  alias MeshEdgeHomes.Measurement
+  alias MeshCore.Geography
 
   defstruct [
     :home_id,
@@ -27,7 +29,15 @@ defmodule MeshEdgeHomes.HomeBot do
     # Provider contract
     :current_provider,
     # Simulation time
-    :sim_time
+    :sim_time,
+    # 3-phase distribution (L1, L2, L3 ratios)
+    :phase_ratios,
+    # Belgian location
+    :city,
+    :postal_code,
+    :latitude,
+    :longitude,
+    :region
   ]
 
   @update_interval_ms 5_000  # Update every 5 seconds
@@ -59,6 +69,13 @@ defmodule MeshEdgeHomes.HomeBot do
       realm: realm
     )
 
+    # Get deterministic Belgian location for this home
+    location = Geography.location_for_home(home_id)
+
+    # Filter providers that serve this region
+    available_providers = get_regional_providers(location.region)
+    random_provider = Enum.random(available_providers)
+
     # Initialize state with randomized values for diversity
     state = %__MODULE__{
       home_id: home_id,
@@ -68,9 +85,19 @@ defmodule MeshEdgeHomes.HomeBot do
       base_load_w: 300 + :rand.uniform(200),  # 300-500 W
       battery_capacity_kwh: 10.0,
       battery_charge_percent: 50.0 + :rand.uniform() * 30.0,  # 50-80%
-      current_provider: "provider_#{:rand.uniform(5)}",
-      sim_time: 0
+      current_provider: random_provider,
+      sim_time: 0,
+      # Generate realistic 3-phase distribution (not perfectly balanced)
+      phase_ratios: Measurement.generate_phase_ratios(),
+      # Belgian location
+      city: location.city,
+      postal_code: location.postal_code,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      region: location.region
     }
+
+    Logger.info("Home #{home_id} located in #{location.city} (#{location.postal_code}), #{Geography.region_name(location.region)}")
 
     # Schedule first update
     schedule_update()
@@ -107,6 +134,9 @@ defmodule MeshEdgeHomes.HomeBot do
     # Publish storage event
     publish_storage(state, new_battery_percent)
 
+    # Publish comprehensive measurement event (HomeWizard-style)
+    publish_measurement(state, production_w, consumption_w, new_battery_percent)
+
     # Schedule next update
     schedule_update()
 
@@ -123,6 +153,12 @@ defmodule MeshEdgeHomes.HomeBot do
   defp via_tuple(home_id) do
     {:via, Registry, {MeshEdgeHomes.Registry, home_id}}
   end
+
+  # Belgian utility providers with regional coverage
+  defp get_regional_providers(:brussels), do: ["engie", "luminus", "essent", "totalenergies", "bolt"]
+  defp get_regional_providers(:flanders), do: ["engie", "luminus", "essent", "bolt"]
+  defp get_regional_providers(:wallonia), do: ["engie", "luminus", "essent", "totalenergies"]
+  defp get_regional_providers(_), do: ["engie", "luminus", "essent"]  # Default fallback
 
   defp schedule_update do
     Process.send_after(self(), :update, @update_interval_ms)
@@ -186,6 +222,9 @@ defmodule MeshEdgeHomes.HomeBot do
     topic = "energy.home.#{state.home_id}.production"
     payload = %{
       "home_id" => state.home_id,
+      "city" => state.city,
+      "postal_code" => state.postal_code,
+      "region" => Atom.to_string(state.region),
       "watts" => Float.round(watts, 2),
       "source" => "solar",
       "timestamp" => DateTime.utc_now() |> DateTime.to_iso8601()
@@ -199,6 +238,9 @@ defmodule MeshEdgeHomes.HomeBot do
     topic = "energy.home.#{state.home_id}.consumption"
     payload = %{
       "home_id" => state.home_id,
+      "city" => state.city,
+      "postal_code" => state.postal_code,
+      "region" => Atom.to_string(state.region),
       "watts" => Float.round(watts, 2),
       "timestamp" => DateTime.utc_now() |> DateTime.to_iso8601()
     }
@@ -211,12 +253,49 @@ defmodule MeshEdgeHomes.HomeBot do
     topic = "energy.home.#{state.home_id}.storage"
     payload = %{
       "home_id" => state.home_id,
+      "city" => state.city,
+      "postal_code" => state.postal_code,
+      "region" => Atom.to_string(state.region),
       "battery_percent" => Float.round(battery_percent, 2),
       "capacity_kwh" => state.battery_capacity_kwh,
       "timestamp" => DateTime.utc_now() |> DateTime.to_iso8601()
     }
 
     # Publish with payload as kwargs (4th argument), not args
+    MeshWamp.publish(state.wamp_client, topic, [], payload, %{})
+  end
+
+  defp publish_measurement(state, production_w, consumption_w, battery_percent) do
+    topic = "energy.home.#{state.home_id}.measurement"
+
+    # Distribute current net power across phases
+    net_power = production_w - consumption_w
+    power_distribution = Measurement.distribute_power_across_phases(abs(net_power), state.phase_ratios)
+
+    # Calculate voltage per phase
+    voltage = Measurement.calculate_voltage_per_phase()
+
+    # Determine source based on production
+    source =
+      production_w
+      |> case do
+        p when p > 0 -> "solar"
+        _ -> "grid"
+      end
+
+    # Build comprehensive measurement payload
+    payload =
+      Measurement.build_measurement(
+        power_distribution: power_distribution,
+        voltage: voltage,
+        home_id: state.home_id,
+        battery_percent: battery_percent,
+        source: source,
+        city: state.city,
+        postal_code: state.postal_code,
+        region: Atom.to_string(state.region)
+      )
+
     MeshWamp.publish(state.wamp_client, topic, [], payload, %{})
   end
 end

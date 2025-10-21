@@ -37,10 +37,11 @@ defmodule MeshEdgeUtilities.Application do
     end
   end
 
-  defp start_provider_bots(count, bondy_url, realm) do
-    Enum.each(1..count, fn i ->
-      provider_id = "provider_#{i}"
+  defp start_provider_bots(_count, bondy_url, realm) do
+    # Real Belgian utility providers
+    providers = ["engie", "luminus", "essent", "totalenergies", "bolt"]
 
+    Enum.each(providers, fn provider_id ->
       spec = {MeshEdgeUtilities.ProviderBot, [
         provider_id: provider_id,
         bondy_url: bondy_url,

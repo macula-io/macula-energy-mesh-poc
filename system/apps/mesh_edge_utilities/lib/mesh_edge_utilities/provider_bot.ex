@@ -19,6 +19,8 @@ defmodule MeshEdgeUtilities.ProviderBot do
 
   defstruct [
     :provider_id,
+    :provider_name,
+    :regions,
     :wamp_client,
     :realm,
     :strategy,
@@ -27,12 +29,34 @@ defmodule MeshEdgeUtilities.ProviderBot do
   ]
 
   @update_interval_ms 10_000  # Update every 10 seconds (faster for demo)
-  @strategies %{
-    "provider_1" => :steady_eddie,
-    "provider_2" => :night_owl,
-    "provider_3" => :solar_surfer,
-    "provider_4" => :peak_predator,
-    "provider_5" => :random_racer
+
+  # Real Belgian utility providers with their strategies and regional coverage
+  @providers %{
+    "engie" => %{
+      name: "Engie",
+      strategy: :steady_eddie,
+      regions: [:brussels, :flanders, :wallonia]  # Nationwide
+    },
+    "luminus" => %{
+      name: "Luminus",
+      strategy: :night_owl,
+      regions: [:brussels, :flanders, :wallonia]  # Nationwide
+    },
+    "essent" => %{
+      name: "Essent",
+      strategy: :solar_surfer,
+      regions: [:brussels, :flanders, :wallonia]  # Nationwide
+    },
+    "totalenergies" => %{
+      name: "TotalEnergies",
+      strategy: :peak_predator,
+      regions: [:brussels, :wallonia]  # Not in Flanders
+    },
+    "bolt" => %{
+      name: "Bolt",
+      strategy: :random_racer,
+      regions: [:brussels, :flanders]  # Flanders specialist
+    }
   }
 
   ## Client API
@@ -54,7 +78,13 @@ defmodule MeshEdgeUtilities.ProviderBot do
     realm = Keyword.get(opts, :realm, "com.energy.mesh")
     bondy_url = Keyword.get(opts, :bondy_url, "ws://localhost:18080/ws")
 
-    Logger.info("Starting ProviderBot for #{provider_id}")
+    # Get provider metadata
+    provider_info = Map.get(@providers, provider_id)
+    provider_name = provider_info.name
+    strategy = provider_info.strategy
+    regions = provider_info.regions
+
+    Logger.info("Starting ProviderBot for #{provider_name} (#{provider_id})")
 
     # Connect to WAMP
     {:ok, wamp_client} = MeshWamp.start_link(
@@ -62,15 +92,14 @@ defmodule MeshEdgeUtilities.ProviderBot do
       realm: realm
     )
 
-    # Get strategy for this provider
-    strategy = Map.get(@strategies, provider_id, :steady_eddie)
-
     state = %__MODULE__{
       provider_id: provider_id,
+      provider_name: provider_name,
+      regions: regions,
       wamp_client: wamp_client,
       realm: realm,
       strategy: strategy,
-      base_price: 0.12 + :rand.uniform() * 0.06,  # $0.12-0.18 per kWh
+      base_price: 0.12 + :rand.uniform() * 0.06,  # €0.12-0.18 per kWh
       sim_time: 0
     }
 
@@ -184,13 +213,15 @@ defmodule MeshEdgeUtilities.ProviderBot do
 
     payload = %{
       "provider_id" => state.provider_id,
+      "provider_name" => state.provider_name,
+      "regions" => Enum.map(state.regions, &Atom.to_string/1),
       "price_per_kwh" => Float.round(price_per_kwh, 4),
       "sell_back_rate" => Float.round(sell_back_rate, 4),
       "strategy" => Atom.to_string(state.strategy),
       "timestamp" => DateTime.utc_now() |> DateTime.to_iso8601()
     }
 
-    Logger.info("⚡ Publishing tariff: #{state.provider_id} -> $#{Float.round(price_per_kwh, 4)}/kWh to #{topic}")
+    Logger.info("⚡ Publishing tariff: #{state.provider_name} -> €#{Float.round(price_per_kwh, 4)}/kWh to #{topic}")
 
     # Publish with payload as kwargs (4th argument), not args
     MeshWamp.publish(state.wamp_client, topic, [], payload, %{})
