@@ -48,6 +48,8 @@ spec:
           value: "be.cortexiq.energy"
         - name: BONDY_URL
           value: "ws://172.20.0.2:30080/ws"
+        - name: BONDY_ADMIN_URL
+          value: "http://172.20.0.2:30082"
         - name: DATABASE_URL
           value: "ecto://cortexiq:cortexiq123@postgres:5432/cortexiq_dashboard"
         - name: PHX_HOST
