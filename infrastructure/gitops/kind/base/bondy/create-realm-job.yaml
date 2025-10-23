@@ -16,10 +16,16 @@ data:
       sleep 2
     done
 
-    echo "Bondy is ready, creating realm..."
+    echo "Bondy is ready, ensuring clean realm setup..."
+
+    # Delete realm if it exists (auto-created by Bondy when clients connect)
+    echo "Deleting existing realm (if any)..."
+    /bondy/bin/bondy eval 'bondy_realm:delete(<<"be.cortexiq.energy">>).' || echo "No existing realm to delete"
+    sleep 1
 
     # Create the realm via Bondy Admin API (port 18081)
     # Full realm configuration for demo (proper values for Console display)
+    echo "Creating realm with proper configuration..."
     curl -X POST http://bondy:18081/realms \
       -H "Content-Type: application/json" \
       -d '{
@@ -29,7 +35,7 @@ data:
         "is_sso_realm": false,
         "allow_connections": true,
         "authmethods": ["anonymous"]
-      }' && echo "Realm created successfully" || echo "Realm creation failed - may already exist"
+      }' && echo "Realm created successfully" || echo "Realm creation failed"
 
     echo "Disabling security for demo..."
     # Security must be disabled via bondy RPC (HTTP endpoint doesn't exist)
