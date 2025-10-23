@@ -4,6 +4,7 @@ kind: Kustomization
 # Edge-02: 13 Homes
 
 resources:
+  - namespace.yaml
   - ../../base/cortex-iq-homes
 
 patches:

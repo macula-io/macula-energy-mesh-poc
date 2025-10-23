@@ -4,4 +4,5 @@ kind: Kustomization
 # Edge-03: 5 Utilities (Providers)
 
 resources:
+  - namespace.yaml
   - ../../base/cortex-iq-utilities

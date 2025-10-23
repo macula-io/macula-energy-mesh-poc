@@ -4,6 +4,7 @@ kind: Kustomization
 # Edge-04: 11 Homes (to reach 50 total: 13+13+13+11=50)
 
 resources:
+  - namespace.yaml
   - ../../base/cortex-iq-homes
 
 patches:
