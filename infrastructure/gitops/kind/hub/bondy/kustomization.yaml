@@ -9,6 +9,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - ingress.yaml
+  - ../../base/bondy/create-realm-job.yaml
 
 labels:
   - pairs:
