@@ -45,7 +45,9 @@ bootstrap_cluster() {
   if [[ "${cluster_name}" == "macula-hub" ]]; then
     kubectl --context "${context}" apply -f "${FLUX_SYSTEM_DIR}/hub-kustomization.yaml"
   else
-    kubectl --context "${context}" apply -f "${FLUX_SYSTEM_DIR}/edge-kustomizations.yaml"
+    # Extract edge number (e.g., "01" from "macula-edge-01")
+    edge_num="${cluster_name##*-}"
+    kubectl --context "${context}" apply -f "${FLUX_SYSTEM_DIR}/edge-${edge_num}-kustomization.yaml"
   fi
 
   log_info "✓ ${cluster_name} bootstrapped"
