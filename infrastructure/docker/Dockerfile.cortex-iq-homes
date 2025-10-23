@@ -1,0 +1,19 @@
+# Home bots payload for Macula edge nodes
+FROM macula/os-base:latest
+
+# Copy homes payload
+COPY system/apps/cortex_iq_homes ./apps/cortex_iq_homes
+
+# Compile homes app
+WORKDIR /app
+RUN mix deps.get && \
+    mix compile
+
+# Environment variables (overridable at runtime)
+ENV MACULA_MODE=edge
+ENV REALM_URI=be.cortexiq.energy
+ENV BONDY_WS_URL=ws://192.168.100.10:18080/ws
+ENV NUM_HOMES=13
+
+# Run the homes application
+CMD ["mix", "run", "--no-halt", "-e", "CortexIqHomes.Application.start(:normal, [])"]

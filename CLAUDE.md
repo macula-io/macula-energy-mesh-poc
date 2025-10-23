@@ -711,3 +711,4 @@ The dashboard should make these points visually obvious:
 - **Bondy Codebase**: `/home/rl/work/github.com/bondy-io/bondy/`
 - **Phoenix LiveView**: https://hexdocs.pm/phoenix_live_view/
 - **WAMP Protocol**: https://wamp-proto.org/
+- in our scripts, environment variables should not reflect choices in terms of distros, but should reflect their purpose

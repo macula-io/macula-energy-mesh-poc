@@ -1,77 +1,118 @@
-# Dockerfile for cortex_iq_dashboard and cortex_iq_dashboard_web (Phoenix dashboard)
-# Multi-stage build for optimal image size
+####################################################################################################
+# CortexIQ Dashboard Hub
+# Includes: Bondy WAMP Router + Dashboard (with MaculaOs in hub mode)
+#
+# This container runs:
+# - Bondy WAMP router (realm hub)
+# - CortexIQ Dashboard (analytics + web UI)
+# - PostgreSQL client (connects to external PostgreSQL)
+####################################################################################################
 
-# Stage 1: Build
-FROM hexpm/elixir:1.18.1-erlang-27.2.1-alpine-3.20.3 AS build
+ARG ELIXIR_VERSION=1.18.1
+ARG OTP_VERSION=27.2
+ARG ALPINE_VERSION=3.21.0
+ARG NODE_VERSION=20
+
+####################################################################################################
+# Stage 1: Builder
+####################################################################################################
+FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-alpine-${ALPINE_VERSION} AS builder
 
 # Install build dependencies
-RUN apk add --no-cache build-base git nodejs npm
+RUN apk add --no-cache \
+    git \
+    build-base \
+    nodejs \
+    npm
 
-# Set working directory
 WORKDIR /app
-
-# Install hex and rebar
-RUN mix local.hex --force && \
-    mix local.rebar --force
 
 # Set build environment
 ENV MIX_ENV=prod
 
-# Copy mix files
-COPY system/mix.exs system/mix.lock ./
-COPY system/config config
+# Install Hex and Rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
 
-# Copy all app mix files
-COPY system/apps/cortex_iq_core/mix.exs ./apps/cortex_iq_core/
-COPY system/apps/macula_os/mix.exs ./apps/macula_os/
-COPY system/apps/cortex_iq_dashboard/mix.exs ./apps/cortex_iq_dashboard/
-COPY system/apps/cortex_iq_dashboard_web/mix.exs ./apps/cortex_iq_dashboard_web/
+# Copy umbrella root
+COPY system/cortex_iq_dashboard_umbrella/mix.exs system/cortex_iq_dashboard_umbrella/mix.lock ./
+COPY system/cortex_iq_dashboard_umbrella/config ./config
+
+# Copy standalone dependencies
+COPY system/cortex_iq_core ../cortex_iq_core
+COPY system/macula_os ../macula_os
+
+# Copy umbrella apps mix files
+COPY system/cortex_iq_dashboard_umbrella/apps/cortex_iq_dashboard/mix.exs ./apps/cortex_iq_dashboard/
+COPY system/cortex_iq_dashboard_umbrella/apps/cortex_iq_dashboard_web/mix.exs ./apps/cortex_iq_dashboard_web/
+COPY system/cortex_iq_dashboard_umbrella/apps/cortex_iq_dashboard_projections/mix.exs ./apps/cortex_iq_dashboard_projections/
 
 # Get dependencies
 RUN mix deps.get --only prod
 RUN mix deps.compile
 
-# Copy application code
-COPY system/apps/cortex_iq_core ./apps/cortex_iq_core
-COPY system/apps/macula_os ./apps/macula_os
-COPY system/apps/cortex_iq_dashboard ./apps/cortex_iq_dashboard
-COPY system/apps/cortex_iq_dashboard_web ./apps/cortex_iq_dashboard_web
+# Copy application source code
+COPY system/cortex_iq_dashboard_umbrella/apps ./apps
 
-# Install npm dependencies and build assets (Phoenix)
-RUN cd apps/cortex_iq_dashboard_web/assets && \
-    npm install && \
-    npm run deploy
-
-# Compile the project
-RUN mix compile
-
-# Build assets
-RUN mix assets.deploy
-
-# Build release
-RUN mix release cortex_iq_dashboard_web
-
-# Stage 2: Runtime
-FROM alpine:3.20.3 AS runtime
-
-RUN apk add --no-cache libstdc++ openssl ncurses-libs
+# Install and build frontend assets
+WORKDIR /app/apps/cortex_iq_dashboard_web/assets
+RUN npm ci --only=production
 
 WORKDIR /app
 
-# Copy the release from build stage
-COPY --from=build /app/_build/prod/rel/cortex_iq_dashboard_web ./
+# Compile Elixir code
+RUN mix compile
 
-# Set environment
+# Build frontend assets
+RUN mix assets.deploy
+
+# Build release
+RUN mix release cortex_iq_dashboard
+
+####################################################################################################
+# Stage 2: Runtime
+####################################################################################################
+FROM alpine:${ALPINE_VERSION} AS runtime
+
+# Install runtime dependencies
+RUN apk add --no-cache \
+    openssl \
+    ncurses-libs \
+    libstdc++ \
+    libgcc \
+    postgresql-client
+
+# Create non-root user
+RUN addgroup -g 1000 cortexiq && \
+    adduser -D -u 1000 -G cortexiq cortexiq
+
+WORKDIR /app
+
+# Copy release from builder
+COPY --from=builder --chown=cortexiq:cortexiq /app/_build/prod/rel/cortex_iq_dashboard ./
+
+USER cortexiq
+
+# Runtime environment
 ENV HOME=/app
+ENV LANG=C.UTF-8
 ENV MIX_ENV=prod
+
+# Default environment variables (overrideable)
 ENV PORT=4000
+ENV MACULA_MODE=realm_hub
+ENV MACULA_REALM=be.cortexiq.energy
+ENV BONDY_URL=http://bondy:18080
 
-# Run as non-root user
-RUN addgroup -S app && adduser -S app -G app
-RUN chown -R app:app /app
-USER app
+# Database configuration
+ENV DATABASE_URL=postgresql://postgres:postgres@db:5432/cortex_iq_dashboard_prod
 
-# Expose Phoenix port
+# Expose Phoenix HTTP port
 EXPOSE 4000
 
-CMD ["/app/bin/cortex_iq_dashboard_web", "start"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+    CMD ["/app/bin/cortex_iq_dashboard", "rpc", "1 + 1"]
+
+ENTRYPOINT ["/app/bin/cortex_iq_dashboard"]
+CMD ["start"]

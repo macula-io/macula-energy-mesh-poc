@@ -1,0 +1,57 @@
+#cloud-config
+hostname: HOSTNAME_PLACEHOLDER
+fqdn: HOSTNAME_PLACEHOLDER.macula.local
+manage_etc_hosts: true
+
+users:
+  - name: ubuntu
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin, sudo, docker
+    home: /home/ubuntu
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - SSH_PUBLIC_KEY_PLACEHOLDER
+
+package_upgrade: true
+packages:
+  - build-essential
+  - git
+  - curl
+  - wget
+  - vim
+  - htop
+  - net-tools
+  - apt-transport-https
+  - ca-certificates
+  - gnupg
+  - lsb-release
+
+runcmd:
+  # Set timezone
+  - timedatectl set-timezone UTC
+
+  # Install Docker
+  - curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
+  - sh /tmp/get-docker.sh
+  - systemctl enable docker
+  - systemctl start docker
+  - usermod -aG docker ubuntu
+
+  # Install kubectl
+  - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  - install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+  - rm kubectl
+
+  # Install k3d
+  - curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
+  # Install Flux CLI
+  - curl -s https://fluxcd.io/install.sh | bash
+
+  # Create k3d cluster (will be done by provision script)
+  - echo "K3d cluster creation will be handled by provision script"
+
+  # Signal completion
+  - touch /var/lib/cloud/instance/boot-finished
+
+final_message: "Cloud-init finished. Edge VM ready for K3d cluster creation."

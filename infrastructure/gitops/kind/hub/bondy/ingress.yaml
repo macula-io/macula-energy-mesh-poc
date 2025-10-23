@@ -1,0 +1,35 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bondy
+  namespace: macula-hub
+  labels:
+    app: bondy
+    app.kubernetes.io/name: bondy
+    app.kubernetes.io/component: wamp-router
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: hub.macula.local
+      http:
+        paths:
+          # Admin API on /admin path
+          - path: /admin(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: bondy
+                port:
+                  number: 18081
+          # Default to API Gateway
+          - path: /()(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: bondy
+                port:
+                  number: 18080

@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bondy-config
+  namespace: macula-hub
+  labels:
+    app: bondy
+    app.kubernetes.io/name: bondy
+    app.kubernetes.io/component: wamp-router
+data:
+  bondy.conf: |
+    # Bondy Configuration for Energy Mesh PoC
+    # Simple configuration enabling WebSocket WAMP
+
+    # Security - Allow anonymous for PoC
+    security.allow_anonymous_user = on
+    security.automatically_create_realms = on
+
+    # WAMP over raw TCP
+    wamp.tcp.enabled = on
+    wamp.tcp.port = 18082
+    wamp.tcp.acceptors_pool_size = 200
+    wamp.tcp.max_connections = 100000
+
+    # API Gateway (includes WebSocket WAMP)
+    api_gateway.http.enabled = on
+    api_gateway.http.port = 18080
+    api_gateway.http.acceptors_pool_size = 200
+    api_gateway.http.max_connections = 500000
+
+    # Admin API
+    admin_api.http.enabled = on
+    admin_api.http.port = 18081
+
+    # Logging
+    log.console = console
+    log.console.level = info
+
+    # Node name (using pod name for uniqueness in K8s)
+    nodename = bondy@127.0.0.1
+    distributed_cookie = bondy
+
+    # AAE
+    aae.enabled = on
+
+    # Store
+    store.partitions = 16
+    startup.wait_for_store_partitions = on

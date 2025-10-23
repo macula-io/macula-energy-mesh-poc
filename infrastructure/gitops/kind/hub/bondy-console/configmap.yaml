@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bondy-console-config
+  namespace: macula-hub
+  labels:
+    app: bondy-console
+    app.kubernetes.io/name: bondy-console
+    app.kubernetes.io/component: web-console
+data:
+  settings.json: |
+    {
+      "bondyUrl": "http://bondy.macula-hub:18081",
+      "userKeysMax": 10,
+      "keyMaxCharacters": 256
+    }

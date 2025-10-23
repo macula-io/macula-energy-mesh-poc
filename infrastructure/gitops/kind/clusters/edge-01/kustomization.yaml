@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Edge-01: Dashboard + 13 Homes
+
+resources:
+  - ../../base/cortex-iq-dashboard
+  - ../../base/cortex-iq-homes
+
+patches:
+  - target:
+      kind: Deployment
+      name: cortex-iq-homes
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/3/value
+        value: "13"

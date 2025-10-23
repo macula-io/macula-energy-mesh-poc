@@ -1,0 +1,102 @@
+#cloud-config
+hostname: macula-hub-01
+fqdn: macula-hub-01.macula.local
+manage_etc_hosts: true
+
+users:
+  - name: ubuntu
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin, sudo
+    home: /home/ubuntu
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - SSH_PUBLIC_KEY_PLACEHOLDER
+
+package_upgrade: true
+packages:
+  - build-essential
+  - git
+  - curl
+  - wget
+  - vim
+  - htop
+  - net-tools
+  - postgresql
+  - postgresql-contrib
+  - unzip
+  - gnupg
+  - apt-transport-https
+  - ca-certificates
+
+runcmd:
+  # Set timezone
+  - timedatectl set-timezone UTC
+
+  # Install Erlang and Elixir from Erlang Solutions repo (not in default Debian)
+  - wget -q -O /tmp/erlang-solutions.deb https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb
+  - dpkg -i /tmp/erlang-solutions.deb
+  - apt-get update
+  - apt-get install -y erlang elixir
+  - rm /tmp/erlang-solutions.deb
+
+  # Configure PostgreSQL
+  - systemctl enable postgresql
+  - systemctl start postgresql
+  - sudo -u postgres psql -c "CREATE USER cortexiq WITH PASSWORD 'cortexiq123';"
+  - sudo -u postgres psql -c "CREATE DATABASE cortexiq_dashboard OWNER cortexiq;"
+
+  # Create macula user
+  - useradd -m -s /bin/bash -G sudo macula
+  - mkdir -p /opt/macula
+  - chown -R macula:macula /opt/macula
+
+  # Download and install Bondy (placeholder - adjust version)
+  - echo "Bondy installation will be handled by provision script"
+
+  # Signal completion
+  - touch /var/lib/cloud/instance/boot-finished
+
+write_files:
+  - path: /etc/systemd/system/bondy.service
+    content: |
+      [Unit]
+      Description=Bondy WAMP Router
+      After=network.target
+
+      [Service]
+      Type=forking
+      User=macula
+      Group=macula
+      WorkingDirectory=/opt/macula/bondy
+      ExecStart=/opt/macula/bondy/bin/bondy start
+      ExecStop=/opt/macula/bondy/bin/bondy stop
+      Restart=on-failure
+      RestartSec=10
+
+      [Install]
+      WantedBy=multi-user.target
+
+  - path: /etc/systemd/system/macula-os.service
+    content: |
+      [Unit]
+      Description=MaculaOs Runtime (Hub Mode)
+      After=network.target bondy.service
+      Requires=bondy.service
+
+      [Service]
+      Type=simple
+      User=macula
+      Group=macula
+      WorkingDirectory=/opt/macula/system
+      Environment="MACULA_MODE=realm_hub"
+      Environment="REALM_URI=be.cortexiq.energy"
+      Environment="BONDY_WS_URL=ws://localhost:18080/ws"
+      ExecStart=/opt/macula/system/_build/prod/rel/macula_os/bin/macula_os start
+      ExecStop=/opt/macula/system/_build/prod/rel/macula_os/bin/macula_os stop
+      Restart=on-failure
+      RestartSec=10
+
+      [Install]
+      WantedBy=multi-user.target
+
+final_message: "Cloud-init finished. Hub VM ready for provisioning."

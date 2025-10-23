@@ -1,0 +1,27 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cortex-iq-dashboard
+  namespace: macula-system
+  labels:
+    app: cortex-iq-dashboard
+    app.kubernetes.io/name: cortex-iq-dashboard
+    app.kubernetes.io/component: dashboard
+  annotations:
+    nginx.ingress.kubernetes.io/websocket-services: "cortex-iq-dashboard"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: dashboard.macula.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cortex-iq-dashboard
+                port:
+                  number: 4000

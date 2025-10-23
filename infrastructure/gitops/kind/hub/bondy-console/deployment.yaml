@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bondy-console
+  namespace: macula-hub
+  labels:
+    app: bondy-console
+    app.kubernetes.io/name: bondy-console
+    app.kubernetes.io/component: web-console
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bondy-console
+  template:
+    metadata:
+      labels:
+        app: bondy-console
+        app.kubernetes.io/name: bondy-console
+        app.kubernetes.io/component: web-console
+    spec:
+      containers:
+      - name: console
+        image: leapsight/bondy-console:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        volumeMounts:
+        - name: config
+          mountPath: /usr/share/nginx/html/config/settings.json
+          subPath: settings.json
+          readOnly: true
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: config
+        configMap:
+          name: bondy-console-config

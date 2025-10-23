@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: create-realm-script
+  namespace: macula-hub
+  labels:
+    app: bondy
+data:
+  create-realm.sh: |
+    #!/bin/sh
+    # Wait for Bondy to be ready
+    echo "Waiting for Bondy to be ready..."
+    until curl -s http://bondy:18080/ > /dev/null 2>&1; do
+      echo "Bondy not ready yet, waiting..."
+      sleep 2
+    done
+
+    echo "Bondy is ready, creating realm..."
+
+    # Create the realm via Bondy Admin API (port 18081)
+    # IMPORTANT: security_enabled must be false for anonymous authentication
+    curl -X POST http://bondy:18081/realms \
+      -H "Content-Type: application/json" \
+      -d '{
+        "uri": "be.cortexiq.energy",
+        "security_enabled": false
+      }' && echo "Realm created successfully" || echo "Realm creation failed - may already exist"
+
+    echo "Realm setup complete"
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-cortexiq-realm
+  namespace: macula-hub
+  labels:
+    app: bondy
+    job: create-realm
+spec:
+  template:
+    metadata:
+      labels:
+        app: bondy
+        job: create-realm
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: create-realm
+        image: curlimages/curl:latest
+        command: ["/bin/sh", "/scripts/create-realm.sh"]
+        volumeMounts:
+        - name: scripts
+          mountPath: /scripts
+      volumes:
+      - name: scripts
+        configMap:
+          name: create-realm-script
+          defaultMode: 0755

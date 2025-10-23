@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cortex-iq-utilities
+  namespace: macula-system
+  labels:
+    app: cortex-iq-utilities
+    app.kubernetes.io/name: cortex-iq-utilities
+    app.kubernetes.io/component: payload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cortex-iq-utilities
+  template:
+    metadata:
+      labels:
+        app: cortex-iq-utilities
+    spec:
+      containers:
+      - name: cortex-iq-utilities
+        image: macula/cortex-iq-utilities:latest
+        imagePullPolicy: Always
+        env:
+        - name: MACULA_MODE
+          value: "edge"
+        - name: REALM_URI
+          value: "be.cortexiq.energy"
+        - name: BONDY_WS_URL
+          value: "ws://192.168.100.10:18080/ws"
+        - name: NUM_PROVIDERS
+          value: "5"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bondy
+  namespace: macula-hub
+  labels:
+    app: bondy
+    app.kubernetes.io/name: bondy
+    app.kubernetes.io/component: wamp-router
+    app.kubernetes.io/part-of: macula-platform
+spec:
+  type: NodePort
+  selector:
+    app: bondy
+  ports:
+  - name: http-ws
+    protocol: TCP
+    port: 18080
+    targetPort: http-ws
+    nodePort: 30080
+  - name: admin-api
+    protocol: TCP
+    port: 18081
+    targetPort: admin-api
+    nodePort: 30082
+  - name: https-wss
+    protocol: TCP
+    port: 18083
+    targetPort: https-wss
+    nodePort: 30081

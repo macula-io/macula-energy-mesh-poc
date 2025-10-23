@@ -1,0 +1,23 @@
+<network>
+  <name>macula-net</name>
+  <uuid>12345678-1234-1234-1234-123456789abc</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr-macula' stp='on' delay='0'/>
+  <mac address='52:54:00:ab:cd:ef'/>
+  <ip address='192.168.100.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.100.100' end='192.168.100.200'/>
+      <!-- Hub VM -->
+      <host mac='52:54:00:00:00:10' name='macula-hub-01' ip='192.168.100.10'/>
+      <!-- Edge VMs -->
+      <host mac='52:54:00:00:00:11' name='macula-edge-01' ip='192.168.100.11'/>
+      <host mac='52:54:00:00:00:12' name='macula-edge-02' ip='192.168.100.12'/>
+      <host mac='52:54:00:00:00:13' name='macula-edge-03' ip='192.168.100.13'/>
+      <host mac='52:54:00:00:00:14' name='macula-edge-04' ip='192.168.100.14'/>
+    </dhcp>
+  </ip>
+</network>

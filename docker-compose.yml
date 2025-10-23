@@ -1,0 +1,214 @@
+####################################################################################################
+# Macula Platform - CortexIQ Energy Trading Simulation
+# Container-First Architecture
+#
+# Services:
+# - bondy: WAMP router (realm hub)
+# - postgres: Database for dashboard
+# - dashboard: CortexIQ Dashboard (hub + web UI)
+# - homes_1, homes_2: Home simulation payloads
+# - utilities: Energy provider payload
+####################################################################################################
+
+version: '3.8'
+
+services:
+  ################################################################################
+  # Bondy - WAMP Router (Realm Hub)
+  ################################################################################
+  bondy:
+    image: leapsight/bondy:latest
+    container_name: macula_bondy
+    hostname: bondy
+    environment:
+      BONDY_ERL_NODENAME: bondy@bondy
+      BONDY_ERL_DISTRIBUTED_COOKIE: macula_cookie_change_in_production
+    ports:
+      - "18080:18080"  # WebSocket
+      - "18081:18081"  # HTTP API
+    volumes:
+      - ./dev-env/bondy_config:/bondy/etc
+      - bondy_data:/bondy/data
+    networks:
+      - macula_network
+    healthcheck:
+      test: ["CMD", "bondy", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  ################################################################################
+  # PostgreSQL - Database for Dashboard
+  ################################################################################
+  postgres:
+    image: postgres:16-alpine
+    container_name: macula_postgres
+    hostname: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cortex_iq_dashboard_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - macula_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ################################################################################
+  # Dashboard Hub - CortexIQ Dashboard + Analytics
+  # Runs MaculaOs in hub mode (connects to Bondy)
+  ################################################################################
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.hub
+    container_name: macula_dashboard
+    hostname: dashboard
+    environment:
+      # MaculaOs Configuration
+      MACULA_MODE: realm_hub
+      MACULA_REALM: be.cortexiq.energy
+      BONDY_URL: ws://bondy:18080/ws
+
+      # Phoenix Configuration
+      PORT: 4000
+      PHX_HOST: localhost
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-$(openssl rand -base64 48)}
+
+      # Database
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/cortex_iq_dashboard_dev
+      POOL_SIZE: 10
+
+      # Simulation
+      SIMULATION_SPEED: ${SIMULATION_SPEED:-105120}
+      SIMULATION_START_DATE: ${SIMULATION_START_DATE:-2025-01-01T00:00:00Z}
+    ports:
+      - "4000:4000"
+    depends_on:
+      bondy:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - macula_network
+    healthcheck:
+      test: ["CMD", "/app/bin/cortex_iq_dashboard", "rpc", "1 + 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  ################################################################################
+  # Homes Payload #1 - First batch of home bots
+  # Runs MaculaOs in edge mode (connects to Bondy via dashboard)
+  ################################################################################
+  homes_1:
+    build:
+      context: ./system
+      dockerfile: cortex_iq_homes/Dockerfile
+    container_name: macula_homes_1
+    hostname: homes_1
+    environment:
+      # MaculaOs Configuration
+      MACULA_REALM_URL: ws://bondy:18080/ws
+      MACULA_REALM: be.cortexiq.energy
+      INSTANCE_ID: homes_1
+
+      # Payload Configuration
+      NUM_HOMES: ${NUM_HOMES_PER_CONTAINER:-25}
+      HOME_ID_OFFSET: 0
+
+      # Release Configuration
+      RELEASE_NODE: homes_1@homes_1
+      RELEASE_COOKIE: macula_cookie_change_in_production
+    depends_on:
+      bondy:
+        condition: service_healthy
+      dashboard:
+        condition: service_healthy
+    networks:
+      - macula_network
+    restart: unless-stopped
+
+  ################################################################################
+  # Homes Payload #2 - Second batch of home bots
+  ################################################################################
+  homes_2:
+    build:
+      context: ./system
+      dockerfile: cortex_iq_homes/Dockerfile
+    container_name: macula_homes_2
+    hostname: homes_2
+    environment:
+      MACULA_REALM_URL: ws://bondy:18080/ws
+      MACULA_REALM: be.cortexiq.energy
+      INSTANCE_ID: homes_2
+
+      NUM_HOMES: ${NUM_HOMES_PER_CONTAINER:-25}
+      HOME_ID_OFFSET: 25  # Offset so IDs don't clash with homes_1
+
+      RELEASE_NODE: homes_2@homes_2
+      RELEASE_COOKIE: macula_cookie_change_in_production
+    depends_on:
+      bondy:
+        condition: service_healthy
+      dashboard:
+        condition: service_healthy
+    networks:
+      - macula_network
+    restart: unless-stopped
+
+  ################################################################################
+  # Utilities Payload - Energy provider bots
+  # Runs MaculaOs in edge mode
+  ################################################################################
+  utilities:
+    build:
+      context: ./system
+      dockerfile: cortex_iq_utilities/Dockerfile
+    container_name: macula_utilities
+    hostname: utilities
+    environment:
+      # MaculaOs Configuration
+      MACULA_REALM_URL: ws://bondy:18080/ws
+      MACULA_REALM: be.cortexiq.energy
+      INSTANCE_ID: utilities_1
+
+      # Payload Configuration
+      NUM_PROVIDERS: ${NUM_PROVIDERS:-5}
+
+      # Release Configuration
+      RELEASE_NODE: utilities@utilities
+      RELEASE_COOKIE: macula_cookie_change_in_production
+    depends_on:
+      bondy:
+        condition: service_healthy
+      dashboard:
+        condition: service_healthy
+    networks:
+      - macula_network
+    restart: unless-stopped
+
+################################################################################
+# Networks
+################################################################################
+networks:
+  macula_network:
+    driver: bridge
+    name: macula_network
+
+################################################################################
+# Volumes
+################################################################################
+volumes:
+  bondy_data:
+    name: macula_bondy_data
+  postgres_data:
+    name: macula_postgres_data

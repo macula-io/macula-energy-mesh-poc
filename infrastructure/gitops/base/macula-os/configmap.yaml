@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: macula-os-config
+  namespace: macula-system
+data:
+  MACULA_MODE: "edge"
+  REALM_URI: "be.cortexiq.energy"
+  BONDY_WS_URL: "ws://192.168.100.10:18080/ws"
+  LOG_LEVEL: "info"

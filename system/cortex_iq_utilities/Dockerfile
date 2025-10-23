@@ -1,0 +1,88 @@
+####################################################################################################
+# CortexIQ Utilities Payload
+# Energy provider bots with different pricing strategies
+#
+# Requires MaculaOs for secure realm connectivity
+####################################################################################################
+
+ARG ELIXIR_VERSION=1.17.3
+ARG OTP_VERSION=26.2.5.6
+ARG ALPINE_VERSION=3.20.3
+
+####################################################################################################
+# Stage 1: Builder
+####################################################################################################
+FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-alpine-${ALPINE_VERSION} AS builder
+
+# Install build dependencies
+RUN apk add --no-cache \
+    git \
+    build-base
+
+WORKDIR /app
+
+# Set build environment
+ENV MIX_ENV=prod
+
+# Install Hex and Rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
+
+# Copy this application's mix files
+COPY mix.exs mix.lock ./
+COPY config ./config
+
+# Copy path dependencies (required for compilation)
+COPY ../cortex_iq_core ../cortex_iq_core
+COPY ../macula_os ../macula_os
+
+# Get dependencies
+RUN mix deps.get --only prod
+
+# Copy application source
+COPY lib ./lib
+
+# Compile
+RUN mix compile
+
+# Build release
+RUN mix release cortex_iq_utilities
+
+####################################################################################################
+# Stage 2: Runtime
+####################################################################################################
+FROM alpine:${ALPINE_VERSION} AS runtime
+
+# Install runtime dependencies
+RUN apk add --no-cache \
+    openssl \
+    ncurses-libs \
+    libstdc++ \
+    libgcc
+
+# Create non-root user
+RUN addgroup -g 1000 cortexiq && \
+    adduser -D -u 1000 -G cortexiq cortexiq
+
+WORKDIR /app
+
+# Copy release from builder
+COPY --from=builder --chown=cortexiq:cortexiq /app/_build/prod/rel/cortex_iq_utilities ./
+
+USER cortexiq
+
+# Runtime environment
+ENV HOME=/app
+ENV LANG=C.UTF-8
+
+# Default environment variables (can be overridden)
+ENV MACULA_REALM_URL=ws://bondy:18080/ws
+ENV MACULA_REALM=be.cortexiq.energy
+ENV NUM_PROVIDERS=5
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD ["/app/bin/cortex_iq_utilities", "rpc", "1 + 1"]
+
+ENTRYPOINT ["/app/bin/cortex_iq_utilities"]
+CMD ["start"]
