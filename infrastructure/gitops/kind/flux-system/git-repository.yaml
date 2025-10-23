@@ -8,9 +8,7 @@ spec:
   interval: 1m0s
   ref:
     branch: feature/competition
-  url: ssh://git@github.com/macula-io/macula-energy-mesh-poc
-  secretRef:
-    name: flux-system
+  url: https://github.com/macula-io/macula-energy-mesh-poc
   ignore: |
     # Ignore everything except gitops directory
     /*
