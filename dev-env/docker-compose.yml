@@ -1,9 +1,11 @@
-version: '3.8'
+# Development environment - infrastructure services only
+# CortexIQ applications should be run locally with: cd system && mix phx.server
 
 services:
+  # Bondy WAMP Router
   bondy:
-    image: leapsight/bondy:latest
-    container_name: mesh_bondy
+    image: leapsight/bondy:1.0.0-rc.44
+    container_name: cortexiq_bondy
     user: "root"  # Run as root to avoid permission issues (for dev only)
     ports:
       - "18080:18080"  # API Gateway (HTTP + WebSocket WAMP)
@@ -19,7 +21,7 @@ services:
       - bondy_tmp:/bondy/tmp
       - ./bondy.conf:/bondy/etc/bondy.conf:ro
     networks:
-      - mesh_network
+      - cortexiq_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:18080/api/status"]
       interval: 10s
@@ -27,9 +29,10 @@ services:
       retries: 5
       start_period: 30s
 
+  # Bondy Web Console
   bondy_console:
     image: leapsight/bondy-console:latest
-    container_name: mesh_bondy_console
+    container_name: cortexiq_bondy_console
     ports:
       - "3000:8080"  # Console web UI (nginx inside listens on 8080)
     environment:
@@ -40,101 +43,26 @@ services:
     depends_on:
       - bondy
     networks:
-      - mesh_network
+      - cortexiq_network
 
-  # Hub container (mesh_hub + mesh_hub_web)
-  mesh_hub_web:
-    build:
-      context: ..
-      dockerfile: Dockerfile.hub
-    container_name: mesh_hub_web
-    ports:
-      - "4000:4000"  # Phoenix dashboard
-    environment:
-      - BONDY_URL=ws://bondy:18080/ws
-      - BONDY_REALM=com.energy.mesh
-      - BONDY_ADMIN_URL=http://bondy:18081
-      - DATABASE_URL=ecto://postgres:postgres@postgres:5432/mesh_hub_dev
-      - SECRET_KEY_BASE=your-secret-key-base-here-change-in-production
-      - PHX_HOST=localhost
-    depends_on:
-      - bondy
-      - postgres
-    networks:
-      - mesh_network
-    restart: unless-stopped
-
-  # PostgreSQL database for hub
+  # PostgreSQL database for cortex_iq_dashboard
   postgres:
     image: postgres:16-alpine
-    container_name: mesh_postgres
+    container_name: cortexiq_postgres
+    ports:
+      - "5432:5432"  # Expose for local development
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=mesh_hub_dev
+      - POSTGRES_DB=cortex_iq_dashboard_dev
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - mesh_network
-    restart: unless-stopped
-
-  # Edge homes container 1
-  mesh_edge_homes_1:
-    build:
-      context: ..
-      dockerfile: Dockerfile.edge
-      target: mesh_edge_homes
-    container_name: mesh_edge_homes_1
-    environment:
-      - BONDY_URL=ws://bondy:18080/ws
-      - BONDY_REALM=com.energy.mesh
-      - INSTANCE_ID=homes_1
-      - HOME_COUNT=25  # Half of the 50 homes
-      - HOME_ID_OFFSET=0
-    depends_on:
-      - bondy
-    networks:
-      - mesh_network
-    restart: unless-stopped
-
-  # Edge homes container 2
-  mesh_edge_homes_2:
-    build:
-      context: ..
-      dockerfile: Dockerfile.edge
-      target: mesh_edge_homes
-    container_name: mesh_edge_homes_2
-    environment:
-      - BONDY_URL=ws://bondy:18080/ws
-      - BONDY_REALM=com.energy.mesh
-      - INSTANCE_ID=homes_2
-      - HOME_COUNT=25  # Other half of the 50 homes
-      - HOME_ID_OFFSET=25
-    depends_on:
-      - bondy
-    networks:
-      - mesh_network
-    restart: unless-stopped
-
-  # Edge utilities container (provider bots)
-  mesh_edge_utilities:
-    build:
-      context: ..
-      dockerfile: Dockerfile.edge
-      target: mesh_edge_utilities
-    container_name: mesh_edge_utilities
-    environment:
-      - BONDY_URL=ws://bondy:18080/ws
-      - BONDY_REALM=com.energy.mesh
-      - PROVIDER_COUNT=5
-    depends_on:
-      - bondy
-    networks:
-      - mesh_network
+      - cortexiq_network
     restart: unless-stopped
 
 networks:
-  mesh_network:
+  cortexiq_network:
     driver: bridge
 
 volumes:

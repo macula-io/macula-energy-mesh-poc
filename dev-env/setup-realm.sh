@@ -1,29 +1,46 @@
 #!/bin/bash
-set -e
+# Setup Bondy realm for CortexIQ
 
-# Setup script for Energy Mesh PoC
-# NOTE: Realms are now created dynamically by mesh_hub when it starts!
-# This script just verifies Bondy is accessible.
+REALM_URI="be.cortexiq.energy"
+BONDY_API="http://localhost:18081"
 
-BONDY_ADMIN_API="${BONDY_ADMIN_API:-http://localhost:18081}"
-
-echo "Checking Bondy status..."
+echo "🔧 Setting up Bondy realm: $REALM_URI"
 
 # Check if Bondy is running
-if ! curl -s -f "${BONDY_ADMIN_API}/ping" > /dev/null 2>&1; then
-    echo "Error: Bondy Admin API is not accessible at ${BONDY_ADMIN_API}"
-    echo "Make sure Bondy is running: docker-compose up -d bondy"
-    exit 1
+if ! curl -s "$BONDY_API/realms" > /dev/null 2>&1; then
+  echo "❌ Bondy is not running! Please start it with: docker compose up -d"
+  exit 1
 fi
 
-echo ""
-echo "✅ Bondy is running and accessible!"
-echo "   Admin API: ${BONDY_ADMIN_API}"
-echo ""
-echo "NOTE: Realms are created automatically by mesh_hub when it starts."
-echo "      Start the hub to create the 'com.energy.mesh' realm."
-echo ""
-echo "To list current realms:"
-echo "  curl -s ${BONDY_ADMIN_API}/realms | python3 -m json.tool"
-echo ""
-echo "Run tests with: cd ../system && mix test apps/mesh_wamp/test/integration_test.exs"
+# Check if realm exists and delete it to recreate with correct settings
+if curl -s "$BONDY_API/realms/$REALM_URI" > /dev/null 2>&1; then
+  echo "⚠️  Realm $REALM_URI exists, deleting to recreate with security disabled..."
+  curl -X DELETE "$BONDY_API/realms/$REALM_URI" > /dev/null 2>&1
+  sleep 1
+fi
+
+# Create realm with security disabled (allows anonymous connections)
+echo "📝 Creating realm with security disabled..."
+
+# Create config file
+cat > /tmp/cortexiq-realm.json << 'EOFCONFIG'
+{
+  "uri": "be.cortexiq.energy",
+  "description": "CortexIQ Energy Trading Simulation Realm - Macula Platform Demo",
+  "security_enabled": false,
+  "allow_private_subnet": true
+}
+EOFCONFIG
+
+curl -X POST "$BONDY_API/realms" \
+  -H "Content-Type: application/json" \
+  -d @/tmp/cortexiq-realm.json > /dev/null 2>&1
+
+rm -f /tmp/cortexiq-realm.json
+
+if curl -s "$BONDY_API/realms/$REALM_URI" > /dev/null 2>&1; then
+  echo "✅ Realm created successfully!"
+else
+  echo "❌ Failed to create realm"
+  exit 1
+fi

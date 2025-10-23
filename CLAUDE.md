@@ -4,15 +4,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Macula Energy Mesh PoC** - A demonstration of Bondy's eventing mesh capabilities through a real-time energy trading simulation.
+**Macula Platform PoC** - A distributed application platform for the BEAM, demonstrated through a real-time energy trading simulation (CortexIQ).
 
 ### Purpose
-Create a compelling proof-of-concept that showcases how Bondy's WAMP-based eventing mesh can support a real-time energy exchange where homes with solar panels, wind turbines, and batteries dynamically switch energy provider contracts to optimize cost and energy usage.
+Create a compelling proof-of-concept that showcases **Macula** - a distributed application platform built on WAMP and Bondy. The energy trading simulation (**CortexIQ**) demonstrates how applications can be built on this platform to create real-time, event-driven distributed systems.
+
+**Key Value Propositions:**
+1. **Macula Platform** - The product being sold
+   - Distributed runtime for BEAM applications
+   - Event-driven communication via WAMP
+   - Configuration-driven realm management
+   - Dynamic payload deployment (roadmap)
+
+2. **CortexIQ Application** - Reference implementation showing platform capabilities
+   - Real-time energy trading simulation
+   - Dynamic contract optimization
+   - Event-driven architecture
+   - Scalable bot-based simulation
 
 ### Target Audience
-**Marketers and Investors** - This is NOT a technical demo. The focus is on:
-- Visual impact (sexy UI)
-- Easy to understand
+**Marketers and Investors** - This is a platform play. The focus is on:
+- **Primary**: Macula as a distributed application platform
+- **Secondary**: CortexIQ as proof of platform capabilities
+- Visual impact (sexy UI showing real-time events)
+- Easy to understand and demonstrate
 - Shows scale and real-time capabilities
 - One-command startup
 - Impressive metrics and visualizations
@@ -20,14 +35,20 @@ Create a compelling proof-of-concept that showcases how Bondy's WAMP-based event
 ## Strategic Decisions Made
 
 ### 1. Technology Stack
-- **Language**: Elixir (chosen for BEAM ecosystem integration, excellent concurrency)
+
+**Macula Platform:**
+- **Language**: Elixir (BEAM ecosystem, excellent concurrency, OTP supervision)
+- **WAMP Router**: Bondy (embedded in realm hub nodes)
+- **WAMP Client**: Custom implementation (MaculaOs.Wamp)
+- **Runtime**: MaculaOs (dual-mode: realm hub or edge)
+- **Deployment**: Docker Compose for multi-node deployment
+
+**CortexIQ Application (Demo):**
 - **Web Framework**: Phoenix with LiveView (real-time UI without complex JavaScript)
 - **Charting**: ApexCharts (prettier charts for investors)
 - **Styling**: Tailwind CSS + custom dark theme
 - **Visualization**: D3.js for network topology
-- **WAMP Client**: Custom client via mesh_wamp
-- **Infrastructure**: Bondy embedded in hub nodes, Docker Compose for deployment
-- **Deployment**: Hub-and-spoke architecture with containerized edges
+- **Deployment**: Hub-and-spoke architecture with containerized payloads
 
 ### 2. Architecture Choice
 **Elixir Umbrella Application (Option A)** - Monorepo with multiple apps for:
@@ -37,15 +58,28 @@ Create a compelling proof-of-concept that showcases how Bondy's WAMP-based event
 - Easy LiveView integration
 
 ### 3. Simulation Configuration
-- **Realms**: 5 (energy.region_1 through energy.region_5)
-- **Homes**: 50 total (10 per region)
-- **Providers**: 5 (competing across all regions)
-- **Time Acceleration**: 100x speed (1 real hour = 36 seconds, full day in ~15 minutes)
-- **Realism Level**: Moderate
+- **Realms**: 1 (energy.hub - simplified from 5 regions)
+- **Homes**: 50 total (configurable via ENV)
+- **Providers**: 5 (competing for market share)
+- **Time Acceleration**: **105,120x speed (configurable via ENV)**
+  - 1 simulation year = 5 minutes real-time
+  - 1 simulation month = ~25 seconds real-time
+  - 1 simulation day = ~0.82 seconds real-time
+  - 1 simulation hour = ~34 milliseconds real-time
+- **Contract System**: Yearly contracts with discounts
+  - Providers offer 12-month contracts
+  - One-time switching discount applied day before expiry
+  - Day rates vs night rates (6am-6pm vs 6pm-6am)
+  - Separate buy/sell prices
+  - Minimum energy purchase requirements
+- **Market Modes**:
+  - Contract mode: Fixed prices per contract terms
+  - Spot mode: Real-time market prices (for non-contracted customers)
+- **Realism Level**: Balanced
   - Solar production follows sine wave (peak at noon)
   - Consumption has morning/evening peaks
   - Battery storage and sell-back enabled
-  - Predictive contract switching
+  - Contract lifecycle with discount optimization
 
 ### 4. Dashboard Design
 **Multiple Tabs Approach**:
@@ -68,16 +102,19 @@ Create a compelling proof-of-concept that showcases how Bondy's WAMP-based event
 ### 5. Bot Behavior
 
 #### Home Bots (GenServer per home)
+**Update Frequency**: Every 100ms real-time (~3 simulation hours)
+
 **Production (Solar/Wind)**:
 - Sine wave: 0W at night, peak 3-5kW at noon
 - +/- 20% randomness
-- Updates every 5 seconds (simulation time)
+- Calculated based on current simulation time
 
 **Consumption**:
 - Base load: 500W always
 - Morning peak (7-9am): +1500W
 - Evening peak (6-10pm): +2000W
 - Random appliances: +/- 300W
+- Calculated based on current simulation time
 
 **Battery**:
 - 10kWh capacity
@@ -85,248 +122,458 @@ Create a compelling proof-of-concept that showcases how Bondy's WAMP-based event
 - Discharges when consumption > production
 - Can sell excess to grid
 
-**Optimization**:
-- Calculate cost for next 15 minutes with each provider
-- Consider battery charge/discharge strategy
-- Switch if savings > $0.10/hour
-- 30-second cooldown between switches
+**Energy Balance Optimization** (Goal: minimize bought - sold):
+- Track total energy bought vs sold over contract period
+- Consider contract terms: day/night rates, buy/sell prices
+- Optimize battery charge/discharge to minimize balance
+- Use battery to buy at cheap times, sell at expensive times
+
+**Contract Management**:
+- Start with random 12-month contract (random start date within past year)
+- Monitor all provider offers (via WAMP subscriptions)
+- Evaluate switching opportunities:
+  - Compare projected balance over remaining contract period
+  - Factor in switching discount (only if switching before expiry-1 day)
+  - Account for minimum purchase requirements
+  - Switch if projected savings > threshold
+- On contract expiry: automatically switch to best offer
+- Can operate on spot market if no active contract
 
 #### Provider Bots (GenServer per provider)
-**Pricing Strategies** (for variety):
-- Provider A: "Steady Eddie" - consistent mid-range
-- Provider B: "Night Owl" - cheap at night, expensive during day
-- Provider C: "Solar Surfer" - follows solar production patterns
-- Provider D: "Peak Predator" - high during peak hours
-- Provider E: "Random Racer" - frequent small price changes
+**Update Frequency**: Every 500ms real-time (~14.6 simulation hours)
 
-**Updates**:
-- Every 30 seconds (simulation time)
-- Buy-back rate = sell rate * 0.7
+**Contract Offers** (published continuously):
+- 12-month duration
+- Day buy price ($/kWh) - price customer pays when buying during day
+- Night buy price ($/kWh) - price customer pays when buying at night
+- Day sell price ($/kWh) - price provider pays when customer sells during day
+- Night sell price ($/kWh) - price provider pays when customer sells at night
+- Switching discount ($) - one-time discount applied day before contract expiry
+- Minimum monthly purchase (kWh) - penalty if not met
+
+**Spot Market Prices** (for non-contracted customers):
+- Updated more frequently than contract offers
+- Higher volatility than contract prices
+- Designed to encourage contract adoption
+
+**Pricing Strategies** (for market variety):
+- Provider A: "Steady Eddie" - consistent mid-range, small discount, low minimum
+- Provider B: "Night Owl" - cheap at night (50% discount), expensive day, big discount
+- Provider C: "Solar Surfer" - cheap during solar peak, expensive at night
+- Provider D: "Peak Predator" - high during consumption peaks, low otherwise
+- Provider E: "Discount King" - competitive rates, huge switching discount, high minimum
+
+**Revenue Goals**:
+- Maximize (energy_sold_to_customers * buy_price) - (energy_bought_from_customers * sell_price)
+- Maximize market share (number of active contracts)
+- Balance acquisition cost (switching discounts) vs customer lifetime value
 
 ### 6. Event Topics Structure
 ```
-energy.region_{N}.home.{home_id}.production
-energy.region_{N}.home.{home_id}.consumption
-energy.region_{N}.home.{home_id}.storage
-energy.region_{N}.home.{home_id}.contract
-energy.region_{N}.utility.{provider_id}.tariff
-energy.market.switch
+# Simulation time (broadcast from hub)
+energy.hub.simulation.time
+
+# Home events (published by home bots)
+energy.hub.home.{home_id}.production
+energy.hub.home.{home_id}.consumption
+energy.hub.home.{home_id}.storage
+energy.hub.home.{home_id}.balance        # NEW: energy bought vs sold
+energy.hub.home.{home_id}.contract       # Contract signed/renewed/expired
+
+# Provider events (published by provider bots)
+energy.hub.provider.{provider_id}.contract_offer    # NEW: contract terms
+energy.hub.provider.{provider_id}.spot_price        # NEW: spot market prices
+
+# Market events (published by either)
+energy.hub.market.contract.signed
+energy.hub.market.contract.switched
+energy.hub.market.trade                  # NEW: buy/sell transaction
 ```
 
-### 7. Simple Event Payloads
-```json
-// Production
-{"home_id": "home_001", "watts": 3500, "source": "solar", "timestamp": "..."}
+### 7. Event Payloads
 
-// Consumption
-{"home_id": "home_001", "watts": 1200, "timestamp": "..."}
+```elixir
+# Simulation Time (broadcast every 1 second real-time)
+%{
+  simulation_time: ~U[2025-06-15 14:32:00Z],  # Current simulation datetime
+  speed: 105_120,                              # Speed multiplier
+  real_elapsed_ms: 150_000                     # Real milliseconds since start
+}
 
-// Storage
-{"home_id": "home_001", "battery_percent": 75, "capacity_kwh": 10, "timestamp": "..."}
+# Production
+%{
+  home_id: "home_001",
+  watts: 3500,
+  source: "solar",
+  simulation_time: ~U[2025-06-15 14:32:00Z]
+}
 
-// Tariff
-{"provider_id": "provider_a", "price_per_kwh": 0.15, "timestamp": "..."}
+# Consumption
+%{
+  home_id: "home_001",
+  watts: 1200,
+  simulation_time: ~U[2025-06-15 14:32:00Z]
+}
 
-// Contract Switch
-{"home_id": "home_001", "from_provider": "provider_a", "to_provider": "provider_b", "reason": "cost_optimization", "savings": 0.23}
+# Storage
+%{
+  home_id: "home_001",
+  battery_percent: 75,
+  capacity_kwh: 10.0,
+  state: :charging | :discharging | :idle,
+  simulation_time: ~U[2025-06-15 14:32:00Z]
+}
+
+# Energy Balance (published periodically, e.g., hourly)
+%{
+  home_id: "home_001",
+  contract_id: "contract_xyz",
+  period_start: ~U[2025-01-01 00:00:00Z],
+  period_end: ~U[2025-06-15 14:00:00Z],
+  energy_bought_kwh: 1250.5,
+  energy_sold_kwh: 890.3,
+  net_balance_kwh: 360.2,              # bought - sold
+  cost_paid: 187.56,
+  revenue_received: 62.32,
+  net_cost: 125.24,                    # paid - received
+  simulation_time: ~U[2025-06-15 14:32:00Z]
+}
+
+# Contract Offer (published by providers every ~15 simulation hours)
+%{
+  provider_id: "provider_a",
+  offer_id: "offer_12345",
+  duration_months: 12,
+  day_buy_price: 0.15,        # $/kWh customer pays during day (6am-6pm)
+  night_buy_price: 0.08,      # $/kWh customer pays during night (6pm-6am)
+  day_sell_price: 0.10,       # $/kWh provider pays during day
+  night_sell_price: 0.05,     # $/kWh provider pays during night
+  switching_discount: 25.00,  # $ one-time discount (applied day before expiry)
+  minimum_monthly_kwh: 100,   # Minimum purchase requirement
+  valid_from: ~U[2025-06-15 14:32:00Z],
+  simulation_time: ~U[2025-06-15 14:32:00Z]
+}
+
+# Spot Price (published by providers, higher frequency, more volatile)
+%{
+  provider_id: "provider_a",
+  buy_price: 0.22,           # $/kWh - more expensive than contract
+  sell_price: 0.08,          # $/kWh - less attractive than contract
+  valid_from: ~U[2025-06-15 14:32:00Z],
+  simulation_time: ~U[2025-06-15 14:32:00Z]
+}
+
+# Contract Signed (home accepts provider offer)
+%{
+  contract_id: "contract_xyz",
+  home_id: "home_001",
+  provider_id: "provider_a",
+  offer_id: "offer_12345",
+  start_date: ~U[2025-06-15 14:32:00Z],
+  end_date: ~U[2026-06-15 14:32:00Z],
+  terms: %{...},  # Copy of contract terms
+  reason: :new | :renewal | :switch,
+  simulation_time: ~U[2025-06-15 14:32:00Z]
+}
+
+# Contract Switched (home switches from one provider to another)
+%{
+  home_id: "home_001",
+  from_contract_id: "contract_abc",
+  from_provider_id: "provider_b",
+  to_contract_id: "contract_xyz",
+  to_provider_id: "provider_a",
+  reason: "balance_optimization",
+  projected_savings: 45.50,            # Projected savings over contract period
+  days_before_expiry: 180,             # How early they switched
+  discount_received: 25.00,            # If switched before expiry-1 day, 0
+  simulation_time: ~U[2025-06-15 14:32:00Z]
+}
+
+# Trade (buy or sell transaction)
+%{
+  home_id: "home_001",
+  provider_id: "provider_a",
+  type: :buy | :sell,
+  kwh: 0.35,                  # Energy amount (for ~3 sim hour update at 100ms)
+  price_per_kwh: 0.15,
+  total: 0.0525,              # kwh * price
+  is_day: true,               # Day rate vs night rate
+  contract_id: "contract_xyz" | nil,  # nil if spot market
+  simulation_time: ~U[2025-06-15 14:32:00Z]
+}
 ```
 
 ## Actual Umbrella Structure
 
 ```
 macula-energy-mesh-poc/
-├── system/                        # Umbrella application root
+├── system/                          # Umbrella application root
 │   ├── apps/
-│   │   ├── mesh_core/             # Core domain models (structs, events)
-│   │   ├── mesh_wamp/             # WAMP client library
-│   │   ├── mesh_hub/              # Hub infrastructure (Bondy, realm management)
-│   │   ├── mesh_hub_web/          # Phoenix LiveView dashboard
-│   │   ├── mesh_edge/             # Generic edge runtime (bot OS)
-│   │   ├── mesh_edge_homes/       # Home bot implementation
-│   │   └── mesh_edge_utilities/   # Utility provider bot implementation
-│   ├── config/                    # Shared configuration
-│   └── mix.exs                    # Umbrella root
+│   │   ├── macula_os/               # MACULA PLATFORM (The Product)
+│   │   │                            # Distributed runtime for BEAM applications
+│   │   │                            # - Dual mode: realm_hub or edge
+│   │   │                            # - Embeds Bondy (hub mode)
+│   │   │                            # - WAMP client (MaculaOs.Wamp)
+│   │   │                            # - Payload management (future)
+│   │   │                            # - Realm lifecycle management
+│   │   │
+│   │   ├── cortex_iq_core/          # CORTEXIQ: Domain models
+│   │   │                            # - Home, Provider, Contract, etc.
+│   │   │                            # - Shared by all CortexIQ payloads
+│   │   │
+│   │   ├── cortex_iq_dashboard/     # CORTEXIQ PAYLOAD: Analytics
+│   │   │                            # - Event aggregation
+│   │   │                            # - Business logic
+│   │   │
+│   │   ├── cortex_iq_dashboard_web/ # CORTEXIQ PAYLOAD: Visualization
+│   │   │                            # - Phoenix LiveView UI
+│   │   │                            # - Real-time dashboard
+│   │   │                            # (dashboard + dashboard_web = one payload)
+│   │   │
+│   │   ├── cortex_iq_homes/         # CORTEXIQ PAYLOAD: Home bots
+│   │   │                            # - Simulates homes with solar/battery
+│   │   │                            # - Contract optimization
+│   │   │
+│   │   └── cortex_iq_utilities/     # CORTEXIQ PAYLOAD: Provider bots
+│   │                                # - Pricing strategies
+│   │                                # - Contract offers
+│   │
+│   ├── config/                      # Shared configuration
+│   └── mix.exs                      # Umbrella root
+│
 ├── dev-env/
-│   └── docker-compose.yml         # Hub + Edge containers
+│   └── docker-compose.yml           # Infrastructure (Bondy, Postgres)
+│
+├── Dockerfile.hub                   # Hub node (MaculaOs + Dashboard payload)
+├── Dockerfile.edge                  # Edge nodes (MaculaOs + domain payloads)
+│
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   ├── DEMO_SCRIPT.md
 │   └── screenshots/
-└── start_demo.sh                  # One-command startup
+│
+└── start_demo.sh                    # One-command startup
 ```
 
-**Edge Runtime Architecture**:
-- **mesh_edge**: Generic edge runtime ("Edge OS")
-  - Bot lifecycle management (start, stop, reload)
-  - WAMP connection management via mesh_wamp
-  - Dynamic bot loading (future: remote deployment)
-  - Health monitoring and telemetry
-  - **Roadmap**: Load bot modules dynamically and remotely
+**Architecture Philosophy**:
 
-- **mesh_edge_homes**, **mesh_edge_utilities**: Domain-specific bot implementations
-  - Current: Statically compiled with specific bots
-  - Future: Deployed as modules into mesh_edge runtime
-  - Think: Docker containers (mesh_edge) vs Images (mesh_edge_homes)
+**Macula = The Platform**
+- `macula_os` is the distributed runtime (like Kubernetes for BEAM apps)
+- Runs in two modes: `realm_hub` (hosts realm + Bondy) or `edge` (connects to realm)
+- Provides WAMP infrastructure for all payloads
+- Configuration-driven, ephemeral, stateless where possible
+
+**CortexIQ = Reference Application**
+- All `cortex_iq_*` apps are payloads running on Macula
+- Dashboard is NOT infrastructure - it's just another payload that visualizes events
+- Demonstrates event-driven architecture on the platform
 
 **Future Extensibility**:
-- `mesh_edge_commercial/` - Commercial analytics bots
-- `mesh_edge_aggregators/` - Data aggregation services
-- `mesh_edge_analytics/` - Real-time analytics engines
-- All deployable to `mesh_edge` runtime dynamically
+- New payloads can be added without changing Macula platform
+- Dynamic payload loading (roadmap)
+- Multi-realm support via configuration
+- Organization onboarding via configuration files
 
 ## App Responsibilities
 
-### mesh_core
-- Domain models: Home, Provider, Realm, Market (pure structs)
-- Event schemas: ProductionEvent, ConsumptionEvent, TariffEvent, ContractSwitchEvent
-- Business logic utilities (pure functions)
+### MACULA PLATFORM
+
+#### macula_os
+**The distributed runtime platform for BEAM applications**
+
+**Core Components**:
+- `MaculaOs.Application` - Main supervision tree
+- `MaculaOs.Wamp` - WAMP client/server infrastructure
+  - `MaculaOs.Wamp.Client` - WAMP client GenServer
+  - `MaculaOs.Wamp.Connection` - WebSocket connection management
+  - `MaculaOs.Wamp.Protocol` - WAMP protocol implementation
+- `MaculaOs.Realm` - Realm lifecycle management (future)
+- `MaculaOs.Payload` - Payload management system (future)
+
+**Operating Modes**:
+1. **Realm Hub Mode** (`MACULA_MODE=realm_hub`):
+   - Embeds Bondy WAMP router
+   - Creates and manages realm(s)
+   - Acts as entry point for edge nodes
+   - Can run infrastructure payloads (e.g., dashboard)
+
+2. **Edge Mode** (`MACULA_MODE=edge`):
+   - Connects to realm hub via WAMP
+   - Runs domain-specific payloads
+   - Lightweight, scalable
+
+**Configuration**:
+```elixir
+config :macula_os,
+  mode: :realm_hub,  # or :edge
+  realm: [
+    uri: "be.cortexiq.energy",
+    hub_url: "wss://localhost:18080/ws"
+  ],
+  payloads: [
+    {CortexIqDashboard, []},
+    {CortexIqDashboardWeb, [port: 4000]},
+    {CortexIqHomes, [count: 50]},
+    {CortexIqUtilities, [count: 5]}
+  ]
+```
+
+**Dependencies**:
+- `cortex_iq_core` (for now, will be removed when abstracted)
+- `jason`, `websockex`
+
+---
+
+### CORTEXIQ APPLICATION (Payloads)
+
+#### cortex_iq_core
+**Shared domain models for CortexIQ payloads**
+
+- Domain models: `Home`, `Provider`, `Contract`, `ContractOffer`, `EnergyBalance`, `SpotPrice`
+- Utilities: `SimulationTime`, `Geography`
 - **No processes, pure data structures**
-- Shared by all applications
+- Shared by all CortexIQ payloads
 
-### mesh_wamp
-- `MeshWamp.Client` - WAMP client wrapper
-- `MeshWamp.Connection` - WebSocket connection management
-- `MeshWamp.Publisher` - Publish helper (events to topics)
-- `MeshWamp.Subscriber` - Subscribe helper (topics to callbacks)
-- WAMP protocol implementation (HELLO, WELCOME, PUBLISH, SUBSCRIBE, etc.)
-- Used by all edge applications to connect to hub
+**Dependencies**: None
 
-### mesh_hub
-- `MeshHub.Application` - Supervision tree
-- **Embeds Bondy** - Starts Bondy WAMP router in supervision tree
-- **Hosts WAMP realm** - `energy.hub` (or `energy.region_N`)
-- Realm management and configuration
-- **Pure infrastructure - no domain bots**
-- Optional: Simulation clock (shared time reference)
-- Optional: Aggregation helpers for analytics
-- Depends on: mesh_core
+---
 
-### mesh_hub_web
-- `MeshHubWeb.Endpoint` - Phoenix endpoint (HTTP/WebSocket for dashboard)
-- `MeshHubWeb.OverviewLive` - Main dashboard
-- `MeshHubWeb.RealmsLive` - Realms view
-- `MeshHubWeb.HomesLive` - Homes list/detail
-- `MeshHubWeb.ProvidersLive` - Providers view
-- Components: topology_map, metrics_card, activity_feed, charts
-- **Subscribes to events via WAMP** (not local queries)
-- Aggregates and visualizes mesh-wide activity
-- Depends on: mesh_hub
+#### cortex_iq_dashboard + cortex_iq_dashboard_web
+**Analytics and Visualization Payload** (one logical unit, two apps)
 
-### mesh_edge
-- `MeshEdge.Application` - Generic edge runtime supervision tree
-- `MeshEdge.BotSupervisor` - Dynamic supervisor for bot instances
-- `MeshEdge.Runtime` - Bot lifecycle management (start, stop, reload)
-- `MeshEdge.Connection` - WAMP connection management (via mesh_wamp)
-- `MeshEdge.Health` - Health checks and telemetry
-- `MeshEdge.Loader` - Dynamic module loading (future: remote deployment)
-- **Provides**: Generic bot runtime environment
-- **Roadmap**: Remote bot deployment, hot-code reloading, A/B testing bots
-- Depends on: mesh_wamp, mesh_core
+**cortex_iq_dashboard**:
+- `CortexIqDashboard.Application` - Supervision tree
+- `CortexIqDashboard.WampSubscriber` - Subscribes to ALL events via MaculaOs.Wamp
+- `CortexIqDashboard.Aggregator` - Real-time event aggregation
+- `CortexIqDashboard.SimulationClock` - Shared simulation time (broadcasts to realm)
+- **Subscribes**: All CortexIQ events (homes, utilities)
+- **Publishes**: Simulation time events
 
-### mesh_edge_homes
-- `MeshEdgeHomes.Application` - Supervision tree
-- `MeshEdgeHomes.HomeBot` - GenServer per home (N homes, configurable via ENV)
-- `MeshEdgeHomes.Simulation.Solar` - Solar production calculations
-- `MeshEdgeHomes.Simulation.Consumption` - Consumption patterns (base + peaks)
-- `MeshEdgeHomes.Simulation.Battery` - Battery charge/discharge logic
-- `MeshEdgeHomes.Optimization` - Contract switching decisions
-- **Publishes**: production, consumption, storage, contract events
-- **Subscribes**: provider tariff updates
-- **Current**: Standalone application
-- **Future**: Deployable module for mesh_edge runtime
-- Depends on: mesh_wamp, mesh_core (future: mesh_edge)
+**cortex_iq_dashboard_web**:
+- `CortexIqDashboardWeb.Endpoint` - Phoenix HTTP/WebSocket endpoint
+- `CortexIqDashboardWeb.DashboardLive` - Main real-time dashboard
+- Components: topology, metrics, activity feed, charts
+- **Displays**: Aggregated data from cortex_iq_dashboard
 
-### mesh_edge_utilities
-- `MeshEdgeUtilities.Application` - Supervision tree
-- `MeshEdgeUtilities.ProviderBot` - GenServer per provider (N providers, configurable via ENV)
-- `MeshEdgeUtilities.Simulation.Pricing` - Pricing strategies per provider
-  - "Steady Eddie", "Night Owl", "Solar Surfer", "Peak Predator", "Random Racer"
-- **Publishes**: tariff updates (price per kWh, buy-back rates)
-- **Subscribes**: (optional) market events for dynamic pricing
-- **Current**: Standalone application
-- **Future**: Deployable module for mesh_edge runtime
-- Depends on: mesh_wamp, mesh_core (future: mesh_edge)
+**Dependencies**: `macula_os`, `cortex_iq_core`, `phoenix`, `phoenix_live_view`
+
+---
+
+#### cortex_iq_homes
+**Home Simulation Bots Payload**
+
+- `CortexIqHomes.Application` - Supervision tree
+- `CortexIqHomes.HomeBot` - GenServer per home (N homes, ENV configurable)
+- Solar production, consumption, battery simulation
+- Contract optimization and switching logic
+- **Publishes**: production, consumption, storage, balance, contract events
+- **Subscribes**: provider contract offers, simulation time
+
+**Dependencies**: `macula_os`, `cortex_iq_core`
+
+---
+
+#### cortex_iq_utilities
+**Energy Provider Bots Payload**
+
+- `CortexIqUtilities.Application` - Supervision tree
+- `CortexIqUtilities.ProviderBot` - GenServer per provider (N providers, ENV configurable)
+- Pricing strategies: "Steady Eddie", "Night Owl", "Solar Surfer", "Peak Predator", "Discount King"
+- **Publishes**: contract offers, spot prices
+- **Subscribes**: simulation time, (future: market events)
+
+**Dependencies**: `macula_os`, `cortex_iq_core`
 
 ## Communication Architecture
 
-**Hub-and-Spoke Topology**:
+**Macula Ring Topology** (Realm: `be.cortexiq.energy`):
 ```
-┌──────────────────────────────────────────────────────┐
-│  Hub Container (mesh_hub + mesh_hub_web)             │
-│  ┌────────────────────────────────────────────────┐  │
-│  │  mesh_hub                                      │  │
-│  │  ┌──────────────────────────────────────────┐ │  │
-│  │  │  Bondy (WAMP Router)                     │ │  │
-│  │  │  Realm: energy.hub                       │ │  │
-│  │  └──────────────────────────────────────────┘ │  │
-│  └────────────────────────────────────────────────┘  │
-│  ┌────────────────────────────────────────────────┐  │
-│  │  mesh_hub_web                                  │  │
-│  │  ┌──────────────────────────────────────────┐ │  │
-│  │  │  Phoenix Dashboard (subscribes via WAMP) │ │  │
-│  │  └──────────────────────────────────────────┘ │  │
-│  └────────────────────────────────────────────────┘  │
-└──────────────────────────────────────────────────────┘
-         ▲                    ▲                  ▲
-         │ WAMP               │ WAMP             │ WAMP
-         │                    │                  │
-┌────────┴─────────┐  ┌───────┴──────────┐  ┌───┴──────────────┐
-│ mesh_edge_homes  │  │ mesh_edge_homes  │  │ mesh_edge_       │
-│   (Container 1)  │  │   (Container 2)  │  │   utilities      │
-│                  │  │                  │  │                  │
-│ Home Bots (3)    │  │ Home Bots (3)    │  │ Provider Bots(5) │
-└──────────────────┘  └──────────────────┘  └──────────────────┘
+┌────────────────────────────────────────────────────────────┐
+│ Hub Node (MaculaOs - realm_hub mode)                      │
+│                                                            │
+│  ┌──────────────────────────────────────────────────┐    │
+│  │ MaculaOs Platform                                │    │
+│  │  ┌────────────────────────────────────────────┐  │    │
+│  │  │ Bondy (WAMP Router)                        │  │    │
+│  │  │ Realm: be.cortexiq.energy                  │  │    │
+│  │  └────────────────────────────────────────────┘  │    │
+│  └──────────────────────────────────────────────────┘    │
+│                                                            │
+│  ┌──────────────────────────────────────────────────┐    │
+│  │ CortexIQ Payloads                                │    │
+│  │  • cortex_iq_dashboard (analytics)               │    │
+│  │  • cortex_iq_dashboard_web (Phoenix UI)          │    │
+│  └──────────────────────────────────────────────────┘    │
+└────────────────────────────────────────────────────────────┘
+          ▲                     ▲                  ▲
+          │ WAMP                │ WAMP             │ WAMP
+          │                     │                  │
+┌─────────┴──────────┐  ┌───────┴───────────┐  ┌──┴─────────────┐
+│ Edge Node 1        │  │ Edge Node 2       │  │ Edge Node 3    │
+│ (MaculaOs - edge)  │  │ (MaculaOs - edge) │  │ (MaculaOs)     │
+│                    │  │                   │  │                │
+│ Payload:           │  │ Payload:          │  │ Payload:       │
+│ cortex_iq_homes    │  │ cortex_iq_homes   │  │ cortex_iq_     │
+│ (25 bots)          │  │ (25 bots)         │  │  utilities     │
+│                    │  │                   │  │ (5 bots)       │
+└────────────────────┘  └───────────────────┘  └────────────────┘
 
-Future: Add more edge types
+Future: Add more payload types
 ┌──────────────────┐
-│ mesh_edge_       │
-│   commercial     │  ← New participant type!
+│ Edge Node N      │
+│ (MaculaOs)       │  ← New payload type!
 │                  │
-│ Analytics Bots   │
+│ Payload:         │
+│ cortex_iq_       │
+│  analytics       │
 └──────────────────┘
 ```
 
-**Communication Patterns**:
+**Communication Patterns** (via MaculaOs.Wamp):
 
-1. **mesh_edge_homes → Bondy (WAMP Publish)**:
+1. **cortex_iq_homes → Bondy (WAMP Publish)**:
    - Home bots publish production/consumption/storage/contract events
-   - Topics: `energy.hub.home.{home_id}.{event_type}`
-   - Example: `energy.hub.home.home_001.production`
+   - Topics: `be.cortexiq.energy.home.{home_id}.{event_type}`
+   - Example: `be.cortexiq.energy.home.home_001.production`
 
-2. **mesh_edge_utilities → Bondy (WAMP Publish)**:
-   - Provider bots publish tariff updates
-   - Topics: `energy.hub.utility.{provider_id}.tariff`
-   - Example: `energy.hub.utility.provider_a.tariff`
+2. **cortex_iq_utilities → Bondy (WAMP Publish)**:
+   - Provider bots publish contract offers and spot prices
+   - Topics: `be.cortexiq.energy.utility.{provider_id}.{type}`
+   - Example: `be.cortexiq.energy.utility.provider_a.contract_offer`
 
-3. **mesh_edge_homes subscribes (via mesh_wamp)**:
-   - Home bots subscribe to ALL provider tariffs
-   - Pattern: `energy.hub.utility.*.tariff`
-   - Triggers contract optimization when prices change
+3. **cortex_iq_homes subscribes (via MaculaOs.Wamp)**:
+   - Home bots subscribe to ALL provider contract offers
+   - Pattern: `be.cortexiq.energy.utility.*.contract_offer`
+   - Triggers contract optimization when new offers arrive
 
-4. **mesh_hub_web subscribes (via mesh_wamp)**:
+4. **cortex_iq_dashboard subscribes (via MaculaOs.Wamp)**:
    - Dashboard subscribes to ALL events for visualization
-   - Patterns: `energy.hub.home.*.production`, `energy.hub.utility.*.tariff`, etc.
+   - Patterns: `be.cortexiq.energy.home.*.*`, `be.cortexiq.energy.utility.*.*`
    - Aggregates real-time data for charts and metrics
 
-5. **Pure Event-Driven**:
-   - No direct communication between edges
-   - All communication flows through Bondy (in mesh_hub)
-   - Easy to add new participants - just subscribe/publish
+5. **Pure Event-Driven Architecture**:
+   - No direct communication between payloads
+   - All communication flows through Bondy (MaculaOs realm hub)
+   - Easy to add new payloads - just subscribe/publish via MaculaOs.Wamp
+   - Payloads are loosely coupled, independently deployable
 
 **Data Flow**:
 ```
-Simulation Clock (in mesh_hub) → broadcasts time tick
+Simulation Clock (cortex_iq_dashboard) → broadcasts time tick
     ↓
-mesh_edge_utilities: Provider Bots calculate prices
+cortex_iq_utilities: Provider Bots calculate prices
     ↓
-Provider publishes tariff → Bondy → mesh_edge_homes subscribes
+Provider publishes contract offer → Bondy → cortex_iq_homes subscribes
     ↓
-mesh_edge_homes: Home Bot receives tariff → Recalculates optimization
+cortex_iq_homes: Home Bot receives offer → Evaluates optimization
     ↓
-Home publishes events → Bondy → mesh_hub_web subscribes
+Home publishes events → Bondy → cortex_iq_dashboard subscribes
     ↓
-Dashboard LiveView aggregates and displays in real-time
+Dashboard aggregates and displays in real-time via Phoenix LiveView
 ```
+
+**Key Insight**: All payloads use `MaculaOs.Wamp` to communicate. They don't know about each other - they only know topics and events. This makes the system highly extensible.
 
 ## Architecture Decisions Made
 
@@ -412,7 +659,7 @@ The dashboard should make these points visually obvious:
 
 ## Current Status
 
-**Project State**: Phase 1 - Setting up infrastructure
+**Project State**: Phase 1/2 - Core infrastructure complete, implementing contract system
 
 **Completed**:
 - ✅ Umbrella app structure created in `system/`
@@ -421,22 +668,33 @@ The dashboard should make these points visually obvious:
   - Edge runtime: mesh_edge (generic bot OS)
   - Bot implementations: mesh_edge_homes, mesh_edge_utilities
 - ✅ Architecture decisions finalized (hub-spoke, embedded Bondy, edge runtime pattern)
+- ✅ **Domain models implemented** (mesh_core):
+  - `MeshCore.SimulationTime` - Time utilities (day/night, date calculations)
+  - `MeshCore.Contract` - 12-month contracts with day/night pricing
+  - `MeshCore.ContractOffer` - Provider offers with switching discounts
+  - `MeshCore.EnergyBalance` - Track energy bought vs sold
+  - `MeshCore.SpotPrice` - Spot market pricing
+  - `MeshCore.Home` - Home metadata with location
+  - `MeshCore.Provider` - Provider metadata with 5 strategies
+- ✅ **Simulation clock implemented** (mesh_hub):
+  - `MeshHub.SimulationClock` - Configurable speed (default: 105,120x)
+  - ENV: `SIMULATION_SPEED`, `SIMULATION_START_DATE`
+  - Broadcasts time every 1 second to `energy.hub.simulation.time`
+  - 1 simulation year = 5 real minutes
 
 **Current Task**:
-- 🔄 Setting up minimal working mesh
-  - Containerize mesh_hub_web with embedded Bondy
-  - Containerize mesh_edge
-  - Docker Compose with 1 hub + 2 edge containers
-  - Single realm (`energy.hub`)
-  - Test WAMP connections
+- 🔄 Implementing contract-based provider and home bots
+  - Provider bots: publish contract offers + spot prices
+  - Home bots: contract lifecycle management, balance optimization
+  - Event topics updated for contract system
 
 **Next Steps**:
-1. Configure app dependencies in mix.exs files
-2. Implement basic WAMP client in mesh_wamp
-3. Embed Bondy in mesh_hub_web
+1. Redesign provider bot (mesh_edge_utilities) for contract offers
+2. Redesign home bot (mesh_edge_homes) for contract management
+3. Update dashboard to show contracts and energy balance
 4. Create Dockerfiles for hub and edge
 5. Set up docker-compose.yml
-6. Test end-to-end connectivity
+6. Test end-to-end contract lifecycle
 
 ## Notes
 

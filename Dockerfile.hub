@@ -1,8 +1,8 @@
-# Dockerfile for mesh_hub and mesh_hub_web (Phoenix dashboard)
+# Dockerfile for cortex_iq_dashboard and cortex_iq_dashboard_web (Phoenix dashboard)
 # Multi-stage build for optimal image size
 
 # Stage 1: Build
-FROM hexpm/elixir:1.18.1-erlang-27.2.1-alpine-3.21.3 AS build
+FROM hexpm/elixir:1.18.1-erlang-27.2.1-alpine-3.20.3 AS build
 
 # Install build dependencies
 RUN apk add --no-cache build-base git nodejs npm
@@ -22,23 +22,23 @@ COPY system/mix.exs system/mix.lock ./
 COPY system/config config
 
 # Copy all app mix files
-COPY system/apps/mesh_core/mix.exs ./apps/mesh_core/
-COPY system/apps/mesh_wamp/mix.exs ./apps/mesh_wamp/
-COPY system/apps/mesh_hub/mix.exs ./apps/mesh_hub/
-COPY system/apps/mesh_hub_web/mix.exs ./apps/mesh_hub_web/
+COPY system/apps/cortex_iq_core/mix.exs ./apps/cortex_iq_core/
+COPY system/apps/macula_os/mix.exs ./apps/macula_os/
+COPY system/apps/cortex_iq_dashboard/mix.exs ./apps/cortex_iq_dashboard/
+COPY system/apps/cortex_iq_dashboard_web/mix.exs ./apps/cortex_iq_dashboard_web/
 
 # Get dependencies
 RUN mix deps.get --only prod
 RUN mix deps.compile
 
 # Copy application code
-COPY system/apps/mesh_core ./apps/mesh_core
-COPY system/apps/mesh_wamp ./apps/mesh_wamp
-COPY system/apps/mesh_hub ./apps/mesh_hub
-COPY system/apps/mesh_hub_web ./apps/mesh_hub_web
+COPY system/apps/cortex_iq_core ./apps/cortex_iq_core
+COPY system/apps/macula_os ./apps/macula_os
+COPY system/apps/cortex_iq_dashboard ./apps/cortex_iq_dashboard
+COPY system/apps/cortex_iq_dashboard_web ./apps/cortex_iq_dashboard_web
 
 # Install npm dependencies and build assets (Phoenix)
-RUN cd apps/mesh_hub_web/assets && \
+RUN cd apps/cortex_iq_dashboard_web/assets && \
     npm install && \
     npm run deploy
 
@@ -49,17 +49,17 @@ RUN mix compile
 RUN mix assets.deploy
 
 # Build release
-RUN mix release mesh_hub_web
+RUN mix release cortex_iq_dashboard_web
 
 # Stage 2: Runtime
-FROM alpine:3.21.3 AS runtime
+FROM alpine:3.20.3 AS runtime
 
 RUN apk add --no-cache libstdc++ openssl ncurses-libs
 
 WORKDIR /app
 
 # Copy the release from build stage
-COPY --from=build /app/_build/prod/rel/mesh_hub_web ./
+COPY --from=build /app/_build/prod/rel/cortex_iq_dashboard_web ./
 
 # Set environment
 ENV HOME=/app
@@ -74,4 +74,4 @@ USER app
 # Expose Phoenix port
 EXPOSE 4000
 
-CMD ["/app/bin/mesh_hub_web", "start"]
+CMD ["/app/bin/cortex_iq_dashboard_web", "start"]

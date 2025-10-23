@@ -10,8 +10,8 @@
 import Config
 
 # Configure Mix tasks and generators
-config :mesh_hub,
-  ecto_repos: [MeshHub.Repo]
+config :cortex_iq_dashboard,
+  ecto_repos: [CortexIqDashboard.Repo]
 
 # Configures the mailer
 #
@@ -20,42 +20,42 @@ config :mesh_hub,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :mesh_hub, MeshHub.Mailer, adapter: Swoosh.Adapters.Local
+config :cortex_iq_dashboard, CortexIqDashboard.Mailer, adapter: Swoosh.Adapters.Local
 
-config :mesh_hub_web,
-  ecto_repos: [MeshHub.Repo],
-  generators: [context_app: :mesh_hub]
+config :cortex_iq_dashboard_web,
+  ecto_repos: [CortexIqDashboard.Repo],
+  generators: [context_app: :cortex_iq_dashboard]
 
 # Configures the endpoint
-config :mesh_hub_web, MeshHubWeb.Endpoint,
+config :cortex_iq_dashboard_web, CortexIqDashboardWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [html: MeshHubWeb.ErrorHTML, json: MeshHubWeb.ErrorJSON],
+    formats: [html: CortexIqDashboardWeb.ErrorHTML, json: CortexIqDashboardWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: MeshHub.PubSub,
+  pubsub_server: CortexIqDashboard.PubSub,
   live_view: [signing_salt: "xfQ3khAf"]
 
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.25.4",
-  mesh_hub_web: [
+  cortex_iq_dashboard_web: [
     args:
       ~w(js/app.js --bundle --target=es2022 --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/* --alias:@=.),
-    cd: Path.expand("../apps/mesh_hub_web/assets", __DIR__),
+    cd: Path.expand("../apps/cortex_iq_dashboard_web/assets", __DIR__),
     env: %{"NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build_path()]}
   ]
 
 # Configure tailwind (the version is required)
 config :tailwind,
   version: "4.1.7",
-  mesh_hub_web: [
+  cortex_iq_dashboard_web: [
     args: ~w(
       --input=assets/css/app.css
       --output=priv/static/assets/css/app.css
     ),
-    cd: Path.expand("../apps/mesh_hub_web", __DIR__)
+    cd: Path.expand("../apps/cortex_iq_dashboard_web", __DIR__)
   ]
 
 # Configures Elixir's Logger

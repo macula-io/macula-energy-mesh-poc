@@ -1,8 +1,8 @@
-# Dockerfile for mesh_edge applications (homes and utilities)
+# Dockerfile for CortexIQ edge applications (homes and utilities)
 # Multi-stage build for optimal image size
 
 # Stage 1: Build
-FROM hexpm/elixir:1.18.1-erlang-27.2.1-alpine-3.21.3 AS build
+FROM hexpm/elixir:1.18.1-erlang-27.2.1-alpine-3.20.3 AS build
 
 # Install build dependencies
 RUN apk add --no-cache build-base git
@@ -22,39 +22,37 @@ COPY system/mix.exs system/mix.lock ./
 COPY system/config config
 
 # Copy all app mix files
-COPY system/apps/mesh_core/mix.exs ./apps/mesh_core/
-COPY system/apps/mesh_wamp/mix.exs ./apps/mesh_wamp/
-COPY system/apps/mesh_edge/mix.exs ./apps/mesh_edge/
-COPY system/apps/mesh_edge_homes/mix.exs ./apps/mesh_edge_homes/
-COPY system/apps/mesh_edge_utilities/mix.exs ./apps/mesh_edge_utilities/
+COPY system/apps/cortex_iq_core/mix.exs ./apps/cortex_iq_core/
+COPY system/apps/macula_os/mix.exs ./apps/macula_os/
+COPY system/apps/cortex_iq_homes/mix.exs ./apps/cortex_iq_homes/
+COPY system/apps/cortex_iq_utilities/mix.exs ./apps/cortex_iq_utilities/
 
 # Get dependencies
 RUN mix deps.get --only prod
 RUN mix deps.compile
 
 # Copy application code
-COPY system/apps/mesh_core ./apps/mesh_core
-COPY system/apps/mesh_wamp ./apps/mesh_wamp
-COPY system/apps/mesh_edge ./apps/mesh_edge
-COPY system/apps/mesh_edge_homes ./apps/mesh_edge_homes
-COPY system/apps/mesh_edge_utilities ./apps/mesh_edge_utilities
+COPY system/apps/cortex_iq_core ./apps/cortex_iq_core
+COPY system/apps/macula_os ./apps/macula_os
+COPY system/apps/cortex_iq_homes ./apps/cortex_iq_homes
+COPY system/apps/cortex_iq_utilities ./apps/cortex_iq_utilities
 
 # Compile the project
 RUN mix compile
 
 # Build releases
-RUN mix release mesh_edge_homes
-RUN mix release mesh_edge_utilities
+RUN mix release cortex_iq_homes
+RUN mix release cortex_iq_utilities
 
 # Stage 2: Runtime (homes)
-FROM alpine:3.21.3 AS mesh_edge_homes
+FROM alpine:3.20.3 AS cortex_iq_homes
 
 RUN apk add --no-cache libstdc++ openssl ncurses-libs
 
 WORKDIR /app
 
 # Copy the release from build stage
-COPY --from=build /app/_build/prod/rel/mesh_edge_homes ./
+COPY --from=build /app/_build/prod/rel/cortex_iq_homes ./
 
 # Set environment
 ENV HOME=/app
@@ -64,17 +62,17 @@ ENV MIX_ENV=prod
 RUN addgroup -S app && adduser -S app -G app
 USER app
 
-CMD ["/app/bin/mesh_edge_homes", "start"]
+CMD ["/app/bin/cortex_iq_homes", "start"]
 
 # Stage 3: Runtime (utilities)
-FROM alpine:3.21.3 AS mesh_edge_utilities
+FROM alpine:3.20.3 AS cortex_iq_utilities
 
 RUN apk add --no-cache libstdc++ openssl ncurses-libs
 
 WORKDIR /app
 
 # Copy the release from build stage
-COPY --from=build /app/_build/prod/rel/mesh_edge_utilities ./
+COPY --from=build /app/_build/prod/rel/cortex_iq_utilities ./
 
 # Set environment
 ENV HOME=/app
@@ -84,4 +82,4 @@ ENV MIX_ENV=prod
 RUN addgroup -S app && adduser -S app -G app
 USER app
 
-CMD ["/app/bin/mesh_edge_utilities", "start"]
+CMD ["/app/bin/cortex_iq_utilities", "start"]

@@ -16,7 +16,7 @@ if config_env() == :prod do
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
-  config :mesh_hub, MeshHub.Repo,
+  config :cortex_iq_dashboard, CortexIqDashboard.Repo,
     # ssl: true,
     url: database_url,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
@@ -36,7 +36,7 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  config :mesh_hub_web, MeshHubWeb.Endpoint,
+  config :cortex_iq_dashboard_web, CortexIqDashboardWeb.Endpoint,
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
@@ -50,7 +50,7 @@ if config_env() == :prod do
   # If you are doing OTP releases, you need to instruct Phoenix
   # to start each relevant endpoint:
   #
-  #     config :mesh_hub_web, MeshHubWeb.Endpoint, server: true
+  #     config :cortex_iq_dashboard_web, CortexIqDashboardWeb.Endpoint, server: true
   #
   # Then you can assemble a release by calling `mix release`.
   # See `mix help release` for more information.
@@ -60,7 +60,7 @@ if config_env() == :prod do
   # To get SSL working, you will need to add the `https` key
   # to your endpoint configuration:
   #
-  #     config :mesh_hub_web, MeshHubWeb.Endpoint,
+  #     config :cortex_iq_dashboard_web, CortexIqDashboardWeb.Endpoint,
   #       https: [
   #         ...,
   #         port: 443,
@@ -82,7 +82,7 @@ if config_env() == :prod do
   # We also recommend setting `force_ssl` in your config/prod.exs,
   # ensuring no data is ever sent via http, always redirecting to https:
   #
-  #     config :mesh_hub_web, MeshHubWeb.Endpoint,
+  #     config :cortex_iq_dashboard_web, CortexIqDashboardWeb.Endpoint,
   #       force_ssl: [hsts: true]
   #
   # Check `Plug.SSL` for all available options in `force_ssl`.
@@ -92,7 +92,7 @@ if config_env() == :prod do
   # In production you need to configure the mailer to use a different adapter.
   # Here is an example configuration for Mailgun:
   #
-  #     config :mesh_hub, MeshHub.Mailer,
+  #     config :cortex_iq_dashboard, CortexIqDashboard.Mailer,
   #       adapter: Swoosh.Adapters.Mailgun,
   #       api_key: System.get_env("MAILGUN_API_KEY"),
   #       domain: System.get_env("MAILGUN_DOMAIN")
@@ -105,5 +105,5 @@ if config_env() == :prod do
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 
-  config :mesh_hub, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
+  config :cortex_iq_dashboard, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 end

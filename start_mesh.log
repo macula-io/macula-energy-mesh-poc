@@ -1,0 +1,344 @@
+🚀 Starting Macula Energy Mesh - Local Development
+
+✅ Infrastructure already running
+🗄️  Setting up database...
+==> mesh_wamp
+==> mesh_edge_homes
+==> mesh_hub_web
+The database for MeshHub.Repo has already been created
+==> mesh_wamp
+     warning: variable "handlers" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 150 │       {nil, handlers} ->
+     │             ~
+     │
+     └─ (mesh_wamp 0.1.0) lib/mesh_wamp/client.ex:150:13: MeshWamp.Client.handle_info/2
+
+==> mesh_edge_homes
+     warning: variable "home" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 355 │   defp calculate_consumption(home, simulation_time) do
+     │                              ~~~~
+     │
+     └─ (mesh_edge_homes 0.1.0) lib/mesh_edge_homes/home_bot.ex:355:30: MeshEdgeHomes.HomeBot.calculate_consumption/2
+
+     warning: variable "energy_balance" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 490 │   defp find_best_offer(provider_offers, energy_balance, _simulation_time) do
+     │                                         ~~~~~~~~~~~~~~
+     │
+     └─ (mesh_edge_homes 0.1.0) lib/mesh_edge_homes/home_bot.ex:490:41: MeshEdgeHomes.HomeBot.find_best_offer/3
+
+     warning: variable "provider_id" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 532 │   defp sign_new_contract(state, offer, provider_id, reason, simulation_time) do
+     │                                        ~~~~~~~~~~~
+     │
+     └─ (mesh_edge_homes 0.1.0) lib/mesh_edge_homes/home_bot.ex:532:40: MeshEdgeHomes.HomeBot.sign_new_contract/5
+
+==> mesh_hub_web
+      warning: function region_label/1 is unused
+      │
+ 1112 │   defp region_label(:all), do: "All Regions"
+      │        ~
+      │
+      └─ lib/mesh_hub_web/live/dashboard_live.ex:1112:8: MeshHubWeb.DashboardLive (module)
+
+
+22:26:37.523 [info] Migrations already up
+
+✅ Infrastructure ready!
+
+📊 Available services:
+   - Bondy WAMP Router: ws://localhost:18080/ws
+   - Bondy Admin API: http://localhost:18081
+   - Bondy Console: http://localhost:3000
+   - PostgreSQL: localhost:5432
+
+🏠 Starting with 50 homes and 5 providers
+📊 Dashboard will be at http://localhost:4000
+
+Tip: Override home count with: HOME_COUNT=100 ./start-local-dev.sh
+
+Erlang/OTP 28 [erts-16.1] [source] [64-bit] [smp:32:32] [ds:32:32:10] [async-threads:1] [jit:ns]
+
+==> mesh_wamp
+     warning: variable "handlers" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 150 │       {nil, handlers} ->
+     │             ~
+     │
+     └─ (mesh_wamp 0.1.0) lib/mesh_wamp/client.ex:150:13: MeshWamp.Client.handle_info/2
+
+==> mesh_edge_homes
+     warning: variable "home" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 355 │   defp calculate_consumption(home, simulation_time) do
+     │                              ~~~~
+     │
+     └─ (mesh_edge_homes 0.1.0) lib/mesh_edge_homes/home_bot.ex:355:30: MeshEdgeHomes.HomeBot.calculate_consumption/2
+
+     warning: variable "energy_balance" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 490 │   defp find_best_offer(provider_offers, energy_balance, _simulation_time) do
+     │                                         ~~~~~~~~~~~~~~
+     │
+     └─ (mesh_edge_homes 0.1.0) lib/mesh_edge_homes/home_bot.ex:490:41: MeshEdgeHomes.HomeBot.find_best_offer/3
+
+     warning: variable "provider_id" is unused (if the variable is not meant to be used, prefix it with an underscore)
+     │
+ 532 │   defp sign_new_contract(state, offer, provider_id, reason, simulation_time) do
+     │                                        ~~~~~~~~~~~
+     │
+     └─ (mesh_edge_homes 0.1.0) lib/mesh_edge_homes/home_bot.ex:532:40: MeshEdgeHomes.HomeBot.sign_new_contract/5
+
+==> mesh_hub_web
+      warning: function region_label/1 is unused
+      │
+ 1112 │   defp region_label(:all), do: "All Regions"
+      │        ~
+      │
+      └─ lib/mesh_hub_web/live/dashboard_live.ex:1112:8: MeshHubWeb.DashboardLive (module)
+
+[info] SimulationClock started:
+  Speed: 105120x
+  Start time: 2025-01-01T00:00:00Z
+  1 year = 5.0 minutes real-time
+
+[info] Starting WAMP Publisher for realm: com.energy.mesh
+[info] WAMP Publisher: Subscribed to Phoenix.PubSub 'simulation:time' (result: :ok)
+[info] Starting 50 home bots (offset: 0)
+[info] Starting 50 home bots with 25ms stagger...
+[info] Starting HomeBotNew for home_0001
+[info] Starting 5 provider bots
+[info]   Location: Turnhout, 2300
+[info]   Solar capacity: 3.6 kW
+[info]   Battery capacity: 12.7 kWh
+[info] Starting ProviderBot for Steady Eddie Energy (provider_a)
+[info]   Strategy: steady_eddie
+[info]   Base day buy price: $0.15/kWh
+[info]   Switching discount: $15.0
+[info] Started ProviderBot: Steady Eddie Energy (provider_a)
+[info] Starting ProviderBot for Night Owl Power (provider_b)
+[info]   Strategy: night_owl
+[info]   Base day buy price: $0.22/kWh
+[info]   Switching discount: $50.0
+[info] Started ProviderBot: Night Owl Power (provider_b)
+[info] Starting ProviderBot for Solar Surfer Electric (provider_c)
+[info]   Strategy: solar_surfer
+[info]   Base day buy price: $0.12/kWh
+[info]   Switching discount: $20.0
+[info] Started ProviderBot: Solar Surfer Electric (provider_c)
+[info] Starting ProviderBot for Peak Predator Energy (provider_d)
+[info]   Strategy: peak_predator
+[info]   Base day buy price: $0.18/kWh
+[info]   Switching discount: $25.0
+[info] Started ProviderBot: Peak Predator Energy (provider_d)
+[info] Starting ProviderBot for Discount King Power (provider_e)
+[info]   Strategy: discount_king
+[info]   Base day buy price: $0.14/kWh
+[info]   Switching discount: $75.0
+[info] Started ProviderBot: Discount King Power (provider_e)
+[debug] Provider provider_e: No simulation time yet, skipping spot price update
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Starting HomeBotNew for home_0002
+[info]   Location: Brussels Schaerbeek, 1030
+[info]   Solar capacity: 4.0 kW
+[info]   Battery capacity: 12.0 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting HomeBotNew for home_0002
+[info]   Location: Brussels Schaerbeek, 1030
+[info]   Solar capacity: 4.9 kW
+[info]   Battery capacity: 7.6 kWh
+[info] Starting ProviderBot for Peak Predator Energy (provider_d)
+[info] Starting HomeBotNew for home_0001
+[info]   Strategy: peak_predator
+[info]   Base day buy price: $0.18/kWh
+[info]   Location: Turnhout, 2300
+[info]   Solar capacity: 6.4 kW
+[info]   Switching discount: $25.0
+[info] Starting ProviderBot for Steady Eddie Energy (provider_a)
+[info]   Battery capacity: 6.2 kWh
+[info]   Strategy: steady_eddie
+[info]   Base day buy price: $0.15/kWh
+[info]   Switching discount: $15.0
+[info] Starting ProviderBot for Night Owl Power (provider_b)
+[info]   Strategy: night_owl
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting HomeBotNew for home_0002
+[info]   Location: Brussels Schaerbeek, 1030
+[info]   Solar capacity: 6.9 kW
+[info]   Battery capacity: 13.3 kWh
+[info]   Base day buy price: $0.22/kWh
+[info]   Switching discount: $50.0
+[info] Starting HomeBotNew for home_0003
+[info]   Location: Mechelen, 2800
+[info]   Solar capacity: 5.5 kW
+[info]   Battery capacity: 10.3 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting HomeBotNew for home_0003
+[info]   Location: Mechelen, 2800
+[info]   Solar capacity: 6.1 kW
+[info]   Battery capacity: 14.3 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting HomeBotNew for home_0003
+[info]   Location: Mechelen, 2800
+[info]   Solar capacity: 3.2 kW
+[info]   Battery capacity: 11.8 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting HomeBotNew for home_0003
+[info]   Location: Mechelen, 2800
+[info]   Solar capacity: 5.9 kW
+[info]   Battery capacity: 6.9 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting HomeBotNew for home_0004
+[info]   Location: Brussels Jette, 1090
+[info]   Solar capacity: 4.8 kW
+[info]   Battery capacity: 6.3 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting HomeBotNew for home_0004
+[info]   Location: Brussels Jette, 1090
+[info]   Solar capacity: 4.2 kW
+[info]   Battery capacity: 11.9 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting HomeBotNew for home_0004
+[info]   Location: Brussels Jette, 1090
+[info]   Solar capacity: 3.7 kW
+[info]   Battery capacity: 9.2 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting HomeBotNew for home_0004
+[info]   Location: Brussels Jette, 1090
+[info]   Solar capacity: 6.7 kW
+[info]   Battery capacity: 7.4 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] WAMP Publisher: Connecting to WAMP...
+[info] WAMP Publisher: Connected to WAMP
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting WAMP Publisher for realm: com.energy.mesh
+[info] WAMP Publisher: Subscribed to Phoenix.PubSub 'simulation:time' (result: :ok)
+[info] Starting HomeBotNew for home_0005
+[info]   Location: Vilvoorde, 1800
+[info]   Solar capacity: 6.9 kW
+[info]   Battery capacity: 10.0 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting HomeBotNew for home_0005
+[info]   Location: Vilvoorde, 1800
+[info]   Solar capacity: 4.1 kW
+[info]   Battery capacity: 14.0 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting HomeBotNew for home_0005
+[info]   Location: Vilvoorde, 1800
+[info]   Solar capacity: 6.9 kW
+[info]   Battery capacity: 8.8 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting HomeBotNew for home_0005
+[info]   Location: Vilvoorde, 1800
+[info]   Solar capacity: 4.7 kW
+[info]   Battery capacity: 6.3 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[notice] Application mesh_edge_homes exited: shutdown
+[info] WAMP Publisher: Connecting to WAMP...
+[info] WAMP Publisher: Connected to WAMP
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]
+[info] WebSocket disconnected: {:remote, 1011, ""}
+[info] Connection terminating: {:remote, 1011, ""}
+[info] Starting WAMP Publisher for realm: com.energy.mesh
+[info] WAMP Publisher: Subscribed to Phoenix.PubSub 'simulation:time' (result: :ok)
+[info] Running MeshHubWeb.Endpoint with Bandit 1.8.0 at 127.0.0.1:4000 (http)
+[info] Access MeshHubWeb.Endpoint at http://localhost:4000
+Interactive Elixir (1.18.4) - press Ctrl+C to exit (type h() ENTER for help)
+
+🚀 Starting bot applications...
+[info] Starting 50 home bots (offset: 0)
+[info] Starting 50 home bots with 25ms stagger...
+✅ mesh_edge_homes started
+[info] Starting HomeBotNew for home_0001
+✅ mesh_edge_utilities started
+[info]   Location: Turnhout, 2300
+📊 Dashboard at http://localhost:4000
+
+[info]   Solar capacity: 5.0 kW
+[info]   Battery capacity: 10.2 kWh
+[info] WebSocket connected to ws://localhost:18080/ws
+[info] Sending HELLO: [1,"com.energy.mesh",{"authid":"anonymous","authmethods":["anonymous"],"roles":{"publisher":{},"subscriber":{}}}]

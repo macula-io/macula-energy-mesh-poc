@@ -57,35 +57,33 @@ defmodule MeshHub.Umbrella.MixProject do
 
   defp releases do
     [
-      mesh_hub_web: [
+      cortex_iq_dashboard_web: [
         version: "0.1.0",
         applications: [
-          mesh_core: :permanent,
-          mesh_wamp: :permanent,
-          mesh_hub: :permanent,
-          mesh_hub_web: :permanent
+          cortex_iq_core: :permanent,
+          macula_os: :permanent,
+          cortex_iq_dashboard: :permanent,
+          cortex_iq_dashboard_web: :permanent
         ],
         include_executables_for: [:unix],
         steps: [:assemble, :tar]
       ],
-      mesh_edge_homes: [
+      cortex_iq_homes: [
         version: "0.1.0",
         applications: [
-          mesh_core: :permanent,
-          mesh_wamp: :permanent,
-          mesh_edge: :permanent,
-          mesh_edge_homes: :permanent
+          cortex_iq_core: :permanent,
+          macula_os: :permanent,
+          cortex_iq_homes: :permanent
         ],
         include_executables_for: [:unix],
         steps: [:assemble, :tar]
       ],
-      mesh_edge_utilities: [
+      cortex_iq_utilities: [
         version: "0.1.0",
         applications: [
-          mesh_core: :permanent,
-          mesh_wamp: :permanent,
-          mesh_edge: :permanent,
-          mesh_edge_utilities: :permanent
+          cortex_iq_core: :permanent,
+          macula_os: :permanent,
+          cortex_iq_utilities: :permanent
         ],
         include_executables_for: [:unix],
         steps: [:assemble, :tar]

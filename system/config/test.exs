@@ -5,7 +5,7 @@ import Config
 # The MIX_TEST_PARTITION environment variable can be used
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
-config :mesh_hub, MeshHub.Repo,
+config :cortex_iq_dashboard, CortexIqDashboard.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
@@ -15,7 +15,7 @@ config :mesh_hub, MeshHub.Repo,
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :mesh_hub_web, MeshHubWeb.Endpoint,
+config :cortex_iq_dashboard_web, CortexIqDashboardWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "PTFOPuOKHi/fGV9/vBw69GuEFMUdpGVHYDPbfnmOw3v2fSuxjtobllcBhKk11m3k",
   server: false
@@ -24,7 +24,7 @@ config :mesh_hub_web, MeshHubWeb.Endpoint,
 config :logger, level: :warning
 
 # In test we don't send emails
-config :mesh_hub, MeshHub.Mailer, adapter: Swoosh.Adapters.Test
+config :cortex_iq_dashboard, CortexIqDashboard.Mailer, adapter: Swoosh.Adapters.Test
 
 # Disable swoosh api client as it is only required for production adapters
 config :swoosh, :api_client, false
