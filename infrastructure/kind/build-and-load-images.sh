@@ -20,20 +20,20 @@ log_step() {
   echo -e "${CYAN}▸${NC} $1"
 }
 
-# Build homes image using fixed Dockerfile
+# Build homes image
 log_step "Building cortex-iq-homes image..."
 docker build \
-  -f "$PROJECT_ROOT/infrastructure/docker/Dockerfile.cortex-iq-homes.fixed" \
+  -f "$PROJECT_ROOT/system/cortex_iq_homes/Dockerfile" \
   -t macula/cortex-iq-homes:latest \
-  "$PROJECT_ROOT/system"
+  "$PROJECT_ROOT/system/cortex_iq_homes"
 log_info "Homes image built"
 
-# Build utilities image using fixed Dockerfile
+# Build utilities image
 log_step "Building cortex-iq-utilities image..."
 docker build \
-  -f "$PROJECT_ROOT/infrastructure/docker/Dockerfile.cortex-iq-utilities.fixed" \
+  -f "$PROJECT_ROOT/system/cortex_iq_utilities/Dockerfile" \
   -t macula/cortex-iq-utilities:latest \
-  "$PROJECT_ROOT/system"
+  "$PROJECT_ROOT/system/cortex_iq_utilities"
 log_info "Utilities image built"
 
 # Build dashboard image using Dockerfile.hub
@@ -52,11 +52,12 @@ log_step "Loading dashboard image into macula-edge-01..."
 kind load docker-image macula/cortex-iq-dashboard:latest --name macula-edge-01
 log_info "Dashboard image loaded into edge-01"
 
-# Load homes into edge-01 and edge-02
-log_step "Loading homes image into macula-edge-01 and edge-02..."
+# Load homes into edge-01, edge-02, and edge-04
+log_step "Loading homes image into macula-edge-01, edge-02, and edge-04..."
 kind load docker-image macula/cortex-iq-homes:latest --name macula-edge-01
 kind load docker-image macula/cortex-iq-homes:latest --name macula-edge-02
-log_info "Homes image loaded into edge-01 and edge-02"
+kind load docker-image macula/cortex-iq-homes:latest --name macula-edge-04
+log_info "Homes image loaded into edge-01, edge-02, and edge-04"
 
 # Load utilities into edge-03
 log_step "Loading utilities image into macula-edge-03..."

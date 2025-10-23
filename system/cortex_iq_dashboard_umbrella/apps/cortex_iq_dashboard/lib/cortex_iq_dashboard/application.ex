@@ -29,6 +29,11 @@ defmodule CortexIqDashboard.Application do
         realm: realm_uri,
         bondy_url: bondy_url
       ]},
+      # WAMP subscriber (receives WAMP events and forwards to PubSub)
+      {CortexIqDashboard.WampSubscriber, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
       # Event aggregator (subscribes to WAMP events and writes to database)
       CortexIqDashboard.EventAggregator
     ]
