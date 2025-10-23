@@ -32,8 +32,10 @@ data:
       }' && echo "Realm created successfully" || echo "Realm creation failed - may already exist"
 
     echo "Disabling security for demo..."
-    # Security must be disabled via separate endpoint
-    curl -X POST http://bondy:18081/realms/be.cortexiq.energy/security/disable && \
+    # Security must be disabled via bondy RPC (HTTP endpoint doesn't exist)
+    # Wait a bit for realm to be fully initialized
+    sleep 2
+    /bondy/bin/bondy eval 'bondy_realm:disable_security(<<"be.cortexiq.energy">>).' && \
       echo "Security disabled successfully" || echo "Security disable failed"
 
     echo "Realm setup complete"
@@ -57,11 +59,14 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: create-realm
-        image: curlimages/curl:latest
+        image: leapsight/bondy:1.0.0-rc.44
         command: ["/bin/sh", "/scripts/create-realm.sh"]
         volumeMounts:
         - name: scripts
           mountPath: /scripts
+        env:
+        - name: BONDY_NODE_NAME
+          value: "bondy@bondy.macula-hub.svc.cluster.local"
       volumes:
       - name: scripts
         configMap:
