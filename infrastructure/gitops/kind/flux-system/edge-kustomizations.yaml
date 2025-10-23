@@ -1,0 +1,124 @@
+---
+# Edge-01 Kustomizations
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: edge-01-base
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./infrastructure/gitops/kind/clusters/edge-01
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: macula-gitops
+  wait: true
+  timeout: 5m0s
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: edge-01-ingress
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./infrastructure/gitops/kind/base/nginx-ingress
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: macula-gitops
+  wait: true
+  timeout: 5m0s
+---
+# Edge-02 Kustomizations
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: edge-02-base
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./infrastructure/gitops/kind/clusters/edge-02
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: macula-gitops
+  wait: true
+  timeout: 5m0s
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: edge-02-ingress
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./infrastructure/gitops/kind/base/nginx-ingress
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: macula-gitops
+  wait: true
+  timeout: 5m0s
+---
+# Edge-03 Kustomizations
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: edge-03-base
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./infrastructure/gitops/kind/clusters/edge-03
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: macula-gitops
+  wait: true
+  timeout: 5m0s
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: edge-03-ingress
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./infrastructure/gitops/kind/base/nginx-ingress
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: macula-gitops
+  wait: true
+  timeout: 5m0s
+---
+# Edge-04 Kustomizations
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: edge-04-base
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./infrastructure/gitops/kind/clusters/edge-04
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: macula-gitops
+  wait: true
+  timeout: 5m0s
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: edge-04-ingress
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./infrastructure/gitops/kind/base/nginx-ingress
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: macula-gitops
+  wait: true
+  timeout: 5m0s

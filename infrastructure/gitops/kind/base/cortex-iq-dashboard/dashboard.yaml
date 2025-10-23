@@ -31,7 +31,7 @@ spec:
         - name: DATABASE_URL
           value: "ecto://cortexiq:cortexiq123@postgres:5432/cortexiq_dashboard"
         - name: SECRET_KEY_BASE
-          value: "CHANGE_ME_IN_PRODUCTION_this_is_just_for_poc_demo"
+          value: "CHANGE_ME_IN_PRODUCTION_this_is_just_for_poc_demo_need_64_chars_min"
         - name: PHX_HOST
           value: "localhost"
       containers:
@@ -55,7 +55,7 @@ spec:
         - name: PHX_PORT
           value: "4000"
         - name: SECRET_KEY_BASE
-          value: "CHANGE_ME_IN_PRODUCTION_this_is_just_for_poc_demo"
+          value: "CHANGE_ME_IN_PRODUCTION_this_is_just_for_poc_demo_need_64_chars_min"
         - name: SIMULATION_SPEED
           value: "105120"
         - name: SIMULATION_START_DATE
