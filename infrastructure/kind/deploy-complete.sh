@@ -189,11 +189,11 @@ show_status() {
   echo ""
   log_section "Access Information"
   echo ""
-  echo -e "${GREEN}Dashboard:${NC} http://dashboard.macula.local:8080/"
+  echo -e "${GREEN}CortexIQ Dashboard:${NC} http://dashboard.cortexiq.local:8080/"
   echo -e "${GREEN}Bondy Admin API:${NC} http://hub.macula.local:8080/admin/"
   echo -e "${GREEN}Bondy Console:${NC} http://console.macula.local:8080/"
   echo ""
-  echo -e "${YELLOW}Note:${NC} Make sure /etc/hosts has entries for *.macula.local"
+  echo -e "${YELLOW}Note:${NC} Make sure /etc/hosts has entries for *.macula.local and *.cortexiq.local"
   echo "Run: sudo ./infrastructure/scripts/setup-hosts.sh"
   echo ""
 

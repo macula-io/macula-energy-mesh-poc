@@ -172,7 +172,7 @@ main() {
     log_info "1. Run ./setup-hosts.sh to configure /etc/hosts"
     log_info "2. Test connectivity:"
     log_info "   - http://hub.macula.local:8080/api/status"
-    log_info "   - http://dashboard.macula.local:8080/"
+    log_info "   - http://dashboard.cortexiq.local:8080/"
 }
 
 main "$@"

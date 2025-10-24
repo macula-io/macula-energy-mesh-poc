@@ -43,7 +43,7 @@ Each cluster has its own nginx-ingress controller deployed to the `ingress-nginx
 ### ✅ Dashboard (Working)
 
 #### CortexIQ Dashboard
-- **URL**: http://dashboard.macula.local:8080/
+- **URL**: http://dashboard.cortexiq.local:8080/
 - **Ingress**: `gitops/kind/base/cortex-iq-dashboard/ingress.yaml`
 - **Backend**: cortex-iq-dashboard.macula-system:4000
 - **Status**: ✅ Working - HTTP 200 OK
@@ -102,7 +102,7 @@ scripts/
 ```
 # Macula Platform - KinD Cluster Ingress
 172.20.0.2      hub.macula.local console.macula.local
-172.21.0.2      dashboard.macula.local
+172.21.0.2      dashboard.cortexiq.local
 172.22.0.2      edge02.macula.local
 172.23.0.2      edge03.macula.local
 172.24.0.2      edge04.macula.local
@@ -172,7 +172,7 @@ curl http://hub.macula.local:8080/admin/realms | jq '.[] | .uri'
 open http://console.macula.local:8080/
 
 # Dashboard (currently 502 - app issue)
-curl http://dashboard.macula.local:8080/
+curl http://dashboard.cortexiq.local:8080/
 ```
 
 ## Troubleshooting
