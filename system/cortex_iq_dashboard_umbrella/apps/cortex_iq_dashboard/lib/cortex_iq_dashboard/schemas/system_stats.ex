@@ -15,10 +15,10 @@ defmodule CortexIqDashboard.Schemas.SystemStats do
     field :contract_switches_count, :integer
     field :avg_battery_percent, :float
 
-    field :simulation_time, :utc_datetime
+    field :simulation_time, :utc_datetime_usec
     field :simulation_speed, :integer
 
-    timestamps()
+    timestamps(type: :utc_datetime_usec)
   end
 
   def changeset(system_stats, attrs) do

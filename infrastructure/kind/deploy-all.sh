@@ -73,7 +73,7 @@ deploy_hub() {
   log_section "Step 2: Deploying Hub (Bondy WAMP Router)"
 
   log_step "Applying Bondy manifests to hub cluster..."
-  kubectl --context kind-macula-hub apply -k "$PROJECT_ROOT/infrastructure/gitops/kind/hub/bondy/"
+  kubectl --context kind-macula-hub apply -k "$PROJECT_ROOT/infrastructure/gitops/kind/clusters/hub-01/bondy/"
 
   log_step "Waiting for Bondy to be ready..."
   kubectl --context kind-macula-hub wait --for=condition=ready pod \

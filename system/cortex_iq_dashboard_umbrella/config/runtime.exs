@@ -44,7 +44,9 @@ if config_env() == :prod do
       port: String.to_integer(System.get_env("PORT") || "4000")
     ],
     secret_key_base: secret_key_base,
-    server: true
+    server: true,
+    # Allow WebSocket connections from dashboard hostname (demo environment)
+    check_origin: false
 
   # ## Using releases
   #

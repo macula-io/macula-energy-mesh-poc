@@ -19,7 +19,7 @@ defmodule CortexIqDashboard.Repo.Migrations.CreateAggregatedStates do
       # Contract info
       add :provider_id, :string
       add :contract_id, :string
-      add :contract_expires_at, :utc_datetime
+      add :contract_expires_at, :utc_datetime_usec
 
       # Energy balance
       add :energy_bought_kwh, :float, default: 0.0
@@ -29,8 +29,8 @@ defmodule CortexIqDashboard.Repo.Migrations.CreateAggregatedStates do
       add :revenue_received, :float, default: 0.0
       add :net_cost, :float, default: 0.0
 
-      add :last_event_at, :utc_datetime
-      timestamps()
+      add :last_event_at, :utc_datetime_usec
+      timestamps(type: :utc_datetime_usec)
     end
 
     create index(:home_states, [:region])
@@ -53,8 +53,8 @@ defmodule CortexIqDashboard.Repo.Migrations.CreateAggregatedStates do
       add :night_sell_price, :float
       add :switching_discount, :float
 
-      add :last_event_at, :utc_datetime
-      timestamps()
+      add :last_event_at, :utc_datetime_usec
+      timestamps(type: :utc_datetime_usec)
     end
 
     # System-wide statistics
@@ -71,10 +71,10 @@ defmodule CortexIqDashboard.Repo.Migrations.CreateAggregatedStates do
       add :contract_switches_count, :integer, default: 0
       add :avg_battery_percent, :float, default: 0.0
 
-      add :simulation_time, :utc_datetime
+      add :simulation_time, :utc_datetime_usec
       add :simulation_speed, :integer
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
   end
 end

@@ -5,7 +5,7 @@
 # Requires MaculaOs for secure realm connectivity
 ####################################################################################################
 
-ARG ELIXIR_VERSION=1.17.3
+ARG ELIXIR_VERSION=1.18.1
 ARG OTP_VERSION=26.2.5.6
 ARG ALPINE_VERSION=3.20.3
 
@@ -29,18 +29,18 @@ RUN mix local.hex --force && \
     mix local.rebar --force
 
 # Copy this application's mix files
-COPY mix.exs mix.lock ./
-COPY config ./config
+COPY cortex_iq_utilities/mix.exs cortex_iq_utilities/mix.lock ./
+COPY cortex_iq_utilities/config ./config
 
 # Copy path dependencies (required for compilation)
-COPY ../cortex_iq_core ../cortex_iq_core
-COPY ../macula_os ../macula_os
+COPY cortex_iq_core ../cortex_iq_core
+COPY macula_os ../macula_os
 
 # Get dependencies
 RUN mix deps.get --only prod
 
 # Copy application source
-COPY lib ./lib
+COPY cortex_iq_utilities/lib ./lib
 
 # Compile
 RUN mix compile

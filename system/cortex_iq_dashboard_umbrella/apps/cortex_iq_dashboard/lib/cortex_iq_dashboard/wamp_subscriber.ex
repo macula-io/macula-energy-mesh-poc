@@ -36,15 +36,15 @@ defmodule CortexIqDashboard.WampSubscriber do
       subscriptions: %{}
     }
 
-    # Connect asynchronously after realm is created
-    Process.send_after(self(), {:connect, bondy_url, realm_uri}, 2_000)
+    # Connect asynchronously after Bondy is fully started (5 second delay)
+    Process.send_after(self(), {:connect, bondy_url, realm_uri}, 5_000)
 
     {:ok, state}
   end
 
   @impl true
   def handle_info({:connect, bondy_url, realm_uri}, state) do
-    case MaculaOs.Wamp.start_link(url: bondy_url, realm: realm_uri) do
+    case MaculaOs.Wamp.start_link(url: bondy_url, realm: realm_uri, name: :wamp_subscriber) do
       {:ok, wamp_client} ->
         Logger.info("WAMP subscriber connected to #{realm_uri}")
 

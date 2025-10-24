@@ -31,8 +31,8 @@ defmodule CortexIqDashboard.WampPublisher do
       wamp_client: nil
     }
 
-    # Defer WAMP connection to avoid blocking init
-    Process.send_after(self(), :connect_wamp, 100)
+    # Defer WAMP connection to allow Bondy to fully start (5 second delay)
+    Process.send_after(self(), :connect_wamp, 5_000)
 
     {:ok, state}
   end
@@ -41,14 +41,14 @@ defmodule CortexIqDashboard.WampPublisher do
   def handle_info(:connect_wamp, state) do
     Logger.info("WAMP Publisher: Connecting to WAMP...")
 
-    case MaculaOs.Wamp.start_link(url: state.bondy_url, realm: state.realm) do
+    case MaculaOs.Wamp.start_link(url: state.bondy_url, realm: state.realm, name: :wamp_publisher) do
       {:ok, wamp_client} ->
         Logger.info("WAMP Publisher: Connected to WAMP")
         {:noreply, %{state | wamp_client: wamp_client}}
 
       {:error, reason} ->
-        Logger.warning("WAMP Publisher: Failed to connect: #{inspect(reason)}, retrying...")
-        Process.send_after(self(), :connect_wamp, 1000)
+        Logger.warning("WAMP Publisher: Failed to connect: #{inspect(reason)}, retrying in 3s...")
+        Process.send_after(self(), :connect_wamp, 3_000)
         {:noreply, state}
     end
   end

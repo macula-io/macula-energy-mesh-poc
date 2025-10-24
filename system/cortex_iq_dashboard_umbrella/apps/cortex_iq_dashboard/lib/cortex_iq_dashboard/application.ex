@@ -17,6 +17,7 @@ defmodule CortexIqDashboard.Application do
       CortexIqDashboard.Repo,
       {DNSCluster, query: Application.get_env(:cortex_iq_dashboard, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: CortexIqDashboard.PubSub},
+      # System supervisor manages RealmManager and WampSubscriber
       {CortexIqDashboard.System, [
         realm_uri: realm_uri,
         bondy_admin_url: bondy_admin_url,
@@ -27,11 +28,6 @@ defmodule CortexIqDashboard.Application do
       # WAMP publisher (forwards PubSub events to WAMP)
       {CortexIqDashboard.WampPublisher, [
         realm: realm_uri,
-        bondy_url: bondy_url
-      ]},
-      # WAMP subscriber (receives WAMP events and forwards to PubSub)
-      {CortexIqDashboard.WampSubscriber, [
-        realm_uri: realm_uri,
         bondy_url: bondy_url
       ]},
       # Event aggregator (subscribes to WAMP events and writes to database)

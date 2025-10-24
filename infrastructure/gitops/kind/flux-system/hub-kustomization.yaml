@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m0s
-  path: ./infrastructure/gitops/kind/hub
+  path: ./infrastructure/gitops/kind/clusters/hub-01
   prune: true
   sourceRef:
     kind: GitRepository
@@ -22,7 +22,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m0s
-  path: ./infrastructure/gitops/kind/hub/bondy-console
+  path: ./infrastructure/gitops/kind/clusters/hub-01/bondy-console
   prune: true
   sourceRef:
     kind: GitRepository

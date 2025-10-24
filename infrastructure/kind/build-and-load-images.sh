@@ -25,7 +25,7 @@ log_step "Building cortex-iq-homes image..."
 docker build \
   -f "$PROJECT_ROOT/system/cortex_iq_homes/Dockerfile" \
   -t macula/cortex-iq-homes:latest \
-  "$PROJECT_ROOT/system/cortex_iq_homes"
+  "$PROJECT_ROOT/system"
 log_info "Homes image built"
 
 # Build utilities image
@@ -33,7 +33,7 @@ log_step "Building cortex-iq-utilities image..."
 docker build \
   -f "$PROJECT_ROOT/system/cortex_iq_utilities/Dockerfile" \
   -t macula/cortex-iq-utilities:latest \
-  "$PROJECT_ROOT/system/cortex_iq_utilities"
+  "$PROJECT_ROOT/system"
 log_info "Utilities image built"
 
 # Build dashboard image using Dockerfile.hub

@@ -16,9 +16,9 @@ defmodule CortexIqDashboard.Schemas.ProviderState do
     field :night_sell_price, :float
     field :switching_discount, :float
 
-    field :last_event_at, :utc_datetime
+    field :last_event_at, :utc_datetime_usec
 
-    timestamps()
+    timestamps(type: :utc_datetime_usec)
   end
 
   def changeset(provider_state, attrs) do

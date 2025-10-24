@@ -1,6 +1,9 @@
 defmodule CortexIqDashboardWeb.DashboardLive do
   use CortexIqDashboardWeb, :live_view
 
+  alias CortexIqDashboard.Repo
+  alias CortexIqDashboard.Schemas.{HomeState, ProviderState, SystemStats}
+
   @impl true
   def mount(_params, _session, socket) do
     # Subscribe to WAMP events
@@ -11,19 +14,24 @@ defmodule CortexIqDashboardWeb.DashboardLive do
     # Load Belgian locations for map
     locations = CortexIqCore.Geography.all_locations()
 
+    # Load initial data from database (where EventAggregator has been persisting events)
+    {home_states, unique_homes, home_contracts, home_balances} = load_home_states_from_db()
+    {provider_states, unique_providers, provider_market_share} = load_provider_states_from_db()
+    {simulation_time, simulation_speed, db_stats} = load_system_stats_from_db()
+
     {:ok,
      socket
      |> assign(:events, [])
-     |> assign(:unique_homes, MapSet.new())
-     |> assign(:unique_providers, MapSet.new())
+     |> assign(:unique_homes, unique_homes)
+     |> assign(:unique_providers, unique_providers)
      |> assign(:locations, locations)
-     |> assign(:home_states, %{})
+     |> assign(:home_states, home_states)
      |> assign(:home_history, %{})
-     |> assign(:home_contracts, %{})
-     |> assign(:home_balances, %{})
-     |> assign(:provider_states, %{})
+     |> assign(:home_contracts, home_contracts)
+     |> assign(:home_balances, home_balances)
+     |> assign(:provider_states, provider_states)
      |> assign(:provider_history, %{})
-     |> assign(:provider_market_share, %{})
+     |> assign(:provider_market_share, provider_market_share)
      |> assign(:aggregate_history, [])
      |> assign(:selected_home, nil)
      |> assign(:selected_provider, nil)
@@ -32,21 +40,9 @@ defmodule CortexIqDashboardWeb.DashboardLive do
      |> assign(:search_query, "")
      |> assign(:sort_by, :home_id)
      |> assign(:sort_direction, :asc)
-     |> assign(:simulation_time, nil)
-     |> assign(:simulation_speed, nil)
-     |> assign(:stats, %{
-       homes: 0,
-       providers: 0,
-       events_received: 0,
-       total_production_kwh: 0.0,
-       total_consumption_kwh: 0.0,
-       total_energy_bought_kwh: 0.0,
-       total_energy_sold_kwh: 0.0,
-       total_cost_paid: 0.0,
-       total_revenue_received: 0.0,
-       contract_switches: 0,
-       avg_battery_percent: 0.0
-     })}
+     |> assign(:simulation_time, simulation_time)
+     |> assign(:simulation_speed, simulation_speed)
+     |> assign(:stats, db_stats)}
   end
 
   @impl true
@@ -1778,4 +1774,122 @@ defmodule CortexIqDashboardWeb.DashboardLive do
   defp get_provider_name("provider_d"), do: "Peak Predator Energy"
   defp get_provider_name("provider_e"), do: "Discount King Power"
   defp get_provider_name(id), do: String.capitalize(id)
+
+  # Database loaders - load initial state from persisted data
+
+  defp load_home_states_from_db do
+    home_records = Repo.all(HomeState)
+
+    unique_homes = home_records |> Enum.map(& &1.home_id) |> MapSet.new()
+
+    home_states =
+      home_records
+      |> Enum.map(fn home ->
+        {home.home_id, %{
+          production_w: (home.production_kw || 0.0) * 1000,  # Convert kW to W
+          consumption_w: (home.consumption_kw || 0.0) * 1000,  # Convert kW to W
+          battery_percent: home.battery_percent || 0.0,
+          city: home.location,
+          postal_code: home.postal_code,
+          region: home.region
+        }}
+      end)
+      |> Enum.into(%{})
+
+    home_contracts =
+      home_records
+      |> Enum.filter(& &1.provider_id)
+      |> Enum.map(fn home ->
+        {home.home_id, %{
+          provider_id: home.provider_id,
+          contract_id: home.contract_id,
+          end_date: home.contract_expires_at
+        }}
+      end)
+      |> Enum.into(%{})
+
+    home_balances =
+      home_records
+      |> Enum.map(fn home ->
+        {home.home_id, %{
+          energy_bought_kwh: home.energy_bought_kwh || 0.0,
+          energy_sold_kwh: home.energy_sold_kwh || 0.0,
+          net_balance_kwh: home.net_balance_kwh || 0.0,
+          cost_paid: home.cost_paid || 0.0,
+          revenue_received: home.revenue_received || 0.0,
+          net_cost: home.net_cost || 0.0
+        }}
+      end)
+      |> Enum.into(%{})
+
+    {home_states, unique_homes, home_contracts, home_balances}
+  end
+
+  defp load_provider_states_from_db do
+    provider_records = Repo.all(ProviderState)
+
+    unique_providers = provider_records |> Enum.map(& &1.provider_id) |> MapSet.new()
+
+    provider_states =
+      provider_records
+      |> Enum.map(fn provider ->
+        {provider.provider_id, %{
+          provider_name: get_provider_name(provider.provider_id),
+          strategy: provider.strategy,
+          price_per_kwh: (provider.day_buy_price || 0.0) * 0.6 + (provider.night_buy_price || 0.0) * 0.4,
+          sell_back_rate: (provider.day_sell_price || 0.0) * 0.8 + (provider.night_sell_price || 0.0) * 0.2,
+          contract_offer: %{
+            day_buy_price: provider.day_buy_price || 0.0,
+            night_buy_price: provider.night_buy_price || 0.0,
+            day_sell_price: provider.day_sell_price || 0.0,
+            night_sell_price: provider.night_sell_price || 0.0,
+            switching_discount: provider.switching_discount || 0.0
+          }
+        }}
+      end)
+      |> Enum.into(%{})
+
+    provider_market_share =
+      provider_records
+      |> Enum.map(fn provider ->
+        {provider.provider_id, provider.active_contracts || 0}
+      end)
+      |> Enum.into(%{})
+
+    {provider_states, unique_providers, provider_market_share}
+  end
+
+  defp load_system_stats_from_db do
+    case Repo.get(SystemStats, 1) do
+      nil ->
+        {nil, nil, %{
+          homes: 0,
+          providers: 0,
+          events_received: 0,
+          total_production_kwh: 0.0,
+          total_consumption_kwh: 0.0,
+          total_energy_bought_kwh: 0.0,
+          total_energy_sold_kwh: 0.0,
+          total_cost_paid: 0.0,
+          total_revenue_received: 0.0,
+          contract_switches: 0,
+          avg_battery_percent: 0.0
+        }}
+
+      stats ->
+        {stats.simulation_time, stats.simulation_speed, %{
+          homes: stats.total_homes || 0,
+          providers: stats.total_providers || 0,
+          events_received: 0,
+          total_production_kwh: stats.total_production_kwh || 0.0,
+          total_consumption_kwh: stats.total_consumption_kwh || 0.0,
+          total_energy_bought_kwh: stats.total_energy_bought_kwh || 0.0,
+          total_energy_sold_kwh: stats.total_energy_sold_kwh || 0.0,
+          total_cost_paid: stats.total_cost_paid || 0.0,
+          total_revenue_received: stats.total_revenue_received || 0.0,
+          contract_switches: stats.contract_switches_count || 0,
+          avg_battery_percent: stats.avg_battery_percent || 0.0
+        }}
+    end
+  end
 end

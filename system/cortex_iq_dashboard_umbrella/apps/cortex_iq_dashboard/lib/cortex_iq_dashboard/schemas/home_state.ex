@@ -16,7 +16,7 @@ defmodule CortexIqDashboard.Schemas.HomeState do
 
     field :provider_id, :string
     field :contract_id, :string
-    field :contract_expires_at, :utc_datetime
+    field :contract_expires_at, :utc_datetime_usec
 
     field :energy_bought_kwh, :float
     field :energy_sold_kwh, :float
@@ -25,9 +25,9 @@ defmodule CortexIqDashboard.Schemas.HomeState do
     field :revenue_received, :float
     field :net_cost, :float
 
-    field :last_event_at, :utc_datetime
+    field :last_event_at, :utc_datetime_usec
 
-    timestamps()
+    timestamps(type: :utc_datetime_usec)
   end
 
   def changeset(home_state, attrs) do
