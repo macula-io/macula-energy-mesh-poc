@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cortex-iq-projections
-  namespace: macula-hub
+  namespace: macula-apps
   labels:
     app: cortex-iq-projections
     component: projections
@@ -32,7 +32,7 @@ spec:
 
         # Database Connection
         - name: DATABASE_URL
-          value: "ecto://postgres:postgres@postgres.macula-hub.svc.cluster.local:5432/mesh_hub"
+          value: "ecto://postgres:postgres@postgres.macula-apps.svc.cluster.local:5432/mesh_hub"
         - name: POOL_SIZE
           value: "10"
 
