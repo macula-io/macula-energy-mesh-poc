@@ -1,19 +1,40 @@
 defmodule MaculaOs.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
-  @moduledoc false
+  @moduledoc """
+  MaculaOs Application - WAMP Gateway Sidecar
 
+  Supervision tree:
+  - Metering: ETS-based usage tracking
+  - Proxy.Upstream: Connection to Bondy with retry logic
+  - Proxy.Server: WebSocket server on localhost
+  """
   use Application
+  require Logger
 
   @impl true
   def start(_type, _args) do
+    Logger.info("Starting MaculaOs WAMP Proxy...")
+
+    # Get configuration from environment
+    port = String.to_integer(System.get_env("MACULA_PORT", "8080"))
+    bondy_url = System.get_env("BONDY_URL", "ws://172.20.0.2:30080/ws")
+    realm = System.get_env("BONDY_REALM") ||
+      raise "BONDY_REALM environment variable is required"
+
+    Logger.info("  Proxy listening on: localhost:#{port}")
+    Logger.info("  Upstream Bondy: #{bondy_url}")
+    Logger.info("  Realm: #{realm}")
+
     children = [
-      # Starts a worker by calling: MaculaOs.Worker.start_link(arg)
-      # {MaculaOs.Worker, arg}
+      # Metering (must start first - other components depend on it)
+      {MaculaOs.Metering, []},
+
+      # Upstream connection to Bondy
+      {MaculaOs.Proxy.Upstream, [bondy_url: bondy_url, realm: realm]},
+
+      # WebSocket proxy server
+      {MaculaOs.Proxy.Server, [port: port]}
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: MaculaOs.Supervisor]
     Supervisor.start_link(children, opts)
   end

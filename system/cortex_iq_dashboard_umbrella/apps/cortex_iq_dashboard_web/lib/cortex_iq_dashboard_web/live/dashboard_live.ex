@@ -1,14 +1,19 @@
 defmodule CortexIqDashboardWeb.DashboardLive do
   use CortexIqDashboardWeb, :live_view
 
-  alias CortexIqDashboard.Repo
-  alias CortexIqDashboard.Schemas.{HomeState, ProviderState, SystemStats}
+  alias CortexIqDashboard.Views.{OverviewAggregator, HomesViewAggregator, ProvidersViewAggregator}
 
   @impl true
   def mount(_params, _session, socket) do
-    # Subscribe to WAMP events
+    require Logger
+    Logger.info("DashboardLive: mount() called, connected: #{connected?(socket)}")
+
+    # Subscribe to view updates (pure push, no polling)
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "wamp:events")
+      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "view:overview")
+      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "view:homes")
+      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "view:providers")
+      Logger.info("DashboardLive: Subscribed to view updates (push-based)")
     end
 
     # Load Belgian locations for map
@@ -17,11 +22,10 @@ defmodule CortexIqDashboardWeb.DashboardLive do
     # Load initial data from database (where EventAggregator has been persisting events)
     {home_states, unique_homes, home_contracts, home_balances} = load_home_states_from_db()
     {provider_states, unique_providers, provider_market_share} = load_provider_states_from_db()
-    {simulation_time, simulation_speed, db_stats} = load_system_stats_from_db()
+    {simulation_time, simulation_speed, simulation_paused, db_stats} = load_system_stats_from_db()
 
     {:ok,
      socket
-     |> assign(:events, [])
      |> assign(:unique_homes, unique_homes)
      |> assign(:unique_providers, unique_providers)
      |> assign(:locations, locations)
@@ -42,127 +46,59 @@ defmodule CortexIqDashboardWeb.DashboardLive do
      |> assign(:sort_direction, :asc)
      |> assign(:simulation_time, simulation_time)
      |> assign(:simulation_speed, simulation_speed)
-     |> assign(:stats, db_stats)}
+     |> assign(:simulation_paused, simulation_paused)
+     |> assign(:stats, db_stats)
+     |> assign(:view_stack, [:overview])}
   end
 
   @impl true
-  def handle_info({:wamp_event, _subscription_topic, event_data}, socket) do
-    # Extract the REAL topic from event details (not the subscription prefix)
-    real_topic = get_in(event_data, [:details, "topic"]) || "unknown"
+  def handle_info(:view_updated, socket) do
+    require Logger
+    Logger.debug("DashboardLive: View updated, reloading from view aggregators")
 
-    # Skip some events to reduce load (process every 5th event for non-critical data)
-    # This keeps the UI responsive while still showing real-time updates
-    should_process = :rand.uniform(5) == 1 or String.contains?(real_topic, ["simulation.time", "contract"])
-
-    if not should_process do
-      {:noreply, socket}
-    else
-      handle_wamp_event(real_topic, event_data, socket)
-    end
-  end
-
-  defp handle_wamp_event(real_topic, event_data, socket) do
-    # Debug: log event type distribution occasionally
-    # 0.1% sample
-    if :rand.uniform() < 0.001 do
-      require Logger
-      event_type = extract_event_type(real_topic)
-      Logger.debug("Received event type: #{event_type}, topic: #{real_topic}")
-    end
-
-    # Handle simulation time separately
-    socket =
-      if String.contains?(real_topic, "simulation.time") do
-        update_simulation_time(socket, event_data)
-      else
-        socket
-      end
-
-    # Add event to the list (keep last 50)
-    events = [format_event(real_topic, event_data) | socket.assigns.events] |> Enum.take(50)
-
-    # Track unique homes and providers
-    {unique_homes, unique_providers} =
-      track_unique_entities(
-        socket.assigns.unique_homes,
-        socket.assigns.unique_providers,
-        real_topic,
-        event_data
-      )
-
-    # Update home contracts and balances
-    {home_contracts, home_balances} =
-      update_home_contracts_and_balances(
-        socket.assigns.home_contracts,
-        socket.assigns.home_balances,
-        real_topic,
-        event_data
-      )
-
-    # Update home states and push to map
-    {home_states, home_history, socket} =
-      update_home_states(
-        socket,
-        real_topic,
-        event_data
-      )
-
-    # Update provider states and history
-    {provider_states, provider_history} =
-      update_provider_states(
-        socket.assigns.provider_states,
-        socket.assigns.provider_history,
-        real_topic,
-        event_data
-      )
-
-    # Calculate provider market share based on contracts
-    provider_market_share = calculate_provider_market_share(home_contracts)
-
-    # Calculate aggregate stats
-    stats =
-      calculate_aggregate_stats(
-        socket.assigns.stats,
-        unique_homes,
-        unique_providers,
-        home_states,
-        home_balances,
-        real_topic,
-        event_data
-      )
-
-    # Update aggregate history (keep last 100 measurements)
-    aggregate_history =
-      update_aggregate_history(
-        socket.assigns.aggregate_history,
-        home_states,
-        provider_states
-      )
+    # View aggregator signaled change - reload from in-memory views (instant, no DB)
+    {home_states, unique_homes, home_contracts, home_balances} = load_home_states_from_db()
+    {provider_states, unique_providers, provider_market_share} = load_provider_states_from_db()
+    {simulation_time, simulation_speed, simulation_paused, db_stats} = load_system_stats_from_db()
 
     {:noreply,
      socket
-     |> assign(:events, events)
      |> assign(:unique_homes, unique_homes)
      |> assign(:unique_providers, unique_providers)
      |> assign(:home_contracts, home_contracts)
      |> assign(:home_balances, home_balances)
      |> assign(:home_states, home_states)
-     |> assign(:home_history, home_history)
      |> assign(:provider_states, provider_states)
-     |> assign(:provider_history, provider_history)
      |> assign(:provider_market_share, provider_market_share)
-     |> assign(:aggregate_history, aggregate_history)
-     |> assign(:stats, stats)}
+     |> assign(:simulation_time, simulation_time)
+     |> assign(:simulation_speed, simulation_speed)
+     |> assign(:simulation_paused, simulation_paused)
+     |> assign(:stats, db_stats)}
   end
 
   @impl true
   def handle_event("select_home", %{"home_id" => home_id}, socket) do
-    {:noreply, socket |> assign(:selected_home, home_id) |> assign(:selected_provider, nil)}
+    # Navigate to home detail view
+    require Logger
+    Logger.info("SELECT_HOME event received for: #{home_id}")
+
+    {:noreply,
+     socket
+     |> assign(:selected_home, home_id)
+     |> assign(:selected_provider, nil)
+     |> assign(:view_stack, [:homes, {:home_detail, home_id}])
+     |> assign(:active_tab, :homes)}
   end
 
   @impl true
   def handle_event("select_provider", %{"provider_id" => provider_id}, socket) do
-    {:noreply, socket |> assign(:selected_provider, provider_id) |> assign(:selected_home, nil)}
+    # Navigate to provider detail view
+    {:noreply,
+     socket
+     |> assign(:selected_provider, provider_id)
+     |> assign(:selected_home, nil)
+     |> assign(:view_stack, [:providers, {:provider_detail, provider_id}])
+     |> assign(:active_tab, :providers)}
   end
 
   @impl true
@@ -178,8 +114,32 @@ defmodule CortexIqDashboardWeb.DashboardLive do
   end
 
   @impl true
-  def handle_event("close_detail_panel", _params, socket) do
-    {:noreply, socket |> assign(:selected_home, nil) |> assign(:selected_provider, nil)}
+  def handle_event("navigate_back", _params, socket) do
+    # Navigate back in view stack
+    new_stack =
+      case socket.assigns.view_stack do
+        [_current | [_ | _] = rest] -> rest
+        _ -> [:overview]
+      end
+
+    {:noreply,
+     socket
+     |> assign(:view_stack, new_stack)
+     |> assign(:selected_home, nil)
+     |> assign(:selected_provider, nil)}
+  end
+
+  @impl true
+  def handle_event("navigate_to_list", %{"tab" => tab}, socket) do
+    # Navigate to list view (homes or providers)
+    tab_atom = String.to_atom(tab)
+
+    {:noreply,
+     socket
+     |> assign(:view_stack, [tab_atom])
+     |> assign(:active_tab, tab_atom)
+     |> assign(:selected_home, nil)
+     |> assign(:selected_provider, nil)}
   end
 
   @impl true
@@ -187,7 +147,13 @@ defmodule CortexIqDashboardWeb.DashboardLive do
     require Logger
     tab_atom = String.to_atom(tab)
     Logger.info("Switching to tab: #{tab_atom}")
-    {:noreply, socket |> assign(:active_tab, tab_atom)}
+
+    {:noreply,
+     socket
+     |> assign(:active_tab, tab_atom)
+     |> assign(:view_stack, [tab_atom])
+     |> assign(:selected_home, nil)
+     |> assign(:selected_provider, nil)}
   end
 
   @impl true
@@ -208,6 +174,352 @@ defmodule CortexIqDashboardWeb.DashboardLive do
       end
 
     {:noreply, socket |> assign(:sort_by, sort_by) |> assign(:sort_direction, sort_direction)}
+  end
+
+  @impl true
+  def handle_event("simulation_pause", _params, socket) do
+    require Logger
+    Logger.info("DashboardLive: Pausing simulation")
+
+    # Publish pause command to WAMP
+    CortexIqDashboard.WampSubscriber.publish_control_command("pause")
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("simulation_resume", _params, socket) do
+    require Logger
+    Logger.info("DashboardLive: Resuming simulation")
+
+    # Publish resume command to WAMP
+    CortexIqDashboard.WampSubscriber.publish_control_command("resume")
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("simulation_reset", _params, socket) do
+    require Logger
+    Logger.info("DashboardLive: Resetting simulation")
+
+    # Publish reset command to WAMP
+    CortexIqDashboard.WampSubscriber.publish_control_command("reset")
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("simulation_set_speed", %{"speed" => speed_str}, socket) do
+    require Logger
+    speed = String.to_integer(speed_str)
+    Logger.info("DashboardLive: Setting simulation speed to #{speed}x")
+
+    # Publish set_speed command to WAMP
+    CortexIqDashboard.WampSubscriber.publish_control_command("set_speed", %{"speed" => speed})
+
+    {:noreply, socket}
+  end
+
+  # Home detail view
+  defp render_home_detail(assigns) do
+    home_state = Map.get(assigns.home_states, assigns.selected_home, %{})
+    home_history = Map.get(assigns.home_history, assigns.selected_home, [])
+    contract = Map.get(assigns.home_contracts, assigns.selected_home, %{})
+    balance = Map.get(assigns.home_balances, assigns.selected_home, %{})
+
+    assigns = assign(assigns,
+      home_state: home_state,
+      home_history: home_history,
+      contract: contract,
+      balance: balance
+    )
+
+    ~H"""
+    <div class="space-y-6">
+      <!-- Detail Header -->
+      <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <h2 class="text-2xl font-bold text-blue-400 mb-2">{@selected_home}</h2>
+        <div class="text-gray-400 text-sm">
+          {Map.get(@home_state, :city, "Unknown")}, {Map.get(@home_state, :postal_code, "")}
+        </div>
+        <%= if Map.get(@home_state, :region) do %>
+          <span class="inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">
+            {CortexIqCore.Geography.region_name(
+              String.to_atom(Map.get(@home_state, :region, "unknown"))
+            )}
+          </span>
+        <% end %>
+      </div>
+
+      <!-- Current Metrics -->
+      <div class="grid grid-cols-3 gap-4">
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <div class="text-gray-400 text-xs">Production</div>
+          <div class="text-3xl font-bold text-green-400">
+            {format_power(Map.get(@home_state, :production_kw, 0.0))}
+          </div>
+        </div>
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <div class="text-gray-400 text-xs">Consumption</div>
+          <div class="text-3xl font-bold text-red-400">
+            {format_power(Map.get(@home_state, :consumption_kw, 0.0))}
+          </div>
+        </div>
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <div class="text-gray-400 text-xs">Battery</div>
+          <div class="text-3xl font-bold text-blue-400">
+            {Float.round(Map.get(@home_state, :state_of_charge_pct, 0), 1)}%
+          </div>
+        </div>
+      </div>
+
+      <!-- Historical Sparklines -->
+      <%= if length(@home_history) > 1 do %>
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-300 mb-3">
+            Production vs Consumption (Last 5 min)
+          </h3>
+          <div
+            id={"power-sparkline-#{@selected_home}"}
+            phx-hook="PowerSparkline"
+            phx-update="ignore"
+            data-history={Jason.encode!(@home_history)}
+          >
+          </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-300 mb-3">Battery Charge (Last 5 min)</h3>
+          <div
+            id={"battery-sparkline-#{@selected_home}"}
+            phx-hook="BatterySparkline"
+            phx-update="ignore"
+            data-history={Jason.encode!(@home_history)}
+          >
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Financial Performance - Key Selling Point! -->
+      <div class="bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-lg p-6 border-2 border-purple-500/50">
+        <h3 class="text-xl font-bold text-purple-300 mb-4">💰 Cost Optimization Performance</h3>
+        <div class="grid grid-cols-3 gap-4">
+          <div class="bg-gray-800/80 rounded-lg p-4">
+            <div class="text-gray-400 text-xs mb-1">Energy Bought</div>
+            <div class="text-2xl font-bold text-red-400">
+              {Float.round(Map.get(@balance, :energy_bought_kwh, 0.0), 1)} kWh
+            </div>
+            <div class="text-sm text-gray-500 mt-1">
+              Cost: €{Float.round(Map.get(@balance, :cost_paid, 0.0), 2)}
+            </div>
+          </div>
+          <div class="bg-gray-800/80 rounded-lg p-4">
+            <div class="text-gray-400 text-xs mb-1">Energy Sold</div>
+            <div class="text-2xl font-bold text-green-400">
+              {Float.round(Map.get(@balance, :energy_sold_kwh, 0.0), 1)} kWh
+            </div>
+            <div class="text-sm text-gray-500 mt-1">
+              Revenue: €{Float.round(Map.get(@balance, :revenue_received, 0.0), 2)}
+            </div>
+          </div>
+          <div class="bg-gray-800/80 rounded-lg p-4">
+            <div class="text-gray-400 text-xs mb-1">Net Cost</div>
+            <div class={"text-2xl font-bold " <> if Map.get(@balance, :net_cost, 0.0) < 0, do: "text-green-400", else: "text-yellow-400"}>
+              €{Float.round(Map.get(@balance, :net_cost, 0.0), 2)}
+            </div>
+            <div class="text-xs text-gray-500 mt-1">
+              Balance: {Float.round(Map.get(@balance, :net_balance_kwh, 0.0), 1)} kWh
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Contract -->
+      <%= if Map.get(@contract, :provider_id) do %>
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-300 mb-4">📋 Current Energy Contract</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <div class="text-sm text-gray-400">Provider</div>
+              <div class="text-lg font-bold text-blue-400">
+                {get_provider_name(Map.get(@contract, :provider_id, "Unknown"))}
+              </div>
+              <div class="text-xs text-gray-500 mt-1">
+                Contract: {Map.get(@contract, :contract_id, "N/A")}
+              </div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-400">Contract Start</div>
+              <div class="text-sm text-gray-300">
+                <%= if Map.get(@contract, :signed_at) do %>
+                  {Calendar.strftime(Map.get(@contract, :signed_at), "%Y-%m-%d %H:%M")}
+                <% else %>
+                  Not available
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% else %>
+        <div class="bg-yellow-900/30 rounded-lg p-6 border border-yellow-600/50">
+          <div class="flex items-center gap-3">
+            <div class="text-3xl">⚠️</div>
+            <div>
+              <div class="text-lg font-semibold text-yellow-300">No Active Contract</div>
+              <div class="text-sm text-gray-400">This home is currently on spot market pricing</div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+    </div>
+    """
+  end
+
+  # Provider detail view
+  defp render_provider_detail(assigns) do
+    provider_state = Map.get(assigns.provider_states, assigns.selected_provider, %{})
+    provider_history = Map.get(assigns.provider_history, assigns.selected_provider, [])
+
+    assigns = assign(assigns, provider_state: provider_state, provider_history: provider_history)
+
+    ~H"""
+    <div class="space-y-6">
+      <!-- Detail Header -->
+      <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <h2 class="text-2xl font-bold text-yellow-400 mb-2">
+          {Map.get(@provider_state, :provider_name, @selected_provider)}
+        </h2>
+        <div class="text-gray-400 text-sm">
+          Provider ID: {@selected_provider}
+        </div>
+        <%= if Map.get(@provider_state, :strategy) do %>
+          <span class="inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full bg-yellow-600 text-white">
+            {format_strategy(Map.get(@provider_state, :strategy))}
+          </span>
+        <% end %>
+      </div>
+
+      <!-- Contract Offer Details -->
+      <%= if Map.get(@provider_state, :contract_offer) do %>
+        <% contract = Map.get(@provider_state, :contract_offer) %>
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-300 mb-4">12-Month Contract Offer</h3>
+
+          <!-- Day/Night Pricing Grid -->
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="bg-gray-700 rounded-lg p-4">
+              <div class="text-yellow-400 text-sm font-semibold mb-3">☀️ Day Rates (6am-6pm)</div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-400 text-sm">Buy:</span>
+                <span class="text-green-400 font-semibold text-lg">€{Float.round(Map.get(contract, :day_buy_price, 0), 4)}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Sell:</span>
+                <span class="text-blue-400 font-semibold text-lg">€{Float.round(Map.get(contract, :day_sell_price, 0), 4)}</span>
+              </div>
+            </div>
+
+            <div class="bg-gray-700 rounded-lg p-4">
+              <div class="text-purple-400 text-sm font-semibold mb-3">🌙 Night Rates (6pm-6am)</div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-400 text-sm">Buy:</span>
+                <span class="text-green-400 font-semibold text-lg">€{Float.round(Map.get(contract, :night_buy_price, 0), 4)}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400 text-sm">Sell:</span>
+                <span class="text-blue-400 font-semibold text-lg">€{Float.round(Map.get(contract, :night_sell_price, 0), 4)}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contract Terms -->
+          <div class="space-y-3 bg-gray-700 rounded-lg p-4">
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-gray-400">Switching Discount:</span>
+              <span class="text-yellow-400 font-semibold">€{Float.round(Map.get(contract, :switching_discount, 0), 2)}</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-gray-400">Min. Monthly Usage:</span>
+              <span class="text-white font-semibold">{Float.round(Map.get(contract, :minimum_monthly_kwh, 0), 0)} kWh</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-gray-400">Contract Duration:</span>
+              <span class="text-white font-semibold">{Map.get(contract, :duration_months, 12)} months</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Market Share -->
+      <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <h3 class="text-lg font-semibold text-gray-300 mb-2">Market Share</h3>
+        <% connected_homes = count_homes_by_provider(@home_states, @selected_provider) %>
+        <div class="text-4xl font-bold text-yellow-400 mb-1">
+          {connected_homes}
+        </div>
+        <div class="text-sm text-gray-500">homes connected</div>
+      </div>
+
+    </div>
+    """
+  end
+
+  # Breadcrumb navigation
+  defp render_breadcrumbs(assigns) do
+    ~H"""
+    <%= if length(@view_stack) > 1 do %>
+      <div class="mb-4 flex items-center gap-2 text-sm">
+        <%= for {item, index} <- Enum.with_index(@view_stack) do %>
+          <%= if index > 0 do %>
+            <span class="text-gray-600">/</span>
+          <% end %>
+
+          <%= case item do %>
+            <% :overview -> %>
+              <button
+                phx-click="switch_tab"
+                phx-value-tab="overview"
+                class="text-blue-400 hover:text-blue-300"
+              >
+                Overview
+              </button>
+            <% :homes -> %>
+              <button
+                phx-click="navigate_to_list"
+                phx-value-tab="homes"
+                class={
+                  if index == length(@view_stack) - 1,
+                    do: "text-gray-300",
+                    else: "text-blue-400 hover:text-blue-300"
+                }
+              >
+                Homes
+              </button>
+            <% :providers -> %>
+              <button
+                phx-click="navigate_to_list"
+                phx-value-tab="providers"
+                class={
+                  if index == length(@view_stack) - 1,
+                    do: "text-gray-300",
+                    else: "text-blue-400 hover:text-blue-300"
+                }
+              >
+                Providers
+              </button>
+            <% {:home_detail, home_id} -> %>
+              <span class="text-gray-300">{home_id}</span>
+            <% {:provider_detail, provider_id} -> %>
+              <span class="text-gray-300">{get_provider_name(provider_id)}</span>
+            <% _ -> %>
+              <span class="text-gray-500">Unknown</span>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+    """
   end
 
   # Render homes list with search/filter/sort
@@ -304,7 +616,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
                     </div>
                   </td>
                   <td class="px-4 py-3">
-                    <% battery_pct = Map.get(home_state, :battery_percent, 0.0) %>
+                    <% battery_pct = Map.get(home_state, :state_of_charge_pct, 0.0) %>
                     <div class="flex items-center gap-2">
                       <div class="flex-1 bg-gray-700 rounded-full h-2 w-16">
                         <div
@@ -330,7 +642,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
                   <td class="px-4 py-3">
                     <% net_cost = Map.get(balance, :net_cost, 0.0) %>
                     <div class={"text-sm font-semibold #{if net_cost > 0, do: "text-red-400", else: "text-green-400"}"}>
-                      ${Float.round(net_cost, 2)}
+                      €{Float.round(net_cost, 2)}
                     </div>
                   </td>
                   <td class="px-4 py-3">
@@ -352,12 +664,215 @@ defmodule CortexIqDashboardWeb.DashboardLive do
     """
   end
 
+  defp render_providers_list(assigns) do
+    ~H"""
+    <div class="space-y-6">
+      <!-- Search and Filter Controls -->
+      <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+        <div class="flex gap-4 items-center">
+          <div class="flex-1">
+            <div class="text-sm text-gray-400">
+              {Enum.count(@provider_states)} providers competing for market share
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Providers Table -->
+      <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-900 border-b border-gray-700">
+              <tr>
+                <th class="px-4 py-3 text-left text-gray-400 font-semibold text-xs uppercase tracking-wide">
+                  Provider
+                </th>
+                <th class="px-4 py-3 text-left text-gray-400 font-semibold text-xs uppercase tracking-wide">
+                  Strategy
+                </th>
+                <th class="px-4 py-3 text-right text-gray-400 font-semibold text-xs uppercase tracking-wide">
+                  Market Share
+                </th>
+                <th class="px-4 py-3 text-right text-gray-400 font-semibold text-xs uppercase tracking-wide">
+                  Customers
+                </th>
+                <th class="px-4 py-3 text-right text-gray-400 font-semibold text-xs uppercase tracking-wide">
+                  Day Buy
+                </th>
+                <th class="px-4 py-3 text-right text-gray-400 font-semibold text-xs uppercase tracking-wide">
+                  Night Buy
+                </th>
+                <th class="px-4 py-3 text-right text-gray-400 font-semibold text-xs uppercase tracking-wide">
+                  Avg Spread
+                </th>
+                <th class="px-4 py-3 text-right text-gray-400 font-semibold text-xs uppercase tracking-wide">
+                  Discount
+                </th>
+                <th class="px-4 py-3 text-left text-gray-400 font-semibold text-xs uppercase tracking-wide">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-700">
+              <%= for {provider_id, provider} <- Enum.sort_by(@provider_states, fn {_id, p} -> -(Map.get(p, :market_share_percent, 0.0)) end) do %>
+                <% market_share = safe_float(Map.get(provider, :market_share_percent, 0.0)) %>
+                <% day_buy = safe_float(Map.get(provider, :day_buy_price, 0.0)) %>
+                <% night_buy = safe_float(Map.get(provider, :night_buy_price, 0.0)) %>
+                <% day_sell = safe_float(Map.get(provider, :day_sell_price, 0.0)) %>
+                <% night_sell = safe_float(Map.get(provider, :night_sell_price, 0.0)) %>
+                <% discount = safe_float(Map.get(provider, :switching_discount, 0.0)) %>
+                <% avg_spread = ((day_buy - day_sell) + (night_buy - night_sell)) / 2 %>
+
+                <tr class="hover:bg-gray-750 transition-colors">
+                  <td class="px-4 py-3">
+                    <div class="font-semibold text-sm text-yellow-400">{Map.get(provider, :provider_name, provider_id)}</div>
+                    <div class="text-xs text-gray-500 font-mono">{provider_id}</div>
+                  </td>
+                  <td class="px-4 py-3">
+                    <span class="px-2 py-1 text-xs font-semibold rounded bg-blue-600 text-white">
+                      {format_strategy(Map.get(provider, :strategy, "unknown"))}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <div class="flex-1 bg-gray-700 rounded-full h-2 w-16">
+                        <div
+                          class="h-full rounded-full bg-gradient-to-r from-blue-500 to-green-500"
+                          style={"width: #{Float.round(market_share, 1)}%"}>
+                        </div>
+                      </div>
+                      <span class="text-sm font-bold text-green-400 w-12">
+                        {Float.round(market_share, 1)}%
+                      </span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 text-right">
+                    <div class="text-sm font-semibold text-white">{Map.get(provider, :active_contracts, 0)}</div>
+                  </td>
+                  <td class="px-4 py-3 text-right">
+                    <div class="text-sm text-red-400">€{Float.round(day_buy, 3)}</div>
+                  </td>
+                  <td class="px-4 py-3 text-right">
+                    <div class="text-sm text-blue-400">€{Float.round(night_buy, 3)}</div>
+                  </td>
+                  <td class="px-4 py-3 text-right">
+                    <div class="text-sm text-purple-400">€{Float.round(avg_spread, 3)}</div>
+                  </td>
+                  <td class="px-4 py-3 text-right">
+                    <div class="text-sm text-yellow-400">€{Float.round(discount, 0)}</div>
+                  </td>
+                  <td class="px-4 py-3">
+                    <button
+                      phx-click="select_provider"
+                      phx-value-provider_id={provider_id}
+                      class="px-3 py-1 bg-yellow-600 hover:bg-yellow-700 rounded text-xs font-semibold transition-colors"
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
   @impl true
   def render(assigns) do
     ~H"""
     <div class="min-h-screen bg-gray-900 text-gray-100">
       <div class="container mx-auto p-8">
         <h1 class="text-4xl font-bold mb-6 text-blue-400">CortexIQ Energy Exchange</h1>
+
+        <!-- Simulation Controls -->
+        <div class="mb-6 bg-gradient-to-r from-indigo-900/50 to-purple-900/50 rounded-lg p-4 border border-indigo-500/50">
+          <div class="flex items-center justify-between gap-6">
+            <!-- Simulation Time Display -->
+            <div class="flex items-center gap-4">
+              <div>
+                <div class="text-xs text-gray-400 uppercase tracking-wide">Simulation Date</div>
+                <div class="flex items-center gap-3">
+                  <div class="text-2xl font-bold text-indigo-300 font-mono">
+                    {format_simulation_date(@simulation_time)}
+                  </div>
+                  <div class="text-3xl" title={day_night_label(@simulation_time)}>
+                    {day_night_icon(@simulation_time)}
+                  </div>
+                </div>
+              </div>
+              <div class="h-12 w-px bg-gray-700"></div>
+              <div>
+                <div class="text-xs text-gray-400 uppercase tracking-wide">Status</div>
+                <div class="text-lg font-semibold">
+                  <%= if @simulation_paused do %>
+                    <span class="text-yellow-400">⏸ PAUSED</span>
+                  <% else %>
+                    <span class="text-green-400">▶ Running</span>
+                  <% end %>
+                </div>
+              </div>
+              <div class="h-12 w-px bg-gray-700"></div>
+              <div>
+                <div class="text-xs text-gray-400 uppercase tracking-wide">Speed</div>
+                <div class="text-lg font-bold text-purple-300">
+                  {format_speed(@simulation_speed)}
+                </div>
+              </div>
+            </div>
+
+            <!-- Control Buttons -->
+            <div class="flex items-center gap-3">
+              <!-- Play/Pause -->
+              <%= if @simulation_paused do %>
+                <button
+                  phx-click="simulation_resume"
+                  class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
+                  title="Resume Simulation"
+                >
+                  <span class="text-xl">▶</span>
+                  Resume
+                </button>
+              <% else %>
+                <button
+                  phx-click="simulation_pause"
+                  class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
+                  title="Pause Simulation"
+                >
+                  <span class="text-xl">⏸</span>
+                  Pause
+                </button>
+              <% end %>
+
+              <!-- Speed Controls -->
+              <div class="flex gap-1 bg-gray-800 rounded-lg p-1">
+                <%= for {speed, label} <- [{1, "1x"}, {100, "100x"}, {1000, "1K"}, {10000, "10K"}, {105120, "Max"}] do %>
+                  <button
+                    phx-click="simulation_set_speed"
+                    phx-value-speed={speed}
+                    class={"px-3 py-1 rounded text-sm font-semibold transition-all #{if @simulation_speed == speed, do: "bg-purple-600 text-white", else: "text-gray-400 hover:text-white hover:bg-gray-700"}"}
+                    title={"Set speed to #{speed}x"}
+                  >
+                    {label}
+                  </button>
+                <% end %>
+              </div>
+
+              <!-- Reset -->
+              <button
+                phx-click="simulation_reset"
+                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
+                title="Reset to 2025-01-01"
+                data-confirm="Reset simulation to 2025-01-01? This will restart all homes and providers."
+              >
+                <span class="text-xl">⟳</span>
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
 
     <!-- Main Navigation Tabs -->
         <div class="flex gap-2 mb-6 border-b border-gray-700">
@@ -372,20 +887,8 @@ defmodule CortexIqDashboardWeb.DashboardLive do
           <% end %>
         </div>
 
-    <!-- Regional Tabs (shown for Overview and Homes tabs) -->
-        <%= if @active_tab in [:overview, :homes] do %>
-        <div class="flex gap-2 mb-6">
-          <%= for {region, label} <- [{:all, "All Regions"}, {:brussels, "Brussels"}, {:flanders, "Flanders"}, {:wallonia, "Wallonia"}] do %>
-            <button
-              phx-click="select_region"
-              phx-value-region={region}
-              class={"px-6 py-3 rounded-lg font-semibold transition-all #{if @selected_region == region, do: "bg-blue-600 text-white", else: "bg-gray-800 text-gray-400 hover:bg-gray-700"}"}
-            >
-              {label}
-            </button>
-          <% end %>
-        </div>
-        <% end %>
+        <!-- Breadcrumb Navigation -->
+        <%= render_breadcrumbs(assigns) %>
 
     <!-- Overview Tab Content -->
         <%= if @active_tab == :overview do %>
@@ -424,24 +927,6 @@ defmodule CortexIqDashboardWeb.DashboardLive do
             <% end %>
           </div>
         </div>
-        
-    <!-- Simulation Time Display -->
-        <%= if @simulation_time do %>
-          <div class="mb-4 bg-gray-800 rounded-lg p-4 border border-blue-500">
-            <div class="flex items-center justify-between">
-              <div>
-                <span class="text-gray-400 text-sm">Simulation Time:</span>
-                <span class="text-blue-400 font-mono text-lg ml-2">{format_simulation_time(@simulation_time)}</span>
-              </div>
-              <%= if @simulation_speed do %>
-                <div class="text-gray-500 text-sm">
-                  Speed: <span class="text-blue-400 font-bold">{format_number(@simulation_speed)}x</span>
-                  <span class="text-gray-600 ml-2">(1 year = 5 min)</span>
-                </div>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
 
     <!-- Stats Cards -->
         <div class="grid grid-cols-6 gap-4 mb-6">
@@ -456,7 +941,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
               {format_energy(@stats.total_energy_bought_kwh)}
             </div>
             <div class="text-xs text-gray-500 mt-1">
-              ${Float.round(@stats.total_cost_paid, 2)}
+              €{Float.round(@stats.total_cost_paid, 2)}
             </div>
           </div>
 
@@ -466,7 +951,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
               {format_energy(@stats.total_energy_sold_kwh)}
             </div>
             <div class="text-xs text-gray-500 mt-1">
-              ${Float.round(@stats.total_revenue_received, 2)}
+              €{Float.round(@stats.total_revenue_received, 2)}
             </div>
           </div>
 
@@ -476,7 +961,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
               {format_energy(abs(@stats.total_energy_bought_kwh - @stats.total_energy_sold_kwh))}
             </div>
             <div class="text-xs text-gray-500 mt-1">
-              Net: ${Float.round(@stats.total_cost_paid - @stats.total_revenue_received, 2)}
+              Net: €{Float.round(@stats.total_cost_paid - @stats.total_revenue_received, 2)}
             </div>
           </div>
 
@@ -493,81 +978,36 @@ defmodule CortexIqDashboardWeb.DashboardLive do
           </div>
         </div>
         
-    <!-- Main Content: Map + Event Feed -->
-        <div class="grid grid-cols-12 gap-6">
-          <!-- Map Section (70%) -->
-          <div class="col-span-8">
-            <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-              <div class="p-4 border-b border-gray-700">
-                <h2 class="text-xl font-bold text-gray-100">Belgium Energy Mesh</h2>
-              </div>
-              <!-- Map Container -->
-              <div
-                id="belgium-map"
-                phx-hook="BelgiumMap"
-                phx-update="ignore"
-                data-locations={Jason.encode!(@locations)}
-                data-selected-region={@selected_region}
-                style="height: 600px;"
-              >
-              </div>
-              <!-- Map Legend -->
-              <div class="p-4 bg-gray-750 border-t border-gray-700">
-                <div class="flex items-center gap-6 text-sm">
-                  <div class="flex items-center gap-2">
-                    <div class="w-4 h-4 rounded-full bg-green-500"></div>
-                    <span class="text-gray-300">Producing</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <div class="w-4 h-4 rounded-full bg-yellow-500"></div>
-                    <span class="text-gray-300">Balanced</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <div class="w-4 h-4 rounded-full bg-red-500"></div>
-                    <span class="text-gray-300">Consuming</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <!-- Main Content: Map Section -->
+        <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+          <div class="p-4 border-b border-gray-700">
+            <h2 class="text-xl font-bold text-gray-100">Belgium Energy Mesh</h2>
+            <p class="text-sm text-gray-400 mt-1">Click on any home or provider to view detailed live events</p>
           </div>
-          
-    <!-- Live Events Feed (30%) -->
-          <div class="col-span-4">
-            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
-              <h2 class="text-xl font-bold mb-4 text-gray-100">Live Events</h2>
-
-              <div class="space-y-2 overflow-y-auto" style="height: 600px;">
-                <%= if Enum.empty?(@events) do %>
-                  <div class="text-gray-500 text-center py-8">
-                    Waiting for events...
-                  </div>
-                <% else %>
-                  <%= for event <- @events do %>
-                    <div class="bg-gray-700 rounded p-3 text-sm font-mono">
-                      <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                          <span class={"px-2 py-1 rounded text-xs font-semibold #{event_color(event.type)}"}>
-                            {event.type}
-                          </span>
-                        </div>
-                        <div class="text-gray-500 text-xs">{event.time}</div>
-                      </div>
-                      <div class="mt-2 text-gray-400 text-xs">
-                        <%= if is_map(event.data) and Map.has_key?(event.data, :provider_id) do %>
-                          <button
-                            phx-click="select_provider"
-                            phx-value-provider_id={event.data.provider_id}
-                            class="text-yellow-400 hover:text-yellow-300 underline cursor-pointer"
-                          >
-                            {event.data.text}
-                          </button>
-                        <% else %>
-                          {event.data}
-                        <% end %>
-                      </div>
-                    </div>
-                  <% end %>
-                <% end %>
+          <!-- Map Container -->
+          <div
+            id="belgium-map"
+            phx-hook="BelgiumMap"
+            phx-update="ignore"
+            data-locations={Jason.encode!(@locations)}
+            data-selected-region={@selected_region}
+            style="height: 600px;"
+          >
+          </div>
+          <!-- Map Legend -->
+          <div class="p-4 bg-gray-750 border-t border-gray-700">
+            <div class="flex items-center gap-6 text-sm">
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full bg-green-500"></div>
+                <span class="text-gray-300">Producing</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full bg-yellow-500"></div>
+                <span class="text-gray-300">Balanced</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                <span class="text-gray-300">Consuming</span>
               </div>
             </div>
           </div>
@@ -639,365 +1079,23 @@ defmodule CortexIqDashboardWeb.DashboardLive do
 
     <!-- Homes Tab Content -->
         <%= if @active_tab == :homes do %>
-          <%= render_homes_list(assigns) %>
+          <%= if @selected_home do %>
+            <%= render_home_detail(assigns) %>
+          <% else %>
+            <%= render_homes_list(assigns) %>
+          <% end %>
         <% end %>
 
     <!-- Providers Tab Content -->
         <%= if @active_tab == :providers do %>
-          <div class="text-center text-gray-500 mt-20">
-            <div class="text-6xl mb-4">⚡</div>
-            <h2 class="text-2xl mb-2">Providers View</h2>
-            <p>Coming soon: Detailed provider comparison and analytics</p>
-          </div>
+          <%= if @selected_provider do %>
+            <%= render_provider_detail(assigns) %>
+          <% else %>
+            <%= render_providers_list(assigns) %>
+          <% end %>
         <% end %>
 
       </div>
-
-    <!-- Home Detail Panel (Slide-in) -->
-      <%= if @selected_home do %>
-        <% home_state = Map.get(@home_states, @selected_home, %{}) %>
-        <% home_history = Map.get(@home_history, @selected_home, []) %>
-
-        <div
-          class="fixed inset-0 bg-black bg-opacity-50 z-40"
-          phx-click="close_detail_panel"
-        >
-        </div>
-
-        <div
-          class="fixed right-0 top-0 bottom-0 w-1/3 bg-gray-800 shadow-2xl z-50 overflow-y-auto border-l border-gray-700"
-          style="animation: slideIn 0.3s ease-out;"
-        >
-          <!-- Panel Header -->
-          <div class="sticky top-0 bg-gray-900 border-b border-gray-700 p-6 flex justify-between items-start">
-            <div>
-              <h2 class="text-2xl font-bold text-blue-400">{@selected_home}</h2>
-              <div class="text-gray-400 text-sm mt-1">
-                {Map.get(home_state, :city, "Unknown")}, {Map.get(home_state, :postal_code, "")}
-              </div>
-              <%= if Map.get(home_state, :region) do %>
-                <span class="inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">
-                  {CortexIqCore.Geography.region_name(
-                    String.to_atom(Map.get(home_state, :region, "unknown"))
-                  )}
-                </span>
-              <% end %>
-            </div>
-            <button
-              phx-click="close_detail_panel"
-              class="text-gray-400 hover:text-white transition-colors"
-            >
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-          
-    <!-- Panel Content -->
-          <div class="p-6 space-y-6">
-            <!-- Current Metrics -->
-            <div class="grid grid-cols-3 gap-4">
-              <div class="bg-gray-700 rounded-lg p-4">
-                <div class="text-gray-400 text-xs">Production</div>
-                <div class="text-2xl font-bold text-green-400">
-                  {round(Map.get(home_state, :production_w, 0))}W
-                </div>
-              </div>
-              <div class="bg-gray-700 rounded-lg p-4">
-                <div class="text-gray-400 text-xs">Consumption</div>
-                <div class="text-2xl font-bold text-red-400">
-                  {round(Map.get(home_state, :consumption_w, 0))}W
-                </div>
-              </div>
-              <div class="bg-gray-700 rounded-lg p-4">
-                <div class="text-gray-400 text-xs">Battery</div>
-                <div class="text-2xl font-bold text-blue-400">
-                  {Float.round(Map.get(home_state, :battery_percent, 0), 1)}%
-                </div>
-              </div>
-            </div>
-            
-    <!-- 3-Phase Power Distribution -->
-            <%= if Map.has_key?(home_state, :power_l1_w) do %>
-              <div class="bg-gray-700 rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-300 mb-3">3-Phase Power Distribution</h3>
-                <div
-                  id={"phase-chart-#{@selected_home}"}
-                  phx-hook="PhaseChart"
-                  phx-update="ignore"
-                  data-l1={Map.get(home_state, :power_l1_w, 0)}
-                  data-l2={Map.get(home_state, :power_l2_w, 0)}
-                  data-l3={Map.get(home_state, :power_l3_w, 0)}
-                >
-                </div>
-              </div>
-            <% end %>
-            
-    <!-- Voltage & Frequency -->
-            <%= if Map.has_key?(home_state, :voltage_v) do %>
-              <div class="grid grid-cols-2 gap-4">
-                <div class="bg-gray-700 rounded-lg p-4">
-                  <div class="text-gray-400 text-xs">Voltage</div>
-                  <div class="text-xl font-bold text-yellow-400">
-                    {Float.round(Map.get(home_state, :voltage_v, 230.0), 1)}V
-                  </div>
-                </div>
-                <div class="bg-gray-700 rounded-lg p-4">
-                  <div class="text-gray-400 text-xs">Frequency</div>
-                  <div class="text-xl font-bold text-yellow-400">
-                    {Float.round(Map.get(home_state, :frequency_hz, 50.0), 2)}Hz
-                  </div>
-                </div>
-              </div>
-            <% end %>
-            
-    <!-- Historical Sparklines -->
-            <%= if length(home_history) > 1 do %>
-              <div class="bg-gray-700 rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-300 mb-3">
-                  Production vs Consumption (Last 5 min)
-                </h3>
-                <div
-                  id={"power-sparkline-#{@selected_home}"}
-                  phx-hook="PowerSparkline"
-                  phx-update="ignore"
-                  data-history={Jason.encode!(home_history)}
-                >
-                </div>
-              </div>
-
-              <div class="bg-gray-700 rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-300 mb-3">Battery Charge (Last 5 min)</h3>
-                <div
-                  id={"battery-sparkline-#{@selected_home}"}
-                  phx-hook="BatterySparkline"
-                  phx-update="ignore"
-                  data-history={Jason.encode!(home_history)}
-                >
-                </div>
-              </div>
-            <% end %>
-            
-    <!-- Provider Info -->
-            <%= if Map.get(home_state, :current_provider) do %>
-              <div class="bg-gray-700 rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-300 mb-2">Current Provider</h3>
-                <div class="text-lg font-bold text-blue-400">
-                  {Map.get(home_state, :current_provider)}
-                </div>
-                <%= if Map.get(home_state, :current_rate) do %>
-                  <div class="text-sm text-gray-400 mt-1">
-                    Rate: €{Map.get(home_state, :current_rate)}/kWh
-                  </div>
-                <% end %>
-              </div>
-            <% end %>
-          </div>
-        </div>
-
-        <style>
-          @keyframes slideIn {
-            from {
-              transform: translateX(100%);
-            }
-            to {
-              transform: translateX(0);
-            }
-          }
-        </style>
-      <% end %>
-      
-    <!-- Provider Detail Panel (Slide-in) -->
-      <%= if @selected_provider do %>
-        <% provider_state = Map.get(@provider_states, @selected_provider, %{}) %>
-        <% provider_history = Map.get(@provider_history, @selected_provider, []) %>
-
-        <div
-          class="fixed inset-0 bg-black bg-opacity-50 z-40"
-          phx-click="close_detail_panel"
-        >
-        </div>
-
-        <div
-          class="fixed right-0 top-0 bottom-0 w-1/3 bg-gray-800 shadow-2xl z-50 overflow-y-auto border-l border-gray-700"
-          style="animation: slideIn 0.3s ease-out;"
-        >
-          <!-- Panel Header -->
-          <div class="sticky top-0 bg-gray-900 border-b border-gray-700 p-6 flex justify-between items-start">
-            <div>
-              <h2 class="text-2xl font-bold text-yellow-400">
-                {Map.get(provider_state, :provider_name, @selected_provider)}
-              </h2>
-              <div class="text-gray-400 text-sm mt-1">
-                Provider ID: {@selected_provider}
-              </div>
-              <%= if Map.get(provider_state, :strategy) do %>
-                <span class="inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full bg-yellow-600 text-white">
-                  {format_strategy(Map.get(provider_state, :strategy))}
-                </span>
-              <% end %>
-            </div>
-            <button
-              phx-click="close_detail_panel"
-              class="text-gray-400 hover:text-white transition-colors"
-            >
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-          
-    <!-- Panel Content -->
-          <div class="p-6 space-y-6">
-            <!-- Contract Offer Details -->
-            <%= if Map.get(provider_state, :contract_offer) do %>
-              <% contract = Map.get(provider_state, :contract_offer) %>
-              <div class="bg-gray-700 rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-300 mb-3">12-Month Contract Offer</h3>
-
-                <!-- Day/Night Pricing Grid -->
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                  <div class="bg-gray-800 rounded p-3">
-                    <div class="text-yellow-400 text-xs font-semibold mb-2">☀️ Day Rates (6am-6pm)</div>
-                    <div class="flex justify-between items-center mb-1">
-                      <span class="text-gray-400 text-xs">Buy:</span>
-                      <span class="text-green-400 font-semibold">€{Float.round(Map.get(contract, :day_buy_price, 0), 4)}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                      <span class="text-gray-400 text-xs">Sell:</span>
-                      <span class="text-blue-400 font-semibold">€{Float.round(Map.get(contract, :day_sell_price, 0), 4)}</span>
-                    </div>
-                  </div>
-
-                  <div class="bg-gray-800 rounded p-3">
-                    <div class="text-purple-400 text-xs font-semibold mb-2">🌙 Night Rates (6pm-6am)</div>
-                    <div class="flex justify-between items-center mb-1">
-                      <span class="text-gray-400 text-xs">Buy:</span>
-                      <span class="text-green-400 font-semibold">€{Float.round(Map.get(contract, :night_buy_price, 0), 4)}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                      <span class="text-gray-400 text-xs">Sell:</span>
-                      <span class="text-blue-400 font-semibold">€{Float.round(Map.get(contract, :night_sell_price, 0), 4)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Contract Terms -->
-                <div class="space-y-2 text-sm">
-                  <div class="flex justify-between items-center">
-                    <span class="text-gray-400">Switching Discount:</span>
-                    <span class="text-yellow-400 font-semibold">€{Float.round(Map.get(contract, :switching_discount, 0), 2)}</span>
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-gray-400">Min. Monthly Usage:</span>
-                    <span class="text-white font-semibold">{Float.round(Map.get(contract, :minimum_monthly_kwh, 0), 0)} kWh</span>
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-gray-400">Contract Duration:</span>
-                    <span class="text-white font-semibold">{Map.get(contract, :duration_months, 12)} months</span>
-                  </div>
-                </div>
-              </div>
-            <% end %>
-
-            <!-- Spot Market Pricing (if available) -->
-            <%= if Map.get(provider_state, :spot_price) do %>
-              <% spot = Map.get(provider_state, :spot_price) %>
-              <div class="bg-gray-700 rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-300 mb-3">Spot Market (No Contract)</h3>
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <div class="text-gray-400 text-xs">Buy Price</div>
-                    <div class="text-xl font-bold text-red-400">
-                      €{Float.round(Map.get(spot, :buy_price, 0), 4)}
-                    </div>
-                    <div class="text-xs text-gray-500">per kWh</div>
-                  </div>
-                  <div>
-                    <div class="text-gray-400 text-xs">Sell Price</div>
-                    <div class="text-xl font-bold text-blue-400">
-                      €{Float.round(Map.get(spot, :sell_price, 0), 4)}
-                    </div>
-                    <div class="text-xs text-gray-500">per kWh</div>
-                  </div>
-                </div>
-                <div class="mt-2 text-xs text-gray-500">
-                  ⚠️ Spot prices are more volatile and less favorable than contract rates
-                </div>
-              </div>
-            <% end %>
-
-            <!-- Average Rates (for comparison) -->
-            <div class="grid grid-cols-2 gap-4">
-              <div class="bg-gray-700 rounded-lg p-4">
-                <div class="text-gray-400 text-xs">Avg Purchase Rate</div>
-                <div class="text-2xl font-bold text-green-400">
-                  €{Float.round(Map.get(provider_state, :price_per_kwh, 0), 4)}
-                </div>
-                <div class="text-xs text-gray-500">per kWh (weighted)</div>
-              </div>
-              <div class="bg-gray-700 rounded-lg p-4">
-                <div class="text-gray-400 text-xs">Avg Sell-back Rate</div>
-                <div class="text-2xl font-bold text-blue-400">
-                  €{Float.round(Map.get(provider_state, :sell_back_rate, 0), 4)}
-                </div>
-                <div class="text-xs text-gray-500">per kWh (weighted)</div>
-              </div>
-            </div>
-            
-    <!-- Regions Served -->
-            <%= if Map.get(provider_state, :regions) && length(Map.get(provider_state, :regions, [])) > 0 do %>
-              <div class="bg-gray-700 rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-300 mb-2">Regions Served</h3>
-                <div class="flex flex-wrap gap-2">
-                  <%= for region <- Map.get(provider_state, :regions, []) do %>
-                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">
-                      {region}
-                    </span>
-                  <% end %>
-                </div>
-              </div>
-            <% end %>
-            
-    <!-- Pricing History Chart -->
-            <%= if length(provider_history) > 1 do %>
-              <div class="bg-gray-700 rounded-lg p-4">
-                <h3 class="text-sm font-semibold text-gray-300 mb-3">
-                  Pricing History (Last 10 min)
-                </h3>
-                <div
-                  id={"pricing-chart-#{@selected_provider}"}
-                  phx-hook="PricingChart"
-                  phx-update="ignore"
-                  data-history={Jason.encode!(provider_history)}
-                  data-provider-name={Map.get(provider_state, :provider_name, @selected_provider)}
-                >
-                </div>
-              </div>
-            <% end %>
-            
-    <!-- Connected Homes -->
-            <div class="bg-gray-700 rounded-lg p-4">
-              <h3 class="text-sm font-semibold text-gray-300 mb-2">Market Share</h3>
-              <% connected_homes = count_homes_by_provider(@home_states, @selected_provider) %>
-              <div class="text-3xl font-bold text-yellow-400">
-                {connected_homes}
-              </div>
-              <div class="text-xs text-gray-500">homes connected</div>
-            </div>
-          </div>
-        </div>
-      <% end %>
     </div>
     """
   end
@@ -1034,14 +1132,6 @@ defmodule CortexIqDashboardWeb.DashboardLive do
         homes
       end
 
-    # Apply region filter
-    homes =
-      if assigns.selected_region != :all do
-        Enum.filter(homes, fn home -> home.region == assigns.selected_region end)
-      else
-        homes
-      end
-
     # Apply sorting
     homes
     |> Enum.sort_by(
@@ -1058,7 +1148,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
             get_in(assigns.home_states, [home.home_id, :consumption_kw]) || 0.0
 
           :battery ->
-            get_in(assigns.home_states, [home.home_id, :battery_percent]) || 0.0
+            get_in(assigns.home_states, [home.home_id, :state_of_charge_pct]) || 0.0
 
           :balance ->
             get_in(assigns.home_balances, [home.home_id, :net_balance_kwh]) || 0.0
@@ -1082,6 +1172,21 @@ defmodule CortexIqDashboardWeb.DashboardLive do
   defp battery_color(percent) when percent > 25, do: "bg-yellow-500"
   defp battery_color(_), do: "bg-red-500"
 
+  # Event type color coding
+  defp event_type_color(type) when is_binary(type) do
+    cond do
+      String.contains?(type, "production") -> "text-green-400"
+      String.contains?(type, "consumption") -> "text-red-400"
+      String.contains?(type, "storage") or String.contains?(type, "battery") -> "text-blue-400"
+      String.contains?(type, "contract") -> "text-purple-400"
+      String.contains?(type, "tariff") or String.contains?(type, "offer") -> "text-yellow-400"
+      String.contains?(type, "balance") or String.contains?(type, "trade") -> "text-cyan-400"
+      true -> "text-gray-400"
+    end
+  end
+
+  defp event_type_color(_), do: "text-gray-400"
+
   defp format_power(kw) when is_float(kw) or is_number(kw) do
     cond do
       kw >= 1.0 -> "#{Float.round(kw, 2)} kW"
@@ -1097,6 +1202,92 @@ defmodule CortexIqDashboardWeb.DashboardLive do
   end
 
   defp format_short_date(_), do: "N/A"
+
+  defp format_simulation_datetime(nil), do: "Loading..."
+
+  defp format_simulation_datetime(%DateTime{} = dt) do
+    Calendar.strftime(dt, "%Y-%m-%d %H:%M:%S")
+  end
+
+  defp format_simulation_datetime(_), do: "Invalid"
+
+  # Format simulation date (just YYYY-MM-DD)
+  defp format_simulation_date(nil), do: "Loading..."
+
+  defp format_simulation_date(%DateTime{} = dt) do
+    Calendar.strftime(dt, "%Y-%m-%d")
+  end
+
+  defp format_simulation_date(iso_string) when is_binary(iso_string) do
+    case DateTime.from_iso8601(iso_string) do
+      {:ok, dt, _} -> Calendar.strftime(dt, "%Y-%m-%d")
+      _ -> "Invalid"
+    end
+  end
+
+  defp format_simulation_date(_), do: "Invalid"
+
+  # Day/night icon (day = 6AM-6PM, night = 6PM-6AM)
+  defp day_night_icon(nil), do: "⏳"
+
+  defp day_night_icon(%DateTime{} = dt) do
+    if is_daytime?(dt), do: "☀️", else: "🌙"
+  end
+
+  defp day_night_icon(iso_string) when is_binary(iso_string) do
+    case DateTime.from_iso8601(iso_string) do
+      {:ok, dt, _} -> day_night_icon(dt)
+      _ -> "⏳"
+    end
+  end
+
+  defp day_night_icon(_), do: "⏳"
+
+  # Day/night label for tooltip
+  defp day_night_label(nil), do: "No time data"
+
+  defp day_night_label(%DateTime{} = dt) do
+    hour = dt.hour
+    if is_daytime?(dt) do
+      "Daytime (#{format_hour(hour)})"
+    else
+      "Nighttime (#{format_hour(hour)})"
+    end
+  end
+
+  defp day_night_label(iso_string) when is_binary(iso_string) do
+    case DateTime.from_iso8601(iso_string) do
+      {:ok, dt, _} -> day_night_label(dt)
+      _ -> "No time data"
+    end
+  end
+
+  defp day_night_label(_), do: "No time data"
+
+  # Helper: check if it's daytime (6AM to 6PM)
+  defp is_daytime?(%DateTime{hour: hour}) do
+    hour >= 6 and hour < 18
+  end
+
+  # Helper: format hour for display
+  defp format_hour(hour) when hour == 0, do: "12 AM"
+  defp format_hour(hour) when hour < 12, do: "#{hour} AM"
+  defp format_hour(hour) when hour == 12, do: "12 PM"
+  defp format_hour(hour), do: "#{hour - 12} PM"
+
+  defp format_speed(speed) when is_integer(speed) and speed >= 100_000 do
+    "#{div(speed, 1000)}K×"
+  end
+
+  defp format_speed(speed) when is_integer(speed) and speed >= 1000 do
+    "#{Float.round(speed / 1000, 1)}K×"
+  end
+
+  defp format_speed(speed) when is_integer(speed) do
+    "#{speed}×"
+  end
+
+  defp format_speed(_), do: "1×"
 
   defp format_event(topic, event_data) do
     type = extract_event_type(topic)
@@ -1184,7 +1375,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
   defp format_kwargs(kwargs, "storage") do
     home_id = Map.get(kwargs, "home_id", "unknown")
     city = Map.get(kwargs, "city", "Unknown")
-    battery_percent = Map.get(kwargs, "battery_percent", 0) |> Float.round(1)
+    battery_percent = Map.get(kwargs, "state_of_charge_pct", 0) |> Float.round(1)
 
     "#{home_id} (#{city}): Battery #{battery_percent}%"
   end
@@ -1240,16 +1431,6 @@ defmodule CortexIqDashboardWeb.DashboardLive do
     |> Time.to_string()
     |> String.slice(0..7)
   end
-
-  defp event_color("production"), do: "bg-green-600 text-white"
-  defp event_color("consumption"), do: "bg-red-600 text-white"
-  defp event_color("storage"), do: "bg-blue-600 text-white"
-  defp event_color("tariff"), do: "bg-yellow-600 text-white"
-  defp event_color("contract"), do: "bg-purple-600 text-white"
-  defp event_color("measurement"), do: "bg-cyan-600 text-white"
-  defp event_color("online"), do: "bg-emerald-600 text-white"
-  defp event_color("offline"), do: "bg-slate-600 text-white"
-  defp event_color(_), do: "bg-gray-600 text-white"
 
   defp track_unique_entities(unique_homes, unique_providers, topic, event_data)
        when is_binary(topic) do
@@ -1339,7 +1520,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
 
         "storage" ->
           Map.merge(current_state, %{
-            battery_percent: Map.get(kwargs, "battery_percent", 50.0),
+            battery_percent: Map.get(kwargs, "state_of_charge_pct", 50.0),
             city: city || current_state.city,
             postal_code: Map.get(kwargs, "postal_code", current_state.postal_code),
             region: Map.get(kwargs, "region", current_state.region)
@@ -1362,7 +1543,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
           Map.merge(current_state, %{
             production_w: production_w,
             consumption_w: consumption_w,
-            battery_percent: Map.get(kwargs, "battery_percent", 50.0),
+            battery_percent: Map.get(kwargs, "state_of_charge_pct", 50.0),
             voltage_v: Map.get(kwargs, "voltage_v", 230.0),
             frequency_hz: Map.get(kwargs, "frequency_hz", 50.0),
             power_l1_w: Map.get(kwargs, "power_l1_w", 0),
@@ -1404,7 +1585,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
       timestamp: timestamp,
       production_w: Map.get(updated_state, :production_w, 0),
       consumption_w: Map.get(updated_state, :consumption_w, 0),
-      battery_percent: Map.get(updated_state, :battery_percent, 50.0)
+      battery_percent: Map.get(updated_state, :state_of_charge_pct, 50.0)
     }
 
     updated_history = [measurement | current_history] |> Enum.take(20)
@@ -1572,7 +1753,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
     {total_battery, home_count} =
       home_states
       |> Enum.reduce({0.0, 0}, fn {_id, state}, {sum, count} ->
-        {sum + Map.get(state, :battery_percent, 0.0), count + 1}
+        {sum + Map.get(state, :state_of_charge_pct, 0.0), count + 1}
       end)
 
     avg_battery = if home_count > 0, do: total_battery / home_count, else: 0.0
@@ -1775,20 +1956,27 @@ defmodule CortexIqDashboardWeb.DashboardLive do
   defp get_provider_name("provider_e"), do: "Discount King Power"
   defp get_provider_name(id), do: String.capitalize(id)
 
+  # Helper to safely convert values to float
+  defp safe_float(val) when is_float(val), do: val
+  defp safe_float(val) when is_integer(val), do: val * 1.0
+  defp safe_float(nil), do: 0.0
+  defp safe_float(_), do: 0.0
+
   # Database loaders - load initial state from persisted data
 
   defp load_home_states_from_db do
-    home_records = Repo.all(HomeState)
+    # Query HomesViewAggregator (in-memory)
+    homes = HomesViewAggregator.get_homes()
 
-    unique_homes = home_records |> Enum.map(& &1.home_id) |> MapSet.new()
+    unique_homes = homes |> Enum.map(& &1.home_id) |> MapSet.new()
 
     home_states =
-      home_records
+      homes
       |> Enum.map(fn home ->
         {home.home_id, %{
-          production_w: (home.production_kw || 0.0) * 1000,  # Convert kW to W
-          consumption_w: (home.consumption_kw || 0.0) * 1000,  # Convert kW to W
-          battery_percent: home.battery_percent || 0.0,
+          production_kw: home.production_kw || 0.0,  # Keep in kW
+          consumption_kw: home.consumption_kw || 0.0,  # Keep in kW
+          state_of_charge_pct: home.state_of_charge_pct || 0.0,
           city: home.location,
           postal_code: home.postal_code,
           region: home.region
@@ -1797,7 +1985,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
       |> Enum.into(%{})
 
     home_contracts =
-      home_records
+      homes
       |> Enum.filter(& &1.provider_id)
       |> Enum.map(fn home ->
         {home.home_id, %{
@@ -1809,7 +1997,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
       |> Enum.into(%{})
 
     home_balances =
-      home_records
+      homes
       |> Enum.map(fn home ->
         {home.home_id, %{
           energy_bought_kwh: home.energy_bought_kwh || 0.0,
@@ -1826,16 +2014,24 @@ defmodule CortexIqDashboardWeb.DashboardLive do
   end
 
   defp load_provider_states_from_db do
-    provider_records = Repo.all(ProviderState)
+    # Query ProvidersViewAggregator (in-memory, includes calculated market share)
+    providers = ProvidersViewAggregator.get_providers()
 
-    unique_providers = provider_records |> Enum.map(& &1.provider_id) |> MapSet.new()
+    unique_providers = providers |> Enum.map(& &1.provider_id) |> MapSet.new()
 
     provider_states =
-      provider_records
+      providers
       |> Enum.map(fn provider ->
         {provider.provider_id, %{
           provider_name: get_provider_name(provider.provider_id),
           strategy: provider.strategy,
+          active_contracts: provider.active_contracts || 0,
+          market_share_percent: provider.market_share_percent || 0.0,
+          day_buy_price: provider.day_buy_price || 0.0,
+          night_buy_price: provider.night_buy_price || 0.0,
+          day_sell_price: provider.day_sell_price || 0.0,
+          night_sell_price: provider.night_sell_price || 0.0,
+          switching_discount: provider.switching_discount || 0.0,
           price_per_kwh: (provider.day_buy_price || 0.0) * 0.6 + (provider.night_buy_price || 0.0) * 0.4,
           sell_back_rate: (provider.day_sell_price || 0.0) * 0.8 + (provider.night_sell_price || 0.0) * 0.2,
           contract_offer: %{
@@ -1850,7 +2046,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
       |> Enum.into(%{})
 
     provider_market_share =
-      provider_records
+      providers
       |> Enum.map(fn provider ->
         {provider.provider_id, provider.active_contracts || 0}
       end)
@@ -1860,36 +2056,21 @@ defmodule CortexIqDashboardWeb.DashboardLive do
   end
 
   defp load_system_stats_from_db do
-    case Repo.get(SystemStats, 1) do
-      nil ->
-        {nil, nil, %{
-          homes: 0,
-          providers: 0,
-          events_received: 0,
-          total_production_kwh: 0.0,
-          total_consumption_kwh: 0.0,
-          total_energy_bought_kwh: 0.0,
-          total_energy_sold_kwh: 0.0,
-          total_cost_paid: 0.0,
-          total_revenue_received: 0.0,
-          contract_switches: 0,
-          avg_battery_percent: 0.0
-        }}
+    # Query OverviewAggregator (in-memory, calculated from entity aggregates)
+    overview = OverviewAggregator.get_state()
 
-      stats ->
-        {stats.simulation_time, stats.simulation_speed, %{
-          homes: stats.total_homes || 0,
-          providers: stats.total_providers || 0,
-          events_received: 0,
-          total_production_kwh: stats.total_production_kwh || 0.0,
-          total_consumption_kwh: stats.total_consumption_kwh || 0.0,
-          total_energy_bought_kwh: stats.total_energy_bought_kwh || 0.0,
-          total_energy_sold_kwh: stats.total_energy_sold_kwh || 0.0,
-          total_cost_paid: stats.total_cost_paid || 0.0,
-          total_revenue_received: stats.total_revenue_received || 0.0,
-          contract_switches: stats.contract_switches_count || 0,
-          avg_battery_percent: stats.avg_battery_percent || 0.0
-        }}
-    end
+    {overview.simulation_time, overview.simulation_speed, overview.simulation_paused || false, %{
+      homes: overview.total_homes || 0,
+      providers: overview.total_providers || 0,
+      events_received: 0,
+      total_production_kwh: (overview.total_production_kw || 0.0),  # Already in kW
+      total_consumption_kwh: (overview.total_consumption_kw || 0.0),  # Already in kW
+      total_energy_bought_kwh: overview.total_energy_bought_kwh || 0.0,
+      total_energy_sold_kwh: overview.total_energy_sold_kwh || 0.0,
+      total_cost_paid: overview.total_cost_paid || 0.0,
+      total_revenue_received: overview.total_revenue_received || 0.0,
+      contract_switches: overview.total_contract_switches || 0,
+      avg_battery_percent: overview.avg_battery_percent || 0.0
+    }}
   end
 end

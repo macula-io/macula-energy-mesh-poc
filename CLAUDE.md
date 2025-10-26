@@ -380,48 +380,135 @@ macula-energy-mesh-poc/
 ### MACULA PLATFORM
 
 #### macula_os
-**The distributed runtime platform for BEAM applications**
+**WAMP Gateway Sidecar - The platform's secure proxy to Macula realms**
+
+**Architecture**: MaculaOs runs as a **sidecar container** alongside application containers in Kubernetes pods. Applications connect to `localhost:<port>` and MaculaOs proxies WAMP traffic to Bondy with authentication, metering, and connection resilience.
+
+**Why Sidecar Pattern?**
+- **Multi-language support**: Applications can be written in any language (Python, Go, Rust, JS, etc.)
+- **Container-based deployment**: Maintains GitOps workflow, no BEAM release coupling
+- **Monetization ready**: API key auth, usage metering, quota enforcement
+- **Connection resilience**: Automatic retry and reconnection when Bondy restarts
+- **Security**: Applications never directly access Bondy, all traffic authenticated/metered
+
+**Pod Architecture**:
+```
+┌─────────────────────────────────────────┐
+│ Kubernetes Pod                          │
+│                                         │
+│  ┌────────────────┐  ┌───────────────┐ │
+│  │ Application    │→ │  MaculaOs     │ │
+│  │ Container      │  │  Sidecar      │ │
+│  │ (any language) │  │               │ │
+│  │                │  │ WAMP Proxy    │ │
+│  │ localhost:8080 │  │ + Auth        │ │
+│  └────────────────┘  │ + Metering    │ │
+│                      │ + Retry       │ │
+│                      └───────┬───────┘ │
+└──────────────────────────────┼─────────┘
+                               ↓ WAMP/WS
+                    ┌──────────────────┐
+                    │  Bondy (Hub)     │
+                    └──────────────────┘
+```
 
 **Core Components**:
 - `MaculaOs.Application` - Main supervision tree
-- `MaculaOs.Wamp` - WAMP client/server infrastructure
-  - `MaculaOs.Wamp.Client` - WAMP client GenServer
-  - `MaculaOs.Wamp.Connection` - WebSocket connection management
-  - `MaculaOs.Wamp.Protocol` - WAMP protocol implementation
-- `MaculaOs.Realm` - Realm lifecycle management (future)
-- `MaculaOs.Payload` - Payload management system (future)
+- `MaculaOs.Proxy.Server` - WebSocket server accepting localhost connections
+- `MaculaOs.Proxy.Upstream` - WAMP client to Bondy with retry logic
+- `MaculaOs.Auth.ApiKey` - API key validation and namespace enforcement
+- `MaculaOs.Metering` - Usage tracking (pub/sub operations per API key)
+- `MaculaOs.Wamp.Protocol` - WAMP protocol message handling
 
-**Operating Modes**:
-1. **Realm Hub Mode** (`MACULA_MODE=realm_hub`):
-   - Embeds Bondy WAMP router
-   - Creates and manages realm(s)
-   - Acts as entry point for edge nodes
-   - Can run infrastructure payloads (e.g., dashboard)
+**Features**:
+1. **API Key Authentication**:
+   - Each application has unique API key
+   - Keys map to organization/namespace
+   - Topic prefix enforcement (e.g., `cortexiq.homes.*`)
 
-2. **Edge Mode** (`MACULA_MODE=edge`):
-   - Connects to realm hub via WAMP
-   - Runs domain-specific payloads
-   - Lightweight, scalable
+2. **Usage Metering**:
+   - Track PUBLISH/SUBSCRIBE/CALL operations
+   - Per API key metrics
+   - Prometheus export for billing integration
+
+3. **Connection Resilience**:
+   - Exponential backoff reconnection to Bondy
+   - Queue messages during disconnect
+   - Replay on reconnection
+   - Transparent to applications
+
+4. **Multi-Tenancy**:
+   - Namespace isolation via topic prefixes
+   - Prevent cross-organization access
+   - Future: topic-level ACLs
 
 **Configuration**:
-```elixir
-config :macula_os,
-  mode: :realm_hub,  # or :edge
-  realm: [
-    uri: "be.cortexiq.energy",
-    hub_url: "wss://localhost:18080/ws"
-  ],
-  payloads: [
-    {CortexIqDashboard, []},
-    {CortexIqDashboardWeb, [port: 4000]},
-    {CortexIqHomes, [count: 50]},
-    {CortexIqUtilities, [count: 5]}
-  ]
+```yaml
+# Kubernetes Deployment with MaculaOs sidecar
+apiVersion: apps/v1
+kind: Deployment
+spec:
+  template:
+    spec:
+      containers:
+      # Application container
+      - name: my-app
+        image: my-app:latest
+        env:
+        - name: MACULA_URL
+          value: "ws://localhost:8080/ws"
+        - name: MACULA_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: my-app-apikey
+              key: key
+
+      # MaculaOs sidecar
+      - name: macula-os
+        image: macula/macula-os:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: BONDY_URL
+          value: "ws://172.20.0.2:30080/ws"
+        - name: BONDY_REALM
+          value: "be.cortexiq.energy"
+```
+
+**API Key Secret**:
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-app-apikey
+stringData:
+  key: "unique-api-key-xyz"
+  namespace: "my-org.my-app"  # Topic prefix allowed
+```
+
+**Client Connection** (any language with WAMP library):
+```python
+# Python example
+from autobahn.asyncio.wamp import ApplicationSession
+
+class MyApp(ApplicationSession):
+    async def onConnect(self):
+        self.join(
+            realm="be.cortexiq.energy",
+            authmethods=["macula-apikey"],
+            authextra={"macula_apikey": os.getenv("MACULA_API_KEY")}
+        )
+
+    async def onJoin(self, details):
+        # Application code - standard WAMP
+        await self.publish("my-org.my-app.events.something", "data")
 ```
 
 **Dependencies**:
-- `cortex_iq_core` (for now, will be removed when abstracted)
-- `jason`, `websockex`
+- `jason` - JSON encoding/decoding
+- `websockex` - WebSocket client (upstream to Bondy)
+- `plug_cowboy` - HTTP/WebSocket server (localhost proxy)
+- `telemetry` - Metrics/instrumentation
 
 ---
 

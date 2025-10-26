@@ -1,6 +1,6 @@
 import Config
 
-# Configure your database
+# Configure your database (read side of CQRS)
 config :cortex_iq_dashboard, CortexIqDashboard.Repo,
   username: "postgres",
   password: "postgres",
@@ -9,6 +9,16 @@ config :cortex_iq_dashboard, CortexIqDashboard.Repo,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
+
+# Configure projections database (write side of CQRS - same database)
+config :cortex_iq_dashboard_projections, CortexIqDashboardProjections.Repo,
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  database: "mesh_hub_dev",
+  stacktrace: true,
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 5
 
 # For development, we disable any cache and enable
 # debugging and code reloading.

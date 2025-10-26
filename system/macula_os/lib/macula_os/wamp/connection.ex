@@ -16,12 +16,20 @@ defmodule MaculaOs.Wamp.Connection do
     defstruct [
       :url,
       :realm,
+      :api_key,
       :session_id,
       :status,
       :pending_requests,
       :subscriptions,
+      :registrations,    # %{registration_id => procedure}
       :client_pid
     ]
+  end
+
+  # Helper Functions
+
+  defp generate_request_id do
+    :erlang.unique_integer([:positive])
   end
 
   # Client API
@@ -32,19 +40,23 @@ defmodule MaculaOs.Wamp.Connection do
   ## Options
   - `:url` - WebSocket URL (default: ws://localhost:18082/ws)
   - `:realm` - WAMP realm to join (default: com.example.realm)
+  - `:api_key` - API key for MaculaOs authentication (optional)
   - `:client_pid` - PID to send messages to (optional)
   """
   def start_link(opts \\ []) do
     url = Keyword.get(opts, :url, @default_url)
     realm = Keyword.get(opts, :realm, @default_realm)
+    api_key = Keyword.get(opts, :api_key)
     client_pid = Keyword.get(opts, :client_pid)
 
     state = %State{
       url: url,
       realm: realm,
+      api_key: api_key,
       status: :connecting,
       pending_requests: %{},
       subscriptions: %{},
+      registrations: %{},
       client_pid: client_pid
     }
 
@@ -71,6 +83,42 @@ defmodule MaculaOs.Wamp.Connection do
   end
 
   @doc """
+  Call a remote procedure (RPC).
+
+  Returns the request_id which can be used to track the call.
+  """
+  def call(pid, procedure, args \\ [], kwargs \\ %{}, options \\ %{}) do
+    request_id = generate_request_id()
+    WebSockex.cast(pid, {:call, request_id, procedure, args, kwargs, options})
+    request_id
+  end
+
+  @doc """
+  Register a procedure for RPC.
+
+  Returns the request_id which can be used to track the registration.
+  """
+  def register(pid, procedure, options \\ %{}) do
+    request_id = generate_request_id()
+    WebSockex.cast(pid, {:register, request_id, procedure, options})
+    request_id
+  end
+
+  @doc """
+  Yield (return) a result from an RPC invocation.
+  """
+  def yield(pid, invocation_request_id, result) do
+    WebSockex.cast(pid, {:yield, invocation_request_id, result})
+  end
+
+  @doc """
+  Yield an error from an RPC invocation.
+  """
+  def yield_error(pid, invocation_request_id, error_uri, args \\ [], kwargs \\ %{}) do
+    WebSockex.cast(pid, {:yield_error, invocation_request_id, error_uri, args, kwargs})
+  end
+
+  @doc """
   Disconnect from WAMP router.
   """
   def disconnect(pid) do
@@ -91,17 +139,30 @@ defmodule MaculaOs.Wamp.Connection do
 
   @impl true
   def handle_info(:send_hello, state) do
-    # Send HELLO message with anonymous authentication
-    hello = Protocol.hello_message(state.realm, %{
+    # Build HELLO message details
+    details = %{
       "roles" => %{
         "publisher" => %{},
-        "subscriber" => %{}
-      },
-      "authmethods" => ["anonymous"]
-    })
+        "subscriber" => %{},
+        "caller" => %{},
+        "callee" => %{}
+      }
+    }
+
+    # Add API key authentication if provided
+    {details, authmethods} = if state.api_key do
+      details_with_auth = Map.put(details, "authextra", %{"macula_apikey" => state.api_key})
+      {details_with_auth, ["macula-apikey"]}
+    else
+      {Map.put(details, "authmethods", ["anonymous"]), ["anonymous"]}
+    end
+
+    details = Map.put(details, "authmethods", authmethods)
+
+    hello = Protocol.hello_message(state.realm, details)
 
     encoded = Protocol.encode(hello)
-    Logger.info("Sending HELLO: #{encoded}")
+    Logger.info("Sending HELLO to #{state.realm} (auth: #{hd(authmethods)})")
     frame = {:text, encoded}
     {:reply, frame, state}
   end
@@ -164,6 +225,70 @@ defmodule MaculaOs.Wamp.Connection do
     end
   end
 
+  def handle_cast({:call, request_id, procedure, args, kwargs, options}, state) do
+    case state.status do
+      :connected ->
+        message = Protocol.call_message(request_id, procedure, args, kwargs, options)
+        frame = {:text, Protocol.encode(message)}
+
+        new_state = put_in(state.pending_requests[request_id], {:call, procedure})
+        {:reply, frame, new_state}
+
+      _ ->
+        Logger.warning("Cannot call RPC: not connected")
+        {:ok, state}
+    end
+  end
+
+  def handle_cast({:register, request_id, procedure, options}, state) do
+    case state.status do
+      :connected ->
+        message = Protocol.register_message(request_id, procedure, options)
+        frame = {:text, Protocol.encode(message)}
+
+        new_state = put_in(state.pending_requests[request_id], {:register, procedure})
+        {:reply, frame, new_state}
+
+      _ ->
+        Logger.warning("Cannot register RPC: not connected")
+        {:ok, state}
+    end
+  end
+
+  def handle_cast({:yield, invocation_request_id, result}, state) do
+    case state.status do
+      :connected ->
+        # result can be either a map with :args and :kwargs, or just args
+        {args, kwargs} = case result do
+          %{args: a, kwargs: k} -> {a, k}
+          %{args: a} -> {a, %{}}
+          args when is_list(args) -> {args, %{}}
+          other -> {[other], %{}}
+        end
+
+        message = Protocol.yield_message(invocation_request_id, args, kwargs)
+        frame = {:text, Protocol.encode(message)}
+        {:reply, frame, state}
+
+      _ ->
+        Logger.warning("Cannot yield: not connected")
+        {:ok, state}
+    end
+  end
+
+  def handle_cast({:yield_error, invocation_request_id, error_uri, args, kwargs}, state) do
+    case state.status do
+      :connected ->
+        message = Protocol.error_message(:invocation, invocation_request_id, error_uri, args, kwargs)
+        frame = {:text, Protocol.encode(message)}
+        {:reply, frame, state}
+
+      _ ->
+        Logger.warning("Cannot yield error: not connected")
+        {:ok, state}
+    end
+  end
+
   def handle_cast(:disconnect, state) do
     message = Protocol.goodbye_message()
     frame = {:text, Protocol.encode(message)}
@@ -211,9 +336,17 @@ defmodule MaculaOs.Wamp.Connection do
       {:event, event_data} ->
         handle_event(event_data, state)
 
+      {:registered, %{request_id: request_id, registration_id: registration_id}} ->
+        handle_registered(request_id, registration_id, state)
+
+      {:result, %{request_id: request_id} = result_data} ->
+        handle_result(request_id, result_data, state)
+
+      {:invocation, invocation_data} ->
+        handle_invocation(invocation_data, state)
+
       {:error, error_data} ->
-        Logger.error("WAMP error: #{inspect(error_data)}")
-        {:ok, state}
+        handle_error(error_data, state)
 
       {:unknown, msg} ->
         Logger.warning("Unknown WAMP message: #{inspect(msg)}")
@@ -263,12 +396,82 @@ defmodule MaculaOs.Wamp.Connection do
     end
   end
 
+  defp handle_registered(request_id, registration_id, state) do
+    case Map.pop(state.pending_requests, request_id) do
+      {{:register, procedure}, pending_requests} ->
+        Logger.info("Registered procedure #{procedure}, registration_id: #{registration_id}")
+
+        registrations = Map.put(state.registrations, registration_id, procedure)
+        notify_client(state, {:registered, procedure, registration_id})
+
+        {:ok, %{state | pending_requests: pending_requests, registrations: registrations}}
+
+      {nil, _} ->
+        Logger.warning("Received REGISTERED for unknown request: #{request_id}")
+        {:ok, state}
+    end
+  end
+
+  defp handle_result(request_id, result_data, state) do
+    case Map.pop(state.pending_requests, request_id) do
+      {{:call, procedure}, pending_requests} ->
+        Logger.debug("Received RESULT for #{procedure}: #{inspect(result_data)}")
+
+        notify_client(state, {:result, request_id, result_data})
+
+        {:ok, %{state | pending_requests: pending_requests}}
+
+      {nil, _} ->
+        Logger.warning("Received RESULT for unknown request: #{request_id}")
+        {:ok, state}
+    end
+  end
+
+  defp handle_invocation(invocation_data, state) do
+    %{
+      invocation_request_id: invocation_request_id,
+      registration_id: registration_id,
+      details: details,
+      args: args,
+      kwargs: kwargs
+    } = invocation_data
+
+    case Map.get(state.registrations, registration_id) do
+      nil ->
+        Logger.warning("Received INVOCATION for unknown registration: #{registration_id}")
+        {:ok, state}
+
+      _procedure ->
+        Logger.debug("Received INVOCATION for registration #{registration_id}")
+        notify_client(state, {:invocation, invocation_request_id, registration_id, details, args, kwargs})
+        {:ok, state}
+    end
+  end
+
+  defp handle_error(error_data, state) do
+    %{
+      request_type: request_type,
+      request_id: request_id,
+      error_uri: error_uri
+    } = error_data
+
+    args = Map.get(error_data, :args, [])
+    kwargs = Map.get(error_data, :kwargs, %{})
+
+    Logger.error("WAMP ERROR (#{request_type}): #{error_uri} for request_id: #{request_id}")
+    Logger.debug("Error details - args: #{inspect(args)}, kwargs: #{inspect(kwargs)}")
+
+    # Remove from pending requests if it exists
+    {_value, pending_requests} = Map.pop(state.pending_requests, request_id)
+
+    # Notify client about the error
+    notify_client(state, {:error, request_type, request_id, error_uri, args, kwargs})
+
+    {:ok, %{state | pending_requests: pending_requests}}
+  end
+
   defp notify_client(%{client_pid: nil}, _message), do: :ok
   defp notify_client(%{client_pid: pid}, message) when is_pid(pid) do
     send(pid, {:wamp, message})
-  end
-
-  defp generate_request_id do
-    :erlang.unique_integer([:positive])
   end
 end

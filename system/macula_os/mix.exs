@@ -23,9 +23,18 @@ defmodule MaculaOs.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:cortex_iq_core, path: "../cortex_iq_core"},
+      # Core dependencies
       {:jason, "~> 1.2"},
-      {:websockex, "~> 0.4"}
+      {:websockex, "~> 0.4"},
+
+      # Proxy server (localhost WebSocket)
+      {:plug_cowboy, "~> 2.7"},
+      {:websock_adapter, "~> 0.5"},
+
+      # Metrics and telemetry
+      {:telemetry, "~> 1.0"},
+      {:telemetry_metrics, "~> 1.0"},
+      {:telemetry_poller, "~> 1.0"}
     ]
   end
 

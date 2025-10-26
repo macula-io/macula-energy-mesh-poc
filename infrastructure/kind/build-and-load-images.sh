@@ -20,6 +20,14 @@ log_step() {
   echo -e "${CYAN}▸${NC} $1"
 }
 
+# Build MaculaOs sidecar image (needed by all payloads)
+log_step "Building macula-os image..."
+docker build \
+  -f "$PROJECT_ROOT/system/macula_os/Dockerfile" \
+  -t macula/macula-os:latest \
+  "$PROJECT_ROOT/system"
+log_info "MaculaOs image built"
+
 # Build homes image
 log_step "Building cortex-iq-homes image..."
 docker build \
@@ -36,6 +44,14 @@ docker build \
   "$PROJECT_ROOT/system"
 log_info "Utilities image built"
 
+# Build simulation image
+log_step "Building cortex-iq-simulation image..."
+docker build \
+  -f "$PROJECT_ROOT/system/cortex_iq_simulation/Dockerfile" \
+  -t macula/cortex-iq-simulation:latest \
+  "$PROJECT_ROOT/system"
+log_info "Simulation image built"
+
 # Build dashboard image using Dockerfile.hub
 log_step "Building cortex-iq-dashboard image..."
 docker build \
@@ -44,8 +60,34 @@ docker build \
   "$PROJECT_ROOT"
 log_info "Dashboard image built"
 
+# Build projections image
+log_step "Building cortex-iq-projections image..."
+docker build \
+  -f "$PROJECT_ROOT/system/cortex_iq_projections/Dockerfile" \
+  -t macula/cortex-iq-projections:latest \
+  "$PROJECT_ROOT/system"
+log_info "Projections image built"
+
 # Load images into KinD clusters
 log_step "Loading images into KinD clusters..."
+
+# Load MaculaOs sidecar into ALL edge clusters (needed by all payloads)
+log_step "Loading macula-os image into all edge clusters..."
+kind load docker-image macula/macula-os:latest --name macula-edge-01
+kind load docker-image macula/macula-os:latest --name macula-edge-02
+kind load docker-image macula/macula-os:latest --name macula-edge-03
+kind load docker-image macula/macula-os:latest --name macula-edge-04
+log_info "MaculaOs image loaded into all edge clusters"
+
+# Load simulation into macula-hub (simulation infrastructure)
+log_step "Loading simulation image into macula-hub..."
+kind load docker-image macula/cortex-iq-simulation:latest --name macula-hub
+log_info "Simulation image loaded into hub"
+
+# Load projections into macula-hub (CQRS write-side service)
+log_step "Loading projections image into macula-hub..."
+kind load docker-image macula/cortex-iq-projections:latest --name macula-hub
+log_info "Projections image loaded into hub"
 
 # Load dashboard into edge-01 (where dashboard will run)
 log_step "Loading dashboard image into macula-edge-01..."
@@ -59,16 +101,18 @@ kind load docker-image macula/cortex-iq-homes:latest --name macula-edge-02
 kind load docker-image macula/cortex-iq-homes:latest --name macula-edge-04
 log_info "Homes image loaded into edge-01, edge-02, and edge-04"
 
-# Load utilities into edge-03
-log_step "Loading utilities image into macula-edge-03..."
-kind load docker-image macula/cortex-iq-utilities:latest --name macula-edge-03
-log_info "Utilities image loaded into edge-03"
+# Load utilities into edge-02
+log_step "Loading utilities image into macula-edge-02..."
+kind load docker-image macula/cortex-iq-utilities:latest --name macula-edge-02
+log_info "Utilities image loaded into edge-02"
 
 echo ""
 log_info "All images built and loaded!"
 echo ""
 echo "Images:"
-echo "  - macula/os-base:latest"
+echo "  - macula/macula-os:latest (sidecar, loaded into edge-01, edge-02, edge-03, edge-04)"
+echo "  - macula/cortex-iq-simulation:latest (loaded into hub)"
+echo "  - macula/cortex-iq-projections:latest (loaded into hub)"
 echo "  - macula/cortex-iq-dashboard:latest (loaded into edge-01)"
-echo "  - macula/cortex-iq-homes:latest (loaded into edge-01, edge-02)"
-echo "  - macula/cortex-iq-utilities:latest (loaded into edge-03)"
+echo "  - macula/cortex-iq-homes:latest (loaded into edge-01, edge-02, edge-04)"
+echo "  - macula/cortex-iq-utilities:latest (loaded into edge-02)"

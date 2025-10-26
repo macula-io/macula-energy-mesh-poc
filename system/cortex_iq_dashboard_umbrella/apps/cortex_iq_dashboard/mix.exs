@@ -37,6 +37,7 @@ defmodule CortexIqDashboard.MixProject do
   defp deps do
     [
       {:cortex_iq_core, path: "../../../cortex_iq_core"},
+      {:cortex_iq_dashboard_schemas, path: "../../cortex_iq_dashboard_schemas"},  # Shared schemas
       {:macula_os, path: "../../../macula_os"},
       {:dns_cluster, "~> 0.2.0"},
       {:phoenix_pubsub, "~> 2.1"},

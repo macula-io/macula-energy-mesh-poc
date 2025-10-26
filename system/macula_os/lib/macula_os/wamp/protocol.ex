@@ -19,6 +19,12 @@ defmodule MaculaOs.Wamp.Protocol do
   @unsubscribe 34
   @unsubscribed 35
   @event 36
+  @call 48
+  @result 50
+  @register 64
+  @registered 65
+  @invocation 68
+  @yield 70
 
   # Message type constants
   def hello, do: @hello
@@ -33,6 +39,12 @@ defmodule MaculaOs.Wamp.Protocol do
   def unsubscribe, do: @unsubscribe
   def unsubscribed, do: @unsubscribed
   def event, do: @event
+  def call, do: @call
+  def result, do: @result
+  def register, do: @register
+  def registered, do: @registered
+  def invocation, do: @invocation
+  def yield, do: @yield
 
   @doc """
   Encode a WAMP message to JSON string.
@@ -89,6 +101,52 @@ defmodule MaculaOs.Wamp.Protocol do
   end
 
   @doc """
+  Build a CALL message (RPC call).
+
+  CALL: [48, request_id, options, procedure, args, kwargs]
+  """
+  def call_message(request_id, procedure, args \\ [], kwargs \\ %{}, options \\ %{}) do
+    [@call, request_id, options, procedure, args, kwargs]
+  end
+
+  @doc """
+  Build a REGISTER message (register RPC endpoint).
+
+  REGISTER: [64, request_id, options, procedure]
+  """
+  def register_message(request_id, procedure, options \\ %{}) do
+    [@register, request_id, options, procedure]
+  end
+
+  @doc """
+  Build a YIELD message (return RPC result).
+
+  YIELD: [70, invocation_request_id, options, args, kwargs]
+  """
+  def yield_message(invocation_request_id, args \\ [], kwargs \\ %{}, options \\ %{}) do
+    [@yield, invocation_request_id, options, args, kwargs]
+  end
+
+  @doc """
+  Build an ERROR message.
+
+  ERROR: [8, request_type, request_id, details, error_uri, args, kwargs]
+  """
+  def error_message(request_type, request_id, error_uri, args \\ [], kwargs \\ %{}, details \\ %{}) do
+    # Convert request_type atom to WAMP message type integer
+    request_type_id = case request_type do
+      :invocation -> @invocation
+      :call -> @call
+      :subscribe -> @subscribe
+      :register -> @register
+      other when is_integer(other) -> other
+      _ -> 0
+    end
+
+    [@error, request_type_id, request_id, details, error_uri, args, kwargs]
+  end
+
+  @doc """
   Parse a WAMP message and return its type and components.
   """
   def parse_message([type | _rest] = message) do
@@ -100,6 +158,9 @@ defmodule MaculaOs.Wamp.Protocol do
       @published -> parse_published(message)
       @subscribed -> parse_subscribed(message)
       @event -> parse_event(message)
+      @registered -> parse_registered(message)
+      @result -> parse_result(message)
+      @invocation -> parse_invocation(message)
       _ -> {:unknown, message}
     end
   end
@@ -145,6 +206,35 @@ defmodule MaculaOs.Wamp.Protocol do
     {:event, %{
       subscription_id: subscription_id,
       publication_id: publication_id,
+      details: details,
+      args: args,
+      kwargs: kwargs
+    }}
+  end
+
+  defp parse_registered([@registered, request_id, registration_id]) do
+    {:registered, %{request_id: request_id, registration_id: registration_id}}
+  end
+
+  defp parse_result([@result, request_id, details | rest]) do
+    args = Enum.at(rest, 0, [])
+    kwargs = Enum.at(rest, 1, %{})
+
+    {:result, %{
+      request_id: request_id,
+      details: details,
+      args: args,
+      kwargs: kwargs
+    }}
+  end
+
+  defp parse_invocation([@invocation, invocation_request_id, registration_id, details | rest]) do
+    args = Enum.at(rest, 0, [])
+    kwargs = Enum.at(rest, 1, %{})
+
+    {:invocation, %{
+      invocation_request_id: invocation_request_id,
+      registration_id: registration_id,
       details: details,
       args: args,
       kwargs: kwargs

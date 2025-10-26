@@ -16,12 +16,19 @@ if config_env() == :prod do
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
+  # Configure dashboard repo (read side of CQRS)
   config :cortex_iq_dashboard, CortexIqDashboard.Repo,
     # ssl: true,
     url: database_url,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     # For machines with several cores, consider starting multiple pools of `pool_size`
     # pool_count: 4,
+    socket_options: maybe_ipv6
+
+  # Configure projections repo (write side of CQRS - same database)
+  config :cortex_iq_dashboard_projections, CortexIqDashboardProjections.Repo,
+    url: database_url,
+    pool_size: String.to_integer(System.get_env("PROJECTIONS_POOL_SIZE") || "5"),
     socket_options: maybe_ipv6
 
   # The secret key base is used to sign/encrypt cookies and other secrets.

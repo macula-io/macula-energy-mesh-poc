@@ -10,16 +10,16 @@ defmodule MaculaOs.Wamp do
       # Start a client
       {:ok, client} = MaculaOs.Wamp.start_link(
         url: "ws://localhost:18082/ws",
-        realm: "energy.hub"
+        realm: "app.production"
       )
 
       # Subscribe to a topic
-      MaculaOs.Wamp.subscribe(client, "energy.hub.utility.*.tariff", fn topic, event ->
+      MaculaOs.Wamp.subscribe(client, "app.events.user.created", fn topic, event ->
         IO.inspect({topic, event})
       end)
 
       # Publish an event
-      MaculaOs.Wamp.publish(client, "energy.hub.home.home_001.production", [3500])
+      MaculaOs.Wamp.publish(client, "app.events.user.created", [], %{user_id: 123})
   """
 
   alias MaculaOs.Wamp.Client

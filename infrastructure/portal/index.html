@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macula Platform Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            font-weight: 300;
+        }
+
+        .separator {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+            margin: 2rem 0;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(59, 130, 246, 0.15);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .icon-platform {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        .icon-app {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .icon-monitor {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .card-description {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .card-url {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-family: 'Courier New', monospace;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 0.5rem;
+            border-radius: 6px;
+            border-left: 2px solid #3b82f6;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .footer-link {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Macula Platform</div>
+            <div class="subtitle">Distributed Application Platform for the BEAM</div>
+        </header>
+
+        <div class="separator"></div>
+
+        <!-- Platform Infrastructure -->
+        <section class="section">
+            <h2 class="section-title">Platform Infrastructure</h2>
+            <div class="cards">
+                <a href="http://hub.macula.local:8080/admin/" class="card" target="_blank">
+                    <div class="card-header">
+                        <div class="card-icon icon-platform">🌐</div>
+                        <div class="card-title">Bondy Admin API</div>
+                    </div>
+                    <div class="card-description">
+                        WAMP router administration interface. Manage realms, authentication, and routing.
+                    </div>
+                    <div class="card-url">http://hub.macula.local:8080/admin/</div>
+                    <div class="status">
+                        <span class="status-dot"></span>
+                        <span>Hub Cluster</span>
+                    </div>
+                </a>
+
+                <a href="http://console.macula.local:8080/" class="card" target="_blank">
+                    <div class="card-header">
+                        <div class="card-icon icon-platform">🖥️</div>
+                        <div class="card-title">Bondy Console</div>
+                    </div>
+                    <div class="card-description">
+                        Web-based console for platform management and real-time monitoring.
+                    </div>
+                    <div class="card-url">http://console.macula.local:8080/</div>
+                    <div class="status">
+                        <span class="status-dot"></span>
+                        <span>Hub Cluster</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Platform Observability -->
+        <section class="section">
+            <h2 class="section-title">Platform Observability</h2>
+            <div class="cards">
+                <a href="http://telemetry.macula.local:8080/" class="card" target="_blank">
+                    <div class="card-header">
+                        <div class="card-icon icon-monitor">📊</div>
+                        <div class="card-title">Platform Telemetry</div>
+                    </div>
+                    <div class="card-description">
+                        Metrics collection and time-series data. Query system health and performance.
+                    </div>
+                    <div class="card-url">http://telemetry.macula.local:8080/</div>
+                    <div class="status">
+                        <span class="status-dot"></span>
+                        <span>Prometheus</span>
+                    </div>
+                </a>
+
+                <a href="http://analytics.macula.local:8080/" class="card" target="_blank">
+                    <div class="card-header">
+                        <div class="card-icon icon-monitor">📈</div>
+                        <div class="card-title">Platform Analytics</div>
+                    </div>
+                    <div class="card-description">
+                        Visualization dashboards for platform and application metrics. Login: admin / macula123
+                    </div>
+                    <div class="card-url">http://analytics.macula.local:8080/</div>
+                    <div class="status">
+                        <span class="status-dot"></span>
+                        <span>Grafana</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- CortexIQ Application -->
+        <section class="section">
+            <h2 class="section-title">CortexIQ Application</h2>
+            <div class="cards">
+                <a href="http://dashboard.cortexiq.local:8080/" class="card" target="_blank">
+                    <div class="card-header">
+                        <div class="card-icon icon-app">⚡</div>
+                        <div class="card-title">CortexIQ Dashboard</div>
+                    </div>
+                    <div class="card-description">
+                        Real-time energy trading simulation. Watch autonomous home bots optimize contracts and trade energy.
+                    </div>
+                    <div class="card-url">http://dashboard.cortexiq.local:8080/</div>
+                    <div class="status">
+                        <span class="status-dot"></span>
+                        <span>Edge-01 Cluster</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p class="footer-text">
+                Macula Platform PoC •
+                <a href="https://github.com/macula-io/macula-energy-mesh-poc" class="footer-link" target="_blank">Documentation</a>
+            </p>
+            <p class="footer-text" style="margin-top: 0.5rem; font-size: 0.75rem;">
+                Built with ❤️ on the BEAM • Powered by Bondy, Elixir, and Kubernetes
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

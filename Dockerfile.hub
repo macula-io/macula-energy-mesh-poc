@@ -38,14 +38,18 @@ RUN mix local.hex --force && \
 COPY system/cortex_iq_dashboard_umbrella/mix.exs system/cortex_iq_dashboard_umbrella/mix.lock ./
 COPY system/cortex_iq_dashboard_umbrella/config ./config
 
-# Copy standalone dependencies
-COPY system/cortex_iq_core ../cortex_iq_core
-COPY system/macula_os ../macula_os
+# Copy standalone dependencies to match umbrella app paths
+# Apps at /app/apps/cortex_iq_dashboard/ have these dependencies:
+#   - path: "../../../cortex_iq_core" → /app/apps/cortex_iq_dashboard/../../../ → /cortex_iq_core
+#   - path: "../../cortex_iq_dashboard_schemas" → /app/apps/cortex_iq_dashboard/../../ → /app/cortex_iq_dashboard_schemas
+#   - path: "../../../macula_os" → /app/apps/cortex_iq_dashboard/../../../ → /macula_os
+COPY system/cortex_iq_core /cortex_iq_core
+COPY system/cortex_iq_dashboard_schemas ./cortex_iq_dashboard_schemas
+COPY system/macula_os /macula_os
 
 # Copy umbrella apps mix files
 COPY system/cortex_iq_dashboard_umbrella/apps/cortex_iq_dashboard/mix.exs ./apps/cortex_iq_dashboard/
 COPY system/cortex_iq_dashboard_umbrella/apps/cortex_iq_dashboard_web/mix.exs ./apps/cortex_iq_dashboard_web/
-COPY system/cortex_iq_dashboard_umbrella/apps/cortex_iq_dashboard_projections/mix.exs ./apps/cortex_iq_dashboard_projections/
 
 # Get dependencies
 RUN mix deps.get --only prod

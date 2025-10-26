@@ -60,7 +60,6 @@ defmodule CortexIqDashboard.Umbrella.MixProject do
       cortex_iq_dashboard: [
         version: "0.1.0",
         applications: [
-          cortex_iq_dashboard_projections: :permanent,
           cortex_iq_dashboard: :permanent,
           cortex_iq_dashboard_web: :permanent
         ],
