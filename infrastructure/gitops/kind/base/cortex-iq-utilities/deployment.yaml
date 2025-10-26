@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cortex-iq-utilities
-  namespace: macula-system
+  namespace: macula-apps
   labels:
     app: cortex-iq-utilities
     app.kubernetes.io/name: cortex-iq-utilities
@@ -22,14 +22,12 @@ spec:
       containers:
       - name: utilities
         image: macula/cortex-iq-utilities:latest
-        imagePullPolicy: Never  # Image loaded into KinD
+        imagePullPolicy: Never
         env:
-        - name: MACULA_MODE
-          value: "edge"
-        - name: BONDY_REALM
-          value: "be.cortexiq.energy"
         - name: BONDY_URL
           value: "ws://172.20.0.2:30080/ws"
+        - name: BONDY_REALM
+          value: "be.cortexiq.energy"
         - name: NUM_PROVIDERS
           value: "5"
         resources:

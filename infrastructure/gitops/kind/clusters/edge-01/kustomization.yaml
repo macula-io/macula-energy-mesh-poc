@@ -13,5 +13,5 @@ patches:
       name: cortex-iq-homes
     patch: |-
       - op: replace
-        path: /spec/template/spec/containers/0/env/3/value
+        path: /spec/template/spec/containers/0/env/2/value
         value: "13"

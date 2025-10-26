@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: portal
-  namespace: macula-hub
+  namespace: macula-platform
   labels:
     app: portal
 spec:

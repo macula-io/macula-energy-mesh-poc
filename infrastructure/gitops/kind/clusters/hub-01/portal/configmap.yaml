@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: portal-html
-  namespace: macula-hub
+  namespace: macula-platform
 data:
   index.html: |
     <!DOCTYPE html>

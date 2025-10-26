@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cortex-iq-simulation
-  namespace: macula-hub
+  namespace: macula-apps
   labels:
     app: cortex-iq-simulation
     component: simulation-infrastructure

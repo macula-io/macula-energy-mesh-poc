@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: macula-hub
+namespace: macula-platform
 
 resources:
   - namespace.yaml
@@ -9,7 +9,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - ingress.yaml
-  - ../../../base/bondy/create-realm-job.yaml
+  - create-realm-job.yaml
 
 labels:
   - pairs:

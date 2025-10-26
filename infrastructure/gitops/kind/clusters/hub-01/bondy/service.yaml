@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: bondy
-  namespace: macula-hub
+  namespace: macula-platform
   labels:
     app: bondy
     app.kubernetes.io/name: bondy

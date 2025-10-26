@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: macula-hub
+  name: macula-platform
   labels:
-    app.kubernetes.io/name: macula-hub
+    app.kubernetes.io/name: macula-platform
     app.kubernetes.io/part-of: macula-platform

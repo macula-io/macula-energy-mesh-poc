@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: portal
-  namespace: macula-hub
+  namespace: macula-platform
   labels:
     app: portal
 spec:

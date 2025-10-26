@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cortex-iq-homes
-  namespace: macula-system
+  namespace: macula-apps
   labels:
     app: cortex-iq-homes
     app.kubernetes.io/name: cortex-iq-homes
@@ -22,16 +22,14 @@ spec:
       containers:
       - name: homes
         image: macula/cortex-iq-homes:latest
-        imagePullPolicy: Never  # Image loaded into KinD
+        imagePullPolicy: Never
         env:
-        - name: MACULA_MODE
-          value: "edge"
-        - name: BONDY_REALM
-          value: "be.cortexiq.energy"
         - name: BONDY_URL
           value: "ws://172.20.0.2:30080/ws"
+        - name: BONDY_REALM
+          value: "be.cortexiq.energy"
         - name: NUM_HOMES
-          value: "13"  # Override in cluster-specific kustomization
+          value: "13"
         resources:
           requests:
             memory: "1Gi"

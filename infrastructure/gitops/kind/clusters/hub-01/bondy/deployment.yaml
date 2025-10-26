@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bondy
-  namespace: macula-hub
+  namespace: macula-platform
   labels:
     app: bondy
     app.kubernetes.io/name: bondy
@@ -26,7 +26,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: bondy
-        image: leapsight/bondy:1.0.0-rc.44
+        image: leapsight/bondy:1.0.0-rc.46
         imagePullPolicy: IfNotPresent
         ports:
         - name: http-ws
