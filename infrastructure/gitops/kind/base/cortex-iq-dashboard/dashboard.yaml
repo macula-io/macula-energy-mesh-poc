@@ -29,7 +29,7 @@ spec:
         - name: MACULA_MODE
           value: "edge"
         - name: DATABASE_URL
-          value: "ecto://cortexiq:cortexiq123@postgres:5432/cortexiq_dashboard"
+          value: "ecto://cortexiq:cortexiq123@postgres.macula-apps.svc.cluster.local:5432/cortexiq_dashboard"
         - name: SECRET_KEY_BASE
           value: "CHANGE_ME_IN_PRODUCTION_this_is_just_for_poc_demo_need_64_chars_min"
         - name: PHX_HOST
@@ -43,13 +43,13 @@ spec:
           containerPort: 4000
         env:
         - name: BONDY_URL
-          value: "ws://172.20.0.2:30080/ws"
+          value: "ws://bondy.macula-platform.svc.cluster.local:18080/ws"
         - name: BONDY_REALM
           value: "be.cortexiq.energy"
         - name: BONDY_ADMIN_URL
-          value: "http://172.20.0.2:30082"
+          value: "http://bondy.macula-platform.svc.cluster.local:18081"
         - name: DATABASE_URL
-          value: "ecto://cortexiq:cortexiq123@postgres:5432/cortexiq_dashboard"
+          value: "ecto://cortexiq:cortexiq123@postgres.macula-apps.svc.cluster.local:5432/cortexiq_dashboard"
         - name: PHX_HOST
           value: "localhost"
         - name: PHX_PORT

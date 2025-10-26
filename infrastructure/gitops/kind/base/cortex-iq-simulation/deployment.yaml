@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: Never  # Use local image in KinD
           env:
             - name: BONDY_URL
-              value: "ws://bondy.macula-hub.svc.cluster.local:18080/ws"
+              value: "ws://bondy.macula-platform.svc.cluster.local:18080/ws"
             - name: BONDY_REALM
               value: "be.cortexiq.energy"
             - name: SIMULATION_SPEED
