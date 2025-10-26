@@ -42,6 +42,8 @@ defmodule CortexIqDashboard.MixProject do
       {:phoenix_pubsub, "~> 2.1"},
       {:ecto_sql, "~> 3.13"},
       {:postgrex, ">= 0.0.0"},
+      {:gen_stage, "~> 1.2"},
+      {:flow, "~> 1.2"},
       {:jason, "~> 1.2"},
       {:swoosh, "~> 1.16"},
       {:req, "~> 0.5"}

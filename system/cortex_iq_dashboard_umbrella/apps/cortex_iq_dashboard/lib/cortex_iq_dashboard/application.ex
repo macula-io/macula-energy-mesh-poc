@@ -14,24 +14,39 @@ defmodule CortexIqDashboard.Application do
     bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
 
     children = [
-      CortexIqDashboard.Repo,
       {DNSCluster, query: Application.get_env(:cortex_iq_dashboard, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: CortexIqDashboard.PubSub},
+      # Database repo (must start before DatabaseWriter/DatabasePersister)
+      CortexIqDashboard.Repo,
       # System supervisor manages RealmManager and WampSubscriber
       {CortexIqDashboard.System, [
         realm_uri: realm_uri,
         bondy_admin_url: bondy_admin_url,
         bondy_url: bondy_url
       ]},
-      # Simulation clock (configurable via ENV: SIMULATION_SPEED, SIMULATION_START_DATE)
-      CortexIqDashboard.SimulationClock,
-      # WAMP publisher (forwards PubSub events to WAMP)
-      {CortexIqDashboard.WampPublisher, [
-        realm: realm_uri,
-        bondy_url: bondy_url
-      ]},
-      # Event aggregator (subscribes to WAMP events and writes to database)
-      CortexIqDashboard.EventAggregator
+      # NOTE: Simulation clock removed - now runs as separate service on hub cluster
+      # Registries for entity aggregates
+      {Registry, keys: :unique, name: CortexIqDashboard.HomeRegistry},
+      {Registry, keys: :unique, name: CortexIqDashboard.ProviderRegistry},
+      # DynamicSupervisors for entity aggregates
+      {DynamicSupervisor, strategy: :one_for_one, name: CortexIqDashboard.HomeSupervisor},
+      {DynamicSupervisor, strategy: :one_for_one, name: CortexIqDashboard.ProviderSupervisor},
+      # Database I/O worker (async writes for aggregate state, no business logic)
+      CortexIqDashboard.DatabaseWriter,
+      # Flow-based time-series writer (high-throughput event logging with back-pressure)
+      CortexIqDashboard.DatabaseWriter.Pipeline,
+      # Event routers (spawn entity aggregates on-demand)
+      CortexIqDashboard.Aggregators.HomeStateAggregator,
+      CortexIqDashboard.Aggregators.ProviderStateAggregator,
+      CortexIqDashboard.Aggregators.SystemStatsAggregator,
+      # Database persistence (listens to entity state changes and persists to DB)
+      CortexIqDashboard.DatabasePersister,
+      # Market components (calculate and broadcast spot prices)
+      CortexIqDashboard.Market.SpotMarketBroadcaster,
+      # View aggregators (maintain derived views in-memory, push updates to LiveView)
+      CortexIqDashboard.Views.OverviewAggregator,
+      CortexIqDashboard.Views.HomesViewAggregator,
+      CortexIqDashboard.Views.ProvidersViewAggregator
     ]
 
     opts = [strategy: :one_for_one, name: CortexIqDashboard.Supervisor]
