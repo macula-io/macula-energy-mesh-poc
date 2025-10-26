@@ -24,6 +24,12 @@ spec:
         image: macula/cortex-iq-projections:latest
         imagePullPolicy: Never  # KinD uses local images
         env:
+        # BEAM VM Memory Limits
+        - name: ERL_FLAGS
+          value: "+MBas aobf +MHas aobf +sbwt none +sbwtdcpu none +sbwtdio none"
+        - name: RELEASE_TMP
+          value: "/tmp"
+
         # WAMP Connection
         - name: BONDY_URL
           value: "ws://172.20.0.2:30080/ws"  # NodePort access to Bondy
@@ -32,17 +38,17 @@ spec:
 
         # Database Connection
         - name: DATABASE_URL
-          value: "ecto://postgres:postgres@postgres.macula-apps.svc.cluster.local:5432/mesh_hub"
+          value: "ecto://cortexiq:cortexiq123@postgres.macula-apps.svc.cluster.local:5432/cortexiq_dashboard"
         - name: POOL_SIZE
-          value: "10"
+          value: "2"
 
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "100m"
+            memory: "1Gi"
+            cpu: "200m"
           limits:
-            memory: "512Mi"
-            cpu: "500m"
+            memory: "2Gi"
+            cpu: "1000m"
 
         livenessProbe:
           exec:

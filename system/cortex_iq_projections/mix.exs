@@ -16,7 +16,8 @@ defmodule CortexIqProjections.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {CortexIqProjections.Application, []}
+      mod: {CortexIqProjections.Application, []},
+      included_applications: [:macula_os]  # Don't auto-start MaculaOs proxy
     ]
   end
 

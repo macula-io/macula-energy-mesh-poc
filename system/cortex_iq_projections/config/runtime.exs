@@ -15,5 +15,8 @@ if config_env() == :prod do
   config :cortex_iq_projections, CortexIqProjections.Repo,
     url: database_url,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
-    socket_options: maybe_ipv6
+    socket_options: maybe_ipv6,
+    # Allow app to start even if DB not immediately available
+    queue_target: 5000,
+    queue_interval: 1000
 end

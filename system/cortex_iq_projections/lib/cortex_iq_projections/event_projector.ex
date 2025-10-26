@@ -68,16 +68,16 @@ defmodule CortexIqProjections.EventProjector do
     Logger.info("EventProjector: Subscribing to WAMP event topics")
 
     topics = [
-      # Home events
-      {"be.cortexiq.home.", &handle_home_event/2},  # Prefix subscription
+      # Home events - wildcard prefix match (matches be.cortexiq.home.*)
+      {"be.cortexiq.home..", &handle_home_event/2},
 
-      # Provider events
-      {"be.cortexiq.provider.", &handle_provider_event/2},  # Prefix subscription
+      # Provider events - wildcard prefix match (matches be.cortexiq.provider.*)
+      {"be.cortexiq.provider..", &handle_provider_event/2},
 
-      # Market events
-      {"be.cortexiq.market.", &handle_market_event/2},  # Prefix subscription
+      # Market events - wildcard prefix match (matches be.cortexiq.market.*)
+      {"be.cortexiq.market..", &handle_market_event/2},
 
-      # Simulation time
+      # Simulation time - exact match
       {"be.cortexiq.simulation.time_advanced", &handle_time_advanced/2}
     ]
 
