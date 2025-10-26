@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cortex-iq-simulation
+  namespace: macula-hub
+  labels:
+    app: cortex-iq-simulation
+    component: simulation-infrastructure
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cortex-iq-simulation
+  template:
+    metadata:
+      labels:
+        app: cortex-iq-simulation
+        component: simulation-infrastructure
+    spec:
+      containers:
+        - name: simulation
+          image: macula/cortex-iq-simulation:latest
+          imagePullPolicy: Never  # Use local image in KinD
+          env:
+            - name: BONDY_URL
+              value: "ws://bondy.macula-hub.svc.cluster.local:18080/ws"
+            - name: BONDY_REALM
+              value: "be.cortexiq.energy"
+            - name: SIMULATION_SPEED
+              value: "105120"  # 1 year = 5 minutes
+            - name: SIMULATION_START_DATE
+              value: "2025-01-01T00:00:00Z"
+            - name: ERL_CRASH_DUMP
+              value: "/dev/null"  # Disable crash dumps to prevent OOM
+            - name: ERL_FLAGS
+              value: "+MBas aobf +MBacul 0"  # Container-friendly memory allocation
+            - name: RELEASE_TMP
+              value: "/tmp"
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "200m"
+            limits:
+              memory: "6Gi"  # BEAM VM needs high limit in Kubernetes
+              cpu: "1"
