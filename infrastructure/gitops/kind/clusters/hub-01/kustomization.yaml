@@ -3,8 +3,6 @@ kind: Kustomization
 
 resources:
   - bondy
-  - ../../base/cortex-iq-dashboard    # Dashboard with TimescaleDB
-  - ../../base/cortex-iq-projections  # CQRS write-side projections service
   - ../../base/cortex-iq-simulation  # Simulation clock infrastructure
   - prometheus
   - grafana
