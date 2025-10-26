@@ -37,17 +37,15 @@ spec:
       containers:
       - name: dashboard
         image: macula/cortex-iq-dashboard:latest
-        imagePullPolicy: Never  # Image loaded into KinD
+        imagePullPolicy: Never
         ports:
         - name: http
           containerPort: 4000
         env:
-        - name: MACULA_MODE
-          value: "edge"
-        - name: BONDY_REALM
-          value: "be.cortexiq.energy"
         - name: BONDY_URL
           value: "ws://172.20.0.2:30080/ws"
+        - name: BONDY_REALM
+          value: "be.cortexiq.energy"
         - name: BONDY_ADMIN_URL
           value: "http://172.20.0.2:30082"
         - name: DATABASE_URL

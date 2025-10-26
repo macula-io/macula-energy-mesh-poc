@@ -3,3 +3,10 @@ kind: Kustomization
 
 resources:
   - bondy
+  - ../../base/cortex-iq-dashboard    # Dashboard with TimescaleDB
+  - ../../base/cortex-iq-simulation  # Simulation clock infrastructure
+  - prometheus
+  - grafana
+  - loki
+  - fluent-bit
+  - portal
