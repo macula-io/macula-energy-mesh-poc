@@ -38,32 +38,21 @@ defmodule CortexIqDashboard.DatabaseWriter.Pipeline do
 
   @impl true
   def init(_opts) do
-    Logger.info("DatabaseWriter.Pipeline: Starting Flow pipeline")
-    Logger.info("  Partitions: #{@partitions}")
-    Logger.info("  Window: #{@window_timeout_ms}ms or #{@window_max_events} events")
+    Logger.info("DatabaseWriter.Pipeline: Starting pipeline")
     Logger.info("  Consumers: #{@num_consumers}")
+    Logger.info("  Note: Simplified architecture without Flow windowing")
 
-    # Start producer
+    # Start producer and consumers
+    # Consumers will subscribe directly to the Producer
     children = [
       {Producer, []}
+      | for i <- 1..@num_consumers do
+          Supervisor.child_spec(
+            {Consumer, subscribe_to: [{Producer, max_demand: 100, min_demand: 50}]},
+            id: {Consumer, i}
+          )
+        end
     ]
-
-    # Create Flow from producer and materialize it into stages
-    flow =
-      [Producer]
-      |> Flow.from_stages(max_demand: 1000, min_demand: 500)
-      |> Flow.partition(
-        stages: @partitions,
-        key: {:key, &partition_key/1},
-        window: create_window()
-      )
-      |> Flow.into_stages(
-        consumers: @num_consumers,
-        consumer: Consumer
-      )
-
-    # Add flow stages to children
-    children = children ++ flow
 
     # This Supervisor starts the entire pipeline
     Supervisor.init(children, strategy: :one_for_one)
