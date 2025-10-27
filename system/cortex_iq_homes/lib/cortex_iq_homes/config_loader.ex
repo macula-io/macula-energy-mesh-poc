@@ -70,7 +70,9 @@ defmodule CortexIqHomes.ConfigLoader do
   defp parse_home(data) do
     %Home{
       id: data["id"],
+      name: data["name"],
       location: %{
+        street: data["address"]["street"],
         city: data["address"]["city"],
         postal_code: data["address"]["postal_code"],
         region: String.to_atom(data["address"]["region"]),

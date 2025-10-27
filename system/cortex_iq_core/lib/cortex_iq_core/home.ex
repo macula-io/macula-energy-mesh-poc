@@ -14,6 +14,7 @@ defmodule CortexIqCore.Home do
 
   @type t :: %__MODULE__{
           id: String.t(),
+          name: String.t() | nil,
           location: Geography.location(),
           solar_capacity_kw: float(),
           battery_capacity_kwh: float(),
@@ -24,6 +25,7 @@ defmodule CortexIqCore.Home do
 
   defstruct [
     :id,
+    :name,
     :location,
     :current_contract_id,
     solar_capacity_kw: 5.0,

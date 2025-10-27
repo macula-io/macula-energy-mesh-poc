@@ -940,8 +940,12 @@ defmodule CortexIqHomes.HomeBot do
 
     event = %{
       home_id: state.home_id,
-      city: state.home.location.city,
-      postal_code: state.home.location.postal_code,
+      home_name: state.home.name,
+      address: %{
+        street: state.home.location.street,
+        city: state.home.location.city,
+        postal_code: state.home.location.postal_code
+      },
       region: to_string(state.home.location.region),
       solar_capacity_kw: state.home.solar_capacity_kw,
       battery_capacity_kwh: state.home.battery_capacity_kwh,
@@ -959,6 +963,7 @@ defmodule CortexIqHomes.HomeBot do
     event = %{
       contract_id: contract.id,
       home_id: state.home_id,
+      home_name: state.home.name,
       provider_id: provider_id,
       offer_id: contract.offer_id,
       start_date: DateTime.to_iso8601(contract.start_date),
@@ -978,6 +983,7 @@ defmodule CortexIqHomes.HomeBot do
 
     event = %{
       home_id: state.home_id,
+      home_name: state.home.name,
       from_contract_id: old_contract.id,
       from_provider_id: old_contract.provider_id,
       to_contract_id: new_contract.id,
