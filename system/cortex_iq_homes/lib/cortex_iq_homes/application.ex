@@ -10,12 +10,14 @@ defmodule CortexIqHomes.Application do
   @impl true
   def start(_type, _args) do
     # Get configuration from environment
-    home_count = get_env("HOME_COUNT", "25") |> String.to_integer()
-    home_id_offset = get_env("HOME_ID_OFFSET", "0") |> String.to_integer()
+    num_homes = get_env("NUM_HOMES", "50") |> String.to_integer()
+    home_id_filter = get_env("HOME_ID_FILTER", "all")  # "all", "odd", "even"
     bondy_url = get_env("BONDY_URL", "ws://localhost:18080/ws")
     realm = get_env("BONDY_REALM", "be.cortexiq.energy")
 
-    Logger.info("Starting #{home_count} home bots (offset: #{home_id_offset})")
+    home_ids = filter_home_ids(1..num_homes, home_id_filter)
+
+    Logger.info("Starting #{length(home_ids)} home bots (filter: #{home_id_filter}, total: #{num_homes})")
 
     children = [
       # Registry for home bots
@@ -31,7 +33,7 @@ defmodule CortexIqHomes.Application do
       {:ok, pid} ->
         # Start home bots asynchronously to avoid blocking
         # Use Task to start them in the background with staggered delays
-        Task.start(fn -> start_home_bots_staggered(home_count, home_id_offset, bondy_url, realm) end)
+        Task.start(fn -> start_home_bots_staggered(home_ids, bondy_url, realm) end)
         {:ok, pid}
 
       error ->
@@ -39,16 +41,28 @@ defmodule CortexIqHomes.Application do
     end
   end
 
-  defp start_home_bots_staggered(count, offset, bondy_url, realm) do
+  defp filter_home_ids(range, filter) do
+    case filter do
+      "odd" ->
+        Enum.filter(range, fn id -> rem(id, 2) == 1 end)
+
+      "even" ->
+        Enum.filter(range, fn id -> rem(id, 2) == 0 end)
+
+      _ ->
+        Enum.to_list(range)
+    end
+  end
+
+  defp start_home_bots_staggered(home_ids, bondy_url, realm) do
     # Stagger startup to avoid overwhelming Bondy with connections
-    # For 1000 homes with 25ms delay = 25 seconds total startup time
-    # More gradual for better visual effect on dashboard
+    # For 50 homes with 25ms delay = 1.25 seconds total startup time
     delay_ms = 25
 
-    Logger.info("Starting #{count} home bots with #{delay_ms}ms stagger...")
+    Logger.info("Starting #{length(home_ids)} home bots with #{delay_ms}ms stagger...")
 
-    Enum.each(offset..(offset + count - 1), fn i ->
-      home_id = "home_#{String.pad_leading("#{i + 1}", 4, "0")}"  # 4 digits for 1000 homes
+    Enum.each(home_ids, fn home_num ->
+      home_id = "home_#{String.pad_leading("#{home_num}", 4, "0")}"  # 4 digits for consistency
 
       spec = {CortexIqHomes.HomeBot, [
         home_id: home_id,
@@ -58,9 +72,7 @@ defmodule CortexIqHomes.Application do
 
       case DynamicSupervisor.start_child(CortexIqHomes.BotSupervisor, spec) do
         {:ok, _pid} ->
-          if rem(i + 1, 100) == 0 do
-            Logger.info("Started #{i + 1} home bots...")
-          end
+          :ok
 
         {:error, reason} ->
           Logger.error("Failed to start HomeBot #{home_id}: #{inspect(reason)}")
@@ -70,7 +82,7 @@ defmodule CortexIqHomes.Application do
       Process.sleep(delay_ms)
     end)
 
-    Logger.info("Finished starting all #{count} home bots!")
+    Logger.info("Finished starting all #{length(home_ids)} home bots!")
   end
 
   defp get_env(key, default) do

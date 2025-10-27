@@ -1,18 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Edge-02: 13 Homes + 5 Utilities (Providers)
+# Edge-02: Utility Providers Only (5 providers, no homes)
 
 resources:
   - namespace.yaml
-  - ../../base/cortex-iq-homes
   - ../../base/cortex-iq-utilities
-
-patches:
-  - target:
-      kind: Deployment
-      name: cortex-iq-homes
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/env/2/value
-        value: "13"

@@ -29,7 +29,9 @@ spec:
         - name: BONDY_REALM
           value: "be.cortexiq.energy"
         - name: NUM_HOMES
-          value: "13"
+          value: "25"
+        - name: HOME_ID_FILTER
+          value: "all"  # Options: "all", "odd", "even"
         resources:
           requests:
             memory: "1Gi"
