@@ -25,7 +25,11 @@ defmodule CortexIqDashboard.DatabasePersister do
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:home_initialized")
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:provider_initialized")
 
-    Logger.info("DatabasePersister: Started, subscribed to entity state changes and initialization events")
+    # Subscribe to connection tracking events
+    Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:home_connected")
+    Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:home_disconnected")
+
+    Logger.info("DatabasePersister: Started, subscribed to entity state changes, initialization, and connection tracking events")
     {:ok, %{persisted_count: 0}}
   end
 
@@ -134,6 +138,43 @@ defmodule CortexIqDashboard.DatabasePersister do
 
     DatabaseWriter.upsert_provider(provider_id, attrs)
     Logger.info("DatabasePersister: Created initial record for provider #{provider_id}")
+
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info({:home_connected, kwargs}, state) do
+    # Update home connection tracking
+    home_id = Map.get(kwargs, "home_id")
+    connected_at_str = Map.get(kwargs, "connected_at")
+
+    {:ok, connected_at, _} = DateTime.from_iso8601(connected_at_str)
+
+    attrs = %{
+      connected_at: connected_at,
+      disconnected_at: nil  # Clear disconnected_at when reconnecting
+    }
+
+    DatabaseWriter.upsert_home(home_id, attrs)
+    Logger.info("DatabasePersister: Home #{home_id} connected at #{connected_at_str}")
+
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info({:home_disconnected, kwargs}, state) do
+    # Update home connection tracking
+    home_id = Map.get(kwargs, "home_id")
+    disconnected_at_str = Map.get(kwargs, "disconnected_at")
+
+    {:ok, disconnected_at, _} = DateTime.from_iso8601(disconnected_at_str)
+
+    attrs = %{
+      disconnected_at: disconnected_at
+    }
+
+    DatabaseWriter.upsert_home(home_id, attrs)
+    Logger.info("DatabasePersister: Home #{home_id} disconnected at #{disconnected_at_str}")
 
     {:noreply, state}
   end

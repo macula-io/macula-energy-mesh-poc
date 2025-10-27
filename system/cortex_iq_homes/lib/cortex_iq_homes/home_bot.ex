@@ -10,6 +10,9 @@ defmodule CortexIqHomes.HomeBot do
   - Subscribes to provider offers and switches contracts when beneficial
 
   Publishes to WAMP topics:
+  - be.cortexiq.home.initialized (on first startup)
+  - be.cortexiq.home.connected (when home comes online)
+  - be.cortexiq.home.disconnected (when home goes offline)
   - be.cortexiq.home.measured (HomeWizard-compatible smart meter data)
   - be.cortexiq.balance.updated
   - be.cortexiq.market.contract_signed
@@ -381,6 +384,15 @@ defmodule CortexIqHomes.HomeBot do
     {:noreply, new_state}
   end
 
+  @impl true
+  def terminate(reason, state) do
+    # Publish disconnected event when the home bot terminates
+    if state.current_simulation_time do
+      publish_home_disconnected(state, state.current_simulation_time, reason)
+    end
+    :ok
+  end
+
   ## Private Functions - Subscription
 
   defp via_tuple(home_id) do
@@ -525,6 +537,9 @@ defmodule CortexIqHomes.HomeBot do
 
     # Publish home initialization event so dashboard knows about this home
     publish_home_initialized(new_state, simulation_time)
+
+    # Publish connected event for connection tracking
+    publish_home_connected(new_state, simulation_time)
 
     # Publish initial contract to dashboard so it knows about it
     publish_initial_contract(new_state, contract, provider.id, simulation_time)
@@ -1043,6 +1058,35 @@ defmodule CortexIqHomes.HomeBot do
 
     Client.publish(state.wamp_client, topic, [], event, %{})
     Logger.info("Home #{state.home_id}: Published initialization event (#{state.home.location.city})")
+  end
+
+  defp publish_home_connected(state, simulation_time) do
+    topic = "be.cortexiq.home.connected"
+
+    event = %{
+      home_id: state.home_id,
+      home_name: state.home.name,
+      connected_at: DateTime.to_iso8601(simulation_time),
+      simulation_time: DateTime.to_iso8601(simulation_time)
+    }
+
+    Client.publish(state.wamp_client, topic, [], event, %{})
+    Logger.info("Home #{state.home_id}: Published connected event")
+  end
+
+  defp publish_home_disconnected(state, simulation_time, reason) do
+    topic = "be.cortexiq.home.disconnected"
+
+    event = %{
+      home_id: state.home_id,
+      home_name: state.home.name,
+      disconnected_at: DateTime.to_iso8601(simulation_time),
+      reason: to_string(reason),
+      simulation_time: DateTime.to_iso8601(simulation_time)
+    }
+
+    Client.publish(state.wamp_client, topic, [], event, %{})
+    Logger.info("Home #{state.home_id}: Published disconnected event (reason: #{reason})")
   end
 
   defp publish_initial_contract(state, contract, provider_id, simulation_time) do

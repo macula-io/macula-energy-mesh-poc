@@ -249,6 +249,20 @@ defmodule CortexIqDashboard.WampSubscriber do
           {:provider_initialized, kwargs}
         )
 
+      {:home_connected, _} ->
+        Phoenix.PubSub.broadcast(
+          CortexIqDashboard.PubSub,
+          "dashboard:home_connected",
+          {:home_connected, kwargs}
+        )
+
+      {:home_disconnected, _} ->
+        Phoenix.PubSub.broadcast(
+          CortexIqDashboard.PubSub,
+          "dashboard:home_disconnected",
+          {:home_disconnected, kwargs}
+        )
+
       :ignore ->
         :ok
     end
@@ -264,6 +278,8 @@ defmodule CortexIqDashboard.WampSubscriber do
       String.ends_with?(topic, ".market.contract_expired") -> {:contract, :expired}
       String.ends_with?(topic, ".home.initialized") -> {:home_initialized, :home}
       String.ends_with?(topic, ".provider.initialized") -> {:provider_initialized, :provider}
+      String.ends_with?(topic, ".home.connected") -> {:home_connected, :home}
+      String.ends_with?(topic, ".home.disconnected") -> {:home_disconnected, :home}
       true -> :ignore
     end
   end

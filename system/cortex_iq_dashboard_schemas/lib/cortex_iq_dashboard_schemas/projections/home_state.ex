@@ -33,6 +33,10 @@ defmodule CortexIqDashboardSchemas.Projections.HomeState do
 
     field :last_event_at, :utc_datetime_usec
 
+    # Connection tracking
+    field :connected_at, :utc_datetime_usec
+    field :disconnected_at, :utc_datetime_usec
+
     timestamps(type: :utc_datetime_usec)
   end
 
@@ -61,7 +65,9 @@ defmodule CortexIqDashboardSchemas.Projections.HomeState do
       :cortexiq_total_savings,
       :cortexiq_net_savings,
       :contract_switches_count,
-      :last_event_at
+      :last_event_at,
+      :connected_at,
+      :disconnected_at
     ])
     |> validate_required([:home_id])
   end
