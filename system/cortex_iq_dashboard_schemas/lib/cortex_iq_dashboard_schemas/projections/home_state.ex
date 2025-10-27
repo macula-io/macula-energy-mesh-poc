@@ -25,6 +25,12 @@ defmodule CortexIqDashboardSchemas.Projections.HomeState do
     field :revenue_received, :float
     field :net_cost, :float
 
+    # CortexIQ financial tracking
+    field :cortexiq_total_commission, :float
+    field :cortexiq_total_savings, :float
+    field :cortexiq_net_savings, :float
+    field :contract_switches_count, :integer
+
     field :last_event_at, :utc_datetime_usec
 
     timestamps(type: :utc_datetime_usec)
@@ -51,6 +57,10 @@ defmodule CortexIqDashboardSchemas.Projections.HomeState do
       :cost_paid,
       :revenue_received,
       :net_cost,
+      :cortexiq_total_commission,
+      :cortexiq_total_savings,
+      :cortexiq_net_savings,
+      :contract_switches_count,
       :last_event_at
     ])
     |> validate_required([:home_id])

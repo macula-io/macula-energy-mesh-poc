@@ -15,6 +15,11 @@ defmodule CortexIqDashboardSchemas.Projections.SystemStats do
     field :contract_switches_count, :integer
     field :avg_battery_percent, :float
 
+    # CortexIQ financial tracking
+    field :cortexiq_total_commission, :float
+    field :cortexiq_total_savings, :float
+    field :cortexiq_net_savings, :float
+
     field :simulation_time, :utc_datetime_usec
     field :simulation_speed, :integer
 
@@ -34,6 +39,9 @@ defmodule CortexIqDashboardSchemas.Projections.SystemStats do
       :total_revenue_received,
       :contract_switches_count,
       :avg_battery_percent,
+      :cortexiq_total_commission,
+      :cortexiq_total_savings,
+      :cortexiq_net_savings,
       :simulation_time,
       :simulation_speed
     ])

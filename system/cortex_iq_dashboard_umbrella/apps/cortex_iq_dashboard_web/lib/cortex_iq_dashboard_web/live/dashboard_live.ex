@@ -335,6 +335,50 @@ defmodule CortexIqDashboardWeb.DashboardLive do
         </div>
       </div>
 
+      <!-- CortexIQ Savings Performance -->
+      <%= if Map.get(@balance, :contract_switches_count, 0) > 0 do %>
+        <div class="bg-gradient-to-r from-green-900/50 to-blue-900/50 rounded-lg p-6 border-2 border-green-500/50">
+          <h3 class="text-xl font-bold text-green-300 mb-4">✨ CortexIQ Savings Performance</h3>
+          <p class="text-sm text-gray-400 mb-4">
+            Your home has switched contracts {Map.get(@balance, :contract_switches_count, 0)} time(s) to maximize savings!
+          </p>
+          <div class="grid grid-cols-4 gap-4">
+            <div class="bg-gray-800/80 rounded-lg p-4">
+              <div class="text-gray-400 text-xs mb-1">Total Gross Savings</div>
+              <div class="text-2xl font-bold text-green-400">
+                €{Float.round(Map.get(@balance, :cortexiq_total_savings, 0.0), 2)}
+              </div>
+              <div class="text-xs text-gray-500 mt-1">Before commission</div>
+            </div>
+            <div class="bg-gray-800/80 rounded-lg p-4">
+              <div class="text-gray-400 text-xs mb-1">CortexIQ Commission</div>
+              <div class="text-2xl font-bold text-yellow-400">
+                €{Float.round(Map.get(@balance, :cortexiq_total_commission, 0.0), 2)}
+              </div>
+              <div class="text-xs text-gray-500 mt-1">20% service fee</div>
+            </div>
+            <div class="bg-gray-800/80 rounded-lg p-4">
+              <div class="text-gray-400 text-xs mb-1">Your Net Savings</div>
+              <div class="text-2xl font-bold text-blue-400">
+                €{Float.round(Map.get(@balance, :cortexiq_net_savings, 0.0), 2)}
+              </div>
+              <div class="text-xs text-gray-500 mt-1">80% goes to you</div>
+            </div>
+            <div class="bg-gray-800/80 rounded-lg p-4">
+              <div class="text-gray-400 text-xs mb-1">Your ROI</div>
+              <div class="text-2xl font-bold text-purple-400">
+                <%= if Map.get(@balance, :cortexiq_total_commission, 0.0) > 0 do %>
+                  {Float.round(Map.get(@balance, :cortexiq_net_savings, 0.0) / Map.get(@balance, :cortexiq_total_commission, 1.0) * 100, 0)}%
+                <% else %>
+                  0%
+                <% end %>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">Return on fees paid</div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
       <!-- Current Contract -->
       <%= if Map.get(@contract, :provider_id) do %>
         <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
@@ -977,7 +1021,58 @@ defmodule CortexIqDashboardWeb.DashboardLive do
             <div class="text-2xl font-bold text-purple-400">{@stats.contract_switches}</div>
           </div>
         </div>
-        
+
+    <!-- CortexIQ Financial Summary -->
+        <div class="mb-6">
+          <h3 class="text-sm font-semibold text-gray-400 mb-3">CortexIQ Platform Revenue - Savings Optimization Service</h3>
+          <div class="grid grid-cols-4 gap-4">
+            <!-- Total Customer Savings -->
+            <div class="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-4 border-2 border-green-600">
+              <div class="text-gray-300 text-xs">Customer Savings (Gross)</div>
+              <div class="text-3xl font-bold text-green-300">
+                €{Float.round(@stats.cortexiq_total_savings, 2)}
+              </div>
+              <div class="text-xs text-green-400 mt-1">
+                From {@stats.contract_switches} switches
+              </div>
+            </div>
+
+            <!-- CortexIQ Commission -->
+            <div class="bg-gradient-to-br from-yellow-900 to-yellow-800 rounded-lg p-4 border-2 border-yellow-600">
+              <div class="text-gray-300 text-xs">CortexIQ Revenue (20%)</div>
+              <div class="text-3xl font-bold text-yellow-300">
+                €{Float.round(@stats.cortexiq_total_commission, 2)}
+              </div>
+              <div class="text-xs text-yellow-400 mt-1">
+                Platform commission
+              </div>
+            </div>
+
+            <!-- Net Customer Savings -->
+            <div class="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-4 border-2 border-blue-600">
+              <div class="text-gray-300 text-xs">Customer Savings (Net)</div>
+              <div class="text-3xl font-bold text-blue-300">
+                €{Float.round(@stats.cortexiq_net_savings, 2)}
+              </div>
+              <div class="text-xs text-blue-400 mt-1">
+                After commission
+              </div>
+            </div>
+
+            <!-- ROI for Customers -->
+            <div class="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-4 border-2 border-purple-600">
+              <div class="text-gray-300 text-xs">Customer ROI</div>
+              <% roi = if @stats.cortexiq_total_commission > 0, do: Float.round((@stats.cortexiq_net_savings / @stats.cortexiq_total_commission) * 100, 1), else: 0.0 %>
+              <div class="text-3xl font-bold text-purple-300">
+                {roi}%
+              </div>
+              <div class="text-xs text-purple-400 mt-1">
+                Savings per € paid
+              </div>
+            </div>
+          </div>
+        </div>
+
     <!-- Main Content: Map Section -->
         <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
           <div class="p-4 border-b border-gray-700">
@@ -1012,7 +1107,24 @@ defmodule CortexIqDashboardWeb.DashboardLive do
             </div>
           </div>
         </div>
-        
+
+    <!-- Cumulative Savings Chart -->
+        <%= if length(@overview.savings_history || []) > 0 do %>
+          <div class="mt-6">
+            <h2 class="text-2xl font-bold mb-4 text-gray-100">Financial Performance Over Time</h2>
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+              <h3 class="text-lg font-semibold text-gray-300 mb-4">Cumulative Savings & Commission</h3>
+              <div
+                id="savings-history-chart"
+                phx-hook="SavingsHistoryChart"
+                phx-update="ignore"
+                data-savings-history={Jason.encode!(@overview.savings_history)}
+              >
+              </div>
+            </div>
+          </div>
+        <% end %>
+
     <!-- Analytics Charts -->
         <%= if length(@aggregate_history) > 5 do %>
           <div class="mt-6">
@@ -2005,7 +2117,11 @@ defmodule CortexIqDashboardWeb.DashboardLive do
           net_balance_kwh: home.net_balance_kwh || 0.0,
           cost_paid: home.cost_paid || 0.0,
           revenue_received: home.revenue_received || 0.0,
-          net_cost: home.net_cost || 0.0
+          net_cost: home.net_cost || 0.0,
+          cortexiq_total_commission: home.cortexiq_total_commission || 0.0,
+          cortexiq_total_savings: home.cortexiq_total_savings || 0.0,
+          cortexiq_net_savings: home.cortexiq_net_savings || 0.0,
+          contract_switches_count: home.contract_switches_count || 0
         }}
       end)
       |> Enum.into(%{})
@@ -2070,7 +2186,11 @@ defmodule CortexIqDashboardWeb.DashboardLive do
       total_cost_paid: overview.total_cost_paid || 0.0,
       total_revenue_received: overview.total_revenue_received || 0.0,
       contract_switches: overview.total_contract_switches || 0,
-      avg_battery_percent: overview.avg_battery_percent || 0.0
+      avg_battery_percent: overview.avg_battery_percent || 0.0,
+      # CortexIQ financial metrics
+      cortexiq_total_commission: overview.cortexiq_total_commission || 0.0,
+      cortexiq_total_savings: overview.cortexiq_total_savings || 0.0,
+      cortexiq_net_savings: overview.cortexiq_net_savings || 0.0
     }}
   end
 end

@@ -19,6 +19,11 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
     total_contract_switches: 0,
     total_savings: 0.0,
     total_arbitrage_profit: 0.0,  # Sum of all home arbitrage profits
+    # CortexIQ financial tracking
+    cortexiq_total_commission: 0.0,
+    cortexiq_total_savings: 0.0,
+    cortexiq_net_savings: 0.0,
+    savings_history: [],  # Last 100 savings events for charting
     current_spot_price: nil,
     spot_price_history: [],  # Last 50 spot prices for charting
     simulation_time: nil,
@@ -62,10 +67,10 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
     total_providers = map_size(state.providers)
 
     # Aggregate home metrics
-    {total_production_kw, total_consumption_kw, total_battery_percent, total_energy_bought_kwh, total_energy_sold_kwh, total_cost_paid, total_revenue_received} =
+    {total_production_kw, total_consumption_kw, total_battery_percent, total_energy_bought_kwh, total_energy_sold_kwh, total_cost_paid, total_revenue_received, cortexiq_commission, cortexiq_savings, cortexiq_net} =
       state.homes
       |> Map.values()
-      |> Enum.reduce({0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, fn home, {prod, cons, batt, bought, sold, cost, rev} ->
+      |> Enum.reduce({0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, fn home, {prod, cons, batt, bought, sold, cost, rev, comm, sav, net} ->
         {
           prod + (home.production_kw || 0.0),
           cons + (home.consumption_kw || 0.0),
@@ -73,7 +78,10 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
           bought + (home.energy_bought_kwh || 0.0),
           sold + (home.energy_sold_kwh || 0.0),
           cost + (home.cost_paid || 0.0),
-          rev + (home.revenue_received || 0.0)
+          rev + (home.revenue_received || 0.0),
+          comm + (home.cortexiq_total_commission || 0.0),
+          sav + (home.cortexiq_total_savings || 0.0),
+          net + (home.cortexiq_net_savings || 0.0)
         }
       end)
 
@@ -87,6 +95,11 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
       total_contract_switches: state.total_contract_switches,
       total_savings: state.total_savings,
       total_arbitrage_profit: state.total_arbitrage_profit,
+      # CortexIQ financial metrics
+      cortexiq_total_commission: cortexiq_commission,
+      cortexiq_total_savings: cortexiq_savings,
+      cortexiq_net_savings: cortexiq_net,
+      savings_history: state.savings_history,
       current_spot_price: state.current_spot_price,
       spot_price_history: state.spot_price_history,
       total_production_kw: total_production_kw,
@@ -183,6 +196,30 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
           simulation_time: simulation_time,
           simulation_speed: simulation_speed,
           simulation_paused: simulation_paused,
+          last_updated_at: DateTime.utc_now()
+        }
+
+      String.contains?(topic, "savings_realized") ->
+        # Track cumulative savings over time for charting
+        gross_savings = Map.get(kwargs, "gross_savings", 0.0)
+        commission = Map.get(kwargs, "cortexiq_commission", 0.0)
+        net_savings = Map.get(kwargs, "net_savings_to_customer", 0.0)
+        cumulative_commission = Map.get(kwargs, "cumulative_commission", commission)
+        cumulative_savings = Map.get(kwargs, "cumulative_gross_savings", gross_savings)
+        cumulative_net = Map.get(kwargs, "cumulative_net_savings", net_savings)
+
+        # Add to savings history (keep last 100 points)
+        new_history = [%{
+          timestamp: DateTime.utc_now(),
+          simulation_time: state.simulation_time,
+          gross_savings: cumulative_savings,
+          commission: cumulative_commission,
+          net_savings: cumulative_net
+        } | state.savings_history]
+        |> Enum.take(100)
+
+        %{state |
+          savings_history: new_history,
           last_updated_at: DateTime.utc_now()
         }
 

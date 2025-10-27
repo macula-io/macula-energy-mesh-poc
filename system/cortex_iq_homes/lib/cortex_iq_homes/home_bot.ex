@@ -59,7 +59,13 @@ defmodule CortexIqHomes.HomeBot do
     # Hourly trade accumulation (for be.cortexiq.home.traded events)
     :last_trade_hour,              # Track which hour we last published trade for
     :hourly_grid_import_kwh,       # Accumulate imports over current hour
-    :hourly_grid_export_kwh        # Accumulate exports over current hour
+    :hourly_grid_export_kwh,       # Accumulate exports over current hour
+    # CortexIQ financial tracking
+    :baseline_contract_cost,       # What old contract would have cost (for comparison)
+    :cortexiq_total_commission,    # Running total of commission paid to CortexIQ
+    :cortexiq_total_savings,       # Running total of gross savings from switching
+    :cortexiq_net_savings,         # Net savings to customer (gross - commission)
+    :contract_switches_count       # Number of times switched contracts
   ]
 
   # Update intervals (real-time milliseconds)
@@ -130,7 +136,13 @@ defmodule CortexIqHomes.HomeBot do
       # Initialize hourly trade tracking
       last_trade_hour: nil,
       hourly_grid_import_kwh: 0.0,
-      hourly_grid_export_kwh: 0.0
+      hourly_grid_export_kwh: 0.0,
+      # Initialize CortexIQ financial tracking
+      baseline_contract_cost: nil,
+      cortexiq_total_commission: 0.0,
+      cortexiq_total_savings: 0.0,
+      cortexiq_net_savings: 0.0,
+      contract_switches_count: 0
     }
 
     # Defer subscriptions with random staggered delay to simulate realistic startup
@@ -216,7 +228,7 @@ defmodule CortexIqHomes.HomeBot do
 
     Logger.info("Home #{state.home_id}: Will resume operations in #{Float.round(delay_ms / 1000, 1)}s after reset")
 
-    # Reset to initial state (clear contract, balance, simulation time)
+    # Reset to initial state (clear contract, balance, simulation time, financial tracking)
     new_state = %{state |
       current_simulation_time: nil,
       current_contract: nil,
@@ -225,6 +237,11 @@ defmodule CortexIqHomes.HomeBot do
       total_arbitrage_profit: 0.0,
       cumulative_import_kwh: 0.0,
       cumulative_export_kwh: 0.0,
+      baseline_contract_cost: nil,
+      cortexiq_total_commission: 0.0,
+      cortexiq_total_savings: 0.0,
+      cortexiq_net_savings: 0.0,
+      contract_switches_count: 0,
       paused_until: paused_until
     }
 
@@ -286,12 +303,19 @@ defmodule CortexIqHomes.HomeBot do
 
             Logger.info("Home #{state.home_id}: Switched from #{old_contract && old_contract.provider_id} to #{provider_id}")
 
-            # Publish contract switched event if this was a switch
-            if reason == :switch and old_contract do
-              publish_contract_switched(state, old_contract, contract, start_date)
+            # Calculate savings and update financial tracking if this was a switch
+            new_state = if reason == :switch and old_contract do
+              calculate_and_track_savings(state, old_contract, contract, start_date)
+            else
+              state
             end
 
-            {:noreply, %{state | current_contract: contract, energy_balance: new_balance}}
+            # Publish contract switched event if this was a switch
+            if reason == :switch and old_contract do
+              publish_contract_switched(new_state, old_contract, contract, start_date)
+            end
+
+            {:noreply, %{new_state | current_contract: contract, energy_balance: new_balance}}
           else
             Logger.error("Home #{state.home_id}: No offer found for provider #{provider_id}")
             {:noreply, state}
@@ -842,6 +866,71 @@ defmodule CortexIqHomes.HomeBot do
     state
   end
 
+  ## Private Functions - Financial Tracking
+
+  defp calculate_and_track_savings(state, old_contract, new_contract, simulation_time) do
+    # Calculate what the old contract would have cost for the next 12 months
+    days_in_contract = 365
+    baseline_cost = EnergyBalance.project_cost(state.energy_balance, old_contract, days_in_contract)
+
+    # Calculate what the new contract will cost for 12 months
+    new_cost = EnergyBalance.project_cost(state.energy_balance, new_contract, days_in_contract)
+
+    # Add switching discount if applicable
+    in_discount_window = Contract.in_discount_window?(old_contract, simulation_time)
+    discount = if in_discount_window do
+      new_contract.switching_discount
+    else
+      0.0
+    end
+
+    # Calculate gross savings (what customer saved before CortexIQ commission)
+    gross_savings = baseline_cost - new_cost + discount
+
+    # CortexIQ takes 20% commission on savings
+    commission_rate = 0.20
+    commission = gross_savings * commission_rate
+
+    # Net savings to customer (after commission)
+    net_savings = gross_savings - commission
+
+    # Update cumulative financial tracking
+    new_total_commission = state.cortexiq_total_commission + commission
+    new_total_savings = state.cortexiq_total_savings + gross_savings
+    new_net_savings = state.cortexiq_net_savings + net_savings
+    new_switch_count = state.contract_switches_count + 1
+
+    Logger.info(
+      "Home #{state.home_id}: Savings calculated - " <>
+        "Baseline: $#{Float.round(baseline_cost, 2)}, " <>
+        "New: $#{Float.round(new_cost, 2)}, " <>
+        "Discount: $#{Float.round(discount, 2)}, " <>
+        "Gross savings: $#{Float.round(gross_savings, 2)}, " <>
+        "Commission: $#{Float.round(commission, 2)}, " <>
+        "Net savings: $#{Float.round(net_savings, 2)}"
+    )
+
+    # Publish savings realized event
+    publish_savings_realized(
+      state,
+      old_contract,
+      new_contract,
+      gross_savings,
+      commission,
+      net_savings,
+      simulation_time
+    )
+
+    # Update state with new financial totals
+    %{state |
+      baseline_contract_cost: baseline_cost,
+      cortexiq_total_commission: new_total_commission,
+      cortexiq_total_savings: new_total_savings,
+      cortexiq_net_savings: new_net_savings,
+      contract_switches_count: new_switch_count
+    }
+  end
+
   ## Private Functions - Publishing
 
   defp publish_measurement(
@@ -1058,6 +1147,42 @@ defmodule CortexIqHomes.HomeBot do
       simulation_time: DateTime.to_iso8601(simulation_time)
     }
 
+    Client.publish(state.wamp_client, topic, [], event, %{})
+  end
+
+  defp publish_savings_realized(
+         state,
+         old_contract,
+         new_contract,
+         gross_savings,
+         commission,
+         net_savings,
+         simulation_time
+       ) do
+    topic = "be.cortexiq.market.savings_realized"
+
+    event = %{
+      home_id: state.home_id,
+      home_name: state.home.name,
+      address: %{
+        street: state.home.location.street,
+        city: state.home.location.city,
+        postal_code: state.home.location.postal_code
+      },
+      from_provider_id: old_contract.provider_id,
+      to_provider_id: new_contract.provider_id,
+      gross_savings: Float.round(gross_savings, 2),
+      cortexiq_commission: Float.round(commission, 2),
+      net_savings_to_customer: Float.round(net_savings, 2),
+      commission_rate: 0.20,
+      total_switches: state.contract_switches_count + 1,
+      cumulative_commission: Float.round(state.cortexiq_total_commission + commission, 2),
+      cumulative_gross_savings: Float.round(state.cortexiq_total_savings + gross_savings, 2),
+      cumulative_net_savings: Float.round(state.cortexiq_net_savings + net_savings, 2),
+      simulation_time: DateTime.to_iso8601(simulation_time)
+    }
+
+    Logger.info("Home #{state.home_id}: Publishing savings realized event - Gross: $#{Float.round(gross_savings, 2)}, Commission: $#{Float.round(commission, 2)}, Net: $#{Float.round(net_savings, 2)}")
     Client.publish(state.wamp_client, topic, [], event, %{})
   end
 

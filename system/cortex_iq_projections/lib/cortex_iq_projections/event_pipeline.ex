@@ -12,7 +12,7 @@ defmodule CortexIqProjections.EventPipeline do
   import Ecto.Query.API, only: [fragment: 1]
   alias Broadway.Message
   alias CortexIqProjections.Repo
-  alias CortexIqDashboardSchemas.Projections.{HomeState, ProviderState, SystemStats}
+  alias CortexIqDashboardSchemas.Projections.{HomeState, ProviderState, SystemStats, ContractSwitch}
   alias CortexIqDashboardSchemas.TimeSeries.{EnergyEvent, EnergyTrade, ContractEvent}
 
   def start_link(_opts) do
@@ -446,6 +446,65 @@ defmodule CortexIqProjections.EventPipeline do
       },
       on_conflict: :nothing,
       conflict_target: [:home_id, :simulation_time]
+    )
+  end
+
+  defp project_market_event("savings_realized", kwargs) do
+    home_id = kwargs["home_id"]
+    home_name = kwargs["home_name"]
+    from_provider_id = kwargs["from_provider_id"]
+    to_provider_id = kwargs["to_provider_id"]
+    gross_savings = kwargs["gross_savings"] || 0.0
+    commission = kwargs["cortexiq_commission"] || 0.0
+    net_savings = kwargs["net_savings_to_customer"] || 0.0
+    commission_rate = kwargs["commission_rate"] || 0.20
+    cumulative_commission = kwargs["cumulative_commission"] || 0.0
+    cumulative_gross_savings = kwargs["cumulative_gross_savings"] || 0.0
+    cumulative_net_savings = kwargs["cumulative_net_savings"] || 0.0
+    total_switches = kwargs["total_switches"] || 1
+    simulation_time = parse_datetime(kwargs["simulation_time"])
+
+    # Insert contract switch record
+    Repo.insert!(%ContractSwitch{
+      home_id: home_id,
+      home_name: home_name,
+      from_provider_id: from_provider_id,
+      to_provider_id: to_provider_id,
+      gross_savings: gross_savings,
+      cortexiq_commission: commission,
+      net_savings_to_customer: net_savings,
+      commission_rate: commission_rate,
+      cumulative_commission: cumulative_commission,
+      cumulative_gross_savings: cumulative_gross_savings,
+      cumulative_net_savings: cumulative_net_savings,
+      total_switches: total_switches,
+      simulation_time: simulation_time
+    })
+
+    # Update home state with cumulative financial data
+    Repo.insert!(
+      %HomeState{home_id: home_id},
+      on_conflict: [
+        set: [
+          cortexiq_total_commission: cumulative_commission,
+          cortexiq_total_savings: cumulative_gross_savings,
+          cortexiq_net_savings: cumulative_net_savings,
+          contract_switches_count: total_switches,
+          updated_at: DateTime.utc_now()
+        ]
+      ],
+      conflict_target: :home_id
+    )
+
+    # Update system stats with cumulative financial data
+    from(s in SystemStats, where: s.id == 1)
+    |> Repo.update_all(
+      inc: [
+        cortexiq_total_commission: commission,
+        cortexiq_total_savings: gross_savings,
+        cortexiq_net_savings: net_savings
+      ],
+      set: [updated_at: DateTime.utc_now()]
     )
   end
 

@@ -759,11 +759,109 @@ const PriceComparisonChart = {
   }
 }
 
+// Savings History Chart Hook
+const SavingsHistoryChart = {
+  mounted() {
+    const savingsHistory = JSON.parse(this.el.dataset.savingsHistory)
+
+    // If no data yet, show placeholder
+    if (!savingsHistory || savingsHistory.length === 0) {
+      this.el.innerHTML = '<div class="text-gray-400 text-center py-8">Waiting for contract switches...</div>'
+      return
+    }
+
+    const reversed = [...savingsHistory].reverse()
+
+    const timestamps = reversed.map(h => new Date(h.timestamp).getTime())
+    const grossSavings = reversed.map(h => h.gross_savings || 0)
+    const commission = reversed.map(h => h.commission || 0)
+    const netSavings = reversed.map(h => h.net_savings || 0)
+
+    const options = {
+      series: [{
+        name: 'Customer Gross Savings',
+        data: grossSavings.map((val, idx) => [timestamps[idx], val])
+      }, {
+        name: 'CortexIQ Commission (20%)',
+        data: commission.map((val, idx) => [timestamps[idx], val])
+      }, {
+        name: 'Customer Net Savings (80%)',
+        data: netSavings.map((val, idx) => [timestamps[idx], val])
+      }],
+      chart: {
+        type: 'area',
+        height: 300,
+        background: 'transparent',
+        toolbar: { show: false },
+        animations: {
+          enabled: true,
+          easing: 'easeinout',
+          speed: 800
+        }
+      },
+      stroke: {
+        curve: 'smooth',
+        width: 2
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.7,
+          opacityTo: 0.3
+        }
+      },
+      colors: ['#10b981', '#f59e0b', '#3b82f6'],
+      xaxis: {
+        type: 'datetime',
+        labels: {
+          style: { colors: '#9ca3af' },
+          datetimeFormatter: {
+            hour: 'HH:mm',
+            minute: 'HH:mm:ss'
+          }
+        }
+      },
+      yaxis: {
+        labels: {
+          style: { colors: '#9ca3af' },
+          formatter: val => '€' + val.toFixed(2)
+        }
+      },
+      grid: {
+        borderColor: '#374151'
+      },
+      theme: {
+        mode: 'dark'
+      },
+      legend: {
+        labels: { colors: '#9ca3af' },
+        position: 'top'
+      },
+      tooltip: {
+        theme: 'dark',
+        y: {
+          formatter: val => '€' + val.toFixed(2)
+        }
+      }
+    }
+
+    this.chart = new ApexCharts(this.el, options)
+    this.chart.render()
+  },
+
+  destroyed() {
+    if (this.chart) {
+      this.chart.destroy()
+    }
+  }
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {BelgiumMap, PhaseChart, PowerSparkline, BatterySparkline, PricingChart, AggregatePowerChart, MarketShareChart, RegionalBalanceChart, PriceComparisonChart},
+  hooks: {BelgiumMap, PhaseChart, PowerSparkline, BatterySparkline, PricingChart, AggregatePowerChart, MarketShareChart, RegionalBalanceChart, PriceComparisonChart, SavingsHistoryChart},
 })
 
 // Show progress bar on live navigation and form submits
