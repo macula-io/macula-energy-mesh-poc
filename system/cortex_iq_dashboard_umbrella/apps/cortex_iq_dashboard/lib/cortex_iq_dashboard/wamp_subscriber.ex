@@ -196,76 +196,75 @@ defmodule CortexIqDashboard.WampSubscriber do
 
   ## Private Functions
 
-  # Hourly trade events (import/export)
-  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".home.traded") do
+  defp forward_to_database_writer(topic, event_data) do
     kwargs = Map.get(event_data, :kwargs, %{})
-    Phoenix.PubSub.broadcast(
-      CortexIqDashboard.PubSub,
-      "dashboard:trade_event",
-      {:trade_event, kwargs}
-    )
+
+    case classify_event(topic) do
+      {:trade, _} ->
+        Phoenix.PubSub.broadcast(
+          CortexIqDashboard.PubSub,
+          "dashboard:trade_event",
+          {:trade_event, kwargs}
+        )
+
+      {:energy, _} ->
+        Phoenix.PubSub.broadcast(
+          CortexIqDashboard.PubSub,
+          "dashboard:energy_event",
+          {:energy_event, kwargs}
+        )
+
+      {:contract, :signed} ->
+        Phoenix.PubSub.broadcast(
+          CortexIqDashboard.PubSub,
+          "dashboard:contract_event",
+          {:contract_event, :signed, kwargs}
+        )
+
+      {:contract, :switched} ->
+        Phoenix.PubSub.broadcast(
+          CortexIqDashboard.PubSub,
+          "dashboard:contract_event",
+          {:contract_event, :switched, kwargs}
+        )
+
+      {:contract, :expired} ->
+        Phoenix.PubSub.broadcast(
+          CortexIqDashboard.PubSub,
+          "dashboard:contract_event",
+          {:contract_event, :expired, kwargs}
+        )
+
+      {:home_initialized, _} ->
+        Phoenix.PubSub.broadcast(
+          CortexIqDashboard.PubSub,
+          "dashboard:home_initialized",
+          {:home_initialized, kwargs}
+        )
+
+      {:provider_initialized, _} ->
+        Phoenix.PubSub.broadcast(
+          CortexIqDashboard.PubSub,
+          "dashboard:provider_initialized",
+          {:provider_initialized, kwargs}
+        )
+
+      :ignore ->
+        :ok
+    end
   end
 
-  # HomeWizard-compatible measurement events (production/consumption/battery)
-  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".home.measured") do
-    kwargs = Map.get(event_data, :kwargs, %{})
-    Phoenix.PubSub.broadcast(
-      CortexIqDashboard.PubSub,
-      "dashboard:energy_event",
-      {:energy_event, kwargs}
-    )
+  # Classify event based on topic suffix for pattern matching
+  defp classify_event(topic) do
+    cond do
+      String.ends_with?(topic, ".home.traded") -> {:trade, :home}
+      String.ends_with?(topic, ".home.measured") -> {:energy, :home}
+      String.ends_with?(topic, ".market.contract_confirmed") -> {:contract, :signed}
+      String.ends_with?(topic, ".market.contract_switched") -> {:contract, :switched}
+      String.ends_with?(topic, ".market.contract_expired") -> {:contract, :expired}
+      String.ends_with?(topic, ".home.initialized") -> {:home_initialized, :home}
+      String.ends_with?(topic, ".provider.initialized") -> {:provider_initialized, :provider}
+      true -> :ignore
+    end
   end
-
-  # Contract confirmed (signed)
-  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".market.contract_confirmed") do
-    kwargs = Map.get(event_data, :kwargs, %{})
-    Phoenix.PubSub.broadcast(
-      CortexIqDashboard.PubSub,
-      "dashboard:contract_event",
-      {:contract_event, :signed, kwargs}
-    )
-  end
-
-  # Contract switched
-  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".market.contract_switched") do
-    kwargs = Map.get(event_data, :kwargs, %{})
-    Phoenix.PubSub.broadcast(
-      CortexIqDashboard.PubSub,
-      "dashboard:contract_event",
-      {:contract_event, :switched, kwargs}
-    )
-  end
-
-  # Contract expired
-  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".market.contract_expired") do
-    kwargs = Map.get(event_data, :kwargs, %{})
-    Phoenix.PubSub.broadcast(
-      CortexIqDashboard.PubSub,
-      "dashboard:contract_event",
-      {:contract_event, :expired, kwargs}
-    )
-  end
-
-  # Home initialized - write to database immediately
-  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".home.initialized") do
-    kwargs = Map.get(event_data, :kwargs, %{})
-    Phoenix.PubSub.broadcast(
-      CortexIqDashboard.PubSub,
-      "dashboard:home_initialized",
-      {:home_initialized, kwargs}
-    )
-  end
-
-  # Provider initialized - write to database immediately
-  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".provider.initialized") do
-    kwargs = Map.get(event_data, :kwargs, %{})
-    Phoenix.PubSub.broadcast(
-      CortexIqDashboard.PubSub,
-      "dashboard:provider_initialized",
-      {:provider_initialized, kwargs}
-    )
-  end
-
-  # Ignore other events
-  defp forward_to_database_writer(_topic, _event_data), do: :ok
 end
