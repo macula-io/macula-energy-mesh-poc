@@ -34,7 +34,7 @@ COPY cortex_iq_homes/config ./config
 
 # Copy path dependencies (required for compilation)
 COPY cortex_iq_core ../cortex_iq_core
-COPY macula_os ../macula_os
+COPY macula_sdk ../macula_sdk
 
 # Get dependencies
 RUN mix deps.get --only prod

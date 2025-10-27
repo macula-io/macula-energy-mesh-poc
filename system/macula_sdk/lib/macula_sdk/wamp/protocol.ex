@@ -1,4 +1,4 @@
-defmodule MaculaOs.Wamp.Protocol do
+defmodule MaculaSdk.Wamp.Protocol do
   @moduledoc """
   WAMP protocol message types and encoding/decoding.
 

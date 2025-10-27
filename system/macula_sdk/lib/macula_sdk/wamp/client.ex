@@ -1,4 +1,4 @@
-defmodule MaculaOs.Wamp.Client do
+defmodule MaculaSdk.Wamp.Client do
   @moduledoc """
   High-level WAMP client interface.
 
@@ -6,7 +6,7 @@ defmodule MaculaOs.Wamp.Client do
   """
   use GenServer
   require Logger
-  alias MaculaOs.Wamp.Connection
+  alias MaculaSdk.Wamp.Connection
 
   defmodule State do
     @moduledoc false
@@ -131,7 +131,7 @@ defmodule MaculaOs.Wamp.Client do
       {:error, reason} ->
         retry_delay = min(1000 * :math.pow(2, state.retry_count), 30_000) |> round()
         Logger.warning(
-          "MaculaOs.Wamp.Client: Failed to connect: #{inspect(reason)}. " <>
+          "MaculaSdk.Wamp.Client: Failed to connect: #{inspect(reason)}. " <>
           "Retrying in #{retry_delay}ms (attempt #{state.retry_count + 1})"
         )
 
@@ -329,7 +329,7 @@ defmodule MaculaOs.Wamp.Client do
   end
 
   def handle_info(:retry_connect, state) do
-    Logger.info("MaculaOs.Wamp.Client: Retrying connection...")
+    Logger.info("MaculaSdk.Wamp.Client: Retrying connection...")
     {:noreply, state, {:continue, :connect}}
   end
 

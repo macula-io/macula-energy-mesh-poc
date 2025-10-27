@@ -1,4 +1,4 @@
-defmodule MaculaOs.Metering do
+defmodule MaculaSdk.Metering do
   @moduledoc """
   Tracks WAMP operation usage per API key for billing/monitoring.
 

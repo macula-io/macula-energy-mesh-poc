@@ -25,16 +25,14 @@ defmodule CortexIqSimulation.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {CortexIqSimulation.Application, []},
-      # Don't auto-start MaculaOs.Application (we only need the WAMP client modules)
-      included_applications: [:macula_os]
+      mod: {CortexIqSimulation.Application, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:macula_os, path: "../macula_os"}
+      {:macula_sdk, path: "../macula_sdk"}
     ]
   end
 end

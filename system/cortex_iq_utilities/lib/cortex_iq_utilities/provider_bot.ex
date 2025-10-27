@@ -26,7 +26,7 @@ defmodule CortexIqUtilities.ProviderBot do
   require Logger
 
   alias CortexIqCore.{Provider, ContractOffer, SpotPrice, Contract}
-  alias MaculaOs.Wamp.Client
+  alias MaculaSdk.Wamp.Client
 
   defstruct [
     :provider_id,
@@ -80,7 +80,7 @@ defmodule CortexIqUtilities.ProviderBot do
 
     # Connect to WAMP
     {:ok, wamp_client} =
-      MaculaOs.Wamp.start_link(
+      MaculaSdk.Wamp.Client.start_link(
         url: bondy_url,
         realm: realm
       )

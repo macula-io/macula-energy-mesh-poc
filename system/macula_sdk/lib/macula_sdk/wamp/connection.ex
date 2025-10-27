@@ -1,4 +1,4 @@
-defmodule MaculaOs.Wamp.Connection do
+defmodule MaculaSdk.Wamp.Connection do
   @moduledoc """
   WebSocket connection to WAMP router (Bondy).
 
@@ -6,7 +6,7 @@ defmodule MaculaOs.Wamp.Connection do
   """
   use WebSockex
   require Logger
-  alias MaculaOs.Wamp.Protocol
+  alias MaculaSdk.Wamp.Protocol
 
   @default_url "ws://localhost:18082/ws"
   @default_realm "com.example.realm"

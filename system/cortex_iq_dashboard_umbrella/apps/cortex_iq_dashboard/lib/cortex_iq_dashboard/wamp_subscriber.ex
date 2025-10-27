@@ -51,7 +51,7 @@ defmodule CortexIqDashboard.WampSubscriber do
 
   @impl true
   def handle_info({:connect, bondy_url, realm_uri}, state) do
-    case MaculaOs.Wamp.start_link(url: bondy_url, realm: realm_uri, name: :wamp_subscriber) do
+    case MaculaSdk.Wamp.start_link(url: bondy_url, realm: realm_uri, name: :wamp_subscriber) do
       {:ok, wamp_client} ->
         Logger.info("WAMP subscriber connected to #{realm_uri}")
 
@@ -86,7 +86,7 @@ defmodule CortexIqDashboard.WampSubscriber do
 
     # Subscribe to simulation time (exact topic)
     Enum.each(@simulation_topics, fn topic ->
-      case MaculaOs.Wamp.subscribe(state.wamp_client, topic, handler) do
+      case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, topic, handler) do
         :ok ->
           Logger.info("Subscribed to WAMP topic: #{topic}")
         {:error, reason} ->
@@ -97,7 +97,7 @@ defmodule CortexIqDashboard.WampSubscriber do
     # Subscribe to home measurement topics using prefix matching (HomeWizard-compatible)
     home_prefix = "be.cortexiq.home."
     options = %{match: "prefix"}
-    case MaculaOs.Wamp.subscribe(state.wamp_client, home_prefix, handler, options) do
+    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, home_prefix, handler, options) do
       :ok ->
         Logger.info("Subscribed to WAMP topic: #{home_prefix} (prefix)")
       {:error, reason} ->
@@ -106,7 +106,7 @@ defmodule CortexIqDashboard.WampSubscriber do
 
     # Subscribe to market topics using prefix matching
     market_prefix = "be.cortexiq.market."
-    case MaculaOs.Wamp.subscribe(state.wamp_client, market_prefix, handler, options) do
+    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, market_prefix, handler, options) do
       :ok ->
         Logger.info("Subscribed to WAMP topic: #{market_prefix} (prefix)")
       {:error, reason} ->
@@ -115,7 +115,7 @@ defmodule CortexIqDashboard.WampSubscriber do
 
     # Subscribe to balance topics using prefix matching
     balance_prefix = "be.cortexiq.balance."
-    case MaculaOs.Wamp.subscribe(state.wamp_client, balance_prefix, handler, options) do
+    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, balance_prefix, handler, options) do
       :ok ->
         Logger.info("Subscribed to WAMP topic: #{balance_prefix} (prefix)")
       {:error, reason} ->
@@ -124,7 +124,7 @@ defmodule CortexIqDashboard.WampSubscriber do
 
     # Subscribe to arbitrage topics using prefix matching
     arbitrage_prefix = "be.cortexiq.arbitrage."
-    case MaculaOs.Wamp.subscribe(state.wamp_client, arbitrage_prefix, handler, options) do
+    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, arbitrage_prefix, handler, options) do
       :ok ->
         Logger.info("Subscribed to WAMP topic: #{arbitrage_prefix} (prefix)")
       {:error, reason} ->
@@ -183,7 +183,7 @@ defmodule CortexIqDashboard.WampSubscriber do
   def handle_call({:publish_control, command, kwargs}, _from, state) do
     topic = "be.cortexiq.simulation.control.#{command}"
 
-    case MaculaOs.Wamp.Client.publish(state.wamp_client, topic, [], kwargs, %{}) do
+    case MaculaSdk.Wamp.Client.publish(state.wamp_client, topic, [], kwargs, %{}) do
       :ok ->
         Logger.info("Published control command to #{topic}")
         {:reply, :ok, state}

@@ -2,6 +2,10 @@ import Config
 
 # Runtime configuration for production environment
 if config_env() == :prod do
+  # Set logger level to :info to reduce memory usage
+  # (debug logs from WAMP client were consuming ~4GB memory)
+  config :logger, level: :info
+
   database_url =
     System.get_env("DATABASE_URL") ||
       raise """

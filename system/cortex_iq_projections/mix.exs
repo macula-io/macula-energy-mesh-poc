@@ -16,18 +16,18 @@ defmodule CortexIqProjections.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {CortexIqProjections.Application, []},
-      included_applications: [:macula_os]  # Don't auto-start MaculaOs proxy
+      mod: {CortexIqProjections.Application, []}
     ]
   end
 
   defp deps do
     [
       {:cortex_iq_dashboard_schemas, path: "../cortex_iq_dashboard_schemas"},  # Shared schemas
-      {:macula_os, path: "../macula_os"},   # For WAMP client
+      {:macula_sdk, path: "../macula_sdk"},   # For WAMP client (pure library, no Application)
       {:cortex_iq_core, path: "../cortex_iq_core"},  # For domain models
       {:ecto_sql, "~> 3.12"},  # Database toolkit
-      {:postgrex, ">= 0.0.0"}  # PostgreSQL driver
+      {:postgrex, ">= 0.0.0"},  # PostgreSQL driver
+      {:broadway, "~> 1.1"}  # For high-throughput event processing with back-pressure
     ]
   end
 

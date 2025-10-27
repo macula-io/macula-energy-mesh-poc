@@ -23,16 +23,14 @@ defmodule MaculaOs.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # Core dependencies
-      {:jason, "~> 1.2"},
-      {:websockex, "~> 0.4"},
+      # Macula SDK - WAMP client, auth, metering (pure library)
+      {:macula_sdk, path: "../macula_sdk"},
 
       # Proxy server (localhost WebSocket)
       {:plug_cowboy, "~> 2.7"},
       {:websock_adapter, "~> 0.5"},
 
       # Metrics and telemetry
-      {:telemetry, "~> 1.0"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"}
     ]

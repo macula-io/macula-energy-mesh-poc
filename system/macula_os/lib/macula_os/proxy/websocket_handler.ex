@@ -121,7 +121,7 @@ defmodule MaculaOs.Proxy.WebSocketHandler do
 
     if api_key do
       # Validate API key using Auth module
-      case MaculaOs.Auth.ApiKey.validate(api_key) do
+      case MaculaSdk.Auth.ApiKey.validate(api_key) do
         {:ok, namespace, _metadata} ->
           Logger.info("Client #{state.client_id} authenticated as namespace: #{namespace}")
 
@@ -188,7 +188,7 @@ defmodule MaculaOs.Proxy.WebSocketHandler do
     {operation, topic} = extract_operation_and_topic(message)
 
     # Validate topic prefix matches namespace
-    if topic && not MaculaOs.Auth.ApiKey.allowed_topic?(state.namespace, topic) do
+    if topic && not MaculaSdk.Auth.ApiKey.allowed_topic?(state.namespace, topic) do
       Logger.warning("Client #{state.client_id} attempted access to unauthorized topic: #{topic}")
 
       error = [8, 0, %{}, "wamp.error.not_authorized", ["Topic not allowed for namespace"]]
@@ -203,7 +203,7 @@ defmodule MaculaOs.Proxy.WebSocketHandler do
     else
       # Record operation for metering
       if operation do
-        MaculaOs.Metering.record(state.api_key, operation, topic)
+        MaculaSdk.Metering.record(state.api_key, operation, topic)
       end
 
       # Forward to upstream

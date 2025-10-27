@@ -36,6 +36,9 @@ RUN mix local.hex --force && \
 COPY macula_os/mix.exs macula_os/mix.lock ./
 COPY macula_os/config ./config
 
+# Copy path dependency (macula_sdk) - needed for compilation
+COPY macula_sdk ../macula_sdk
+
 # Get dependencies
 RUN mix deps.get --only prod
 

@@ -19,7 +19,7 @@ defmodule CortexIqSimulation.SimulationClock do
 
   use GenServer
   require Logger
-  alias MaculaOs.Wamp.Client
+  alias MaculaSdk.Wamp.Client
 
   # Default configuration
   @default_speed 105_120
@@ -133,7 +133,7 @@ defmodule CortexIqSimulation.SimulationClock do
   def handle_continue(:connect_wamp, state) do
     Logger.info("SimulationClock: Attempting to connect to WAMP (#{state.bondy_url})...")
 
-    case MaculaOs.Wamp.start_link(url: state.bondy_url, realm: state.realm) do
+    case MaculaSdk.Wamp.Client.start_link(url: state.bondy_url, realm: state.realm) do
       {:ok, wamp_client} ->
         Logger.info("SimulationClock: Connected to WAMP, waiting for connection to stabilize...")
         # Wait a bit for connection to fully establish before subscribing

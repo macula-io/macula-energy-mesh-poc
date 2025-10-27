@@ -1,0 +1,11 @@
+## VM configuration for container environments
+## Reduce memory pre-allocation to fit within 2GB container limit
+
+## Disable super carrier (prevents 2GB+ pre-allocation)
++MMscs 0
+
+## Reduce binary allocator super carrier size
++MBsbct 512
+
+## Async thread pool size
++A 4

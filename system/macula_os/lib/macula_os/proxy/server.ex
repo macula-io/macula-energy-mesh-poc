@@ -45,7 +45,7 @@ defmodule MaculaOs.Proxy.Server do
 
   get "/metrics" do
     # Metrics endpoint for monitoring
-    all_stats = MaculaOs.Metering.get_all_stats()
+    all_stats = MaculaSdk.Metering.get_all_stats()
 
     # Format as Prometheus-style metrics
     metrics = format_prometheus_metrics(all_stats)

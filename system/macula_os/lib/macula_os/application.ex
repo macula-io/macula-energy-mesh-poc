@@ -26,7 +26,7 @@ defmodule MaculaOs.Application do
 
     children = [
       # Metering (must start first - other components depend on it)
-      {MaculaOs.Metering, []},
+      {MaculaSdk.Metering, []},
 
       # Upstream connection to Bondy
       {MaculaOs.Proxy.Upstream, [bondy_url: bondy_url, realm: realm]},

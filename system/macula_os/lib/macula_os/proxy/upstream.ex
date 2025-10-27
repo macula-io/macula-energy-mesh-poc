@@ -12,7 +12,7 @@ defmodule MaculaOs.Proxy.Upstream do
   use GenServer
   require Logger
 
-  alias MaculaOs.Wamp.Connection
+  alias MaculaSdk.Wamp.Connection
 
   defstruct [
     :bondy_url,

@@ -32,11 +32,12 @@ RUN mix local.hex --force && \
 # Copy this application's mix files
 COPY cortex_iq_projections/mix.exs cortex_iq_projections/mix.lock ./
 COPY cortex_iq_projections/config ./config
+COPY cortex_iq_projections/rel ./rel
 
 # Copy path dependencies (required for compilation)
 COPY cortex_iq_dashboard_schemas ../cortex_iq_dashboard_schemas
 COPY cortex_iq_core ../cortex_iq_core
-COPY macula_os ../macula_os
+COPY macula_sdk ../macula_sdk
 
 # Get dependencies
 RUN mix deps.get --only prod
@@ -77,6 +78,10 @@ USER cortexiq
 # Runtime environment
 ENV HOME=/app
 ENV LANG=C.UTF-8
+
+# Erlang VM memory optimization for containers
+# Limit max ports to reduce memory pre-allocation from 2GB+ to reasonable levels
+ENV ERL_MAX_PORTS=1024
 
 # Default environment variables (can be overridden)
 ENV BONDY_URL=ws://bondy.macula-hub.svc.cluster.local:18080/ws

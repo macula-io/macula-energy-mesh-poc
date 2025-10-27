@@ -1,4 +1,4 @@
-defmodule MaculaOs.Auth.ApiKey do
+defmodule MaculaSdk.Auth.ApiKey do
   @moduledoc """
   API Key authentication and authorization for MaculaOs proxy.
 

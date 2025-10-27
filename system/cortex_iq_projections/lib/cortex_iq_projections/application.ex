@@ -11,8 +11,12 @@ defmodule CortexIqProjections.Application do
       # Database repository (write side of CQRS)
       CortexIqProjections.Repo,
 
-      # WAMP event subscriber that projects events into database
-      CortexIqProjections.EventProjector
+      # EventProjector: WAMP subscription bridge
+      CortexIqProjections.EventProjector,
+
+      # Broadway pipeline for event processing with back-pressure
+      # EventPipeline will fetch WAMP client from EventProjector when it needs it
+      CortexIqProjections.EventPipeline
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

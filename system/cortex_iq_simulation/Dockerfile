@@ -20,7 +20,7 @@ RUN mix local.hex --force && \
 COPY cortex_iq_simulation/mix.exs cortex_iq_simulation/mix.lock ./
 
 # Copy dependency source (MaculaOs)
-COPY macula_os ../macula_os
+COPY macula_sdk ../macula_sdk
 
 # Set production environment
 ENV MIX_ENV=prod

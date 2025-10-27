@@ -31,7 +31,7 @@ defmodule CortexIqHomes.HomeBot do
   require Logger
 
   alias CortexIqCore.{Home, Contract, ContractOffer, EnergyBalance, SimulationTime, SpotMarket}
-  alias MaculaOs.Wamp.Client
+  alias MaculaSdk.Wamp.Client
 
   defstruct [
     :home_id,
@@ -96,7 +96,7 @@ defmodule CortexIqHomes.HomeBot do
 
     # Connect to WAMP
     {:ok, wamp_client} =
-      MaculaOs.Wamp.start_link(
+      MaculaSdk.Wamp.Client.start_link(
         url: bondy_url,
         realm: realm
       )
