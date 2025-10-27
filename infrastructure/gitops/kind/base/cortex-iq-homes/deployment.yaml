@@ -28,10 +28,8 @@ spec:
           value: "ws://172.20.0.2:30080/ws"
         - name: BONDY_REALM
           value: "be.cortexiq.energy"
-        - name: NUM_HOMES
-          value: "25"
-        - name: HOME_ID_FILTER
-          value: "all"  # Options: "all", "odd", "even"
+        - name: HOMES_SOURCE
+          value: "flanders_test_homes.json"  # Default: 10 homes for testing
         resources:
           requests:
             memory: "1Gi"

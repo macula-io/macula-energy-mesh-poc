@@ -1,11 +1,11 @@
 import Config
 
 # CortexIQ Homes - Home simulation bots
-# Simulates homes with solar, battery, and contract optimization
+# Simulates homes with solar, battery, and contract optimization using
+# persistent configurations from JSON files
 
 config :cortex_iq_homes,
-  num_homes: String.to_integer(System.get_env("NUM_HOMES", "50")),
-  home_id_filter: System.get_env("HOME_ID_FILTER", "all")  # Options: "all", "odd", "even"
+  homes_source: System.get_env("HOMES_SOURCE", "flanders_test_homes.json")
 
 # Configures Elixir's Logger
 config :logger, :default_formatter,

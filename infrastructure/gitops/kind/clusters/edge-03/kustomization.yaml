@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Edge-03: Homes with odd IDs (1, 3, 5, 7, ... 49)
+# Edge-03: 50 Flanders homes (persistent UUID7 IDs)
 
 resources:
   - namespace.yaml
@@ -13,5 +13,5 @@ patches:
       name: cortex-iq-homes
     patch: |-
       - op: replace
-        path: /spec/template/spec/containers/0/env/3/value
-        value: "odd"
+        path: /spec/template/spec/containers/0/env/2/value
+        value: "flanders_edge_03_homes.json"

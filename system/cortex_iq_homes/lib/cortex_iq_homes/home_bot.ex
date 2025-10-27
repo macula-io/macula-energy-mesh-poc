@@ -81,15 +81,12 @@ defmodule CortexIqHomes.HomeBot do
 
   @impl true
   def init(opts) do
-    home_id = Keyword.fetch!(opts, :home_id)
+    home = Keyword.get(opts, :home) || Home.new(Keyword.fetch!(opts, :home_id))
+    home_id = home.id
     realm = Keyword.get(opts, :realm, "energy.hub")
     bondy_url = Keyword.get(opts, :bondy_url, "ws://localhost:18080/ws")
 
     Logger.info("Starting HomeBotNew for #{home_id}")
-
-    # Create home with random location and capacities
-    home = Home.new(home_id)
-
     Logger.info("  Location: #{home.location.city}, #{home.location.postal_code}")
     Logger.info("  Solar capacity: #{Float.round(home.solar_capacity_kw, 1)} kW")
     Logger.info("  Battery capacity: #{Float.round(home.battery_capacity_kwh, 1)} kWh")

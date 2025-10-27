@@ -1,0 +1,702 @@
+[
+  {
+    "id": "019a23e0-824f-7f22-9c9e-927ff657d570",
+    "name": "Claes Residence",
+    "address": {
+      "city": "Sint-Niklaas",
+      "postal_code": "9100",
+      "latitude": 51.16404534245784,
+      "longitude": 4.140518281605989,
+      "street": "Wilgenstraat 420",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.04,
+    "battery_capacity_kwh": 14.7
+  },
+  {
+    "id": "019a23e0-824f-772e-afb0-123ee2c54a68",
+    "name": "De Wilde Residence",
+    "address": {
+      "city": "Herentals",
+      "postal_code": "2200",
+      "latitude": 51.17448125936622,
+      "longitude": 4.838772068567481,
+      "street": "Koningstraat 804",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.39,
+    "battery_capacity_kwh": 11.23
+  },
+  {
+    "id": "019a23e0-824f-7dff-81b3-3e9f484f7b30",
+    "name": "Baert Residence",
+    "address": {
+      "city": "Mol",
+      "postal_code": "2400",
+      "latitude": 51.19420608520798,
+      "longitude": 5.115997053845552,
+      "street": "Koningstraat 873",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 12.95
+  },
+  {
+    "id": "019a23e0-824f-7afa-a474-8c8359e8531d",
+    "name": "Van Der Berg Residence",
+    "address": {
+      "city": "Genk",
+      "postal_code": "3600",
+      "latitude": 50.96970050918419,
+      "longitude": 5.5050289431596715,
+      "street": "Eikenlaan 641",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.88,
+    "battery_capacity_kwh": 8.83
+  },
+  {
+    "id": "019a23e0-824f-75ed-9214-2c0d797e3d50",
+    "name": "Aerts Residence",
+    "address": {
+      "city": "Leuven",
+      "postal_code": "3000",
+      "latitude": 50.87951617377431,
+      "longitude": 4.69748615003963,
+      "street": "Hoogstraat 774",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.09,
+    "battery_capacity_kwh": 10.4
+  },
+  {
+    "id": "019a23e0-824f-7e08-acd9-e63fc3527f34",
+    "name": "De Wilde Residence",
+    "address": {
+      "city": "Genk",
+      "postal_code": "3600",
+      "latitude": 50.965023222108634,
+      "longitude": 5.497917972714667,
+      "street": "Bruggestraat 752",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.03,
+    "battery_capacity_kwh": 9.03
+  },
+  {
+    "id": "019a23e0-824f-7fe7-8e17-f63f7219fd45",
+    "name": "Peeters Residence",
+    "address": {
+      "city": "Sint-Niklaas",
+      "postal_code": "9100",
+      "latitude": 51.16878437112341,
+      "longitude": 4.143217296704869,
+      "street": "Eikenlaan 902",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.03,
+    "battery_capacity_kwh": 14.61
+  },
+  {
+    "id": "019a23e0-824f-7c73-bd2b-c5ad1cef7615",
+    "name": "Baert Residence",
+    "address": {
+      "city": "Mechelen",
+      "postal_code": "2800",
+      "latitude": 51.02555239764087,
+      "longitude": 4.478685457848095,
+      "street": "Lindenlaan 336",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.08,
+    "battery_capacity_kwh": 10.87
+  },
+  {
+    "id": "019a23e0-824f-7aa0-bdc9-bb0f4b32685b",
+    "name": "Segers Residence",
+    "address": {
+      "city": "Leuven",
+      "postal_code": "3000",
+      "latitude": 50.88415442379667,
+      "longitude": 4.702963285058251,
+      "street": "Eikenlaan 642",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.63,
+    "battery_capacity_kwh": 14.38
+  },
+  {
+    "id": "019a23e0-824f-7c8a-bbc0-c86b4b1cd289",
+    "name": "Van Damme Residence",
+    "address": {
+      "city": "Ghent",
+      "postal_code": "9000",
+      "latitude": 51.05866890074454,
+      "longitude": 3.7168534510459095,
+      "street": "Gentsesteenweg 991",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.22,
+    "battery_capacity_kwh": 5.45
+  },
+  {
+    "id": "019a23e0-824f-7584-bcd3-c05ee3df7bba",
+    "name": "De Vries Residence",
+    "address": {
+      "city": "Bruges",
+      "postal_code": "8000",
+      "latitude": 51.21238722118871,
+      "longitude": 3.220296415367887,
+      "street": "Acacialaan 285",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.36,
+    "battery_capacity_kwh": 7.74
+  },
+  {
+    "id": "019a23e0-824f-7573-9155-6cad0e5eea88",
+    "name": "Coppens Residence",
+    "address": {
+      "city": "Waregem",
+      "postal_code": "8790",
+      "latitude": 50.89231381859532,
+      "longitude": 3.4192618729768323,
+      "street": "Dorpsplein 130",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.05,
+    "battery_capacity_kwh": 9.35
+  },
+  {
+    "id": "019a23e0-824f-7a77-a552-f6adfb5c1044",
+    "name": "Coppens Residence",
+    "address": {
+      "city": "Dendermonde",
+      "postal_code": "9200",
+      "latitude": 51.03347726878904,
+      "longitude": 4.096368838352794,
+      "street": "Hoogstraat 43",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.86,
+    "battery_capacity_kwh": 7.21
+  },
+  {
+    "id": "019a23e0-824f-7c69-996f-778f3e5b17be",
+    "name": "Jacobs Residence",
+    "address": {
+      "city": "Ghent",
+      "postal_code": "9000",
+      "latitude": 51.057432874299764,
+      "longitude": 3.72178580868936,
+      "street": "Marktplein 638",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 6.96,
+    "battery_capacity_kwh": 6.51
+  },
+  {
+    "id": "019a23e0-824f-74c7-9234-d417bfd64bef",
+    "name": "Desmet Residence",
+    "address": {
+      "city": "Waregem",
+      "postal_code": "8790",
+      "latitude": 50.89103758425841,
+      "longitude": 3.422835031783782,
+      "street": "Koningstraat 23",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.37,
+    "battery_capacity_kwh": 11.45
+  },
+  {
+    "id": "019a23e0-824f-7089-b231-da214ff8cc55",
+    "name": "De Smet Residence",
+    "address": {
+      "city": "Dendermonde",
+      "postal_code": "9200",
+      "latitude": 51.03176207071255,
+      "longitude": 4.099216284764035,
+      "street": "Bosstraat 157",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 6.39,
+    "battery_capacity_kwh": 6.92
+  },
+  {
+    "id": "019a23e0-824f-7581-9fef-8b68934ab0cb",
+    "name": "Willems Residence",
+    "address": {
+      "city": "Herentals",
+      "postal_code": "2200",
+      "latitude": 51.18144889216166,
+      "longitude": 4.83510218703492,
+      "street": "Bosstraat 1",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 6.44,
+    "battery_capacity_kwh": 6.5
+  },
+  {
+    "id": "019a23e0-824f-77da-9da7-d01c1f7a1fa3",
+    "name": "Goossens Residence",
+    "address": {
+      "city": "Ypres",
+      "postal_code": "8900",
+      "latitude": 50.85452265654475,
+      "longitude": 2.882096545530696,
+      "street": "Kerkstraat 227",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.21,
+    "battery_capacity_kwh": 13.61
+  },
+  {
+    "id": "019a23e0-824f-7a43-bea9-14bbc59a8b8b",
+    "name": "Pauwels Residence",
+    "address": {
+      "city": "Bruges",
+      "postal_code": "8000",
+      "latitude": 51.20612244327539,
+      "longitude": 3.2258825419323256,
+      "street": "Lindenlaan 422",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.56,
+    "battery_capacity_kwh": 7.15
+  },
+  {
+    "id": "019a23e0-824f-7981-a139-f49d54b83bdb",
+    "name": "Desmet Residence",
+    "address": {
+      "city": "Waregem",
+      "postal_code": "8790",
+      "latitude": 50.892474807016725,
+      "longitude": 3.418610275543215,
+      "street": "Mechelsesteenweg 82",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 5.89
+  },
+  {
+    "id": "019a23e0-824f-7230-8a0e-c874f22b1f3b",
+    "name": "Willems Residence",
+    "address": {
+      "city": "Waregem",
+      "postal_code": "8790",
+      "latitude": 50.885929330002185,
+      "longitude": 3.4180957412877677,
+      "street": "Acacialaan 504",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.75,
+    "battery_capacity_kwh": 12.89
+  },
+  {
+    "id": "019a23e0-824f-770d-bd80-9234a0f587ab",
+    "name": "Baert Residence",
+    "address": {
+      "city": "Mechelen",
+      "postal_code": "2800",
+      "latitude": 51.023148008054946,
+      "longitude": 4.478482675841642,
+      "street": "Schoolstraat 540",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 6.36
+  },
+  {
+    "id": "019a23e0-824f-7182-b4ea-c37b86857294",
+    "name": "Van Der Berg Residence",
+    "address": {
+      "city": "Sint-Niklaas",
+      "postal_code": "9100",
+      "latitude": 51.16789644781815,
+      "longitude": 4.144971082455558,
+      "street": "Schoolstraat 716",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.15,
+    "battery_capacity_kwh": 11.05
+  },
+  {
+    "id": "019a23e0-824f-72b6-bba6-8199f755c201",
+    "name": "Devos Residence",
+    "address": {
+      "city": "Turnhout",
+      "postal_code": "2300",
+      "latitude": 51.322949125261495,
+      "longitude": 4.949050263076433,
+      "street": "Bruggestraat 833",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.78,
+    "battery_capacity_kwh": 9.81
+  },
+  {
+    "id": "019a23e0-824f-7e9a-a2f5-93306591b6d8",
+    "name": "Willems Residence",
+    "address": {
+      "city": "Aalst",
+      "postal_code": "9300",
+      "latitude": 50.941323260804495,
+      "longitude": 4.040011210896277,
+      "street": "Kerkstraat 958",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.04,
+    "battery_capacity_kwh": 12.51
+  },
+  {
+    "id": "019a23e0-824f-7c1b-aa98-2d26f45e4b75",
+    "name": "Segers Residence",
+    "address": {
+      "city": "Ostend",
+      "postal_code": "8400",
+      "latitude": 51.218254261964994,
+      "longitude": 2.9315582036348067,
+      "street": "Populierenlaan 532",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.18,
+    "battery_capacity_kwh": 7.28
+  },
+  {
+    "id": "019a23e0-824f-77e9-9e1d-1d03a152760d",
+    "name": "Willems Residence",
+    "address": {
+      "city": "Beveren",
+      "postal_code": "9120",
+      "latitude": 51.21578960950946,
+      "longitude": 4.25881209824893,
+      "street": "Kapelstraat 806",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.58,
+    "battery_capacity_kwh": 14.86
+  },
+  {
+    "id": "019a23e0-824f-7e77-bd10-d7b5fbb22749",
+    "name": "Janssens Residence",
+    "address": {
+      "city": "Antwerp",
+      "postal_code": "2000",
+      "latitude": 51.22279610338478,
+      "longitude": 4.401969616223485,
+      "street": "Hoogstraat 197",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 7.65
+  },
+  {
+    "id": "019a23e0-824f-79a4-9777-1be77841bf26",
+    "name": "Wouters Residence",
+    "address": {
+      "city": "Hasselt",
+      "postal_code": "3500",
+      "latitude": 50.93492869665051,
+      "longitude": 5.3426777526069325,
+      "street": "Populierenlaan 830",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.02,
+    "battery_capacity_kwh": 6.09
+  },
+  {
+    "id": "019a23e0-824f-775a-86fd-9a233407924a",
+    "name": "Claes Residence",
+    "address": {
+      "city": "Waregem",
+      "postal_code": "8790",
+      "latitude": 50.88501420257972,
+      "longitude": 3.41932629249133,
+      "street": "Stationsstraat 771",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.09,
+    "battery_capacity_kwh": 8.96
+  },
+  {
+    "id": "019a23e0-824f-717a-b14f-909c80d54de0",
+    "name": "De Wilde Residence",
+    "address": {
+      "city": "Ghent",
+      "postal_code": "9000",
+      "latitude": 51.05753331603264,
+      "longitude": 3.7194033109754594,
+      "street": "Hoogstraat 424",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 6.04,
+    "battery_capacity_kwh": 11.32
+  },
+  {
+    "id": "019a23e0-824f-7eb3-9a1d-0373709d31c9",
+    "name": "Goossens Residence",
+    "address": {
+      "city": "Bruges",
+      "postal_code": "8000",
+      "latitude": 51.209213382498895,
+      "longitude": 3.2279540244222167,
+      "street": "Marktplein 480",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.53,
+    "battery_capacity_kwh": 5.81
+  },
+  {
+    "id": "019a23e0-824f-735c-b343-7fb844a62ce6",
+    "name": "De Smet Residence",
+    "address": {
+      "city": "Ghent",
+      "postal_code": "9000",
+      "latitude": 51.0538752099197,
+      "longitude": 3.7219405436313,
+      "street": "Wilgenstraat 467",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 6.44,
+    "battery_capacity_kwh": 10.26
+  },
+  {
+    "id": "019a23e0-824f-73ef-a2cc-bb29ee057d68",
+    "name": "Peeters Residence",
+    "address": {
+      "city": "Dendermonde",
+      "postal_code": "9200",
+      "latitude": 51.027832508834535,
+      "longitude": 4.096424494024749,
+      "street": "Nieuwstraat 354",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.42,
+    "battery_capacity_kwh": 9.46
+  },
+  {
+    "id": "019a23e0-824f-7904-b8f6-944b21c5f303",
+    "name": "Jacobs Residence",
+    "address": {
+      "city": "Vilvoorde",
+      "postal_code": "1800",
+      "latitude": 50.92968891895549,
+      "longitude": 4.426753706732149,
+      "street": "Stationsstraat 930",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.52,
+    "battery_capacity_kwh": 7.99
+  },
+  {
+    "id": "019a23e0-824f-7aa4-8f69-060569fe2754",
+    "name": "Segers Residence",
+    "address": {
+      "city": "Turnhout",
+      "postal_code": "2300",
+      "latitude": 51.323911781731994,
+      "longitude": 4.940888427601418,
+      "street": "Kapelstraat 136",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.69,
+    "battery_capacity_kwh": 12.26
+  },
+  {
+    "id": "019a23e0-824f-72d6-b012-29e7dd3bc1e7",
+    "name": "Willems Residence",
+    "address": {
+      "city": "Leuven",
+      "postal_code": "3000",
+      "latitude": 50.878779552070405,
+      "longitude": 4.696267773486546,
+      "street": "Essenstraat 584",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.59,
+    "battery_capacity_kwh": 11.84
+  },
+  {
+    "id": "019a23e0-824f-7ba2-81c4-51c5b7314d7c",
+    "name": "Vermeulen Residence",
+    "address": {
+      "city": "Kortrijk",
+      "postal_code": "8500",
+      "latitude": 50.826252849712,
+      "longitude": 3.2690114312238805,
+      "street": "Berkenstraat 922",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 11.15
+  },
+  {
+    "id": "019a23e0-824f-7df5-ba86-a3a18bb05237",
+    "name": "Mertens Residence",
+    "address": {
+      "city": "Ghent",
+      "postal_code": "9000",
+      "latitude": 51.05465700076058,
+      "longitude": 3.715425240263079,
+      "street": "Kapelstraat 768",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.51,
+    "battery_capacity_kwh": 5.26
+  },
+  {
+    "id": "019a23e0-824f-76a0-ac2c-73c76c6f66a2",
+    "name": "Willems Residence",
+    "address": {
+      "city": "Genk",
+      "postal_code": "3600",
+      "latitude": 50.96418813241473,
+      "longitude": 5.504035946521484,
+      "street": "Wilgenstraat 758",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.74,
+    "battery_capacity_kwh": 11.23
+  },
+  {
+    "id": "019a23e0-824f-702e-8a7c-7388cbf911f4",
+    "name": "Van Damme Residence",
+    "address": {
+      "city": "Sint-Niklaas",
+      "postal_code": "9100",
+      "latitude": 51.165893773829914,
+      "longitude": 4.145807459093825,
+      "street": "Bruggestraat 852",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.67,
+    "battery_capacity_kwh": 6.81
+  },
+  {
+    "id": "019a23e0-824f-7991-8569-a07d1dc6ce37",
+    "name": "Baert Residence",
+    "address": {
+      "city": "Ostend",
+      "postal_code": "8400",
+      "latitude": 51.21511166682506,
+      "longitude": 2.922605261438386,
+      "street": "Kastanjelaan 568",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.33,
+    "battery_capacity_kwh": 7.64
+  },
+  {
+    "id": "019a23e0-824f-7eeb-aebc-9479109921fb",
+    "name": "Willems Residence",
+    "address": {
+      "city": "Mol",
+      "postal_code": "2400",
+      "latitude": 51.19577911919413,
+      "longitude": 5.111489348335735,
+      "street": "Mechelsesteenweg 532",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.82,
+    "battery_capacity_kwh": 11.38
+  },
+  {
+    "id": "019a23e0-824f-7b40-b2f0-103532ae87f2",
+    "name": "Van Damme Residence",
+    "address": {
+      "city": "Aalst",
+      "postal_code": "9300",
+      "latitude": 50.93489114666222,
+      "longitude": 4.043779196296526,
+      "street": "Eikenlaan 360",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.75,
+    "battery_capacity_kwh": 14.62
+  },
+  {
+    "id": "019a23e0-824f-7687-9e04-fa87d7286f92",
+    "name": "De Cock Residence",
+    "address": {
+      "city": "Leuven",
+      "postal_code": "3000",
+      "latitude": 50.88080140634755,
+      "longitude": 4.697534295906799,
+      "street": "Berkenstraat 705",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.43,
+    "battery_capacity_kwh": 9.62
+  },
+  {
+    "id": "019a23e0-824f-735d-8f7b-18a45a0af833",
+    "name": "Willems Residence",
+    "address": {
+      "city": "Leuven",
+      "postal_code": "3000",
+      "latitude": 50.881648193198295,
+      "longitude": 4.699317039508532,
+      "street": "Stationsstraat 137",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 4.34,
+    "battery_capacity_kwh": 9.84
+  },
+  {
+    "id": "019a23e0-824f-7fdf-89e5-74fad40f58dc",
+    "name": "Segers Residence",
+    "address": {
+      "city": "Ypres",
+      "postal_code": "8900",
+      "latitude": 50.84953824959796,
+      "longitude": 2.886703628521629,
+      "street": "Gentsesteenweg 258",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 6.4,
+    "battery_capacity_kwh": 6.04
+  },
+  {
+    "id": "019a23e0-824f-7c42-bd32-189924b39f04",
+    "name": "Willems Residence",
+    "address": {
+      "city": "Beveren",
+      "postal_code": "9120",
+      "latitude": 51.21391885893942,
+      "longitude": 4.254056635771522,
+      "street": "Hoogstraat 616",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 13.34
+  },
+  {
+    "id": "019a23e0-824f-7aff-8d1e-75c6d55c2b17",
+    "name": "Vermeulen Residence",
+    "address": {
+      "city": "Herentals",
+      "postal_code": "2200",
+      "latitude": 51.177104854150194,
+      "longitude": 4.832819539937894,
+      "street": "Hoogstraat 955",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 5.89,
+    "battery_capacity_kwh": 11.67
+  },
+  {
+    "id": "019a23e0-824f-759f-af83-f7a5c913764d",
+    "name": "Van Damme Residence",
+    "address": {
+      "city": "Leuven",
+      "postal_code": "3000",
+      "latitude": 50.87632871543667,
+      "longitude": 4.695770306114175,
+      "street": "Kerkstraat 40",
+      "region": "flanders"
+    },
+    "solar_capacity_kw": 6.68,
+    "battery_capacity_kwh": 13.49
+  }
+]

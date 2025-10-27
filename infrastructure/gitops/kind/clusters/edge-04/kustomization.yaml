@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Edge-04: Homes with even IDs (2, 4, 6, 8, ... 50)
+# Edge-04: 50 Flanders homes (persistent UUID7 IDs)
 
 resources:
   - namespace.yaml
@@ -13,5 +13,5 @@ patches:
       name: cortex-iq-homes
     patch: |-
       - op: replace
-        path: /spec/template/spec/containers/0/env/3/value
-        value: "even"
+        path: /spec/template/spec/containers/0/env/2/value
+        value: "flanders_edge_04_homes.json"
