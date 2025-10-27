@@ -196,53 +196,76 @@ defmodule CortexIqDashboard.WampSubscriber do
 
   ## Private Functions
 
-  defp forward_to_database_writer(topic, event_data) do
+  # Hourly trade events (import/export)
+  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".home.traded") do
     kwargs = Map.get(event_data, :kwargs, %{})
-
-    cond do
-      # Hourly trade events (import/export)
-      String.ends_with?(topic, ".home.traded") ->
-        Phoenix.PubSub.broadcast(
-          CortexIqDashboard.PubSub,
-          "dashboard:trade_event",
-          {:trade_event, kwargs}
-        )
-
-      # HomeWizard-compatible measurement events (production/consumption/battery)
-      String.ends_with?(topic, ".home.measured") ->
-        Phoenix.PubSub.broadcast(
-          CortexIqDashboard.PubSub,
-          "dashboard:energy_event",
-          {:energy_event, kwargs}
-        )
-
-      # Contract confirmed (signed)
-      String.ends_with?(topic, ".market.contract_confirmed") ->
-        Phoenix.PubSub.broadcast(
-          CortexIqDashboard.PubSub,
-          "dashboard:contract_event",
-          {:contract_event, :signed, kwargs}
-        )
-
-      # Contract switched
-      String.ends_with?(topic, ".market.contract_switched") ->
-        Phoenix.PubSub.broadcast(
-          CortexIqDashboard.PubSub,
-          "dashboard:contract_event",
-          {:contract_event, :switched, kwargs}
-        )
-
-      # Contract expired
-      String.ends_with?(topic, ".market.contract_expired") ->
-        Phoenix.PubSub.broadcast(
-          CortexIqDashboard.PubSub,
-          "dashboard:contract_event",
-          {:contract_event, :expired, kwargs}
-        )
-
-      # Ignore other events
-      true ->
-        :ok
-    end
+    Phoenix.PubSub.broadcast(
+      CortexIqDashboard.PubSub,
+      "dashboard:trade_event",
+      {:trade_event, kwargs}
+    )
   end
+
+  # HomeWizard-compatible measurement events (production/consumption/battery)
+  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".home.measured") do
+    kwargs = Map.get(event_data, :kwargs, %{})
+    Phoenix.PubSub.broadcast(
+      CortexIqDashboard.PubSub,
+      "dashboard:energy_event",
+      {:energy_event, kwargs}
+    )
+  end
+
+  # Contract confirmed (signed)
+  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".market.contract_confirmed") do
+    kwargs = Map.get(event_data, :kwargs, %{})
+    Phoenix.PubSub.broadcast(
+      CortexIqDashboard.PubSub,
+      "dashboard:contract_event",
+      {:contract_event, :signed, kwargs}
+    )
+  end
+
+  # Contract switched
+  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".market.contract_switched") do
+    kwargs = Map.get(event_data, :kwargs, %{})
+    Phoenix.PubSub.broadcast(
+      CortexIqDashboard.PubSub,
+      "dashboard:contract_event",
+      {:contract_event, :switched, kwargs}
+    )
+  end
+
+  # Contract expired
+  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".market.contract_expired") do
+    kwargs = Map.get(event_data, :kwargs, %{})
+    Phoenix.PubSub.broadcast(
+      CortexIqDashboard.PubSub,
+      "dashboard:contract_event",
+      {:contract_event, :expired, kwargs}
+    )
+  end
+
+  # Home initialized - write to database immediately
+  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".home.initialized") do
+    kwargs = Map.get(event_data, :kwargs, %{})
+    Phoenix.PubSub.broadcast(
+      CortexIqDashboard.PubSub,
+      "dashboard:home_initialized",
+      {:home_initialized, kwargs}
+    )
+  end
+
+  # Provider initialized - write to database immediately
+  defp forward_to_database_writer(topic, event_data) when topic |> String.ends_with?(".provider.initialized") do
+    kwargs = Map.get(event_data, :kwargs, %{})
+    Phoenix.PubSub.broadcast(
+      CortexIqDashboard.PubSub,
+      "dashboard:provider_initialized",
+      {:provider_initialized, kwargs}
+    )
+  end
+
+  # Ignore other events
+  defp forward_to_database_writer(_topic, _event_data), do: :ok
 end
