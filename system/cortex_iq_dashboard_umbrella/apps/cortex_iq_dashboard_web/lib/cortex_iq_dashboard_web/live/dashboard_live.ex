@@ -2112,16 +2112,16 @@ defmodule CortexIqDashboardWeb.DashboardLive do
       homes
       |> Enum.map(fn home ->
         {home.home_id, %{
-          energy_bought_kwh: home.energy_bought_kwh || 0.0,
-          energy_sold_kwh: home.energy_sold_kwh || 0.0,
-          net_balance_kwh: home.net_balance_kwh || 0.0,
-          cost_paid: home.cost_paid || 0.0,
-          revenue_received: home.revenue_received || 0.0,
-          net_cost: home.net_cost || 0.0,
-          cortexiq_total_commission: home.cortexiq_total_commission || 0.0,
-          cortexiq_total_savings: home.cortexiq_total_savings || 0.0,
-          cortexiq_net_savings: home.cortexiq_net_savings || 0.0,
-          contract_switches_count: home.contract_switches_count || 0
+          energy_bought_kwh: Map.get(home, :energy_bought_kwh, 0.0),
+          energy_sold_kwh: Map.get(home, :energy_sold_kwh, 0.0),
+          net_balance_kwh: Map.get(home, :net_balance_kwh, 0.0),
+          cost_paid: Map.get(home, :cost_paid, 0.0),
+          revenue_received: Map.get(home, :revenue_received, 0.0),
+          net_cost: Map.get(home, :net_cost, 0.0),
+          cortexiq_total_commission: Map.get(home, :cortexiq_total_commission, 0.0),
+          cortexiq_total_savings: Map.get(home, :cortexiq_total_savings, 0.0),
+          cortexiq_net_savings: Map.get(home, :cortexiq_net_savings, 0.0),
+          contract_switches_count: Map.get(home, :contract_switches_count, 0)
         }}
       end)
       |> Enum.into(%{})
