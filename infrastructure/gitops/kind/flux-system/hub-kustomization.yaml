@@ -43,3 +43,18 @@ spec:
     name: macula-gitops
   wait: true
   timeout: 5m0s
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: nginx-ingress
+  namespace: flux-system
+spec:
+  interval: 5m0s
+  path: ./infrastructure/gitops/kind/base/external-dns
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: macula-gitops
+  wait: true
+  timeout: 5m0s
