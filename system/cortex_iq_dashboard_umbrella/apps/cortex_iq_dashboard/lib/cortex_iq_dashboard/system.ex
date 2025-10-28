@@ -27,11 +27,12 @@ defmodule CortexIqDashboard.System do
 
     children = [
       # Realm manager creates/destroys the WAMP realm dynamically
-      {CortexIqDashboard.RealmManager,
-       [
-         realm_uri: realm_uri,
-         bondy_admin_url: bondy_admin_url
-       ]},
+      # DISABLED: Realm already exists, no need for dynamic creation
+      # {CortexIqDashboard.RealmManager,
+      #  [
+      #    realm_uri: realm_uri,
+      #    bondy_admin_url: bondy_admin_url
+      #  ]},
       # WAMP subscriber listens to events and broadcasts to PubSub
       {CortexIqDashboard.WampSubscriber,
        [

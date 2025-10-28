@@ -8,6 +8,9 @@ defmodule CortexIqDashboard.Views.HomesViewAggregator do
   """
   use GenServer
   require Logger
+  import Ecto.Query
+  alias CortexIqDashboardSchemas.Projections.HomeState
+  alias CortexIqDashboard.Repo
 
   defstruct [
     homes: %{},  # %{home_id => home_state}
@@ -39,6 +42,10 @@ defmodule CortexIqDashboard.Views.HomesViewAggregator do
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "entity:home")
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:control")
     Logger.info("HomesViewAggregator: Started and subscribed to dashboard control")
+
+    # Load initial homes from database
+    send(self(), :load_initial_homes)
+
     {:ok, %__MODULE__{}}
   end
 
@@ -80,6 +87,29 @@ defmodule CortexIqDashboard.Views.HomesViewAggregator do
 
     # Schedule throttled broadcast
     {:noreply, schedule_broadcast(new_state)}
+  end
+
+  @impl true
+  def handle_info(:load_initial_homes, state) do
+    # Load all homes from database and populate in-memory state
+    # Note: Not all fields may exist in dashboard's database, only load what's available
+    query = from h in HomeState, select: h
+
+    homes = Repo.all(query)
+
+    homes_map =
+      homes
+      |> Enum.map(fn home -> {home.home_id, home} end)
+      |> Map.new()
+
+    Logger.info("HomesViewAggregator: Loaded #{map_size(homes_map)} homes from database")
+
+    new_state = %{state | homes: homes_map, last_updated_at: DateTime.utc_now()}
+
+    # Broadcast initial state to UI
+    broadcast_view_updated()
+
+    {:noreply, new_state}
   end
 
   @impl true

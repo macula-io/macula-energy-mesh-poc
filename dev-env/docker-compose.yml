@@ -6,12 +6,12 @@ services:
   bondy:
     image: leapsight/bondy:1.0.0-rc.44
     container_name: cortexiq_bondy
-    user: "root"  # Run as root to avoid permission issues (for dev only)
+    user: "root" # Run as root to avoid permission issues (for dev only)
     ports:
-      - "18080:18080"  # API Gateway (HTTP + WebSocket WAMP)
-      - "18081:18081"  # Admin API
-      - "18082:18082"  # Raw TCP WAMP
-      - "18083:18083"  # TLS
+      - "18080:18080" # API Gateway (HTTP + WebSocket WAMP)
+      - "18081:18081" # Admin API
+      - "18082:18082" # Raw TCP WAMP
+      - "18083:18083" # TLS
     environment:
       - BONDY_ERL_NODENAME=bondy@bondy
       - BONDY_ERL_DISTRIBUTED_COOKIE=bondy
@@ -34,7 +34,7 @@ services:
     image: leapsight/bondy-console:latest
     container_name: cortexiq_bondy_console
     ports:
-      - "3000:8080"  # Console web UI (nginx inside listens on 8080)
+      - "3000:8080" # Console web UI (nginx inside listens on 8080)
     environment:
       - BONDY_URL=http://localhost:18081
       # Console connects from browser, needs Admin API (18081) not API Gateway (18080)
@@ -46,11 +46,11 @@ services:
       - cortexiq_network
 
   # PostgreSQL database for cortex_iq_dashboard
-  postgres:
-    image: postgres:16-alpine
-    container_name: cortexiq_postgres
+  timescale:
+    image: timescale/timescaledb:latest-pg16
+    container_name: cortexiq_timescale
     ports:
-      - "5432:5432"  # Expose for local development
+      - "5432:5432" # Expose for local development
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres

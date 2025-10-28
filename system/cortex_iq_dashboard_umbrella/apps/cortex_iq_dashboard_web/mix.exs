@@ -9,7 +9,7 @@ defmodule CortexIqDashboardWeb.MixProject do
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
-      elixir: "~> 1.15",
+      elixir: "~> 1.18",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -71,7 +71,11 @@ defmodule CortexIqDashboardWeb.MixProject do
       setup: ["deps.get", "assets.setup", "assets.build"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["compile", "tailwind cortex_iq_dashboard_web", "esbuild cortex_iq_dashboard_web"],
+      "assets.build": [
+        "compile",
+        "tailwind cortex_iq_dashboard_web",
+        "esbuild cortex_iq_dashboard_web"
+      ],
       "assets.deploy": [
         "tailwind cortex_iq_dashboard_web --minify",
         "esbuild cortex_iq_dashboard_web --minify",

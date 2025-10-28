@@ -13,10 +13,6 @@ import Config
 config :cortex_iq_dashboard,
   ecto_repos: [CortexIqDashboard.Repo]
 
-# Configure projections app with its own Repo (write side of CQRS)
-config :cortex_iq_dashboard_projections,
-  ecto_repos: [CortexIqDashboardProjections.Repo]
-
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
