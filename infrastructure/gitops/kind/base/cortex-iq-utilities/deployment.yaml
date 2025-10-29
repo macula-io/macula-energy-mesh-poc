@@ -29,7 +29,7 @@ spec:
         - name: RELEASE_TMP
           value: "/tmp"
         - name: BONDY_URL
-          value: "ws://bondy.macula-platform.svc.cluster.local:18080/ws"
+          value: "ws://172.20.0.5:30080/ws"
         - name: BONDY_REALM
           value: "be.cortexiq.energy"
         - name: NUM_PROVIDERS
