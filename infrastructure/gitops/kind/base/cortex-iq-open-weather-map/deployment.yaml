@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cortex-iq-projections
+  name: cortex-iq-open-weather-map
   namespace: macula-apps
   labels:
-    app: cortex-iq-projections
-    component: projections
-    tier: backend
+    app: cortex-iq-open-weather-map
+    component: adapter
+    tier: integration
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cortex-iq-projections
+      app: cortex-iq-open-weather-map
   template:
     metadata:
       labels:
-        app: cortex-iq-projections
-        component: projections
-        tier: backend
+        app: cortex-iq-open-weather-map
+        component: adapter
+        tier: integration
     spec:
       containers:
-      - name: projections
-        image: macula/cortex-iq-projections:latest
+      - name: weather
+        image: macula/cortex-iq-open-weather-map:latest
         imagePullPolicy: Never  # KinD uses local images
         env:
         # BEAM VM Memory Limits
@@ -36,24 +36,35 @@ spec:
         - name: BONDY_REALM
           value: "be.cortexiq.energy"
 
-        # Database Connection
-        - name: DATABASE_URL
-          value: "ecto://cortexiq:cortexiq123@postgres:5432/cortexiq_dashboard"
-        - name: POOL_SIZE
-          value: "2"
+        # OpenWeatherMap API Configuration
+        - name: OPENWEATHERMAP_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cortex-iq-openweathermap-secrets
+              key: api-key
+              optional: true
+        - name: OPENWEATHERMAP_API_URL
+          value: "https://api.openweathermap.org/data/2.5"
+        - name: POLL_INTERVAL_MS
+          value: "300000"  # Poll every 5 minutes
+        # Brussels, Belgium coordinates (Flanders region)
+        - name: LATITUDE
+          value: "50.8503"
+        - name: LONGITUDE
+          value: "4.3517"
 
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "200m"
+            memory: "256Mi"
+            cpu: "100m"
           limits:
-            memory: "4Gi"
-            cpu: "1000m"
+            memory: "1Gi"
+            cpu: "500m"
 
         livenessProbe:
           exec:
             command:
-            - /app/bin/cortex_iq_projections
+            - /app/bin/cortex_iq_open_weather_map
             - rpc
             - "1 + 1"
           initialDelaySeconds: 30
@@ -64,7 +75,7 @@ spec:
         readinessProbe:
           exec:
             command:
-            - /app/bin/cortex_iq_projections
+            - /app/bin/cortex_iq_open_weather_map
             - rpc
             - "1 + 1"
           initialDelaySeconds: 10

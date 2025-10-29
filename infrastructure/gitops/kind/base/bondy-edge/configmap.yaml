@@ -1,32 +1,32 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: bondy-config
+  name: bondy-edge-config
   namespace: macula-platform
   labels:
     app: bondy
     app.kubernetes.io/name: bondy
-    app.kubernetes.io/component: wamp-router
+    app.kubernetes.io/component: wamp-router-edge
 data:
   bondy.conf: |
-    # Bondy Configuration for Energy Mesh PoC
-    # Simple configuration enabling WebSocket WAMP
+    # Bondy Edge Configuration - Connects to Hub via Bridge Relay
+    # This node acts as an edge router and bridges to beam-01 hub
 
     # Security - Allow anonymous for application realms (temporary)
     security.allow_anonymous_user = on
     security.automatically_create_realms = off
 
-    # WAMP over raw TCP
+    # WAMP over raw TCP (for local applications)
     wamp.tcp.enabled = on
     wamp.tcp.port = 18082
-    wamp.tcp.acceptors_pool_size = 200
-    wamp.tcp.max_connections = 100000
+    wamp.tcp.acceptors_pool_size = 100
+    wamp.tcp.max_connections = 10000
 
-    # API Gateway (includes WebSocket WAMP)
+    # API Gateway (includes WebSocket WAMP for local applications)
     api_gateway.http.enabled = on
     api_gateway.http.port = 18080
-    api_gateway.http.acceptors_pool_size = 200
-    api_gateway.http.max_connections = 500000
+    api_gateway.http.acceptors_pool_size = 100
+    api_gateway.http.max_connections = 50000
 
     # Admin API
     admin_api.http.enabled = on
@@ -36,7 +36,7 @@ data:
     log.console = console
     log.console.level = info
 
-    # Node name (using pod name for uniqueness in K8s)
+    # Node name
     nodename = bondy@127.0.0.1
     distributed_cookie = bondy
 
@@ -44,5 +44,5 @@ data:
     aae.enabled = on
 
     # Store
-    store.partitions = 16
+    store.partitions = 8
     startup.wait_for_store_partitions = on

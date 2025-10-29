@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bondy
+  namespace: macula-platform
+  labels:
+    app: bondy
+    app.kubernetes.io/name: bondy
+    app.kubernetes.io/component: wamp-router
+    app.kubernetes.io/part-of: macula-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bondy
+  template:
+    metadata:
+      labels:
+        app: bondy
+        app.kubernetes.io/name: bondy
+        app.kubernetes.io/component: wamp-router
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: bondy
+        image: leapsight/bondy:1.0.0-rc.46
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http-ws
+          containerPort: 18080
+          protocol: TCP
+        - name: admin-api
+          containerPort: 18081
+          protocol: TCP
+        - name: https-wss
+          containerPort: 18083
+          protocol: TCP
+        - name: bridge-relay
+          containerPort: 18093
+          protocol: TCP
+        env:
+        - name: BONDY_ERL_NODENAME
+          value: "bondy@127.0.0.1"
+        - name: BONDY_ERL_DISTRIBUTED_COOKIE
+          value: "bondy"
+        - name: BONDY_LOG_CONSOLE
+          value: "console"
+        - name: BONDY_LOG_LEVEL
+          value: "info"
+        - name: RELX_REPLACE_OS_VARS
+          value: "true"
+        volumeMounts:
+        - name: config
+          mountPath: /bondy/etc/bondy.conf
+          subPath: bondy.conf
+        - name: certs
+          mountPath: /bondy/etc/certs
+          readOnly: true
+        - name: data
+          mountPath: /bondy/data
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+      volumes:
+      - name: config
+        configMap:
+          name: bondy-config
+      - name: certs
+        secret:
+          secretName: bondy-bridge-certs
+      - name: data
+        emptyDir: {}

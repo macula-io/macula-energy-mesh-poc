@@ -4,6 +4,11 @@ kind: Kustomization
 resources:
   - bondy
   - cortex-iq-simulation # Simulation clock infrastructure (with namespace override)
+  - cortex-iq-dashboard  # CortexIQ Dashboard (Phoenix LiveView UI)
+  - cortex-iq-projections # CQRS write-side projections (WAMP events → PostgreSQL)
+  - cortex-iq-queries     # CQRS read-side queries (PostgreSQL/TimescaleDB → WAMP RPC)
+  - cortex-iq-prezio      # Prezio API adapter (external API → WAMP events)
+  - cortex-iq-open-weather-map  # OpenWeatherMap API adapter (external API → WAMP events)
   - prometheus
   - grafana
   - loki

@@ -9,8 +9,8 @@ metadata:
     app.kubernetes.io/component: wamp-router
 data:
   bondy.conf: |
-    # Bondy Configuration for Energy Mesh PoC
-    # Simple configuration enabling WebSocket WAMP
+    # Bondy Hub Configuration for beam-01 with Bridge Relay
+    # This node acts as the authoritative realm hub
 
     # Security - Allow anonymous for application realms (temporary)
     security.allow_anonymous_user = on
@@ -22,7 +22,7 @@ data:
     wamp.tcp.acceptors_pool_size = 200
     wamp.tcp.max_connections = 100000
 
-    # API Gateway (includes WebSocket WAMP)
+    # API Gateway (includes WebSocket WAMP for local applications)
     api_gateway.http.enabled = on
     api_gateway.http.port = 18080
     api_gateway.http.acceptors_pool_size = 200
@@ -32,11 +32,20 @@ data:
     admin_api.http.enabled = on
     admin_api.http.port = 18081
 
+    # Bridge Relay Listener - TLS listener for edge clusters to connect
+    bridge_relay.tls.enabled = on
+    bridge_relay.tls.port = 18093
+    bridge_relay.tls.acceptors_pool_size = 100
+    bridge_relay.tls.max_connections = 10000
+    # Self-signed cert for demo (production should use proper certs)
+    bridge_relay.tls.certfile = /bondy/etc/certs/server.crt
+    bridge_relay.tls.keyfile = /bondy/etc/certs/server.key
+
     # Logging
     log.console = console
     log.console.level = info
 
-    # Node name (using pod name for uniqueness in K8s)
+    # Node name
     nodename = bondy@127.0.0.1
     distributed_cookie = bondy
 

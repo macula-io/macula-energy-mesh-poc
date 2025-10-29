@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: macula-platform
+  labels:
+    name: macula-platform
+    app.kubernetes.io/part-of: macula-platform

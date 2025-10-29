@@ -25,7 +25,7 @@ spec:
         imagePullPolicy: Never
         env:
         - name: BONDY_URL
-          value: "ws://172.20.0.2:30080/ws"
+          value: "ws://bondy.macula-platform.svc.cluster.local:18080/ws"
         - name: BONDY_REALM
           value: "be.cortexiq.energy"
         - name: HOMES_SOURCE

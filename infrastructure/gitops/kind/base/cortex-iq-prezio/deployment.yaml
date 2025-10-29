@@ -1,66 +1,81 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cortex-iq-utilities
+  name: cortex-iq-prezio
   namespace: macula-apps
   labels:
-    app: cortex-iq-utilities
-    component: simulation
-    tier: backend
+    app: cortex-iq-prezio
+    component: adapter
+    tier: integration
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cortex-iq-utilities
+      app: cortex-iq-prezio
   template:
     metadata:
       labels:
-        app: cortex-iq-utilities
-        component: simulation
-        tier: backend
+        app: cortex-iq-prezio
+        component: adapter
+        tier: integration
     spec:
       containers:
-      - name: utilities
-        image: macula/cortex-iq-utilities:latest
-        imagePullPolicy: Never
+      - name: prezio
+        image: macula/cortex-iq-prezio:latest
+        imagePullPolicy: Never  # KinD uses local images
         env:
+        # BEAM VM Memory Limits
         - name: ERL_FLAGS
           value: "+MBas aobf +MHas aobf +sbwt none +sbwtdcpu none +sbwtdio none"
         - name: RELEASE_TMP
           value: "/tmp"
+
+        # WAMP Connection
         - name: BONDY_URL
           value: "ws://bondy.macula-platform.svc.cluster.local:18080/ws"
         - name: BONDY_REALM
           value: "be.cortexiq.energy"
-        - name: NUM_PROVIDERS
-          value: "5"
-        - name: PROVIDER_ID_OFFSET
-          value: "0"
+
+        # Prezio API Configuration
+        - name: PREZIO_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cortex-iq-prezio-secrets
+              key: api-key
+              optional: true
+        - name: PREZIO_API_URL
+          value: "https://api.prezio.com"
+        - name: POLL_INTERVAL_MS
+          value: "7200000"  # Poll every 2 hours (12 calls/day = 360 calls/month, under 500/month limit)
+
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "200m"
+            memory: "256Mi"
+            cpu: "100m"
           limits:
-            memory: "2Gi"
-            cpu: "1000m"
+            memory: "1Gi"
+            cpu: "500m"
+
         livenessProbe:
           exec:
             command:
-            - /app/bin/cortex_iq_utilities
+            - /app/bin/cortex_iq_prezio
             - rpc
             - "1 + 1"
           initialDelaySeconds: 30
           periodSeconds: 30
           timeoutSeconds: 5
           failureThreshold: 3
+
         readinessProbe:
           exec:
             command:
-            - /app/bin/cortex_iq_utilities
+            - /app/bin/cortex_iq_prezio
             - rpc
             - "1 + 1"
           initialDelaySeconds: 10
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
+
       restartPolicy: Always

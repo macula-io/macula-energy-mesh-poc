@@ -4,7 +4,8 @@ kind: Kustomization
 # Edge-02: Utility Providers Only (5 providers, no homes)
 
 resources:
+  - bondy                             # Bondy edge router with bridge relay to beam-01
   - metallb
   - external-dns
   - namespace.yaml
-  - ../../base/cortex-iq-utilities
+  - cortex-iq-utilities              # Updated to use local bondy

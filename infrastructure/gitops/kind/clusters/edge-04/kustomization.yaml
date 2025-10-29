@@ -4,16 +4,8 @@ kind: Kustomization
 # Edge-04: 50 Flanders homes (persistent UUID7 IDs)
 
 resources:
+  - bondy                             # Bondy edge router with bridge relay to beam-01
   - metallb
   - external-dns
   - namespace.yaml
-  - ../../base/cortex-iq-homes
-
-patches:
-  - target:
-      kind: Deployment
-      name: cortex-iq-homes
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/env/2/value
-        value: "flanders_edge_04_homes.json"
+  - cortex-iq-homes                  # Updated to use local bondy
