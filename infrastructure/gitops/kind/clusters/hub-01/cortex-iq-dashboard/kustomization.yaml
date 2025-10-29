@@ -4,5 +4,16 @@ kind: Kustomization
 resources:
   - ../../../base/cortex-iq-dashboard
 
-# Override namespace for hub cluster
+# Override namespace for hub cluster (namespace.yaml excluded to avoid conflicts)
 namespace: macula-hub
+
+# Exclude the base namespace.yaml since we create macula-hub at cluster level
+patches:
+  - patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: macula-apps
+    target:
+      kind: Namespace

@@ -2,6 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+  - namespace-macula-hub.yaml  # Shared namespace for all hub components
   - bondy
   - cortex-iq-simulation # Simulation clock infrastructure (with namespace override)
   - cortex-iq-dashboard  # CortexIQ Dashboard (Phoenix LiveView UI)
