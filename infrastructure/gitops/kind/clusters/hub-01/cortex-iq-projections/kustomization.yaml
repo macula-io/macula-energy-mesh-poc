@@ -3,6 +3,6 @@ kind: Kustomization
 
 resources:
   - ../../../base/cortex-iq-projections
-  - secrets.yaml
 
 # Use base namespace (macula-apps) - no override needed
+# bondy-credentials secret created at cluster level in macula-apps-secrets.yaml
