@@ -3,7 +3,7 @@
 
 set -e
 
-PDNS_IP="192.168.129.9"
+PDNS_IP="172.22.0.10"  # PowerDNS container IP in Docker network
 
 echo "Configuring NetworkManager to use dnsmasq with PowerDNS..."
 

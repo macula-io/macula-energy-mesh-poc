@@ -11,9 +11,10 @@ echo ""
 cat <<'EOF' | sudo tee /etc/NetworkManager/dnsmasq.d/macula-local.conf
 # Forward only our specific zones to PowerDNS
 # DO NOT forward all .local (breaks mDNS/Avahi)
-server=/macula.local/192.168.129.9
-server=/cortexiq.local/192.168.129.9
-server=/beam.local/192.168.129.9
+# PowerDNS runs in Docker at 172.22.0.10
+server=/macula.local/172.22.0.10
+server=/cortexiq.local/172.22.0.10
+server=/beam.local/172.22.0.10
 EOF
 
 echo ""
