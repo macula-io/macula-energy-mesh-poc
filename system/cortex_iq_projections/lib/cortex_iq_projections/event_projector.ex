@@ -30,6 +30,10 @@ defmodule CortexIqProjections.EventProjector do
     bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
     bondy_realm = System.get_env("BONDY_REALM", "be.cortexiq.energy")
 
+    # Get authentication credentials from environment
+    username = System.get_env("BONDY_USERNAME")
+    password = System.get_env("BONDY_PASSWORD")
+
     state = %State{
       connection_status: :connecting
     }
@@ -38,6 +42,8 @@ defmodule CortexIqProjections.EventProjector do
     case Client.start_link(
            url: bondy_url,
            realm: bondy_realm,
+           username: username,
+           password: password,
            name: :event_projector_wamp_client
          ) do
       {:ok, wamp_client} ->
