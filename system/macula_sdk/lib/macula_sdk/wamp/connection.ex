@@ -164,12 +164,12 @@ defmodule MaculaSdk.Wamp.Connection do
         details_with_auth = Map.put(details, "authextra", %{"macula_apikey" => state.api_key})
         {details_with_auth, ["macula-apikey"]}
 
-      # WAMP-CRA authentication (temporarily disabled - signature computation issue)
-      # state.username && state.password ->
-      #   details_with_auth = Map.put(details, "authid", state.username)
-      #   {details_with_auth, ["wampcra"]}
+      # WAMP-CRA authentication
+      state.username && state.password ->
+        details_with_auth = Map.put(details, "authid", state.username)
+        {details_with_auth, ["wampcra"]}
 
-      # Anonymous authentication (temporary workaround)
+      # Anonymous authentication
       true ->
         {details, ["anonymous"]}
     end
