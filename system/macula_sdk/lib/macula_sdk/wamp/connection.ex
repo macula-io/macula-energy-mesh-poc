@@ -164,10 +164,10 @@ defmodule MaculaSdk.Wamp.Connection do
         details_with_auth = Map.put(details, "authextra", %{"macula_apikey" => state.api_key})
         {details_with_auth, ["macula-apikey"]}
 
-      # WAMP-CRA authentication
+      # Trust authentication (simpler than WAMP-CRA)
       state.username && state.password ->
         details_with_auth = Map.put(details, "authid", state.username)
-        {details_with_auth, ["wampcra"]}
+        {details_with_auth, ["trust"]}
 
       # Anonymous authentication
       true ->
