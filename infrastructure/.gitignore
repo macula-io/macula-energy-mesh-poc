@@ -1,0 +1,11 @@
+# DNS Configuration Secrets
+# DO NOT COMMIT - Contains sensitive API keys and passwords
+.env.dns
+
+# PowerDNS Data Directory
+# Contains database files and persistent data
+data/powerdns/
+
+# Backup files
+*.bak
+*.backup

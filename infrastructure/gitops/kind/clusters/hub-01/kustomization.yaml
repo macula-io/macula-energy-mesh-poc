@@ -9,4 +9,4 @@ resources:
   - loki
   - fluent-bit
   - portal
-  - ../../base/external-dns
+  - external-dns  # ExternalDNS with PowerDNS for dynamic DNS management

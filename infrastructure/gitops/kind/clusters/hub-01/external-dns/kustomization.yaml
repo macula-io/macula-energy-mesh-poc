@@ -1,0 +1,36 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# ExternalDNS overlay for hub-01 cluster
+# This cluster hosts platform services (hub, console, portal, analytics, telemetry)
+
+namespace: external-dns
+
+resources:
+  - ../../../base/external-dns
+
+# Secret containing PowerDNS API key
+# The API key will be provided via Flux variable substitution from .env.dns
+secretGenerator:
+  - name: external-dns-pdns
+    namespace: external-dns
+    literals:
+      # This will be substituted by Flux from the sealed secret or manual kubectl create
+      # For now, create manually: kubectl create secret generic external-dns-pdns --from-literal=api-key=YOUR_KEY
+      - api-key=PLACEHOLDER
+
+# Patches to customize for hub-01 cluster
+patches:
+  - target:
+      kind: Deployment
+      name: external-dns
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/args/3
+        value: --pdns-server=http://192.168.129.9:8081
+      - op: replace
+        path: /spec/template/spec/containers/0/args/4
+        value: --domain-filter=macula.local
+      - op: replace
+        path: /spec/template/spec/containers/0/args/6
+        value: --txt-owner-id=hub-01

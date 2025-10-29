@@ -18,14 +18,39 @@ spec:
       serviceAccountName: external-dns
       containers:
         - name: external-dns
-          image: k8s.gcr.io/external-dns/external-dns:v0.14.2
+          image: registry.k8s.io/external-dns/external-dns:v0.14.2
           args:
+            # Sources: watch Services and Ingresses for DNS records
             - --source=service
             - --source=ingress
-            - --provider=coredns
-            - --coredns-proxy=http://coredns-service.coredns.svc.cluster.local:53 # example service in cluster
-            - --domain-filter=your.domain.local # restrict to your local domains
+
+            # Provider: PowerDNS with HTTP API
+            - --provider=pdns
+
+            # PowerDNS API endpoint (will be overridden in overlays with actual host IP)
+            - --pdns-server=http://HOST_IP:8081
+
+            # Domain filtering (will be overridden per cluster)
+            - --domain-filter=macula.local
+
+            # Synchronization policy
             - --policy=sync
+
+            # TXT registry for ownership tracking
             - --registry=txt
-            - --txt-owner-id=cluster-1
+            - --txt-owner-id=CLUSTER_ID
+            - --txt-prefix=external-dns-
+
+            # Logging
             - --log-level=info
+            - --log-format=text
+
+            # Interval for checking DNS records
+            - --interval=1m
+          env:
+            # PowerDNS API Key (from Secret)
+            - name: EXTERNAL_DNS_PDNS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: external-dns-pdns
+                  key: api-key
