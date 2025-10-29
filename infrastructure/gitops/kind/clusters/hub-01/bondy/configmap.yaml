@@ -12,9 +12,9 @@ data:
     # Bondy Configuration for Energy Mesh PoC
     # Simple configuration enabling WebSocket WAMP
 
-    # Security - Allow anonymous for PoC
-    security.allow_anonymous_user = on
-    security.automatically_create_realms = on
+    # Security - Require authentication
+    security.allow_anonymous_user = off
+    security.automatically_create_realms = off
 
     # WAMP over raw TCP
     wamp.tcp.enabled = on

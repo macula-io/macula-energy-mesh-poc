@@ -13,6 +13,8 @@ data:
     {
       "bondyUrl": "ws://hub.macula.local/ws",
       "bondyHttpUrl": "http://hub.macula.local/admin",
+      "defaultRealm": "com.leapsight.bondy",
+      "defaultAuthMethod": "wampcra",
       "userKeysMax": 10,
       "keyMaxCharacters": 256
     }

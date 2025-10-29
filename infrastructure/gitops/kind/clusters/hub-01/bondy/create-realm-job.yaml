@@ -9,42 +9,105 @@ metadata:
 data:
   create-realm.sh: |
     #!/bin/sh
+    set -e
+
     # Wait for Bondy to be ready
     echo "Waiting for Bondy to be ready..."
     until curl -s http://bondy:18080/ > /dev/null 2>&1; do
       echo "Bondy not ready yet, waiting..."
       sleep 2
     done
+    echo "✓ Bondy is ready"
 
-    echo "Bondy is ready, ensuring clean realm setup..."
+    # Load credentials from secrets
+    ADMIN_USER="${ADMIN_USERNAME}"
+    ADMIN_PASS="${ADMIN_PASSWORD}"
+    CONSOLE_USER="${CONSOLE_USERNAME}"
+    CONSOLE_PASS="${CONSOLE_PASSWORD}"
+    APP_USER="${APP_USERNAME}"
+    APP_PASS="${APP_PASSWORD}"
+    MASTER_REALM="${MASTER_REALM}"
+    APP_REALM="${APP_REALM}"
 
-    # Delete realm if it exists (auto-created by Bondy when clients connect)
-    echo "Deleting existing realm (if any)..."
-    /bondy/bin/bondy eval 'bondy_realm:delete(<<"be.cortexiq.energy">>).' || echo "No existing realm to delete"
-    sleep 1
+    BONDY_API="http://bondy:18081"
 
-    # Create the realm via Bondy Admin API (port 18081)
-    # Full realm configuration for demo (proper values for Console display)
-    echo "Creating realm with proper configuration..."
-    curl -X POST http://bondy:18081/realms \
+    echo "========================================="
+    echo "Bondy Security Bootstrap"
+    echo "========================================="
+
+    # Create master realm (com.leapsight.bondy)
+    echo "Creating master realm: $MASTER_REALM"
+    curl -s -X POST "$BONDY_API/realms" \
       -H "Content-Type: application/json" \
-      -d '{
-        "uri": "be.cortexiq.energy",
-        "description": "CortexIQ Energy Trading Demo Realm",
-        "is_prototype": false,
-        "is_sso_realm": false,
-        "allow_connections": true,
-        "authmethods": ["anonymous"]
-      }' && echo "Realm created successfully" || echo "Realm creation failed"
+      -d "{
+        \"uri\": \"$MASTER_REALM\",
+        \"description\": \"Bondy Master Realm\",
+        \"authmethods\": [\"wampcra\", \"trust\"],
+        \"security_enabled\": true
+      }" && echo "✓ Master realm created" || echo "Master realm already exists"
 
-    echo "Disabling security for demo..."
-    # Security must be disabled via bondy RPC (HTTP endpoint doesn't exist)
-    # Wait a bit for realm to be fully initialized
+    # Create application realm (be.cortexiq.energy)
+    echo "Creating application realm: $APP_REALM"
+    curl -s -X POST "$BONDY_API/realms" \
+      -H "Content-Type: application/json" \
+      -d "{
+        \"uri\": \"$APP_REALM\",
+        \"description\": \"CortexIQ Energy Trading Application\",
+        \"authmethods\": [\"wampcra\", \"trust\"],
+        \"security_enabled\": true,
+        \"allow_connections\": true
+      }" && echo "✓ Application realm created" || echo "Application realm already exists"
+
     sleep 2
-    /bondy/bin/bondy eval 'bondy_realm:disable_security(<<"be.cortexiq.energy">>).' && \
-      echo "Security disabled successfully" || echo "Security disable failed"
 
-    echo "Realm setup complete"
+    # Create admin user in master realm
+    echo "Creating admin user: $ADMIN_USER"
+    curl -s -X POST "$BONDY_API/realms/$MASTER_REALM/users" \
+      -H "Content-Type: application/json" \
+      -d "{
+        \"username\": \"$ADMIN_USER\",
+        \"password\": \"$ADMIN_PASS\",
+        \"groups\": [\"administrators\"]
+      }" && echo "✓ Admin user created" || echo "Admin user already exists"
+
+    # Create console user in master realm
+    echo "Creating console user: $CONSOLE_USER"
+    curl -s -X POST "$BONDY_API/realms/$MASTER_REALM/users" \
+      -H "Content-Type: application/json" \
+      -d "{
+        \"username\": \"$CONSOLE_USER\",
+        \"password\": \"$CONSOLE_PASS\",
+        \"groups\": [\"administrators\"]
+      }" && echo "✓ Console user created" || echo "Console user already exists"
+
+    # Create application user in app realm
+    echo "Creating application user: $APP_USER"
+    curl -s -X POST "$BONDY_API/realms/$APP_REALM/users" \
+      -H "Content-Type: application/json" \
+      -d "{
+        \"username\": \"$APP_USER\",
+        \"password\": \"$APP_PASS\",
+        \"groups\": []
+      }" && echo "✓ Application user created" || echo "Application user already exists"
+
+    # Grant permissions to application user
+    echo "Granting permissions to application user..."
+    curl -s -X POST "$BONDY_API/realms/$APP_REALM/grants" \
+      -H "Content-Type: application/json" \
+      -d "{
+        \"username\": \"$APP_USER\",
+        \"permissions\": [\"wamp.subscribe\", \"wamp.publish\", \"wamp.call\", \"wamp.register\"],
+        \"uri\": \"*\"
+      }" && echo "✓ Permissions granted" || echo "Permissions already exist"
+
+    echo "========================================="
+    echo "✓ Bondy security configured successfully!"
+    echo "========================================="
+    echo ""
+    echo "Credentials:"
+    echo "  Admin: $ADMIN_USER / $ADMIN_PASS"
+    echo "  Console: $CONSOLE_USER / $CONSOLE_PASS"
+    echo "  App: $APP_USER / $APP_PASS"
 
 ---
 apiVersion: batch/v1
@@ -65,14 +128,52 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: create-realm
-        image: leapsight/bondy:1.0.0-rc.44
+        image: curlimages/curl:latest
         command: ["/bin/sh", "/scripts/create-realm.sh"]
         volumeMounts:
         - name: scripts
           mountPath: /scripts
         env:
-        - name: BONDY_NODE_NAME
-          value: "bondy@bondy.macula-hub.svc.cluster.local"
+        - name: ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: bondy-credentials
+              key: admin-username
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bondy-credentials
+              key: admin-password
+        - name: CONSOLE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: bondy-credentials
+              key: console-username
+        - name: CONSOLE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bondy-credentials
+              key: console-password
+        - name: APP_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: bondy-credentials
+              key: app-username
+        - name: APP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bondy-credentials
+              key: app-password
+        - name: MASTER_REALM
+          valueFrom:
+            secretKeyRef:
+              name: bondy-credentials
+              key: master-realm
+        - name: APP_REALM
+          valueFrom:
+            secretKeyRef:
+              name: bondy-credentials
+              key: app-realm
       volumes:
       - name: scripts
         configMap:
