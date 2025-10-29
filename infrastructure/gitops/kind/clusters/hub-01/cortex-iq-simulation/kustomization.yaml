@@ -3,8 +3,8 @@ kind: Kustomization
 
 resources:
   - ../../../base/cortex-iq-simulation
-  - namespace.yaml
   - secrets.yaml
+  # namespace.yaml removed - using cluster-level namespace-macula-hub.yaml
 
 # Override namespace for hub cluster
 namespace: macula-hub
