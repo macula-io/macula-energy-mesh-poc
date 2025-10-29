@@ -79,7 +79,7 @@ metadata:
     app.kubernetes.io/name: cortex-iq-dashboard
     app.kubernetes.io/component: dashboard
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: cortex-iq-dashboard
   ports:
@@ -87,4 +87,3 @@ spec:
     protocol: TCP
     port: 4000
     targetPort: http
-    nodePort: 30000
