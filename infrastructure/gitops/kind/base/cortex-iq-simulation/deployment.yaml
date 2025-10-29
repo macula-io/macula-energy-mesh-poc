@@ -26,6 +26,18 @@ spec:
               value: "ws://bondy.macula-platform.svc.cluster.local:18080/ws"
             - name: BONDY_REALM
               value: "be.cortexiq.energy"
+            - name: BONDY_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: bondy-credentials
+                  key: app-username
+                  optional: false
+            - name: BONDY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bondy-credentials
+                  key: app-password
+                  optional: false
             - name: SIMULATION_SPEED
               value: "105120"  # 1 year = 5 minutes
             - name: SIMULATION_START_DATE
