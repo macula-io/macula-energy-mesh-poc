@@ -45,7 +45,9 @@ spec:
             -d '{
               "uri": "be.cortexiq.energy",
               "description": "CortexIQ Energy Trading Platform Realm (Edge)",
-              "authmethods": ["anonymous", "cryptosign"],
+              "authmethods": ["anonymous"],
+              "security_enabled": false,
+              "allow_anonymous_users": true,
               "is_prototype": false,
               "is_sso_realm": false,
               "allow_connections": true,

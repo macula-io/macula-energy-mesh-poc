@@ -19,14 +19,14 @@ data:
     # WAMP over raw TCP (for local applications)
     wamp.tcp.enabled = on
     wamp.tcp.port = 18082
-    wamp.tcp.acceptors_pool_size = 100
-    wamp.tcp.max_connections = 10000
+    wamp.tcp.acceptors_pool_size = 20
+    wamp.tcp.max_connections = 200
 
     # API Gateway (includes WebSocket WAMP for local applications)
     api_gateway.http.enabled = on
     api_gateway.http.port = 18080
-    api_gateway.http.acceptors_pool_size = 100
-    api_gateway.http.max_connections = 50000
+    api_gateway.http.acceptors_pool_size = 20
+    api_gateway.http.max_connections = 200
 
     # Admin API
     admin_api.http.enabled = on
