@@ -67,7 +67,7 @@ data:
       -d "{
         \"username\": \"$ADMIN_USER\",
         \"password\": \"$ADMIN_PASS\",
-        \"groups\": [\"administrators\"]
+        \"groups\": [\"bondy.administrators\"]
       }" && echo "✓ Admin user created" || echo "Admin user already exists"
 
     # Create console user in master realm
@@ -77,7 +77,7 @@ data:
       -d "{
         \"username\": \"$CONSOLE_USER\",
         \"password\": \"$CONSOLE_PASS\",
-        \"groups\": [\"administrators\"]
+        \"groups\": [\"bondy.administrators\"]
       }" && echo "✓ Console user created" || echo "Console user already exists"
 
     # Create application user in app realm
@@ -95,9 +95,14 @@ data:
     curl -s -X POST "$BONDY_API/realms/$APP_REALM/grants" \
       -H "Content-Type: application/json" \
       -d "{
-        \"username\": \"$APP_USER\",
-        \"permissions\": [\"wamp.subscribe\", \"wamp.publish\", \"wamp.call\", \"wamp.register\"],
-        \"uri\": \"*\"
+        \"roles\": [\"$APP_USER\"],
+        \"permissions\": [\"wamp.subscribe\", \"wamp.unsubscribe\", \"wamp.publish\", \"wamp.call\", \"wamp.cancel\", \"wamp.register\", \"wamp.unregister\"],
+        \"resources\": [
+          {
+            \"uri\": \"*\",
+            \"match\": \"wildcard\"
+          }
+        ]
       }" && echo "✓ Permissions granted" || echo "Permissions already exist"
 
     echo "========================================="
