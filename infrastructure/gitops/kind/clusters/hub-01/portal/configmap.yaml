@@ -253,7 +253,7 @@ data:
             <section class="section">
                 <h2 class="section-title">Platform Infrastructure</h2>
                 <div class="cards">
-                    <a href="http://hub.macula.local:8080/admin/" class="card" target="_blank">
+                    <a href="http://hub.macula.local/admin/" class="card" target="_blank">
                         <div class="card-header">
                             <div class="card-icon icon-platform">🌐</div>
                             <div class="card-title">Bondy Admin API</div>
@@ -261,14 +261,14 @@ data:
                         <div class="card-description">
                             WAMP router administration interface. Manage realms, authentication, and routing.
                         </div>
-                        <div class="card-url">http://hub.macula.local:8080/admin/</div>
+                        <div class="card-url">http://hub.macula.local/admin/</div>
                         <div class="status">
                             <span class="status-dot"></span>
                             <span>Hub Cluster</span>
                         </div>
                     </a>
 
-                    <a href="http://console.macula.local:8080/" class="card" target="_blank">
+                    <a href="http://console.macula.local/" class="card" target="_blank">
                         <div class="card-header">
                             <div class="card-icon icon-platform">🖥️</div>
                             <div class="card-title">Bondy Console</div>
@@ -276,7 +276,7 @@ data:
                         <div class="card-description">
                             Web-based console for platform management and real-time monitoring.
                         </div>
-                        <div class="card-url">http://console.macula.local:8080/</div>
+                        <div class="card-url">http://console.macula.local/</div>
                         <div class="status">
                             <span class="status-dot"></span>
                             <span>Hub Cluster</span>
@@ -289,7 +289,7 @@ data:
             <section class="section">
                 <h2 class="section-title">Platform Observability</h2>
                 <div class="cards">
-                    <a href="http://telemetry.macula.local:8080/" class="card" target="_blank">
+                    <a href="http://telemetry.macula.local/" class="card" target="_blank">
                         <div class="card-header">
                             <div class="card-icon icon-monitor">📊</div>
                             <div class="card-title">Platform Telemetry</div>
@@ -297,14 +297,14 @@ data:
                         <div class="card-description">
                             Metrics collection and time-series data. Query system health and performance.
                         </div>
-                        <div class="card-url">http://telemetry.macula.local:8080/</div>
+                        <div class="card-url">http://telemetry.macula.local/</div>
                         <div class="status">
                             <span class="status-dot"></span>
                             <span>Prometheus</span>
                         </div>
                     </a>
 
-                    <a href="http://analytics.macula.local:8080/" class="card" target="_blank">
+                    <a href="http://analytics.macula.local/" class="card" target="_blank">
                         <div class="card-header">
                             <div class="card-icon icon-monitor">📈</div>
                             <div class="card-title">Platform Analytics</div>
@@ -312,14 +312,14 @@ data:
                         <div class="card-description">
                             Visualization dashboards for platform and application metrics. Login: admin / macula123
                         </div>
-                        <div class="card-url">http://analytics.macula.local:8080/</div>
+                        <div class="card-url">http://analytics.macula.local/</div>
                         <div class="status">
                             <span class="status-dot"></span>
                             <span>Grafana</span>
                         </div>
                     </a>
 
-                    <a href="http://analytics.macula.local:8080/explore?orgId=1&left=%7B%22datasource%22:%22Loki%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22%7Bnamespace%3D%5C%22macula-hub%5C%22%7D%22%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D" class="card" target="_blank">
+                    <a href="http://analytics.macula.local/explore?orgId=1&left=%7B%22datasource%22:%22Loki%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22%7Bnamespace%3D%5C%22macula-hub%5C%22%7D%22%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D" class="card" target="_blank">
                         <div class="card-header">
                             <div class="card-icon icon-monitor">📝</div>
                             <div class="card-title">Platform Logs</div>
@@ -340,7 +340,7 @@ data:
             <section class="section">
                 <h2 class="section-title">CortexIQ Application</h2>
                 <div class="cards">
-                    <a href="http://dashboard.cortexiq.local:8080/" class="card" target="_blank">
+                    <a href="http://dashboard.cortexiq.local/" class="card" target="_blank">
                         <div class="card-header">
                             <div class="card-icon icon-app">⚡</div>
                             <div class="card-title">CortexIQ Dashboard</div>
@@ -348,7 +348,7 @@ data:
                         <div class="card-description">
                             Real-time energy trading simulation. Watch autonomous home bots optimize contracts and trade energy.
                         </div>
-                        <div class="card-url">http://dashboard.cortexiq.local:8080/</div>
+                        <div class="card-url">http://dashboard.cortexiq.local/</div>
                         <div class="status">
                             <span class="status-dot"></span>
                             <span>Edge-01 Cluster</span>

@@ -12,10 +12,8 @@ echo "Creating NetworkManager dnsmasq configuration..."
 sudo mkdir -p /etc/NetworkManager/dnsmasq.d
 
 cat <<EOF | sudo tee /etc/NetworkManager/dnsmasq.d/macula-local.conf
-# Forward all .local domain queries to PowerDNS
-server=/local/$PDNS_IP
-
-# Explicitly forward our zones
+# Forward only our specific zones to PowerDNS
+# DO NOT forward all .local (breaks mDNS/Avahi)
 server=/macula.local/$PDNS_IP
 server=/cortexiq.local/$PDNS_IP
 server=/beam.local/$PDNS_IP
