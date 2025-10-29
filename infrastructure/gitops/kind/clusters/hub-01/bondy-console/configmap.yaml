@@ -11,7 +11,8 @@ metadata:
 data:
   settings.json: |
     {
-      "bondyUrl": "http://bondy.macula-hub:18081",
+      "bondyUrl": "ws://hub.macula.local/ws",
+      "bondyHttpUrl": "http://hub.macula.local/admin",
       "userKeysMax": 10,
       "keyMaxCharacters": 256
     }
