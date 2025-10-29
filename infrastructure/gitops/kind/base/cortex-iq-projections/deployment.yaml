@@ -39,6 +39,16 @@ spec:
         # Database Connection
         - name: DATABASE_URL
           value: "ecto://cortexiq:cortexiq123@postgres:5432/cortexiq_dashboard"
+        - name: BONDY_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: bondy-credentials
+              key: app-username
+        - name: BONDY_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bondy-credentials
+              key: app-password
         - name: POOL_SIZE
           value: "2"
 
