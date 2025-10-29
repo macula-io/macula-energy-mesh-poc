@@ -4,5 +4,4 @@ kind: Kustomization
 resources:
   - ../../../base/cortex-iq-open-weather-map
 
-# Override namespace for hub cluster
-namespace: macula-hub
+# Use base namespace (macula-apps) - no override needed

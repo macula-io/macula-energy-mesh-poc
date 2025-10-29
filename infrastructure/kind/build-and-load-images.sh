@@ -89,10 +89,10 @@ log_step "Loading projections image into macula-hub..."
 kind load docker-image macula/cortex-iq-projections:latest --name macula-hub
 log_info "Projections image loaded into hub"
 
-# Load dashboard into edge-01 (where dashboard will run)
-log_step "Loading dashboard image into macula-edge-01..."
-kind load docker-image macula/cortex-iq-dashboard:latest --name macula-edge-01
-log_info "Dashboard image loaded into edge-01"
+# Load dashboard into macula-hub (where dashboard will run alongside Bondy)
+log_step "Loading dashboard image into macula-hub..."
+kind load docker-image macula/cortex-iq-dashboard:latest --name macula-hub
+log_info "Dashboard image loaded into hub"
 
 # Load homes into edge-01, edge-02, and edge-04
 log_step "Loading homes image into macula-edge-01, edge-02, and edge-04..."
@@ -113,6 +113,6 @@ echo "Images:"
 echo "  - macula/macula-os:latest (sidecar, loaded into edge-01, edge-02, edge-03, edge-04)"
 echo "  - macula/cortex-iq-simulation:latest (loaded into hub)"
 echo "  - macula/cortex-iq-projections:latest (loaded into hub)"
-echo "  - macula/cortex-iq-dashboard:latest (loaded into edge-01)"
+echo "  - macula/cortex-iq-dashboard:latest (loaded into hub)"
 echo "  - macula/cortex-iq-homes:latest (loaded into edge-01, edge-02, edge-04)"
 echo "  - macula/cortex-iq-utilities:latest (loaded into edge-02)"

@@ -17,6 +17,8 @@ defmodule MaculaSdk.Wamp.Connection do
       :url,
       :realm,
       :api_key,
+      :username,
+      :password,
       :session_id,
       :status,
       :pending_requests,
@@ -41,18 +43,24 @@ defmodule MaculaSdk.Wamp.Connection do
   - `:url` - WebSocket URL (default: ws://localhost:18082/ws)
   - `:realm` - WAMP realm to join (default: com.example.realm)
   - `:api_key` - API key for MaculaOs authentication (optional)
+  - `:username` - Username for WAMP-CRA authentication (optional)
+  - `:password` - Password for WAMP-CRA authentication (optional)
   - `:client_pid` - PID to send messages to (optional)
   """
   def start_link(opts \\ []) do
     url = Keyword.get(opts, :url, @default_url)
     realm = Keyword.get(opts, :realm, @default_realm)
     api_key = Keyword.get(opts, :api_key)
+    username = Keyword.get(opts, :username)
+    password = Keyword.get(opts, :password)
     client_pid = Keyword.get(opts, :client_pid)
 
     state = %State{
       url: url,
       realm: realm,
       api_key: api_key,
+      username: username,
+      password: password,
       status: :connecting,
       pending_requests: %{},
       subscriptions: %{},
@@ -149,12 +157,21 @@ defmodule MaculaSdk.Wamp.Connection do
       }
     }
 
-    # Add API key authentication if provided
-    {details, authmethods} = if state.api_key do
-      details_with_auth = Map.put(details, "authextra", %{"macula_apikey" => state.api_key})
-      {details_with_auth, ["macula-apikey"]}
-    else
-      {Map.put(details, "authmethods", ["anonymous"]), ["anonymous"]}
+    # Choose authentication method based on provided credentials
+    {details, authmethods} = cond do
+      # API key authentication (MaculaOs)
+      state.api_key ->
+        details_with_auth = Map.put(details, "authextra", %{"macula_apikey" => state.api_key})
+        {details_with_auth, ["macula-apikey"]}
+
+      # WAMP-CRA authentication (temporarily disabled - signature computation issue)
+      # state.username && state.password ->
+      #   details_with_auth = Map.put(details, "authid", state.username)
+      #   {details_with_auth, ["wampcra"]}
+
+      # Anonymous authentication (temporary workaround)
+      true ->
+        {details, ["anonymous"]}
     end
 
     details = Map.put(details, "authmethods", authmethods)
@@ -319,6 +336,10 @@ defmodule MaculaSdk.Wamp.Connection do
         notify_client(state, {:connected, session_id})
         {:ok, new_state}
 
+      {:challenge, %{authmethod: "wampcra", extra: extra}} ->
+        Logger.info("Received WAMP-CRA CHALLENGE")
+        handle_wampcra_challenge(extra, state)
+
       {:abort, %{reason: reason}} ->
         Logger.error("WAMP connection aborted: #{reason}")
         {:close, state}
@@ -468,6 +489,29 @@ defmodule MaculaSdk.Wamp.Connection do
     notify_client(state, {:error, request_type, request_id, error_uri, args, kwargs})
 
     {:ok, %{state | pending_requests: pending_requests}}
+  end
+
+  defp handle_wampcra_challenge(extra, state) do
+    # Extract challenge string from extra
+    challenge = Map.get(extra, "challenge", "")
+
+    if state.password do
+      # Compute WAMP-CRA signature
+      signature = Protocol.compute_wampcra_signature(challenge, state.password)
+
+      # Send AUTHENTICATE message
+      auth_message = Protocol.authenticate_message(signature)
+      encoded = Protocol.encode(auth_message)
+
+      Logger.info("Sending WAMP-CRA AUTHENTICATE")
+      Logger.info("Challenge: #{String.slice(challenge, 0, 50)}..., Password: #{String.slice(state.password, 0, 5)}..., Signature: #{String.slice(signature, 0, 20)}...")
+
+      frame = {:text, encoded}
+      {:reply, frame, state}
+    else
+      Logger.error("Received CHALLENGE but no password configured")
+      {:close, state}
+    end
   end
 
   defp notify_client(%{client_pid: nil}, _message), do: :ok

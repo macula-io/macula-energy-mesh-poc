@@ -23,9 +23,11 @@ defmodule CortexIqDashboardWeb.DashboardLive do
     {home_states, unique_homes, home_contracts, home_balances} = load_home_states_from_db()
     {provider_states, unique_providers, provider_market_share} = load_provider_states_from_db()
     {simulation_time, simulation_speed, simulation_paused, db_stats} = load_system_stats_from_db()
+    overview = OverviewAggregator.get_state()
 
     {:ok,
      socket
+     |> assign(:overview, overview)
      |> assign(:unique_homes, unique_homes)
      |> assign(:unique_providers, unique_providers)
      |> assign(:locations, locations)
@@ -60,9 +62,11 @@ defmodule CortexIqDashboardWeb.DashboardLive do
     {home_states, unique_homes, home_contracts, home_balances} = load_home_states_from_db()
     {provider_states, unique_providers, provider_market_share} = load_provider_states_from_db()
     {simulation_time, simulation_speed, simulation_paused, db_stats} = load_system_stats_from_db()
+    overview = OverviewAggregator.get_state()
 
     {:noreply,
      socket
+     |> assign(:overview, overview)
      |> assign(:unique_homes, unique_homes)
      |> assign(:unique_providers, unique_providers)
      |> assign(:home_contracts, home_contracts)

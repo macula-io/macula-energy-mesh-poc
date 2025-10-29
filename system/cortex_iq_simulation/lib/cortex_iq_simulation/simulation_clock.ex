@@ -133,7 +133,19 @@ defmodule CortexIqSimulation.SimulationClock do
   def handle_continue(:connect_wamp, state) do
     Logger.info("SimulationClock: Attempting to connect to WAMP (#{state.bondy_url})...")
 
-    case MaculaSdk.Wamp.Client.start_link(url: state.bondy_url, realm: state.realm) do
+    # Get authentication credentials from environment
+    username = System.get_env("BONDY_USERNAME")
+    password = System.get_env("BONDY_PASSWORD")
+
+    # Build connection options
+    connect_opts = [
+      url: state.bondy_url,
+      realm: state.realm,
+      username: username,
+      password: password
+    ]
+
+    case MaculaSdk.Wamp.Client.start_link(connect_opts) do
       {:ok, wamp_client} ->
         Logger.info("SimulationClock: Connected to WAMP, waiting for connection to stabilize...")
         # Wait a bit for connection to fully establish before subscribing

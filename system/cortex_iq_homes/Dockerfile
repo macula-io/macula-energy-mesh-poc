@@ -41,6 +41,7 @@ RUN mix deps.get --only prod
 
 # Copy application source
 COPY cortex_iq_homes/lib ./lib
+COPY cortex_iq_homes/priv ./priv
 
 # Compile
 RUN mix compile

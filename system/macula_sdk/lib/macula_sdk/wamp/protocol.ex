@@ -10,6 +10,8 @@ defmodule MaculaSdk.Wamp.Protocol do
   @hello 1
   @welcome 2
   @abort 3
+  @challenge 4
+  @authenticate 5
   @goodbye 6
   @error 8
   @publish 16
@@ -30,6 +32,8 @@ defmodule MaculaSdk.Wamp.Protocol do
   def hello, do: @hello
   def welcome, do: @welcome
   def abort, do: @abort
+  def challenge, do: @challenge
+  def authenticate, do: @authenticate
   def goodbye, do: @goodbye
   def error, do: @error
   def publish, do: @publish
@@ -89,6 +93,15 @@ defmodule MaculaSdk.Wamp.Protocol do
   """
   def subscribe_message(request_id, topic, options \\ %{}) do
     [@subscribe, request_id, options, topic]
+  end
+
+  @doc """
+  Build an AUTHENTICATE message (for WAMP-CRA).
+
+  AUTHENTICATE: [5, signature, extra]
+  """
+  def authenticate_message(signature, extra \\ %{}) do
+    [@authenticate, signature, extra]
   end
 
   @doc """
@@ -153,6 +166,7 @@ defmodule MaculaSdk.Wamp.Protocol do
     case type do
       @welcome -> parse_welcome(message)
       @abort -> parse_abort(message)
+      @challenge -> parse_challenge(message)
       @goodbye -> parse_goodbye(message)
       @error -> parse_error(message)
       @published -> parse_published(message)
@@ -171,6 +185,10 @@ defmodule MaculaSdk.Wamp.Protocol do
 
   defp parse_abort([@abort, details, reason]) do
     {:abort, %{details: details, reason: reason}}
+  end
+
+  defp parse_challenge([@challenge, authmethod, extra]) do
+    {:challenge, %{authmethod: authmethod, extra: extra}}
   end
 
   defp parse_goodbye([@goodbye, details, reason]) do
@@ -239,5 +257,18 @@ defmodule MaculaSdk.Wamp.Protocol do
       args: args,
       kwargs: kwargs
     }}
+  end
+
+  @doc """
+  Compute WAMP-CRA signature.
+
+  Uses HMAC-SHA256 to sign the challenge with the secret (password).
+  Returns base64-encoded signature.
+
+  Standard WAMP-CRA: signature = Base64(HMAC-SHA256(secret, challenge))
+  """
+  def compute_wampcra_signature(challenge, secret) when is_binary(challenge) and is_binary(secret) do
+    :crypto.mac(:hmac, :sha256, secret, challenge)
+    |> Base.encode64()
   end
 end

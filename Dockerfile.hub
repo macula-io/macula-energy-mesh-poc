@@ -40,11 +40,11 @@ COPY system/cortex_iq_dashboard_umbrella/config ./config
 
 # Copy standalone dependencies to match umbrella app paths
 # Apps at /app/apps/cortex_iq_dashboard/ have these dependencies:
-#   - path: "../../../cortex_iq_core" → /app/apps/cortex_iq_dashboard/../../../ → /cortex_iq_core
-#   - path: "../../cortex_iq_dashboard_schemas" → /app/apps/cortex_iq_dashboard/../../ → /app/cortex_iq_dashboard_schemas
-#   - path: "../../../macula_sdk" → /app/apps/cortex_iq_dashboard/../../../ → /macula_sdk
+#   - path: "../../../cortex_iq_core" → /app/apps/cortex_iq_dashboard/../../../cortex_iq_core → needs /cortex_iq_core
+#   - path: "../../../cortex_iq_dashboard_schemas" → /app/apps/cortex_iq_dashboard/../../../cortex_iq_dashboard_schemas → needs /cortex_iq_dashboard_schemas
+#   - path: "../../../macula_sdk" → /app/apps/cortex_iq_dashboard/../../../macula_sdk → needs /macula_sdk
 COPY system/cortex_iq_core /cortex_iq_core
-COPY system/cortex_iq_dashboard_schemas ./cortex_iq_dashboard_schemas
+COPY system/cortex_iq_dashboard_schemas /cortex_iq_dashboard_schemas
 COPY system/macula_sdk /macula_sdk
 
 # Copy umbrella apps mix files

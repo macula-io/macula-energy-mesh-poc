@@ -15,6 +15,8 @@ defmodule MaculaSdk.Wamp.Client do
       :url,
       :realm,
       :api_key,
+      :username,
+      :password,
       :status,
       :session_id,
       :event_handlers,
@@ -33,6 +35,8 @@ defmodule MaculaSdk.Wamp.Client do
   - `:url` - WebSocket URL (default: ws://localhost:18082/ws)
   - `:realm` - WAMP realm to join (default: com.example.realm)
   - `:api_key` - API key for MaculaOs authentication (optional)
+  - `:username` - Username for WAMP-CRA authentication (optional)
+  - `:password` - Password for WAMP-CRA authentication (optional)
   - `:name` - GenServer name (optional)
   """
   def start_link(opts \\ []) do
@@ -101,11 +105,15 @@ defmodule MaculaSdk.Wamp.Client do
     url = Keyword.get(opts, :url, "ws://localhost:18082/ws")
     realm = Keyword.get(opts, :realm, "com.example.realm")
     api_key = Keyword.get(opts, :api_key)
+    username = Keyword.get(opts, :username)
+    password = Keyword.get(opts, :password)
 
     state = %State{
       url: url,
       realm: realm,
       api_key: api_key,
+      username: username,
+      password: password,
       status: :connecting,
       event_handlers: %{},
       rpc_handlers: %{},
@@ -122,6 +130,8 @@ defmodule MaculaSdk.Wamp.Client do
            url: state.url,
            realm: state.realm,
            api_key: state.api_key,
+           username: state.username,
+           password: state.password,
            client_pid: self()
          ) do
       {:ok, pid} ->
