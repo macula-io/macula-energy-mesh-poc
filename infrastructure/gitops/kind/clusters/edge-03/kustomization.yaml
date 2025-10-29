@@ -4,6 +4,8 @@ kind: Kustomization
 # Edge-03: 50 Flanders homes (persistent UUID7 IDs)
 
 resources:
+  - metallb
+  - external-dns
   - namespace.yaml
   - ../../base/cortex-iq-homes
 

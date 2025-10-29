@@ -4,5 +4,7 @@ kind: Kustomization
 # Edge-02: Utility Providers Only (5 providers, no homes)
 
 resources:
+  - metallb
+  - external-dns
   - namespace.yaml
   - ../../base/cortex-iq-utilities

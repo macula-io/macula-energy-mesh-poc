@@ -5,5 +5,7 @@ kind: Kustomization
 # Dashboard + Projections (no homes - pure analytics/contract-switching service)
 
 resources:
+  - metallb
+  - external-dns
   - ../../base/cortex-iq-dashboard    # Includes PostgreSQL
   - ../../base/cortex-iq-projections  # CQRS write-side (needs postgres)

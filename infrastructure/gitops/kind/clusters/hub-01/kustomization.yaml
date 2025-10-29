@@ -9,4 +9,5 @@ resources:
   - loki
   - fluent-bit
   - portal
+  - metallb  # MetalLB for LoadBalancer support in KinD
   - external-dns  # ExternalDNS with PowerDNS for dynamic DNS management

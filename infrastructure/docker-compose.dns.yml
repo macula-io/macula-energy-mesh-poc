@@ -1,0 +1,126 @@
+version: '3.8'
+
+# Macula Platform - Dynamic DNS Infrastructure
+# PowerDNS + PostgreSQL for multi-cluster DNS management
+#
+# Architecture:
+# - PostgreSQL: Database backend for DNS records
+# - PowerDNS: Authoritative DNS server with HTTP API
+# - PowerDNS-Admin: Web UI for DNS management (optional)
+#
+# ExternalDNS instances in each cluster connect to PowerDNS API
+# to dynamically create/update/delete DNS records as services are deployed.
+
+services:
+  # PostgreSQL - Database backend for PowerDNS
+  postgres:
+    image: postgres:15-alpine
+    container_name: macula-dns-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: powerdns
+      POSTGRES_USER: powerdns
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-powerdns-secret-change-me}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      # Initialize PowerDNS schema on first run
+      - ./config/powerdns/init-schema.sql:/docker-entrypoint-initdb.d/init-schema.sql:ro
+    networks:
+      - dns-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U powerdns"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PowerDNS Authoritative Server
+  powerdns:
+    image: powerdns/pdns-auth-48:latest
+    container_name: macula-dns-powerdns
+    restart: unless-stopped
+    ports:
+      # DNS server port (UDP and TCP)
+      - "53:53/udp"
+      - "53:53/tcp"
+      # HTTP API port (for ExternalDNS)
+      - "8081:8081/tcp"
+    volumes:
+      # Mount complete config file to replace default
+      - ./config/powerdns/complete.conf:/etc/powerdns/pdns.conf:ro
+    environment:
+      # PostgreSQL backend configuration
+      PDNS_launch: gpgsql
+      PDNS_gpgsql_host: postgres
+      PDNS_gpgsql_port: 5432
+      PDNS_gpgsql_dbname: powerdns
+      PDNS_gpgsql_user: powerdns
+      PDNS_gpgsql_password: ${POSTGRES_PASSWORD:-powerdns-secret-change-me}
+      PDNS_gpgsql_dnssec: "yes"
+
+      # Bind to all interfaces
+      PDNS_local_address: "0.0.0.0,::"
+      PDNS_local_port: 53
+
+      # Enable HTTP API for ExternalDNS
+      PDNS_api: "yes"
+      PDNS_api_key: ${POWERDNS_API_KEY:-macula-api-key-change-me}
+      PDNS_webserver: "yes"
+      PDNS_webserver_address: "0.0.0.0"
+      PDNS_webserver_port: 8081
+      PDNS_webserver_allow_from: "0.0.0.0/0,::/0"
+
+      # Logging
+      PDNS_loglevel: 5
+      PDNS_log_dns_queries: "yes"
+      PDNS_log_dns_details: "yes"
+
+      # Performance tuning
+      PDNS_receiver_threads: 2
+      PDNS_distributor_threads: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - dns-network
+    healthcheck:
+      test: ["CMD-SHELL", "pdns_control ping || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PowerDNS-Admin - Web UI (optional but useful)
+  powerdns-admin:
+    image: ngoduykhanh/powerdns-admin:latest
+    container_name: macula-dns-admin
+    restart: unless-stopped
+    ports:
+      # Web UI port
+      - "9191:80/tcp"
+    environment:
+      SECRET_KEY: ${PDNS_ADMIN_SECRET_KEY:-macula-admin-secret-change-me}
+
+      # PostgreSQL for PowerDNS-Admin's own data
+      SQLALCHEMY_DATABASE_URI: postgresql://powerdns:${POSTGRES_PASSWORD:-powerdns-secret-change-me}@postgres/powerdns_admin
+
+      # Connect to PowerDNS API
+      PDNS_API_URL: http://powerdns:8081
+      PDNS_API_KEY: ${POWERDNS_API_KEY:-macula-api-key-change-me}
+      PDNS_VERSION: 4.8
+    depends_on:
+      powerdns:
+        condition: service_healthy
+    networks:
+      - dns-network
+
+volumes:
+  # Persistent storage for PostgreSQL
+  postgres-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DATA_DIR:-./data/powerdns}/postgres
+
+networks:
+  dns-network:
+    driver: bridge

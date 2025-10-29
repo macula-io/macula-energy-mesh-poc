@@ -1,0 +1,93 @@
+# CoreDNS Configuration for Macula Dynamic DNS
+#
+# This Corefile configures CoreDNS to serve DNS queries for the Macula mesh
+# infrastructure, reading DNS records dynamically from etcd.
+#
+# Architecture:
+# - ExternalDNS (running in each cluster) writes DNS records to etcd
+# - CoreDNS reads from etcd and serves DNS queries
+# - Clients query CoreDNS for *.macula.local and *.cortexiq.local domains
+#
+
+# macula.local zone - Platform infrastructure services
+# Examples: hub.macula.local, console.macula.local, portal.macula.local
+macula.local:53 {
+    # Log errors for troubleshooting
+    errors
+
+    # Log all DNS queries (can be disabled in production for performance)
+    log
+
+    # etcd plugin - read DNS records from etcd
+    etcd {
+        # Use stubzones mode for better performance
+        stubzones
+
+        # etcd path prefix where DNS records are stored
+        # ExternalDNS writes to /skydns/local/macula/<hostname>
+        path /skydns
+
+        # etcd endpoint (local instance)
+        endpoint http://127.0.0.1:2379
+
+        # Fallthrough if record not found in etcd
+        # This allows other plugins or upstream to handle the query
+        fallthrough
+    }
+
+    # Cache DNS responses for 30 seconds
+    # Reduces etcd load and improves query performance
+    cache 30
+
+    # Prometheus metrics endpoint
+    prometheus :9153
+}
+
+# cortexiq.local zone - CortexIQ application services
+# Examples: dashboard.cortexiq.local
+cortexiq.local:53 {
+    errors
+    log
+
+    etcd {
+        stubzones
+        path /skydns
+        endpoint http://127.0.0.1:2379
+        fallthrough
+    }
+
+    cache 30
+    prometheus :9153
+}
+
+# beam.local zone - Beam cluster services (optional, for future use)
+# Examples: beam00.beam.local, beam01.beam.local
+beam.local:53 {
+    errors
+    log
+
+    etcd {
+        stubzones
+        path /skydns
+        endpoint http://127.0.0.1:2379
+        fallthrough
+    }
+
+    cache 30
+    prometheus :9153
+}
+
+# Catch-all zone - Forward all other queries to upstream DNS
+# This handles queries for internet domains (e.g., google.com, github.com)
+.:53 {
+    errors
+    log
+
+    # Forward to Google DNS (or use system DNS via /etc/resolv.conf)
+    forward . 8.8.8.8 8.8.4.4
+
+    # Cache upstream responses for 30 seconds
+    cache 30
+
+    prometheus :9153
+}
