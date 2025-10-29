@@ -6,12 +6,9 @@ resources:
 
 namespace: macula-apps
 
-# Patch to use local edge Bondy and specific home data file
+# Patch to use specific home data file (connects to hub Bondy by default)
 patches:
   - patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/env/0/value
-        value: "ws://bondy-edge.macula-platform.svc.cluster.local:18080/ws"
       - op: replace
         path: /spec/template/spec/containers/0/env/2/value
         value: "flanders_edge_04_homes.json"

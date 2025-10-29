@@ -6,12 +6,4 @@ resources:
 
 namespace: macula-apps
 
-# Patch to use local edge Bondy instead of hub
-patches:
-  - patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/env/4/value
-        value: "ws://bondy-edge.macula-platform.svc.cluster.local:18080/ws"
-    target:
-      kind: Deployment
-      name: cortex-iq-utilities
+# Uses default hub Bondy connection (no patch needed)

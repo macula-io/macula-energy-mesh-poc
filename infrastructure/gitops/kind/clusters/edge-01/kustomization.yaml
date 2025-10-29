@@ -5,7 +5,6 @@ kind: Kustomization
 # Dashboard + Projections (no homes - pure analytics/contract-switching service)
 
 resources:
-  - bondy                             # Bondy edge router with bridge relay to beam-01
   - metallb
   - external-dns
   - ../../base/cortex-iq-dashboard    # Includes PostgreSQL
