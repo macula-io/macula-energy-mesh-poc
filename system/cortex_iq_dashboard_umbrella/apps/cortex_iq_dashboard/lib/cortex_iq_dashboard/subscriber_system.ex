@@ -33,7 +33,8 @@ defmodule CortexIqDashboard.SubscriberSystem do
 
   def start_link(opts) do
     event_type = Keyword.fetch!(opts, :event_type)
-    name = Module.concat(__MODULE__, event_type)
+    # Use atom-based naming instead of Module.concat (which expects module names)
+    name = :"#{__MODULE__}.#{event_type}"
     Supervisor.start_link(__MODULE__, opts, name: name)
   end
 
@@ -53,11 +54,18 @@ defmodule CortexIqDashboard.SubscriberSystem do
 
     children = [
       # Start WAMP client first with unique name
-      {MaculaSdk.Wamp, [
-        url: bondy_url,
-        realm: realm_uri,
-        name: wamp_client_name
-      ]},
+      # MaculaSdk.Wamp doesn't implement child_spec/1, so provide manual spec
+      %{
+        id: wamp_client_name,
+        start: {MaculaSdk.Wamp, :start_link, [[
+          url: bondy_url,
+          realm: realm_uri,
+          name: wamp_client_name
+        ]]},
+        type: :worker,
+        restart: :permanent,
+        shutdown: 5000
+      },
       # Then start subscriber, passing it the WAMP client name
       {subscriber_module, [
         wamp_client: wamp_client_name

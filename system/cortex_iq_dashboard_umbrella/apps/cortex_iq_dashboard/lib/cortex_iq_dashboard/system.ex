@@ -33,12 +33,9 @@ defmodule CortexIqDashboard.System do
       #    realm_uri: realm_uri,
       #    bondy_admin_url: bondy_admin_url
       #  ]},
-      # WAMP subscriber listens to events and broadcasts to PubSub
-      {CortexIqDashboard.WampSubscriber,
-       [
-         bondy_url: bondy_url,
-         realm_uri: realm_uri
-       ]}
+      # WAMP subscriber REMOVED: Replaced with SubscriberSystem pattern
+      # Individual event subscribers are now managed by SubscriberSystem supervisors
+      # See application.ex for the new SubscriberSystem configuration
     ]
 
     Supervisor.init(children, strategy: :rest_for_one)
