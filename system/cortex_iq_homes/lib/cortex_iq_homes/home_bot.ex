@@ -49,6 +49,10 @@ defmodule CortexIqHomes.HomeBot do
     :last_update,
     :last_balance_publish,
     :paused_until,                 # Monotonic time until which this home should pause after reset
+    # Connection tracking
+    connected: true,               # Is home currently "online"
+    :next_disconnect_time,         # Monotonic time when to disconnect (nil if no disconnect scheduled)
+    :next_reconnect_time,          # Monotonic time when to reconnect (nil if not disconnected)
     # Trading intelligence fields
     :current_spot_price,
     :spot_price_history,          # Last 24 hours of prices for moving average
@@ -178,7 +182,14 @@ defmodule CortexIqHomes.HomeBot do
          :ok <- subscribe_to_market_spot_price(state.wamp_client),
          :ok <- subscribe_to_contract_responses(state.wamp_client) do
       Logger.info("Home #{state.home_id}: Subscribed to all topics")
-      {:noreply, state}
+
+      # Publish connected event
+      publish_connected(state)
+
+      # Schedule first disconnect (10-30 minutes from now)
+      next_disconnect = schedule_next_disconnect()
+
+      {:noreply, %{state | next_disconnect_time: next_disconnect}}
     else
       {:error, reason} ->
         Logger.warning("Home #{state.home_id}: Failed to subscribe: #{inspect(reason)}, retrying...")
@@ -364,17 +375,44 @@ defmodule CortexIqHomes.HomeBot do
         # Clear pause flag if we just resumed
         state = if state.paused_until, do: %{state | paused_until: nil}, else: state
 
-        with %DateTime{} = sim_time <- state.current_simulation_time do
-          # Simulate energy production, consumption, and battery
-          state
-          |> simulate_production_and_consumption(sim_time)
-          |> check_contract_expiry(sim_time)
-          |> evaluate_contract_switching(sim_time)
-          |> maybe_publish_balance(sim_time)
-        else
-          _ ->
-            Logger.debug("Home #{state.home_id}: No simulation time yet, skipping update")
+        # Check for disconnect/reconnect events
+        state =
+          cond do
+            # Time to disconnect?
+            state.connected && state.next_disconnect_time && now >= state.next_disconnect_time ->
+              Logger.info("Home #{state.home_id}: Going offline")
+              publish_disconnected(state)
+              next_reconnect = schedule_reconnect()
+              %{state | connected: false, next_disconnect_time: nil, next_reconnect_time: next_reconnect}
+
+            # Time to reconnect?
+            not state.connected && state.next_reconnect_time && now >= state.next_reconnect_time ->
+              Logger.info("Home #{state.home_id}: Coming back online")
+              publish_connected(state)
+              next_disconnect = schedule_next_disconnect()
+              %{state | connected: true, next_reconnect_time: nil, next_disconnect_time: next_disconnect}
+
+            true ->
+              state
+          end
+
+        # Only simulate and publish if connected
+        if state.connected do
+          with %DateTime{} = sim_time <- state.current_simulation_time do
+            # Simulate energy production, consumption, and battery
             state
+            |> simulate_production_and_consumption(sim_time)
+            |> check_contract_expiry(sim_time)
+            |> evaluate_contract_switching(sim_time)
+            |> maybe_publish_balance(sim_time)
+          else
+            _ ->
+              Logger.debug("Home #{state.home_id}: No simulation time yet, skipping update")
+              state
+          end
+        else
+          # Disconnected - skip all operations
+          state
         end
       end
 
@@ -1464,5 +1502,43 @@ defmodule CortexIqHomes.HomeBot do
       true ->
         {current_battery_kwh, 0.0, 0.0, 0.0}
     end
+  end
+
+  defp publish_connected(state) do
+    topic = "be.cortexiq.home.connected"
+
+    kwargs = %{
+      "home_id" => state.home_id,
+      "connected_at" => DateTime.utc_now() |> DateTime.to_iso8601()
+    }
+
+    Client.publish(state.wamp_client, topic, [], kwargs)
+    Logger.info("Home #{state.home_id}: Published connected event")
+  end
+
+  defp publish_disconnected(state) do
+    topic = "be.cortexiq.home.disconnected"
+
+    kwargs = %{
+      "home_id" => state.home_id,
+      "disconnected_at" => DateTime.utc_now() |> DateTime.to_iso8601()
+    }
+
+    Client.publish(state.wamp_client, topic, [], kwargs)
+    Logger.info("Home #{state.home_id}: Published disconnected event")
+  end
+
+  # Schedule next disconnect (randomly 10-30 minutes from now in real time)
+  # At 105,120x speed: 10min = 1,051,200 sim minutes = ~2 sim years
+  defp schedule_next_disconnect do
+    minutes = 10 + :rand.uniform(20)  # 10-30 minutes
+    System.monotonic_time(:millisecond) + (minutes * 60 * 1000)
+  end
+
+  # Schedule reconnect (randomly 30-120 seconds from now in real time)
+  # At 105,120x speed: 30s = 36.5 sim days
+  defp schedule_reconnect do
+    seconds = 30 + :rand.uniform(90)  # 30-120 seconds
+    System.monotonic_time(:millisecond) + (seconds * 1000)
   end
 end
