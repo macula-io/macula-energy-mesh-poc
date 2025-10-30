@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bondy-client-config
+  namespace: macula-apps
+  labels:
+    app.kubernetes.io/name: bondy-client-config
+    app.kubernetes.io/part-of: macula-platform
+data:
+  # Bondy WAMP Router connection settings
+  # For KinD multi-cluster: Use hub cluster NodePort
+  # Hub cluster control plane: 172.20.0.5 (Docker bridge network)
+  # Bondy NodePort: 30080 (maps to service port 18080)
+  BONDY_URL: "ws://172.20.0.5:30080/ws"
+  BONDY_REALM: "be.cortexiq.energy"
+
+  # Alternative URLs (for reference):
+  # - Via ingress: ws://172.20.255.10:80/ws
+  # - DNS name: ws://hub.macula.local:80/ws (requires DNS resolution)
+  # - Internal (hub cluster only): ws://bondy.macula-platform.svc.cluster.local:18080/ws
