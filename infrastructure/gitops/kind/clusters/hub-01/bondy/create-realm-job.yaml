@@ -53,8 +53,9 @@ data:
       -d "{
         \"uri\": \"$APP_REALM\",
         \"description\": \"CortexIQ Energy Trading Application\",
-        \"authmethods\": [\"wampcra\", \"trust\", \"anonymous\"],
-        \"security_enabled\": true,
+        \"authmethods\": [\"anonymous\"],
+        \"security_enabled\": false,
+        \"allow_anonymous_users\": true,
         \"allow_connections\": true
       }" && echo "✓ Application realm created" || echo "Application realm already exists"
 
