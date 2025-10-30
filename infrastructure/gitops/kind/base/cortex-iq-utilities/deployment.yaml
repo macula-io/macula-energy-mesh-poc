@@ -25,7 +25,7 @@ spec:
         imagePullPolicy: Always
         env:
         - name: ERL_FLAGS
-          value: "+MBas aobf +MHas aobf +sbwt none +sbwtdcpu none +sbwtdio none"
+          value: "+MBas aobf +MHas aobf +sbwt none +sbwtdcpu none +sbwtdio none +MIscs 3072"
         - name: RELEASE_TMP
           value: "/tmp"
         - name: BONDY_URL
