@@ -409,17 +409,21 @@ defmodule MaculaSdk.Wamp.Connection do
     end
   end
 
-  defp handle_event(%{subscription_id: sub_id} = event_data, state) do
+  defp handle_event(%{subscription_id: sub_id, details: details} = event_data, state) do
     case Map.get(state.subscriptions, sub_id) do
       nil ->
         Logger.warning("Received EVENT for unknown subscription_id: #{sub_id}")
         Logger.warning("Known subscriptions: #{inspect(Map.keys(state.subscriptions))}")
         {:ok, state}
 
-      topic ->
-        Logger.info("Received EVENT on topic: #{topic}, subscription_id: #{sub_id}")
+      subscription_topic ->
+        # For prefix subscriptions, the actual topic is in details["topic"]
+        # For exact subscriptions, fall back to subscription_topic
+        actual_topic = Map.get(details, "topic", subscription_topic)
+
+        Logger.info("Received EVENT on topic: #{actual_topic}, subscription_id: #{sub_id}")
         Logger.debug("Event data: #{inspect(event_data)}")
-        notify_client(state, {:event, topic, event_data})
+        notify_client(state, {:event, actual_topic, event_data})
         {:ok, state}
     end
   end
