@@ -184,10 +184,9 @@ defmodule CortexIqHomes.HomeBot do
          :ok <- subscribe_to_contract_responses(state.wamp_client) do
       Logger.info("Home #{state.home_id}: Subscribed to all topics")
 
-      # Publish connected event (only if we have simulation_time)
-      if state.current_simulation_time do
-        publish_home_connected(state, state.current_simulation_time)
-      end
+      # Publish connected event (use current_simulation_time or fallback to UTC now)
+      sim_time = state.current_simulation_time || DateTime.utc_now()
+      publish_home_connected(state, sim_time)
 
       # Schedule first disconnect (10-30 minutes from now)
       next_disconnect = schedule_next_disconnect()
@@ -384,18 +383,16 @@ defmodule CortexIqHomes.HomeBot do
             # Time to disconnect?
             state.connected && state.next_disconnect_time && now >= state.next_disconnect_time ->
               Logger.info("Home #{state.home_id}: Going offline")
-              if state.current_simulation_time do
-                publish_home_disconnected(state, state.current_simulation_time, "random_disconnect")
-              end
+              sim_time = state.current_simulation_time || DateTime.utc_now()
+              publish_home_disconnected(state, sim_time, "random_disconnect")
               next_reconnect = schedule_reconnect()
               %{state | connected: false, next_disconnect_time: nil, next_reconnect_time: next_reconnect}
 
             # Time to reconnect?
             not state.connected && state.next_reconnect_time && now >= state.next_reconnect_time ->
               Logger.info("Home #{state.home_id}: Coming back online")
-              if state.current_simulation_time do
-                publish_home_connected(state, state.current_simulation_time)
-              end
+              sim_time = state.current_simulation_time || DateTime.utc_now()
+              publish_home_connected(state, sim_time)
               next_disconnect = schedule_next_disconnect()
               %{state | connected: true, next_reconnect_time: nil, next_disconnect_time: next_disconnect}
 
