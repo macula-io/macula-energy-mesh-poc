@@ -9,9 +9,9 @@ metadata:
 data:
   # Bondy WAMP Router connection settings
   # For KinD multi-cluster: Use hub cluster NodePort
-  # Hub cluster control plane: 172.20.0.5 (Docker bridge network)
+  # Hub cluster control plane: 172.20.0.2 (Docker bridge network)
   # Bondy NodePort: 30080 (maps to service port 18080)
-  BONDY_URL: "ws://172.20.0.5:30080/ws"
+  BONDY_URL: "ws://172.20.0.2:30080/ws"
   BONDY_REALM: "be.cortexiq.energy"
 
   # Alternative URLs (for reference):
