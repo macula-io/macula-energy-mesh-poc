@@ -164,10 +164,10 @@ defmodule MaculaSdk.Wamp.Connection do
         details_with_auth = Map.put(details, "authextra", %{"macula_apikey" => state.api_key})
         {details_with_auth, ["macula-apikey"]}
 
-      # Trust authentication (simpler than WAMP-CRA)
+      # WAMP-CRA authentication (username/password)
       state.username && state.password ->
         details_with_auth = Map.put(details, "authid", state.username)
-        {details_with_auth, ["trust"]}
+        {details_with_auth, ["wampcra"]}
 
       # Anonymous authentication
       true ->
@@ -191,10 +191,15 @@ defmodule MaculaSdk.Wamp.Connection do
 
   @impl true
   def handle_frame({:text, msg}, state) do
-    Logger.debug("Received WAMP message: #{msg}")
+    Logger.debug("Received WAMP message (#{byte_size(msg)} bytes)")
 
     case Protocol.decode(msg) do
       {:ok, message} ->
+        message_type = case message do
+          tuple when is_tuple(tuple) and tuple_size(tuple) > 0 -> elem(tuple, 0)
+          other -> "non-tuple: #{inspect(other)}"
+        end
+        Logger.info("Decoded WAMP message type: #{message_type}")
         Logger.debug("Decoded message: #{inspect(message)}")
         handle_wamp_message(message, state)
 
@@ -407,11 +412,13 @@ defmodule MaculaSdk.Wamp.Connection do
   defp handle_event(%{subscription_id: sub_id} = event_data, state) do
     case Map.get(state.subscriptions, sub_id) do
       nil ->
-        Logger.warning("Received event for unknown subscription: #{sub_id}")
+        Logger.warning("Received EVENT for unknown subscription_id: #{sub_id}")
+        Logger.warning("Known subscriptions: #{inspect(Map.keys(state.subscriptions))}")
         {:ok, state}
 
       topic ->
-        Logger.debug("Received event on #{topic}: #{inspect(event_data)}")
+        Logger.info("Received EVENT on topic: #{topic}, subscription_id: #{sub_id}")
+        Logger.debug("Event data: #{inspect(event_data)}")
         notify_client(state, {:event, topic, event_data})
         {:ok, state}
     end

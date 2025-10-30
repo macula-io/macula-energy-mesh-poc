@@ -12,9 +12,12 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
   """
   use GenServer
   require Logger
+  alias MaculaSdk.Wamp.Client
 
   defstruct [
+    wamp_client: nil,  # WAMP client for RPC calls
     homes: %{},  # %{home_id => home_state} for aggregation
+    connected_homes_count: 0,  # Count of currently connected homes
     providers: %{},  # %{provider_id => provider_state} for aggregation
     total_contract_switches: 0,
     total_savings: 0.0,
@@ -55,15 +58,25 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "wamp:events")
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "market:spot")
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:control")
+    Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:home_connected")
+    Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:home_disconnected")
 
-    Logger.info("OverviewAggregator: Started and subscribed to dashboard control")
+    Logger.info("OverviewAggregator: Started and subscribed to dashboard control and connection events")
+
+    # Start WAMP client for RPC calls
+    bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
+    realm = System.get_env("BONDY_REALM", "be.cortexiq.energy")
+
+    # Send message to connect and load data after connection established
+    send(self(), {:connect_wamp, bondy_url, realm})
+
     {:ok, %__MODULE__{}}
   end
 
   @impl true
   def handle_call(:get_state, _from, state) do
     # Calculate aggregated metrics from entity states
-    total_homes = map_size(state.homes)
+    connected_homes_count = state.connected_homes_count
     total_providers = map_size(state.providers)
 
     # Aggregate home metrics
@@ -86,10 +99,10 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
       end)
 
     avg_battery_percent =
-      if total_homes > 0, do: total_battery_percent / total_homes, else: 0.0
+      if connected_homes_count > 0, do: total_battery_percent / connected_homes_count, else: 0.0
 
     overview = %{
-      total_homes: total_homes,
+      total_homes: connected_homes_count,  # Now represents connected homes
       total_providers: total_providers,
       total_energy_traded_kwh: total_energy_bought_kwh + total_energy_sold_kwh,
       total_contract_switches: state.total_contract_switches,
@@ -243,6 +256,83 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
     end
 
     {:noreply, new_state}
+  end
+
+  @impl true
+  def handle_info({:connect_wamp, bondy_url, realm}, state) do
+    Logger.info("OverviewAggregator: Connecting to WAMP realm #{realm} at #{bondy_url}")
+
+    case Client.start_link(url: bondy_url, realm: realm) do
+      {:ok, client} ->
+        Logger.info("OverviewAggregator: WAMP client started, waiting for connection...")
+        # Wait a bit for connection to establish, then call RPC
+        Process.send_after(self(), :load_overview_data, 2000)
+        {:noreply, %{state | wamp_client: client}}
+
+      {:error, reason} ->
+        Logger.error("OverviewAggregator: Failed to start WAMP client: #{inspect(reason)}, retrying in 5s")
+        Process.send_after(self(), {:connect_wamp, bondy_url, realm}, 5000)
+        {:noreply, state}
+    end
+  end
+
+  @impl true
+  def handle_info(:load_overview_data, state) do
+    if state.wamp_client do
+      Logger.info("OverviewAggregator: Calling get_overview RPC to initialize connected homes count...")
+
+      case Client.call(state.wamp_client, "be.cortexiq.energy.queries.get_overview", [], %{}) do
+        {:ok, _args, result} ->
+          connected_homes_count = Map.get(result, "connected_homes_count", 0)
+
+          Logger.info("OverviewAggregator: Initialized with #{connected_homes_count} connected homes from query service")
+
+          new_state = %{state | connected_homes_count: connected_homes_count, last_updated_at: DateTime.utc_now()}
+
+          # Broadcast initial state to UI
+          broadcast_view_updated()
+
+          {:noreply, new_state}
+
+        {:error, reason} ->
+          Logger.error("OverviewAggregator: get_overview RPC failed: #{inspect(reason)}, retrying in 5s")
+          Process.send_after(self(), :load_overview_data, 5000)
+          {:noreply, state}
+      end
+    else
+      Logger.warning("OverviewAggregator: No WAMP client available, cannot load overview data")
+      {:noreply, state}
+    end
+  end
+
+  @impl true
+  def handle_info({:home_connected, kwargs}, state) do
+    home_id = Map.get(kwargs, "home_id")
+
+    if home_id do
+      new_count = state.connected_homes_count + 1
+      Logger.info("OverviewAggregator: Home connected: #{home_id} (total connected: #{new_count})")
+
+      new_state = %{state | connected_homes_count: new_count, last_updated_at: DateTime.utc_now()}
+      {:noreply, schedule_broadcast(new_state)}
+    else
+      {:noreply, state}
+    end
+  end
+
+  @impl true
+  def handle_info({:home_disconnected, kwargs}, state) do
+    home_id = Map.get(kwargs, "home_id")
+
+    if home_id do
+      new_count = max(state.connected_homes_count - 1, 0)  # Don't go negative
+      Logger.info("OverviewAggregator: Home disconnected: #{home_id} (total connected: #{new_count})")
+
+      new_state = %{state | connected_homes_count: new_count, last_updated_at: DateTime.utc_now()}
+      {:noreply, schedule_broadcast(new_state)}
+    else
+      {:noreply, state}
+    end
   end
 
   @impl true

@@ -29,8 +29,6 @@ defmodule CortexIqProjections.EventProjector do
   def init(_opts) do
     bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
     bondy_realm = System.get_env("BONDY_REALM", "be.cortexiq.energy")
-
-    # TODO: Re-enable authentication once we fix the wamp.error.not_auth_method issue
     # username = System.get_env("BONDY_USERNAME")
     # password = System.get_env("BONDY_PASSWORD")
 
@@ -38,10 +36,12 @@ defmodule CortexIqProjections.EventProjector do
       connection_status: :connecting
     }
 
-    # Start WAMP client connection (anonymous for now)
+    # Start WAMP client connection (anonymous until we fix Bondy auth)
     case Client.start_link(
            url: bondy_url,
            realm: bondy_realm,
+           # username: username,
+           # password: password,
            name: :event_projector_wamp_client
          ) do
       {:ok, wamp_client} ->
@@ -71,31 +71,47 @@ defmodule CortexIqProjections.EventProjector do
   end
 
   def handle_info(:subscribe_to_events, %{wamp_client: wamp_client} = state) do
-    Logger.info("EventProjector: Subscribing to WAMP event topics")
+    Logger.info("EventProjector: Subscribing to individual WAMP event topics")
 
     # Log initial memory
     log_memory_usage("Before WAMP subscription")
 
+    # Individual topic subscriptions (clearer intent, easier debugging)
     topics = [
-      # Home events - wildcard prefix match (matches be.cortexiq.home.*)
-      {"be.cortexiq.home.", &handle_home_event/2, %{match: "prefix"}},
+      # Home lifecycle events
+      {"be.cortexiq.home.initialized", &handle_home_event/2},
+      {"be.cortexiq.home.connected", &handle_home_event/2},
+      {"be.cortexiq.home.disconnected", &handle_home_event/2},
+      {"be.cortexiq.home.measured", &handle_home_event/2},
+      {"be.cortexiq.home.traded", &handle_home_event/2},
 
-      # Provider events - wildcard prefix match (matches be.cortexiq.provider.*)
-      {"be.cortexiq.provider.", &handle_provider_event/2, %{match: "prefix"}},
+      # Balance tracking
+      {"be.cortexiq.balance.updated", &handle_home_event/2},
 
-      # Market events - wildcard prefix match (matches be.cortexiq.market.*)
-      {"be.cortexiq.market.", &handle_market_event/2, %{match: "prefix"}},
+      # Market events
+      {"be.cortexiq.market.contract_proposed", &handle_market_event/2},
+      {"be.cortexiq.market.contract_confirmed", &handle_market_event/2},
+      {"be.cortexiq.market.contract_rejected", &handle_market_event/2},
+      {"be.cortexiq.market.contract_switched", &handle_market_event/2},
+      {"be.cortexiq.market.contract_expired", &handle_market_event/2},
+      {"be.cortexiq.market.trade_executed", &handle_market_event/2},
+      {"be.cortexiq.market.savings_realized", &handle_market_event/2},
+      {"be.cortexiq.market.spot_price_updated", &handle_market_event/2},
 
-      # Simulation time - exact match
-      {"be.cortexiq.simulation.time_advanced", &handle_time_advanced/2, %{}}
+      # Arbitrage events
+      {"be.cortexiq.arbitrage.profit_realized", &handle_market_event/2},
+
+      # Simulation control
+      {"be.cortexiq.simulation.time_advanced", &handle_time_advanced/2},
+      {"be.cortexiq.simulation.reset", &handle_time_advanced/2}
     ]
 
-    Enum.each(topics, fn {topic, handler, options} ->
-      case Client.subscribe(wamp_client, topic, handler, options) do
+    Enum.each(topics, fn {topic, handler} ->
+      case Client.subscribe(wamp_client, topic, handler, %{}) do
         :ok ->
-          Logger.info("EventProjector: Subscribed to #{topic}")
+          Logger.info("EventProjector: ✓ Subscribed to #{topic}")
         {:error, reason} ->
-          Logger.error("EventProjector: Failed to subscribe to #{topic}: #{inspect(reason)}")
+          Logger.error("EventProjector: ✗ Failed to subscribe to #{topic}: #{inspect(reason)}")
       end
     end)
 
@@ -118,26 +134,32 @@ defmodule CortexIqProjections.EventProjector do
     {:noreply, state}
   end
 
-  # Event Handlers - Forward to Broadway with 10% sampling
+  # Event Handlers - Forward to Broadway pipeline
 
   defp handle_home_event(topic, event_data) do
-    # Sample 10% of home events to reduce load
-    if :rand.uniform(100) <= 10 do
+    Logger.info("EventProjector: Received home event: #{topic}")
+
+    # Apply sampling only to high-frequency measurement events
+    should_forward = case topic do
+      "be.cortexiq.home.measured" -> :rand.uniform(100) <= 10  # Sample 10%
+      "be.cortexiq.home.traded" -> :rand.uniform(100) <= 20     # Sample 20%
+      _ -> true  # Forward all lifecycle events
+    end
+
+    if should_forward do
+      Logger.debug("EventProjector: Forwarding event to pipeline: #{topic}")
       WampProducer.enqueue_event({:home_event, topic, event_data})
     end
   end
 
-  defp handle_provider_event(topic, event_data) do
-    # Forward all provider events (low volume)
-    WampProducer.enqueue_event({:provider_event, topic, event_data})
-  end
-
   defp handle_market_event(topic, event_data) do
-    # Forward all market events (important for contracts)
+    Logger.info("EventProjector: Received market event: #{topic}")
+    # Forward all market events (critical for business logic)
     WampProducer.enqueue_event({:market_event, topic, event_data})
   end
 
   defp handle_time_advanced(topic, event_data) do
+    Logger.debug("EventProjector: Received simulation event: #{topic}")
     # Forward all time events (critical for simulation state)
     WampProducer.enqueue_event({:time_advanced, topic, event_data})
   end

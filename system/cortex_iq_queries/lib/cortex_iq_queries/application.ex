@@ -7,9 +7,15 @@ defmodule CortexIqQueries.Application do
 
   @impl true
   def start(_type, _args) do
+    # Get configuration from environment
+    bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
+    realm = System.get_env("BONDY_REALM", "be.cortexiq.energy")
+
     children = [
-      # Starts a worker by calling: CortexIqQueries.Worker.start_link(arg)
-      # {CortexIqQueries.Worker, arg}
+      # Database connection pool
+      CortexIqQueries.Repo,
+      # WAMP RPC server (registers query procedures)
+      {CortexIqQueries.RpcServer, [bondy_url: bondy_url, realm: realm]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

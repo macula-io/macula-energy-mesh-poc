@@ -134,15 +134,15 @@ defmodule CortexIqSimulation.SimulationClock do
     Logger.info("SimulationClock: Attempting to connect to WAMP (#{state.bondy_url})...")
 
     # Get authentication credentials from environment
-    username = System.get_env("BONDY_USERNAME")
-    password = System.get_env("BONDY_PASSWORD")
+    # username = System.get_env("BONDY_USERNAME")
+    # password = System.get_env("BONDY_PASSWORD")
 
-    # Build connection options
+    # Build connection options (anonymous for now)
     connect_opts = [
       url: state.bondy_url,
-      realm: state.realm,
-      username: username,
-      password: password
+      realm: state.realm
+      # username: username,
+      # password: password
     ]
 
     case MaculaSdk.Wamp.Client.start_link(connect_opts) do

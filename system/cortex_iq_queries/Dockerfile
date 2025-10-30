@@ -30,19 +30,19 @@ RUN mix local.hex --force && \
     mix local.rebar --force
 
 # Copy this application's mix files
-COPY cortex_iq_queries/mix.exs ./
-COPY cortex_iq_queries/config ./config
+COPY system/cortex_iq_queries/mix.exs ./
+COPY system/cortex_iq_queries/config ./config
 
 # Copy path dependencies (required for compilation)
-COPY cortex_iq_dashboard_schemas ../cortex_iq_dashboard_schemas
-COPY cortex_iq_core ../cortex_iq_core
-COPY macula_sdk ../macula_sdk
+COPY system/cortex_iq_dashboard_schemas ../cortex_iq_dashboard_schemas
+COPY system/cortex_iq_core ../cortex_iq_core
+COPY system/macula_sdk ../macula_sdk
 
 # Get dependencies
 RUN mix deps.get --only prod
 
 # Copy application source
-COPY cortex_iq_queries/lib ./lib
+COPY system/cortex_iq_queries/lib ./lib
 
 # Compile
 RUN mix compile

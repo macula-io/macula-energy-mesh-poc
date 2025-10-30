@@ -227,11 +227,14 @@ defmodule MaculaSdk.Wamp.Client do
     case Map.pop(state.event_handlers, topic) do
       {nil, _} ->
         Logger.warning("No handler found for subscribed topic: #{topic}")
+        Logger.warning("Pending topic handlers: #{inspect(Map.keys(state.event_handlers))}")
         {:noreply, state}
 
       {handler_fun, handlers} ->
         # Store handler by subscription_id instead of topic
         handlers = Map.put(handlers, subscription_id, handler_fun)
+        Logger.info("Mapped handler: subscription_id #{subscription_id} → topic #{topic}")
+        Logger.debug("Active subscription_ids: #{inspect(Map.keys(handlers))}")
         {:noreply, %{state | event_handlers: handlers}}
     end
   end
@@ -240,17 +243,23 @@ defmodule MaculaSdk.Wamp.Client do
     # event_data contains subscription_id - use it to find the handler
     subscription_id = Map.get(event_data, :subscription_id)
 
+    Logger.info("Client received EVENT: topic=#{topic}, subscription_id=#{subscription_id}")
+
     case Map.get(state.event_handlers, subscription_id) do
       nil ->
         Logger.warning("No handler for subscription_id: #{subscription_id}, topic: #{topic}")
+        Logger.warning("Available handlers: #{inspect(Map.keys(state.event_handlers))}")
         {:noreply, state}
 
       handler_fun when is_function(handler_fun) ->
+        Logger.debug("Invoking event handler for topic: #{topic}")
         try do
           handler_fun.(topic, event_data)
+          Logger.debug("Event handler completed for topic: #{topic}")
         rescue
           error ->
             Logger.error("Error in event handler for #{topic}: #{inspect(error)}")
+            Logger.error("Stacktrace: #{inspect(__STACKTRACE__)}")
         end
 
         {:noreply, state}

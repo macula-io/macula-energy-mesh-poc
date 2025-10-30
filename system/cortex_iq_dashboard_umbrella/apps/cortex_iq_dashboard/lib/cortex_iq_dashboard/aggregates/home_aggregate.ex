@@ -29,6 +29,10 @@ defmodule CortexIqDashboard.Aggregates.HomeAggregate do
     cost_paid: 0.0,
     revenue_received: 0.0,
     net_cost: 0.0,
+    # CortexIQ financial tracking
+    cortexiq_total_commission: 0.0,
+    cortexiq_total_savings: 0.0,
+    cortexiq_net_savings: 0.0,
     # Contract info
     provider_id: nil,
     contract_id: nil,

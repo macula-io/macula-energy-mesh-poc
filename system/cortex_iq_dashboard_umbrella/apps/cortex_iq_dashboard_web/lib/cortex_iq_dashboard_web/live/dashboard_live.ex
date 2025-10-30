@@ -44,8 +44,10 @@ defmodule CortexIqDashboardWeb.DashboardLive do
      |> assign(:selected_region, :all)
      |> assign(:active_tab, :overview)
      |> assign(:search_query, "")
-     |> assign(:sort_by, :home_id)
+     |> assign(:sort_by, :location)
      |> assign(:sort_direction, :asc)
+     |> assign(:page, 1)
+     |> assign(:per_page, 10)
      |> assign(:simulation_time, simulation_time)
      |> assign(:simulation_speed, simulation_speed)
      |> assign(:simulation_paused, simulation_paused)
@@ -64,6 +66,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
     {simulation_time, simulation_speed, simulation_paused, db_stats} = load_system_stats_from_db()
     overview = OverviewAggregator.get_state()
 
+    # Update socket with new data (but don't push to map - let it update on user interaction only)
     {:noreply,
      socket
      |> assign(:overview, overview)
@@ -152,17 +155,26 @@ defmodule CortexIqDashboardWeb.DashboardLive do
     tab_atom = String.to_atom(tab)
     Logger.info("Switching to tab: #{tab_atom}")
 
-    {:noreply,
-     socket
-     |> assign(:active_tab, tab_atom)
-     |> assign(:view_stack, [tab_atom])
-     |> assign(:selected_home, nil)
-     |> assign(:selected_provider, nil)}
+    socket =
+      socket
+      |> assign(:active_tab, tab_atom)
+      |> assign(:view_stack, [tab_atom])
+      |> assign(:selected_home, nil)
+      |> assign(:selected_provider, nil)
+
+    # Don't push map updates during tab switch - the map hook will request data when it mounts
+    {:noreply, socket}
   end
 
   @impl true
   def handle_event("search_homes", %{"search" => query}, socket) do
-    {:noreply, socket |> assign(:search_query, query)}
+    socket =
+      socket
+      |> assign(:search_query, query)
+      |> assign(:page, 1)
+
+    # Don't push map updates - the map hook will request data when it mounts
+    {:noreply, socket}
   end
 
   @impl true
@@ -177,7 +189,38 @@ defmodule CortexIqDashboardWeb.DashboardLive do
         {column_atom, :asc}
       end
 
-    {:noreply, socket |> assign(:sort_by, sort_by) |> assign(:sort_direction, sort_direction)}
+    {:noreply, socket |> assign(:sort_by, sort_by) |> assign(:sort_direction, sort_direction) |> assign(:page, 1)}
+  end
+
+  @impl true
+  def handle_event("prev_page", _params, socket) do
+    new_page = max(socket.assigns.page - 1, 1)
+    socket = socket |> assign(:page, new_page)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("next_page", _params, socket) do
+    pagination = get_pagination_info(socket.assigns)
+    new_page = min(socket.assigns.page + 1, pagination.total_pages)
+    socket = socket |> assign(:page, new_page)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("goto_page", %{"page" => page}, socket) do
+    page_num = String.to_integer(page)
+    pagination = get_pagination_info(socket.assigns)
+    new_page = max(1, min(page_num, pagination.total_pages))
+    socket = socket |> assign(:page, new_page)
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("change_per_page", %{"per_page" => per_page}, socket) do
+    per_page_num = String.to_integer(per_page)
+    socket = socket |> assign(:per_page, per_page_num) |> assign(:page, 1)
+    {:noreply, socket}
   end
 
   @impl true
@@ -574,13 +617,16 @@ defmodule CortexIqDashboardWeb.DashboardLive do
   defp render_homes_list(assigns) do
     ~H"""
     <div class="space-y-6">
-      <!-- Search and Filter Controls -->
+      <!-- Toolbar: Search + Pagination -->
       <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-        <div class="flex gap-4 items-center">
+        <% pagination = get_pagination_info(assigns) %>
+
+        <!-- Top Row: Search + Info -->
+        <div class="flex gap-4 items-center mb-4">
           <div class="flex-1">
             <input
               type="text"
-              placeholder="Search by Home ID or Location..."
+              placeholder="Search by Location..."
               value={@search_query}
               phx-keyup="search_homes"
               phx-debounce="300"
@@ -588,8 +634,107 @@ defmodule CortexIqDashboardWeb.DashboardLive do
               class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-500 focus:border-blue-500 focus:outline-none"
             />
           </div>
-          <div class="text-gray-400 text-sm">
-            {length(get_filtered_homes(assigns))} / {@stats.homes} homes
+          <div class="text-gray-400 text-sm whitespace-nowrap">
+            Showing {pagination.showing_from}-{pagination.showing_to} of {pagination.total_homes} homes
+          </div>
+        </div>
+
+        <!-- Bottom Row: Pagination Controls -->
+        <%= if pagination.total_pages > 1 do %>
+          <div class="flex items-center justify-between border-t border-gray-700 pt-4">
+            <!-- Per Page Selector -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-400">Show:</span>
+              <select
+                phx-change="change_per_page"
+                name="per_page"
+                class="px-3 py-1 bg-gray-900 border border-gray-600 rounded text-sm text-gray-300 focus:border-blue-500 focus:outline-none"
+              >
+                <%= for option <- [10, 25, 50, 100] do %>
+                  <option value={option} selected={@per_page == option}>{option}</option>
+                <% end %>
+              </select>
+              <span class="text-sm text-gray-400">per page</span>
+            </div>
+
+            <!-- Page Navigation -->
+            <div class="flex items-center gap-2">
+              <!-- Previous Button -->
+              <button
+                phx-click="prev_page"
+                disabled={@page == 1}
+                class={"px-3 py-1 rounded text-sm font-semibold transition-colors #{if @page == 1, do: "bg-gray-700 text-gray-500 cursor-not-allowed", else: "bg-blue-600 hover:bg-blue-700 text-white"}"}
+              >
+                ← Prev
+              </button>
+
+              <!-- Page Numbers -->
+              <div class="flex gap-1">
+                <%= for page_num <- pagination_range(pagination.current_page, pagination.total_pages) do %>
+                  <%= if page_num == :ellipsis do %>
+                    <span class="px-3 py-1 text-gray-500">...</span>
+                  <% else %>
+                    <button
+                      phx-click="goto_page"
+                      phx-value-page={page_num}
+                      class={"px-3 py-1 rounded text-sm font-semibold transition-colors #{if page_num == @page, do: "bg-blue-600 text-white", else: "bg-gray-700 hover:bg-gray-600 text-gray-300"}"}
+                    >
+                      {page_num}
+                    </button>
+                  <% end %>
+                <% end %>
+              </div>
+
+              <!-- Next Button -->
+              <button
+                phx-click="next_page"
+                disabled={@page == pagination.total_pages}
+                class={"px-3 py-1 rounded text-sm font-semibold transition-colors #{if @page == pagination.total_pages, do: "bg-gray-700 text-gray-500 cursor-not-allowed", else: "bg-blue-600 hover:bg-blue-700 text-white"}"}
+              >
+                Next →
+              </button>
+            </div>
+
+            <!-- Page Info -->
+            <div class="text-sm text-gray-400 whitespace-nowrap">
+              Page {@page} of {pagination.total_pages}
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Map Section - Shows Currently Visible Homes -->
+      <% visible_home_count = length(get_filtered_homes(assigns)) %>
+      <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+        <div class="p-4 border-b border-gray-700">
+          <h2 class="text-xl font-bold text-gray-100">Homes Map</h2>
+          <p class="text-sm text-gray-400 mt-1">Showing {visible_home_count} homes on current page</p>
+        </div>
+        <!-- Map Container -->
+        <div
+          id="belgium-map"
+          phx-hook="BelgiumMap"
+          phx-update="ignore"
+          data-locations={Jason.encode!(@locations)}
+          data-selected-region={@selected_region}
+          style="height: 500px;"
+        >
+        </div>
+        <!-- Map Legend -->
+        <div class="p-4 bg-gray-700 border-t border-gray-700">
+          <div class="flex items-center gap-6 text-sm">
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 rounded-full bg-green-500"></div>
+              <span class="text-gray-300">Producing</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 rounded-full bg-yellow-500"></div>
+              <span class="text-gray-300">Balanced</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 rounded-full bg-red-500"></div>
+              <span class="text-gray-300">Consuming</span>
+            </div>
           </div>
         </div>
       </div>
@@ -601,7 +746,6 @@ defmodule CortexIqDashboardWeb.DashboardLive do
             <thead class="bg-gray-900 border-b border-gray-700">
               <tr>
                 <%= for {column, label} <- [
-                  {:home_id, "Home ID"},
                   {:location, "Location"},
                   {:provider, "Provider"},
                   {:production, "Production"},
@@ -635,10 +779,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
                 <% home_state = Map.get(@home_states, home.home_id, %{}) %>
                 <% contract = Map.get(@home_contracts, home.home_id) %>
                 <% balance = Map.get(@home_balances, home.home_id, %{}) %>
-                <tr class="hover:bg-gray-750 transition-colors">
-                  <td class="px-4 py-3">
-                    <div class="font-mono text-sm text-blue-400">{home.home_id}</div>
-                  </td>
+                <tr class="hover:bg-gray-700 transition-colors">
                   <td class="px-4 py-3">
                     <div class="text-sm">{home.location}</div>
                     <div class="text-xs text-gray-500">{home.region |> to_string() |> String.capitalize()}</div>
@@ -664,7 +805,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
                     </div>
                   </td>
                   <td class="px-4 py-3">
-                    <% battery_pct = Map.get(home_state, :state_of_charge_pct, 0.0) %>
+                    <% battery_pct = Map.get(home_state, :battery_percent, 0.0) %>
                     <div class="flex items-center gap-2">
                       <div class="flex-1 bg-gray-700 rounded-full h-2 w-16">
                         <div
@@ -771,7 +912,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
                 <% discount = safe_float(Map.get(provider, :switching_discount, 0.0)) %>
                 <% avg_spread = ((day_buy - day_sell) + (night_buy - night_sell)) / 2 %>
 
-                <tr class="hover:bg-gray-750 transition-colors">
+                <tr class="hover:bg-gray-700 transition-colors">
                   <td class="px-4 py-3">
                     <div class="font-semibold text-sm text-yellow-400">{Map.get(provider, :provider_name, provider_id)}</div>
                     <div class="text-xs text-gray-500 font-mono">{provider_id}</div>
@@ -979,7 +1120,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
     <!-- Stats Cards -->
         <div class="grid grid-cols-6 gap-4 mb-6">
           <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-            <div class="text-gray-400 text-xs">Active Homes</div>
+            <div class="text-gray-400 text-xs">Connected Homes</div>
             <div class="text-2xl font-bold text-green-400">{@stats.homes}</div>
           </div>
 
@@ -1072,41 +1213,6 @@ defmodule CortexIqDashboardWeb.DashboardLive do
               </div>
               <div class="text-xs text-purple-400 mt-1">
                 Savings per € paid
-              </div>
-            </div>
-          </div>
-        </div>
-
-    <!-- Main Content: Map Section -->
-        <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-          <div class="p-4 border-b border-gray-700">
-            <h2 class="text-xl font-bold text-gray-100">Belgium Energy Mesh</h2>
-            <p class="text-sm text-gray-400 mt-1">Click on any home or provider to view detailed live events</p>
-          </div>
-          <!-- Map Container -->
-          <div
-            id="belgium-map"
-            phx-hook="BelgiumMap"
-            phx-update="ignore"
-            data-locations={Jason.encode!(@locations)}
-            data-selected-region={@selected_region}
-            style="height: 600px;"
-          >
-          </div>
-          <!-- Map Legend -->
-          <div class="p-4 bg-gray-750 border-t border-gray-700">
-            <div class="flex items-center gap-6 text-sm">
-              <div class="flex items-center gap-2">
-                <div class="w-4 h-4 rounded-full bg-green-500"></div>
-                <span class="text-gray-300">Producing</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="w-4 h-4 rounded-full bg-yellow-500"></div>
-                <span class="text-gray-300">Balanced</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="w-4 h-4 rounded-full bg-red-500"></div>
-                <span class="text-gray-300">Consuming</span>
               </div>
             </div>
           </div>
@@ -1219,6 +1325,11 @@ defmodule CortexIqDashboardWeb.DashboardLive do
   # Helper functions for homes list
 
   defp get_filtered_homes(assigns) do
+    get_filtered_homes_all(assigns)
+    |> paginate_homes(assigns.page, assigns.per_page)
+  end
+
+  defp get_filtered_homes_all(assigns) do
     # Get all homes from home_states (these are the actual active homes)
     homes =
       assigns.home_states
@@ -1278,6 +1389,48 @@ defmodule CortexIqDashboardWeb.DashboardLive do
       end,
       if(assigns.sort_direction == :asc, do: :asc, else: :desc)
     )
+  end
+
+  defp paginate_homes(homes, page, per_page) do
+    homes
+    |> Enum.drop((page - 1) * per_page)
+    |> Enum.take(per_page)
+  end
+
+  defp get_pagination_info(assigns) do
+    total_homes = get_filtered_homes_all(assigns) |> length()
+    total_pages = max(ceil(total_homes / assigns.per_page), 1)
+
+    %{
+      current_page: assigns.page,
+      total_pages: total_pages,
+      per_page: assigns.per_page,
+      total_homes: total_homes,
+      showing_from: min((assigns.page - 1) * assigns.per_page + 1, total_homes),
+      showing_to: min(assigns.page * assigns.per_page, total_homes)
+    }
+  end
+
+  # Generate page numbers with ellipsis for pagination UI
+  # Shows: [1, 2, 3, ..., 8, 9, 10] or [1, ..., 5, 6, 7, ..., 10]
+  defp pagination_range(current_page, total_pages) when total_pages <= 7 do
+    # Show all pages if 7 or fewer
+    1..total_pages |> Enum.to_list()
+  end
+
+  defp pagination_range(current_page, total_pages) when current_page <= 4 do
+    # Near start: [1, 2, 3, 4, 5, ..., total]
+    [1, 2, 3, 4, 5, :ellipsis, total_pages]
+  end
+
+  defp pagination_range(current_page, total_pages) when current_page >= total_pages - 3 do
+    # Near end: [1, ..., total-4, total-3, total-2, total-1, total]
+    [1, :ellipsis, total_pages - 4, total_pages - 3, total_pages - 2, total_pages - 1, total_pages]
+  end
+
+  defp pagination_range(current_page, total_pages) do
+    # Middle: [1, ..., current-1, current, current+1, ..., total]
+    [1, :ellipsis, current_page - 1, current_page, current_page + 1, :ellipsis, total_pages]
   end
 
   defp toggle_direction(:asc), do: :desc
@@ -2078,6 +2231,47 @@ defmodule CortexIqDashboardWeb.DashboardLive do
   defp safe_float(nil), do: 0.0
   defp safe_float(_), do: 0.0
 
+  # Push home state updates to map JavaScript hook (only for filtered homes on current page)
+  defp push_home_updates_to_map(socket, _home_states) do
+    # Get only the currently visible filtered homes
+    visible_homes = get_filtered_homes(socket.assigns)
+
+    # Push each home individually (map aggregates by city on JS side)
+    Enum.reduce(visible_homes, socket, fn home_data, acc_socket ->
+      home_id = home_data.home_id
+
+      # Get actual state from HomesViewAggregator (via home_states)
+      case Map.get(socket.assigns.home_states, home_id) do
+        nil ->
+          acc_socket
+
+        state ->
+          # Convert kW to W (database stores in kW, map expects W)
+          # Handle nil values safely
+          production_kw = state.production_kw || 0.0
+          consumption_kw = state.consumption_kw || 0.0
+          production_w = production_kw * 1000.0
+          consumption_w = consumption_kw * 1000.0
+
+          # Get location (already in state from database)
+          city = state.location || home_data.location
+
+          # Push event to map hook with proper data structure
+          push_event(acc_socket, "update_home", %{
+            home_id: home_id,
+            city: city,
+            state: %{
+              production_w: production_w,
+              consumption_w: consumption_w,
+              battery_percent: state.battery_percent || 50.0,
+              state_of_charge_pct: state.battery_percent || 50.0,
+              city: city
+            }
+          })
+      end
+    end)
+  end
+
   # Database loaders - load initial state from persisted data
 
   defp load_home_states_from_db do
@@ -2089,10 +2283,13 @@ defmodule CortexIqDashboardWeb.DashboardLive do
     home_states =
       homes
       |> Enum.map(fn home ->
+        # Handle both HomeState (DB) with battery_percent and HomeAggregate (in-memory) with state_of_charge_pct
+        battery_pct = Map.get(home, :battery_percent) || Map.get(home, :state_of_charge_pct) || 0.0
+
         {home.home_id, %{
           production_kw: home.production_kw || 0.0,  # Keep in kW
           consumption_kw: home.consumption_kw || 0.0,  # Keep in kW
-          state_of_charge_pct: home.state_of_charge_pct || 0.0,
+          battery_percent: battery_pct,
           city: home.location,
           postal_code: home.postal_code,
           region: home.region
