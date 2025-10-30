@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: create-realm-script
-  namespace: macula-platform
+  namespace: macula-system
   labels:
     app: bondy
 data:
@@ -51,7 +51,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: create-cortexiq-realm
-  namespace: macula-platform
+  namespace: macula-system
   labels:
     app: bondy
     job: create-realm

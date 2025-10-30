@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: bondy-edge-config
-  namespace: macula-platform
+  namespace: macula-system
   labels:
     app: bondy
     app.kubernetes.io/name: bondy

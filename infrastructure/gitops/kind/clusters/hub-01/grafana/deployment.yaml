@@ -54,8 +54,8 @@ spec:
             - name: dashboards-config
               mountPath: /etc/grafana/provisioning/dashboards
             - name: dashboard-macula
-              mountPath: /var/lib/grafana/dashboards/macula-platform.json
-              subPath: macula-platform.json
+              mountPath: /var/lib/grafana/dashboards/macula-system.json
+              subPath: macula-system.json
             - name: dashboard-cortexiq
               mountPath: /var/lib/grafana/dashboards/cortexiq-energy.json
               subPath: cortexiq-energy.json

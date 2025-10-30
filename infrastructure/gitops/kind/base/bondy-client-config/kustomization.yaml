@@ -5,4 +5,4 @@ resources:
   - configmap.yaml
 
 commonLabels:
-  app.kubernetes.io/part-of: macula-platform
+  app.kubernetes.io/part-of: macula-system

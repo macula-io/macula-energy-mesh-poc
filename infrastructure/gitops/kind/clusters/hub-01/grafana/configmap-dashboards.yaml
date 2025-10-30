@@ -23,11 +23,11 @@ metadata:
   name: grafana-dashboard-macula
   namespace: monitoring
 data:
-  macula-platform.json: |
+  macula-system.json: |
     {
       "dashboard": {
         "title": "Macula Platform Overview",
-        "uid": "macula-platform",
+        "uid": "macula-system",
         "tags": ["macula", "platform"],
         "timezone": "browser",
         "schemaVersion": 16,

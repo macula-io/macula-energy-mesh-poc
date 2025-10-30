@@ -19,4 +19,4 @@ resources:
   - external-dns  # ExternalDNS with PowerDNS for dynamic DNS management
 
 # Note: All CortexIQ applications deploy to macula-apps namespace (defined in base manifests)
-# Infrastructure (Bondy, monitoring, etc.) uses macula-platform namespace
+# Infrastructure (Bondy, monitoring, etc.) uses macula-system namespace

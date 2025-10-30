@@ -32,7 +32,7 @@ spec:
 
         # WAMP Connection
         - name: BONDY_URL
-          value: "ws://bondy.macula-platform.svc.cluster.local:18080/ws"
+          value: "ws://bondy.macula-system.svc.cluster.local:18080/ws"
         - name: BONDY_REALM
           value: "be.cortexiq.energy"
 

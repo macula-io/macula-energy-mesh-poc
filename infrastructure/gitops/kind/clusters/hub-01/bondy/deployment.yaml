@@ -2,12 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bondy
-  namespace: macula-platform
+  namespace: macula-system
   labels:
     app: bondy
     app.kubernetes.io/name: bondy
     app.kubernetes.io/component: wamp-router
-    app.kubernetes.io/part-of: macula-platform
+    app.kubernetes.io/part-of: macula-system
 spec:
   replicas: 1
   selector:

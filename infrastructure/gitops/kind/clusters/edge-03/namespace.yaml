@@ -4,4 +4,4 @@ metadata:
   name: macula-apps
   labels:
     app.kubernetes.io/name: macula-apps
-    app.kubernetes.io/part-of: macula-platform
+    app.kubernetes.io/part-of: macula-system

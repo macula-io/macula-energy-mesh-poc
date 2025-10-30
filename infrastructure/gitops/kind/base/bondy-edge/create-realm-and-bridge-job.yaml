@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: configure-bondy-edge
-  namespace: macula-platform
+  namespace: macula-system
   labels:
     app: bondy-edge
     job-type: configuration
@@ -24,7 +24,7 @@ spec:
         - -c
         - |
           echo "Waiting for Bondy edge to be ready..."
-          until curl -f http://bondy-edge.macula-platform.svc.cluster.local:18081/api; do
+          until curl -f http://bondy-edge.macula-system.svc.cluster.local:18081/api; do
             echo "Bondy not ready yet, sleeping 5s..."
             sleep 5
           done
@@ -40,7 +40,7 @@ spec:
 
           # Create the CortexIQ realm on edge
           echo "Creating realm be.cortexiq.energy on edge..."
-          curl -X POST http://bondy-edge.macula-platform.svc.cluster.local:18081/realms \
+          curl -X POST http://bondy-edge.macula-system.svc.cluster.local:18081/realms \
             -H "Content-Type: application/json" \
             -d '{
               "uri": "be.cortexiq.energy",
@@ -57,7 +57,7 @@ spec:
           # Configure Bridge Relay to hub on beam-01
           # This connects the edge realm to the hub realm
           echo "Configuring bridge relay to beam-01..."
-          curl -X POST "http://bondy-edge.macula-platform.svc.cluster.local:18081/realms/be.cortexiq.energy/bridge_relays" \
+          curl -X POST "http://bondy-edge.macula-system.svc.cluster.local:18081/realms/be.cortexiq.energy/bridge_relays" \
             -H "Content-Type: application/json" \
             -d '{
               "endpoint": "tls://192.168.1.11:30093",

@@ -9,4 +9,4 @@ resources:
 labels:
   - pairs:
       app.kubernetes.io/name: ingress-nginx
-      app.kubernetes.io/part-of: macula-platform
+      app.kubernetes.io/part-of: macula-system

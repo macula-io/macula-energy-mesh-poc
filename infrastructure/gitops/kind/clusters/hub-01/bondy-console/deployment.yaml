@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bondy-console
-  namespace: macula-platform
+  namespace: macula-system
   labels:
     app: bondy-console
     app.kubernetes.io/name: bondy-console
