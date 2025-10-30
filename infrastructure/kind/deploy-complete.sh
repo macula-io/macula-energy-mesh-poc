@@ -76,7 +76,7 @@ setup_networking() {
   log_step "Installing nginx-ingress on all clusters..."
 
   # Install nginx-ingress on all clusters
-  for cluster in macula-hub macula-edge-01 macula-edge-02 macula-edge-03 macula-edge-04; do
+  for cluster in macula-hub macula-edge-02 macula-edge-03 macula-edge-04; do
     log_step "Installing nginx-ingress on $cluster..."
     kubectl --context "kind-$cluster" apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
   done
@@ -84,7 +84,7 @@ setup_networking() {
   log_step "Waiting for nginx-ingress to be ready..."
   sleep 10
 
-  for cluster in macula-hub macula-edge-01 macula-edge-02 macula-edge-03 macula-edge-04; do
+  for cluster in macula-hub macula-edge-02 macula-edge-03 macula-edge-04; do
     kubectl --context "kind-$cluster" wait --namespace ingress-nginx \
       --for=condition=ready pod \
       --selector=app.kubernetes.io/component=controller \
@@ -92,7 +92,7 @@ setup_networking() {
   done
 
   log_step "Configuring nginx-ingress to allow snippet annotations..."
-  for cluster in macula-hub macula-edge-01 macula-edge-02 macula-edge-03 macula-edge-04; do
+  for cluster in macula-hub macula-edge-02 macula-edge-03 macula-edge-04; do
     # Enable snippet annotations for Phoenix LiveView WebSocket support
     kubectl --context "kind-$cluster" patch configmap ingress-nginx-controller -n ingress-nginx \
       --type=merge -p '{"data":{"allow-snippet-annotations":"true"}}'
@@ -149,15 +149,12 @@ wait_for_deployments() {
     -l app=bondy -n macula-hub --timeout=180s || log_error "Bondy not ready"
 
   log_step "Waiting for PostgreSQL (Edge-01)..."
-  kubectl --context kind-macula-edge-01 wait --for=condition=ready pod \
     -l app=postgres -n macula-system --timeout=180s || log_error "PostgreSQL not ready"
 
   log_step "Waiting for Dashboard (Edge-01)..."
-  kubectl --context kind-macula-edge-01 wait --for=condition=ready pod \
     -l app=cortex-iq-dashboard -n macula-system --timeout=300s || log_error "Dashboard not ready"
 
   log_step "Waiting for Homes (Edge-01)..."
-  kubectl --context kind-macula-edge-01 wait --for=condition=ready pod \
     -l app=cortex-iq-homes -n macula-system --timeout=180s || log_error "Homes (edge-01) not ready"
 
   log_step "Waiting for Homes (Edge-02)..."
@@ -185,7 +182,6 @@ show_status() {
 
   echo ""
   log_info "Edge-01 Status (Dashboard + PostgreSQL + 13 Homes):"
-  kubectl --context kind-macula-edge-01 get pods -n macula-system
 
   echo ""
   log_info "Edge-02 Status (13 Homes):"
@@ -214,11 +210,8 @@ show_status() {
   echo ""
   echo "Check FluxCD resources:"
   echo "  kubectl --context kind-macula-hub get gitrepositories -A"
-  echo "  kubectl --context kind-macula-edge-01 get kustomizations -A"
   echo ""
   echo "Watch FluxCD controller logs:"
-  echo "  kubectl --context kind-macula-edge-01 logs -n flux-system deploy/source-controller -f"
-  echo "  kubectl --context kind-macula-edge-01 logs -n flux-system deploy/kustomize-controller -f"
   echo ""
 
   log_info "Macula Platform is running with GitOps! 🚀"
