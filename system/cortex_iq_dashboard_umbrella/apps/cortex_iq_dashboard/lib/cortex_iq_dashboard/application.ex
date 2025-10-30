@@ -25,6 +25,51 @@ defmodule CortexIqDashboard.Application do
         bondy_url: bondy_url
       ]},
       # NOTE: Simulation clock removed - now runs as separate service on hub cluster
+      # Vertical slice event subscribers (one per event type)
+      {CortexIqDashboard.EventSubscribers.HomeInitializedSubscriber, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
+      {CortexIqDashboard.EventSubscribers.HomeConnectedSubscriber, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
+      {CortexIqDashboard.EventSubscribers.HomeDisconnectedSubscriber, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
+      {CortexIqDashboard.EventSubscribers.HomeMeasuredSubscriber, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
+      {CortexIqDashboard.EventSubscribers.HomeTradedSubscriber, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
+      {CortexIqDashboard.EventSubscribers.ProviderInitializedSubscriber, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
+      {CortexIqDashboard.EventSubscribers.ContractConfirmedSubscriber, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
+      {CortexIqDashboard.EventSubscribers.ContractSwitchedSubscriber, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
+      {CortexIqDashboard.EventSubscribers.ContractExpiredSubscriber, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
+      {CortexIqDashboard.EventSubscribers.TimeAdvancedSubscriber, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
+      {CortexIqDashboard.EventSubscribers.SimulationResetSubscriber, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
       # Registries for entity aggregates
       {Registry, keys: :unique, name: CortexIqDashboard.HomeRegistry},
       {Registry, keys: :unique, name: CortexIqDashboard.ProviderRegistry},
