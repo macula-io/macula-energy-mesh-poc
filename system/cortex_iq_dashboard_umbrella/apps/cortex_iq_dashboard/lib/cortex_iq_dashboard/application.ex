@@ -25,48 +25,70 @@ defmodule CortexIqDashboard.Application do
         bondy_url: bondy_url
       ]},
       # NOTE: Simulation clock removed - now runs as separate service on hub cluster
-      # Vertical slice event subscribers (one per event type)
-      {CortexIqDashboard.EventSubscribers.HomeInitializedSubscriber, [
+      # Vertical slice subscriber systems (each supervises WAMP client + subscriber)
+      {CortexIqDashboard.SubscriberSystem, [
+        event_type: :home_initialized,
+        subscriber_module: CortexIqDashboard.EventSubscribers.HomeInitializedSubscriber,
         realm_uri: realm_uri,
         bondy_url: bondy_url
       ]},
-      {CortexIqDashboard.EventSubscribers.HomeConnectedSubscriber, [
+      {CortexIqDashboard.SubscriberSystem, [
+        event_type: :home_connected,
+        subscriber_module: CortexIqDashboard.EventSubscribers.HomeConnectedSubscriber,
         realm_uri: realm_uri,
         bondy_url: bondy_url
       ]},
-      {CortexIqDashboard.EventSubscribers.HomeDisconnectedSubscriber, [
+      {CortexIqDashboard.SubscriberSystem, [
+        event_type: :home_disconnected,
+        subscriber_module: CortexIqDashboard.EventSubscribers.HomeDisconnectedSubscriber,
         realm_uri: realm_uri,
         bondy_url: bondy_url
       ]},
-      {CortexIqDashboard.EventSubscribers.HomeMeasuredSubscriber, [
+      {CortexIqDashboard.SubscriberSystem, [
+        event_type: :home_measured,
+        subscriber_module: CortexIqDashboard.EventSubscribers.HomeMeasuredSubscriber,
         realm_uri: realm_uri,
         bondy_url: bondy_url
       ]},
-      {CortexIqDashboard.EventSubscribers.HomeTradedSubscriber, [
+      {CortexIqDashboard.SubscriberSystem, [
+        event_type: :home_traded,
+        subscriber_module: CortexIqDashboard.EventSubscribers.HomeTradedSubscriber,
         realm_uri: realm_uri,
         bondy_url: bondy_url
       ]},
-      {CortexIqDashboard.EventSubscribers.ProviderInitializedSubscriber, [
+      {CortexIqDashboard.SubscriberSystem, [
+        event_type: :provider_initialized,
+        subscriber_module: CortexIqDashboard.EventSubscribers.ProviderInitializedSubscriber,
         realm_uri: realm_uri,
         bondy_url: bondy_url
       ]},
-      {CortexIqDashboard.EventSubscribers.ContractConfirmedSubscriber, [
+      {CortexIqDashboard.SubscriberSystem, [
+        event_type: :contract_confirmed,
+        subscriber_module: CortexIqDashboard.EventSubscribers.ContractConfirmedSubscriber,
         realm_uri: realm_uri,
         bondy_url: bondy_url
       ]},
-      {CortexIqDashboard.EventSubscribers.ContractSwitchedSubscriber, [
+      {CortexIqDashboard.SubscriberSystem, [
+        event_type: :contract_switched,
+        subscriber_module: CortexIqDashboard.EventSubscribers.ContractSwitchedSubscriber,
         realm_uri: realm_uri,
         bondy_url: bondy_url
       ]},
-      {CortexIqDashboard.EventSubscribers.ContractExpiredSubscriber, [
+      {CortexIqDashboard.SubscriberSystem, [
+        event_type: :contract_expired,
+        subscriber_module: CortexIqDashboard.EventSubscribers.ContractExpiredSubscriber,
         realm_uri: realm_uri,
         bondy_url: bondy_url
       ]},
-      {CortexIqDashboard.EventSubscribers.TimeAdvancedSubscriber, [
+      {CortexIqDashboard.SubscriberSystem, [
+        event_type: :time_advanced,
+        subscriber_module: CortexIqDashboard.EventSubscribers.TimeAdvancedSubscriber,
         realm_uri: realm_uri,
         bondy_url: bondy_url
       ]},
-      {CortexIqDashboard.EventSubscribers.SimulationResetSubscriber, [
+      {CortexIqDashboard.SubscriberSystem, [
+        event_type: :simulation_reset,
+        subscriber_module: CortexIqDashboard.EventSubscribers.SimulationResetSubscriber,
         realm_uri: realm_uri,
         bondy_url: bondy_url
       ]},
