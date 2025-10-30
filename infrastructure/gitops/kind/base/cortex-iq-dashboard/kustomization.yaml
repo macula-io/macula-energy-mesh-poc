@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: macula-hub
 
 resources:
-  - namespace.yaml
   - postgres.yaml
   - dashboard.yaml
   - ingress.yaml

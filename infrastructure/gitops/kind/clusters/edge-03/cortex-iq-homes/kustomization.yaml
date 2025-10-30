@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - ../../../base/cortex-iq-homes
 
-namespace: macula-apps
+namespace: macula-edge
 
 # Patch to use specific home data file (connects to hub Bondy by default)
 patches:
