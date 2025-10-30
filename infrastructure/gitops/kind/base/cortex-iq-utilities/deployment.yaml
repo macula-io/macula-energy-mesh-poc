@@ -25,7 +25,7 @@ spec:
         imagePullPolicy: Always
         env:
         - name: ERL_FLAGS
-          value: "+MBas aobf +MHas aobf +sbwt none +sbwtdcpu none +sbwtdio none +MIscs 3072"
+          value: "+MBas aobf +MHas aobf +sbwt none +sbwtdcpu none +sbwtdio none +MIscs 5120"
         - name: RELEASE_TMP
           value: "/tmp"
         - name: BONDY_URL
@@ -38,10 +38,10 @@ spec:
           value: "0"
         resources:
           requests:
-            memory: "1Gi"
-            cpu: "250m"
+            memory: "2Gi"
+            cpu: "200m"
           limits:
-            memory: "4Gi"
+            memory: "6Gi"
             cpu: "1000m"
         livenessProbe:
           exec:
