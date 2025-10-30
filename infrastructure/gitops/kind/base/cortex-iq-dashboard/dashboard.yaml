@@ -22,8 +22,8 @@ spec:
     spec:
       initContainers:
       - name: migrate
-        image: registry.macula.local:5000/macula/cortex-iq-dashboard:latest
-        imagePullPolicy: Always
+        image: macula/cortex-iq-dashboard:latest
+        imagePullPolicy: IfNotPresent
         command: ["/app/bin/cortex_iq_dashboard", "eval", "CortexIqDashboard.Release.migrate()"]
         env:
         - name: MACULA_MODE
@@ -36,8 +36,8 @@ spec:
           value: "dashboard.cortexiq.local"
       containers:
       - name: dashboard
-        image: registry.macula.local:5000/macula/cortex-iq-dashboard:latest
-        imagePullPolicy: Always
+        image: macula/cortex-iq-dashboard:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - name: http
           containerPort: 4000
