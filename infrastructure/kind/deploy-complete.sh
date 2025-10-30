@@ -91,6 +91,19 @@ setup_networking() {
       --timeout=90s || log_error "nginx-ingress not ready on $cluster"
   done
 
+  log_step "Configuring nginx-ingress to allow snippet annotations..."
+  for cluster in macula-hub macula-edge-01 macula-edge-02 macula-edge-03 macula-edge-04; do
+    # Enable snippet annotations for Phoenix LiveView WebSocket support
+    kubectl --context "kind-$cluster" patch configmap ingress-nginx-controller -n ingress-nginx \
+      --type=merge -p '{"data":{"allow-snippet-annotations":"true"}}'
+
+    # Remove admission webhook that blocks snippets
+    kubectl --context "kind-$cluster" delete validatingwebhookconfiguration ingress-nginx-admission \
+      --ignore-not-found=true
+
+    log_info "Configured nginx-ingress on $cluster"
+  done
+
   log_info "Networking configured!"
 }
 

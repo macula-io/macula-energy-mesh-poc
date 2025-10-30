@@ -1,0 +1,75 @@
+services:
+  # Docker Registry v2 - Official registry
+  registry:
+    image: registry:2
+    container_name: macula-registry
+    restart: always
+    environment:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
+      REGISTRY_STORAGE_DELETE_ENABLED: "true"
+      REGISTRY_HTTP_ADDR: "0.0.0.0:5000"
+      REGISTRY_HTTP_HEADERS_X-Content-Type-Options: "[nosniff]"
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin: "['*']"
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods: "['HEAD','GET','OPTIONS','DELETE']"
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers: "['Authorization','Accept','Cache-Control']"
+      REGISTRY_HTTP_HEADERS_Access-Control-Expose-Headers: "['Docker-Content-Digest']"
+    volumes:
+      - registry-data:/var/lib/registry
+    networks:
+      - registry
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5000/v2/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Docker Registry UI - Web interface
+  registry-ui:
+    image: joxit/docker-registry-ui:latest
+    container_name: macula-registry-ui
+    restart: always
+    environment:
+      REGISTRY_TITLE: Macula Container Registry
+      REGISTRY_URL: http://registry:5000
+      DELETE_IMAGES: "true"
+      SHOW_CONTENT_DIGEST: "true"
+      NGINX_PROXY_PASS_URL: http://registry:5000
+      SINGLE_REGISTRY: "true"
+      SHOW_CATALOG_NB_TAGS: "true"
+      CATALOG_MIN_BRANCHES: 1
+      CATALOG_MAX_BRANCHES: 1
+      TAGLIST_PAGE_SIZE: 100
+      REGISTRY_SECURED: "false"
+      CATALOG_ELEMENTS_LIMIT: 1000
+    networks:
+      - registry
+    depends_on:
+      registry:
+        condition: service_healthy
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: macula-registry-nginx
+    restart: always
+    ports:
+      - "5000:80"
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - registry
+    depends_on:
+      - registry
+      - registry-ui
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  registry:
+    driver: bridge
+
+volumes:
+  registry-data:

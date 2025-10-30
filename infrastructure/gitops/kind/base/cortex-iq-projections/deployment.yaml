@@ -21,8 +21,8 @@ spec:
     spec:
       containers:
       - name: projections
-        image: macula/cortex-iq-projections:latest
-        imagePullPolicy: Never  # KinD uses local images
+        image: registry.macula.local:5000/macula/cortex-iq-projections:latest
+        imagePullPolicy: Always
         env:
         # BEAM VM Memory Limits
         - name: ERL_FLAGS

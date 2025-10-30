@@ -21,13 +21,19 @@ spec:
     spec:
       containers:
       - name: homes
-        image: macula/cortex-iq-homes:latest
-        imagePullPolicy: Never
+        image: registry.macula.local:5000/macula/cortex-iq-homes:latest
+        imagePullPolicy: Always
         env:
         - name: BONDY_URL
-          value: "ws://172.20.0.5:30080/ws"
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_URL
         - name: BONDY_REALM
-          value: "be.cortexiq.energy"
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_REALM
         - name: HOMES_SOURCE
           value: "flanders_test_homes.json"  # Default: 10 homes for testing
         resources:
