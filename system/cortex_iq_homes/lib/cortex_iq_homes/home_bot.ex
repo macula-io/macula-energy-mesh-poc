@@ -50,7 +50,6 @@ defmodule CortexIqHomes.HomeBot do
     :last_balance_publish,
     :paused_until,                 # Monotonic time until which this home should pause after reset
     # Connection tracking
-    connected: true,               # Is home currently "online"
     :next_disconnect_time,         # Monotonic time when to disconnect (nil if no disconnect scheduled)
     :next_reconnect_time,          # Monotonic time when to reconnect (nil if not disconnected)
     # Trading intelligence fields
@@ -72,7 +71,9 @@ defmodule CortexIqHomes.HomeBot do
     :cortexiq_total_commission,    # Running total of commission paid to CortexIQ
     :cortexiq_total_savings,       # Running total of gross savings from switching
     :cortexiq_net_savings,         # Net savings to customer (gross - commission)
-    :contract_switches_count       # Number of times switched contracts
+    :contract_switches_count,      # Number of times switched contracts
+    # Connection tracking default value
+    connected: true                # Is home currently "online" (default: true)
   ]
 
   # Update intervals (real-time milliseconds)
@@ -183,8 +184,10 @@ defmodule CortexIqHomes.HomeBot do
          :ok <- subscribe_to_contract_responses(state.wamp_client) do
       Logger.info("Home #{state.home_id}: Subscribed to all topics")
 
-      # Publish connected event
-      publish_connected(state)
+      # Publish connected event (only if we have simulation_time)
+      if state.current_simulation_time do
+        publish_home_connected(state, state.current_simulation_time)
+      end
 
       # Schedule first disconnect (10-30 minutes from now)
       next_disconnect = schedule_next_disconnect()
@@ -381,14 +384,18 @@ defmodule CortexIqHomes.HomeBot do
             # Time to disconnect?
             state.connected && state.next_disconnect_time && now >= state.next_disconnect_time ->
               Logger.info("Home #{state.home_id}: Going offline")
-              publish_disconnected(state)
+              if state.current_simulation_time do
+                publish_home_disconnected(state, state.current_simulation_time, "random_disconnect")
+              end
               next_reconnect = schedule_reconnect()
               %{state | connected: false, next_disconnect_time: nil, next_reconnect_time: next_reconnect}
 
             # Time to reconnect?
             not state.connected && state.next_reconnect_time && now >= state.next_reconnect_time ->
               Logger.info("Home #{state.home_id}: Coming back online")
-              publish_connected(state)
+              if state.current_simulation_time do
+                publish_home_connected(state, state.current_simulation_time)
+              end
               next_disconnect = schedule_next_disconnect()
               %{state | connected: true, next_reconnect_time: nil, next_disconnect_time: next_disconnect}
 
@@ -1502,30 +1509,6 @@ defmodule CortexIqHomes.HomeBot do
       true ->
         {current_battery_kwh, 0.0, 0.0, 0.0}
     end
-  end
-
-  defp publish_connected(state) do
-    topic = "be.cortexiq.home.connected"
-
-    kwargs = %{
-      "home_id" => state.home_id,
-      "connected_at" => DateTime.utc_now() |> DateTime.to_iso8601()
-    }
-
-    Client.publish(state.wamp_client, topic, [], kwargs)
-    Logger.info("Home #{state.home_id}: Published connected event")
-  end
-
-  defp publish_disconnected(state) do
-    topic = "be.cortexiq.home.disconnected"
-
-    kwargs = %{
-      "home_id" => state.home_id,
-      "disconnected_at" => DateTime.utc_now() |> DateTime.to_iso8601()
-    }
-
-    Client.publish(state.wamp_client, topic, [], kwargs)
-    Logger.info("Home #{state.home_id}: Published disconnected event")
   end
 
   # Schedule next disconnect (randomly 10-30 minutes from now in real time)
