@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cortex-iq-open-weather-map
-  namespace: macula-apps
+  namespace: macula-edge
   labels:
     app: cortex-iq-open-weather-map
     component: adapter

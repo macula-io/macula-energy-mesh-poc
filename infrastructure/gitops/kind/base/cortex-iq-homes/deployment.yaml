@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cortex-iq-homes
-  namespace: macula-apps
+  namespace: macula-edge
   labels:
     app: cortex-iq-homes
     app.kubernetes.io/name: cortex-iq-homes

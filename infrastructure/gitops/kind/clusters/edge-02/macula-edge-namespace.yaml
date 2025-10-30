@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: macula-edge
+  labels:
+    app.kubernetes.io/name: macula-edge
+    app.kubernetes.io/part-of: macula-edge

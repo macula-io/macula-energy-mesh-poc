@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-config
-  namespace: macula-apps
+  namespace: macula-hub
 data:
   POSTGRES_DB: cortexiq_dashboard
   POSTGRES_USER: cortexiq
@@ -14,7 +14,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: macula-apps
+  namespace: macula-hub
   labels:
     app: postgres
     app.kubernetes.io/name: postgres
@@ -60,7 +60,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres
-  namespace: macula-apps
+  namespace: macula-hub
   labels:
     app: postgres
     app.kubernetes.io/name: postgres

@@ -4,7 +4,15 @@ kind: Kustomization
 # Edge-03: 50 Flanders homes (persistent UUID7 IDs)
 
 resources:
+  # Namespace definition
+  - macula-edge-namespace.yaml
+
+  # Edge applications (macula-edge namespace)
+  - cortex-iq-homes                  # Connects to hub Bondy
+
+  # Infrastructure
   - metallb
   - external-dns
-  - namespace.yaml
-  - cortex-iq-homes                  # Connects to hub Bondy
+
+# Namespace Structure:
+# - macula-edge: Edge applications (homes)

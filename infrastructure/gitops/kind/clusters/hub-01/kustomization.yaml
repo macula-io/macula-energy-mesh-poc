@@ -2,21 +2,30 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+  # Namespace definitions
+  - macula-hub-namespace.yaml
+
+  # macula-system namespace: Bondy infrastructure
   - bondy
-  - macula-apps-secrets.yaml  # Shared secrets for macula-apps namespace
+  - portal
+
+  # macula-hub namespace: Hub applications and storage
+  - macula-hub-secrets.yaml  # Shared secrets for macula-hub namespace
   - cortex-iq-simulation  # Simulation clock infrastructure
   - cortex-iq-dashboard   # CortexIQ Dashboard (Phoenix LiveView UI)
   - cortex-iq-projections # CQRS write-side projections (WAMP events → PostgreSQL)
   - cortex-iq-queries     # CQRS read-side queries (PostgreSQL/TimescaleDB → WAMP RPC)
-  - cortex-iq-prezio      # Prezio API adapter (external API → WAMP events)
-  - cortex-iq-open-weather-map  # OpenWeatherMap API adapter (external API → WAMP events)
+
+  # Monitoring (macula-system namespace)
   - prometheus
   - grafana
   - loki
   - fluent-bit
-  - portal
+
+  # Infrastructure
   - metallb  # MetalLB for LoadBalancer support in KinD
   - external-dns  # ExternalDNS with PowerDNS for dynamic DNS management
 
-# Note: All CortexIQ applications deploy to macula-apps namespace (defined in base manifests)
-# Infrastructure (Bondy, monitoring, etc.) uses macula-system namespace
+# Namespace Structure:
+# - macula-system: Bondy, monitoring, infrastructure
+# - macula-hub: Dashboards, projections, queries, simulation, postgres
