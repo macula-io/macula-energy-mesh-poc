@@ -20,20 +20,6 @@ spec:
         app.kubernetes.io/name: cortex-iq-dashboard
         app.kubernetes.io/component: dashboard
     spec:
-      initContainers:
-      - name: migrate
-        image: macula/cortex-iq-dashboard:latest
-        imagePullPolicy: IfNotPresent
-        command: ["/app/bin/cortex_iq_dashboard", "eval", "CortexIqDashboard.Release.migrate()"]
-        env:
-        - name: MACULA_MODE
-          value: "edge"
-        - name: DATABASE_URL
-          value: "ecto://cortexiq:cortexiq123@postgres:5432/cortexiq_dashboard"
-        - name: SECRET_KEY_BASE
-          value: "CHANGE_ME_IN_PRODUCTION_this_is_just_for_poc_demo_need_64_chars_min"
-        - name: PHX_HOST
-          value: "dashboard.cortexiq.local"
       containers:
       - name: dashboard
         image: macula/cortex-iq-dashboard:latest
