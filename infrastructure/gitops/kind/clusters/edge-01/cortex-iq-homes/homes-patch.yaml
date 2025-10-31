@@ -9,6 +9,16 @@ spec:
       containers:
       - name: homes
         env:
+        - name: BONDY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_URL
+        - name: BONDY_REALM
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_REALM
         - name: HOMES_SOURCES
           value: "netherlands_west_homes.json,netherlands_central_homes.json,netherlands_north_homes.json,netherlands_south_homes.json"
         resources:
