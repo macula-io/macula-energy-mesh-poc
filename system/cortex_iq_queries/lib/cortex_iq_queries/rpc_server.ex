@@ -51,7 +51,9 @@ defmodule CortexIqQueries.RpcServer do
         procedures = [
           {"be.cortexiq.energy.queries.get_homes", &handle_get_homes/2},
           {"be.cortexiq.energy.queries.get_providers", &handle_get_providers/2},
-          {"be.cortexiq.energy.queries.get_overview", &handle_get_overview/2}
+          {"be.cortexiq.energy.queries.get_overview", &handle_get_overview/2},
+          {"be.cortexiq.energy.queries.home_exists", &handle_home_exists/2},
+          {"be.cortexiq.energy.queries.provider_exists", &handle_provider_exists/2}
         ]
 
         # Wait for session to be established before registering
@@ -155,6 +157,36 @@ defmodule CortexIqQueries.RpcServer do
   rescue
     e ->
       Logger.error("RpcServer: get_overview error: #{inspect(e)}")
+      {:error, %{error: "internal_error", message: Exception.message(e)}}
+  end
+
+  defp handle_home_exists(_args, kwargs) do
+    home_id = Map.get(kwargs, "home_id")
+
+    unless home_id do
+      {:error, %{error: "missing_parameter", message: "home_id is required"}}
+    else
+      exists = Queries.home_exists?(home_id)
+      {:ok, [], %{exists: exists}}
+    end
+  rescue
+    e ->
+      Logger.error("RpcServer: home_exists error: #{inspect(e)}")
+      {:error, %{error: "internal_error", message: Exception.message(e)}}
+  end
+
+  defp handle_provider_exists(_args, kwargs) do
+    provider_id = Map.get(kwargs, "provider_id")
+
+    unless provider_id do
+      {:error, %{error: "missing_parameter", message: "provider_id is required"}}
+    else
+      exists = Queries.provider_exists?(provider_id)
+      {:ok, [], %{exists: exists}}
+    end
+  rescue
+    e ->
+      Logger.error("RpcServer: provider_exists error: #{inspect(e)}")
       {:error, %{error: "internal_error", message: Exception.message(e)}}
   end
 end

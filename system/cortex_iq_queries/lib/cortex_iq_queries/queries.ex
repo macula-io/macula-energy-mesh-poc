@@ -189,6 +189,36 @@ defmodule CortexIqQueries.Queries do
     }
   end
 
+  @doc """
+  Check if a home exists in the database.
+
+  ## Parameters
+  - home_id: UUID string of the home
+
+  ## Returns
+  Boolean - true if home exists, false otherwise
+  """
+  def home_exists?(home_id) when is_binary(home_id) do
+    Repo.exists?(from h in HomeState, where: h.home_id == ^home_id)
+  end
+
+  def home_exists?(_), do: false
+
+  @doc """
+  Check if a provider exists in the database.
+
+  ## Parameters
+  - provider_id: UUID string of the provider
+
+  ## Returns
+  Boolean - true if provider exists, false otherwise
+  """
+  def provider_exists?(provider_id) when is_binary(provider_id) do
+    Repo.exists?(from p in ProviderState, where: p.provider_id == ^provider_id)
+  end
+
+  def provider_exists?(_), do: false
+
   # Private helpers
 
   defp serialize_home(home) do

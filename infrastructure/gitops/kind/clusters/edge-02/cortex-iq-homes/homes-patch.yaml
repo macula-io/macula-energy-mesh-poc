@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cortex-iq-homes
+  namespace: macula-edge
+spec:
+  template:
+    spec:
+      containers:
+      - name: homes
+        env:
+        - name: HOMES_SOURCES
+          value: "flanders_west_homes.json,flanders_central_homes.json,flanders_east_homes.json"
+        resources:
+          requests:
+            memory: "1.5Gi"
+            cpu: "400m"
+          limits:
+            memory: "6Gi"
+            cpu: "1500m"

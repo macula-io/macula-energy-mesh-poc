@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cortex-iq-homes
+  namespace: macula-edge
+spec:
+  template:
+    spec:
+      containers:
+      - name: homes
+        env:
+        - name: HOMES_SOURCES
+          value: "netherlands_west_homes.json,netherlands_central_homes.json,netherlands_north_homes.json,netherlands_south_homes.json"
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+          limits:
+            memory: "8Gi"
+            cpu: "2000m"
