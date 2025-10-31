@@ -34,8 +34,8 @@ spec:
             configMapKeyRef:
               name: bondy-client-config
               key: BONDY_REALM
-        - name: HOMES_SOURCE
-          value: "flanders_test_homes.json"  # Default: 10 homes for testing
+        - name: HOMES_SOURCES
+          value: "flanders_test_homes.json"  # Default: 10 homes for testing (override in cluster patches)
         resources:
           requests:
             memory: "1Gi"
