@@ -24,8 +24,9 @@ resources:
   - fluent-bit
 
   # Infrastructure
+  - nginx-ingress  # NGINX Ingress Controller (patched to publish LoadBalancer IP)
   - metallb  # MetalLB for LoadBalancer support in KinD
-  # - external-dns  # ExternalDNS disabled - manually managing macula.local DNS records to avoid ingress hostname:localhost conflicts
+  - external-dns  # ExternalDNS for dynamic DNS management (now works with correct ingress status)
 
 # Namespace Structure:
 # - macula-system: Bondy, monitoring, infrastructure
