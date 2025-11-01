@@ -15,6 +15,7 @@ resources:
   - cortex-iq-dashboard   # CortexIQ Dashboard (Phoenix LiveView UI)
   - cortex-iq-projections # CQRS write-side projections (WAMP events → PostgreSQL)
   - cortex-iq-queries     # CQRS read-side queries (PostgreSQL/TimescaleDB → WAMP RPC)
+  - pgadmin               # pgAdmin 4 - PostgreSQL database administration tool
 
   # Monitoring (macula-system namespace)
   - prometheus
@@ -24,7 +25,7 @@ resources:
 
   # Infrastructure
   - metallb  # MetalLB for LoadBalancer support in KinD
-  - external-dns  # ExternalDNS with PowerDNS for dynamic DNS management
+  # - external-dns  # ExternalDNS disabled - manually managing macula.local DNS records to avoid ingress hostname:localhost conflicts
 
 # Namespace Structure:
 # - macula-system: Bondy, monitoring, infrastructure
