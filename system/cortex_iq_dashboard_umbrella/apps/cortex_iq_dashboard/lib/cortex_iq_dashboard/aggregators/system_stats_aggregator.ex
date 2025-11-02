@@ -10,7 +10,6 @@ defmodule CortexIqDashboard.Aggregators.SystemStatsAggregator do
   """
   use GenServer
   require Logger
-  alias CortexIqDashboard.DatabaseWriter
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
@@ -19,35 +18,22 @@ defmodule CortexIqDashboard.Aggregators.SystemStatsAggregator do
   @impl true
   def init(_opts) do
     if connected?() do
-      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "wamp:events")
-      Logger.info("SystemStatsAggregator: Subscribed to WAMP events")
+      # Subscribe to vertical slice channels
+      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:time_advanced")
+      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:contract_event")
+      Logger.info("SystemStatsAggregator: Subscribed to vertical slice channels")
     end
 
     {:ok, %{event_count: 0}}
   end
 
   @impl true
-  def handle_info({:wamp_event, _subscription_topic, event_data}, state) do
-    topic = get_in(event_data, [:details, "topic"]) || "unknown"
-    kwargs = event_data[:kwargs] || %{}
+  def handle_info({:time_advanced, kwargs}, state) do
+    # Dashboard is now in-memory only - no database writes
+    _simulation_time = parse_datetime(Map.get(kwargs, "simulation_time"))
 
-    cond do
-      String.contains?(topic, ".simulation.time") ->
-        update_simulation_time(kwargs)
-
-      String.contains?(topic, ".market.contract.switched") ->
-        increment_contract_switches()
-
-      true ->
-        :ok
-    end
-
-    # Recalculate aggregates every 100 events
+    # Track event count for monitoring
     new_count = state.event_count + 1
-
-    if rem(new_count, 100) == 0 do
-      DatabaseWriter.recalculate_system_aggregates()
-    end
 
     if rem(new_count, 1000) == 0 do
       Logger.info("SystemStatsAggregator: Processed #{new_count} events")
@@ -56,16 +42,23 @@ defmodule CortexIqDashboard.Aggregators.SystemStatsAggregator do
     {:noreply, %{state | event_count: new_count}}
   end
 
-  defp update_simulation_time(kwargs) do
-    DatabaseWriter.update_system_stats(%{
-      simulation_time: parse_datetime(Map.get(kwargs, "simulation_time")),
-      simulation_speed: Map.get(kwargs, "speed"),
-      updated_at: DateTime.utc_now()
-    })
+  @impl true
+  def handle_info({:contract_event, :switched, _kwargs}, state) do
+    # Dashboard is now in-memory only - no database writes
+    # Track event count for monitoring
+    new_count = state.event_count + 1
+
+    if rem(new_count, 1000) == 0 do
+      Logger.info("SystemStatsAggregator: Processed #{new_count} events")
+    end
+
+    {:noreply, %{state | event_count: new_count}}
   end
 
-  defp increment_contract_switches do
-    DatabaseWriter.increment_contract_switches()
+  # Ignore other contract event types
+  @impl true
+  def handle_info({:contract_event, _type, _kwargs}, state) do
+    {:noreply, state}
   end
 
   defp parse_datetime(nil), do: nil

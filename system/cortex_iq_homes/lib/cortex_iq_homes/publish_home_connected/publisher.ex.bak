@@ -1,0 +1,52 @@
+defmodule CortexIqHomes.PublishHomeConnected.Publisher do
+  @moduledoc """
+  Publishes to be.cortexiq.home.connected.
+
+  Receives: {:publish, data} from HomeBot
+  """
+  use GenServer
+  require Logger
+
+  @topic "be.cortexiq.home.connected"
+
+  def start_link(opts) do
+    home_id = Keyword.fetch!(opts, :home_id)
+    GenServer.start_link(__MODULE__, opts, name: via_tuple(home_id))
+  end
+
+  def publish(home_id, data) do
+    case whereis(home_id) do
+      nil -> Logger.warning("Publisher for #{home_id} not found")
+      pid -> send(pid, {:publish, data})
+    end
+  end
+
+  def whereis(home_id) do
+    case Registry.lookup(CortexIqHomes.Registry, {__MODULE__, home_id}) do
+      [{pid, _}] -> pid
+      [] -> nil
+    end
+  end
+
+  @impl true
+  def init(opts) do
+    wamp_client = Keyword.fetch!(opts, :wamp_client)
+    home_id = Keyword.fetch!(opts, :home_id)
+
+    {:ok, %{wamp_client: wamp_client, home_id: home_id}}
+  end
+
+  @impl true
+  def handle_info({:publish, data}, state) do
+    case MaculaSdk.Wamp.Client.publish(state.wamp_client, @topic, [], data, %{}) do
+      :ok -> :ok
+      {:error, reason} -> Logger.error("#{__MODULE__}: Failed for #{state.home_id}: #{inspect(reason)}")
+    end
+
+    {:noreply, state}
+  end
+
+  defp via_tuple(home_id) do
+    {:via, Registry, {CortexIqHomes.Registry, {__MODULE__, home_id}}}
+  end
+end

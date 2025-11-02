@@ -15,6 +15,7 @@ defmodule CortexIqCore.Home do
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t() | nil,
+          iot_provider: String.t() | nil,
           location: Geography.location(),
           solar_capacity_kw: float(),
           battery_capacity_kwh: float(),
@@ -26,6 +27,7 @@ defmodule CortexIqCore.Home do
   defstruct [
     :id,
     :name,
+    :iot_provider,
     :location,
     :current_contract_id,
     solar_capacity_kw: 5.0,
@@ -53,6 +55,8 @@ defmodule CortexIqCore.Home do
   def new(home_id, opts) do
     %__MODULE__{
       id: home_id,
+      name: Map.get(opts, :name),
+      iot_provider: Map.get(opts, :iot_provider),
       location: Map.get(opts, :location, Geography.location_for_home(home_id)),
       solar_capacity_kw: Map.get(opts, :solar_capacity_kw, random_solar_capacity()),
       battery_capacity_kwh: Map.get(opts, :battery_capacity_kwh, random_battery_capacity()),

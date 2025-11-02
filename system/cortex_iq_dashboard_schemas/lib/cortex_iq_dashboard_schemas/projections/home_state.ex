@@ -4,10 +4,16 @@ defmodule CortexIqDashboardSchemas.Projections.HomeState do
 
   @primary_key {:home_id, :string, autogenerate: false}
   schema "home_states" do
+    field :name, :string
+    field :iot_provider, :string
     field :location, :string
     field :postal_code, :string
     field :region, :string
+    field :street, :string
+    field :latitude, :float
+    field :longitude, :float
 
+    field :solar_capacity_kw, :float
     field :production_kw, :float
     field :consumption_kw, :float
     field :battery_percent, :float
@@ -37,6 +43,9 @@ defmodule CortexIqDashboardSchemas.Projections.HomeState do
     field :connected_at, :utc_datetime_usec
     field :disconnected_at, :utc_datetime_usec
 
+    # Status (BitFlags) - See CortexIqDashboardSchemas.HomeStatus
+    field :status, :integer, default: 0
+
     timestamps(type: :utc_datetime_usec)
   end
 
@@ -44,9 +53,15 @@ defmodule CortexIqDashboardSchemas.Projections.HomeState do
     home_state
     |> cast(attrs, [
       :home_id,
+      :name,
+      :iot_provider,
       :location,
       :postal_code,
       :region,
+      :street,
+      :latitude,
+      :longitude,
+      :solar_capacity_kw,
       :production_kw,
       :consumption_kw,
       :battery_percent,
@@ -67,8 +82,9 @@ defmodule CortexIqDashboardSchemas.Projections.HomeState do
       :contract_switches_count,
       :last_event_at,
       :connected_at,
-      :disconnected_at
+      :disconnected_at,
+      :status
     ])
-    |> validate_required([:home_id])
+    |> validate_required([:home_id, :status])
   end
 end

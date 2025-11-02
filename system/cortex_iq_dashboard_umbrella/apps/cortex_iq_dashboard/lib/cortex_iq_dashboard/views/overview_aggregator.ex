@@ -16,8 +16,6 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
 
   defstruct [
     wamp_client: nil,  # WAMP client for RPC calls
-    homes: %{},  # %{home_id => home_state} for aggregation
-    connected_homes_count: 0,  # Count of currently connected homes
     providers: %{},  # %{provider_id => provider_state} for aggregation
     total_contract_switches: 0,
     total_savings: 0.0,
@@ -32,12 +30,17 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
     simulation_time: nil,
     simulation_speed: nil,
     simulation_paused: false,
-    last_updated_at: nil,
-    broadcast_timer: nil,  # Timer ref for throttling broadcasts
-    pending_broadcast: false  # Flag indicating broadcast is scheduled
+    # Pre-calculated aggregates from projections service (received via WAMP)
+    total_homes: 0,
+    total_production_kw: 0.0,
+    total_consumption_kw: 0.0,
+    avg_battery_percent: 0.0,
+    total_energy_bought_kwh: 0.0,
+    total_energy_sold_kwh: 0.0,
+    total_cost_paid: 0.0,
+    total_revenue_received: 0.0,
+    last_updated_at: nil
   ]
-
-  @broadcast_interval_ms 500  # Throttle broadcasts to max 2x per second
 
   # Client API
 
@@ -53,17 +56,21 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
 
   @impl true
   def init(_opts) do
-    Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "entity:home")
+    # Subscribe to PubSub channels
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "entity:provider")
-    Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "wamp:events")
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "market:spot")
+
+    # Subscribe to pre-calculated totals from projections service
+    Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:totals_calculated")
+
+    # Subscribe to simulation events
+    Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:time_advanced")
+    Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:contract_event")
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:control")
-    Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:home_connected")
-    Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:home_disconnected")
 
-    Logger.info("OverviewAggregator: Started and subscribed to dashboard control and connection events")
+    Logger.info("OverviewAggregator: Started and subscribed to PubSub channels")
 
-    # Start WAMP client for RPC calls
+    # Start WAMP client for RPC calls (if needed)
     bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
     realm = System.get_env("BONDY_REALM", "be.cortexiq.energy")
 
@@ -75,53 +82,31 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
 
   @impl true
   def handle_call(:get_state, _from, state) do
-    # Calculate aggregated metrics from entity states
-    connected_homes_count = state.connected_homes_count
+    # Return pre-calculated aggregates from state (received from projections service)
     total_providers = map_size(state.providers)
 
-    # Aggregate home metrics
-    {total_production_kw, total_consumption_kw, total_battery_percent, total_energy_bought_kwh, total_energy_sold_kwh, total_cost_paid, total_revenue_received, cortexiq_commission, cortexiq_savings, cortexiq_net} =
-      state.homes
-      |> Map.values()
-      |> Enum.reduce({0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, fn home, {prod, cons, batt, bought, sold, cost, rev, comm, sav, net} ->
-        {
-          prod + (home.production_kw || 0.0),
-          cons + (home.consumption_kw || 0.0),
-          batt + (home.state_of_charge_pct || 0.0),
-          bought + (home.energy_bought_kwh || 0.0),
-          sold + (home.energy_sold_kwh || 0.0),
-          cost + (home.cost_paid || 0.0),
-          rev + (home.revenue_received || 0.0),
-          comm + (home.cortexiq_total_commission || 0.0),
-          sav + (home.cortexiq_total_savings || 0.0),
-          net + (home.cortexiq_net_savings || 0.0)
-        }
-      end)
-
-    avg_battery_percent =
-      if connected_homes_count > 0, do: total_battery_percent / connected_homes_count, else: 0.0
-
     overview = %{
-      total_homes: connected_homes_count,  # Now represents connected homes
+      total_homes: state.total_homes,  # From projections service
       total_providers: total_providers,
-      total_energy_traded_kwh: total_energy_bought_kwh + total_energy_sold_kwh,
+      total_energy_traded_kwh: state.total_energy_bought_kwh + state.total_energy_sold_kwh,
       total_contract_switches: state.total_contract_switches,
       total_savings: state.total_savings,
       total_arbitrage_profit: state.total_arbitrage_profit,
-      # CortexIQ financial metrics
-      cortexiq_total_commission: cortexiq_commission,
-      cortexiq_total_savings: cortexiq_savings,
-      cortexiq_net_savings: cortexiq_net,
+      # CortexIQ financial metrics (from individual homes, sum calculated on event)
+      cortexiq_total_commission: state.cortexiq_total_commission,
+      cortexiq_total_savings: state.cortexiq_total_savings,
+      cortexiq_net_savings: state.cortexiq_net_savings,
       savings_history: state.savings_history,
       current_spot_price: state.current_spot_price,
       spot_price_history: state.spot_price_history,
-      total_production_kw: total_production_kw,
-      total_consumption_kw: total_consumption_kw,
-      avg_battery_percent: avg_battery_percent,
-      total_energy_bought_kwh: total_energy_bought_kwh,
-      total_energy_sold_kwh: total_energy_sold_kwh,
-      total_cost_paid: total_cost_paid,
-      total_revenue_received: total_revenue_received,
+      # Pre-calculated aggregates (received from projections service)
+      total_production_kw: state.total_production_kw,
+      total_consumption_kw: state.total_consumption_kw,
+      avg_battery_percent: state.avg_battery_percent,
+      total_energy_bought_kwh: state.total_energy_bought_kwh,
+      total_energy_sold_kwh: state.total_energy_sold_kwh,
+      total_cost_paid: state.total_cost_paid,
+      total_revenue_received: state.total_revenue_received,
       simulation_time: state.simulation_time,
       simulation_speed: state.simulation_speed,
       simulation_paused: state.simulation_paused,
@@ -146,30 +131,41 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
   end
 
   @impl true
-  def handle_info({:home_state_changed, home_id, home_state}, state) do
-    Logger.info("OverviewAggregator received home state: #{home_id} prod=#{home_state.production_kw}kW cons=#{home_state.consumption_kw}kW")
-    new_homes = Map.put(state.homes, home_id, home_state)
-    new_state = %{state | homes: new_homes, last_updated_at: DateTime.utc_now()}
+  def handle_info({:totals_calculated, totals}, state) do
+    # Receive pre-calculated totals from projections service (via dashboard:totals_calculated)
+    total_homes = Map.get(totals, "total_homes", 0)
+    total_production_kw = Map.get(totals, "total_production_kw", 0.0)
+    total_consumption_kw = Map.get(totals, "total_consumption_kw", 0.0)
+    avg_battery_percent = Map.get(totals, "avg_battery_percent", 0.0)
 
-    # Schedule throttled broadcast
-    {:noreply, schedule_broadcast(new_state)}
+    Logger.info("OverviewAggregator: Received totals - homes=#{total_homes}, prod=#{Float.round(total_production_kw, 1)}kW, cons=#{Float.round(total_consumption_kw, 1)}kW, battery=#{Float.round(avg_battery_percent, 1)}%")
+
+    new_state = %{state |
+      total_homes: total_homes,
+      total_production_kw: total_production_kw,
+      total_consumption_kw: total_consumption_kw,
+      avg_battery_percent: avg_battery_percent,
+      last_updated_at: DateTime.utc_now()
+    }
+
+    # Broadcast immediately - no need for throttling since projections already throttles (500ms)
+    broadcast_view_updated()
+
+    {:noreply, new_state}
   end
+
+  # NOTE: Removed home_state_changed handler - we now get totals from projections service
+  # Individual home states are no longer tracked here
 
   @impl true
   def handle_info({:provider_state_changed, provider_id, provider_state}, state) do
     new_providers = Map.put(state.providers, provider_id, provider_state)
     new_state = %{state | providers: new_providers, last_updated_at: DateTime.utc_now()}
 
-    # Schedule throttled broadcast
-    {:noreply, schedule_broadcast(new_state)}
-  end
-
-  @impl true
-  def handle_info(:broadcast_now, state) do
-    # Timer fired, actually send the broadcast
-    Logger.debug("OverviewAggregator: Broadcasting view update (throttled)")
+    # Broadcast immediately
     broadcast_view_updated()
-    {:noreply, %{state | broadcast_timer: nil, pending_broadcast: false}}
+
+    {:noreply, new_state}
   end
 
   @impl true
@@ -192,70 +188,43 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
       last_updated_at: DateTime.utc_now()
     }
 
-    {:noreply, schedule_broadcast(new_state)}
+    # Broadcast immediately
+    broadcast_view_updated()
+
+    {:noreply, new_state}
   end
 
   @impl true
-  def handle_info({:wamp_event, _subscription_topic, event_data}, state) do
-    topic = get_in(event_data, [:details, "topic"]) || "unknown"
-    kwargs = event_data[:kwargs] || %{}
+  def handle_info({:time_advanced, kwargs}, state) do
+    simulation_time = parse_simulation_time(kwargs)
+    simulation_speed = Map.get(kwargs, "speed")
+    simulation_paused = Map.get(kwargs, "paused", false)
 
-    new_state = cond do
-      String.contains?(topic, "simulation.time") ->
-        simulation_time = parse_simulation_time(kwargs)
-        simulation_speed = Map.get(kwargs, "speed")
-        simulation_paused = Map.get(kwargs, "paused", false)
-        %{state |
-          simulation_time: simulation_time,
-          simulation_speed: simulation_speed,
-          simulation_paused: simulation_paused,
-          last_updated_at: DateTime.utc_now()
-        }
-
-      String.contains?(topic, "savings_realized") ->
-        # Track cumulative savings over time for charting
-        gross_savings = Map.get(kwargs, "gross_savings", 0.0)
-        commission = Map.get(kwargs, "cortexiq_commission", 0.0)
-        net_savings = Map.get(kwargs, "net_savings_to_customer", 0.0)
-        cumulative_commission = Map.get(kwargs, "cumulative_commission", commission)
-        cumulative_savings = Map.get(kwargs, "cumulative_gross_savings", gross_savings)
-        cumulative_net = Map.get(kwargs, "cumulative_net_savings", net_savings)
-
-        # Add to savings history (keep last 100 points)
-        new_history = [%{
-          timestamp: DateTime.utc_now(),
-          simulation_time: state.simulation_time,
-          gross_savings: cumulative_savings,
-          commission: cumulative_commission,
-          net_savings: cumulative_net
-        } | state.savings_history]
-        |> Enum.take(100)
-
-        %{state |
-          savings_history: new_history,
-          last_updated_at: DateTime.utc_now()
-        }
-
-      String.contains?(topic, "contract.switched") ->
-        %{state |
-          total_contract_switches: state.total_contract_switches + 1,
-          total_savings: state.total_savings + Map.get(kwargs, "projected_savings", 0.0),
-          last_updated_at: DateTime.utc_now()
-        }
-
-      String.contains?(topic, "arbitrage_profit") ->
-        # Home published arbitrage profit event
-        profit = Map.get(kwargs, "profit", 0.0)
-        %{state |
-          total_arbitrage_profit: state.total_arbitrage_profit + profit,
-          last_updated_at: DateTime.utc_now()
-        }
-
-      true ->
-        state
-    end
+    new_state = %{state |
+      simulation_time: simulation_time,
+      simulation_speed: simulation_speed,
+      simulation_paused: simulation_paused,
+      last_updated_at: DateTime.utc_now()
+    }
 
     {:noreply, new_state}
+  end
+
+  @impl true
+  def handle_info({:contract_event, :switched, kwargs}, state) do
+    new_state = %{state |
+      total_contract_switches: state.total_contract_switches + 1,
+      total_savings: state.total_savings + Map.get(kwargs, "projected_savings", 0.0),
+      last_updated_at: DateTime.utc_now()
+    }
+
+    {:noreply, new_state}
+  end
+
+  # Ignore other contract event types
+  @impl true
+  def handle_info({:contract_event, _type, _kwargs}, state) do
+    {:noreply, state}
   end
 
   @impl true
@@ -282,7 +251,7 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
       Logger.info("OverviewAggregator: Calling get_overview RPC to initialize connected homes count...")
 
       case Client.call(state.wamp_client, "be.cortexiq.energy.queries.get_overview", [], %{}) do
-        {:ok, _args, result} ->
+        {:ok, %{args: [result | _]}} ->
           connected_homes_count = Map.get(result, "connected_homes_count", 0)
 
           Logger.info("OverviewAggregator: Initialized with #{connected_homes_count} connected homes from query service")
@@ -305,35 +274,8 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
     end
   end
 
-  @impl true
-  def handle_info({:home_connected, kwargs}, state) do
-    home_id = Map.get(kwargs, "home_id")
-
-    if home_id do
-      new_count = state.connected_homes_count + 1
-      Logger.info("OverviewAggregator: Home connected: #{home_id} (total connected: #{new_count})")
-
-      new_state = %{state | connected_homes_count: new_count, last_updated_at: DateTime.utc_now()}
-      {:noreply, schedule_broadcast(new_state)}
-    else
-      {:noreply, state}
-    end
-  end
-
-  @impl true
-  def handle_info({:home_disconnected, kwargs}, state) do
-    home_id = Map.get(kwargs, "home_id")
-
-    if home_id do
-      new_count = max(state.connected_homes_count - 1, 0)  # Don't go negative
-      Logger.info("OverviewAggregator: Home disconnected: #{home_id} (total connected: #{new_count})")
-
-      new_state = %{state | connected_homes_count: new_count, last_updated_at: DateTime.utc_now()}
-      {:noreply, schedule_broadcast(new_state)}
-    else
-      {:noreply, state}
-    end
-  end
+  # NOTE: Removed home_connected/disconnected handlers
+  # Total homes count now comes from projections service via totals_calculated
 
   @impl true
   def handle_info(_msg, state) do
@@ -346,17 +288,6 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
       "view:overview",
       :view_updated
     )
-  end
-
-  defp schedule_broadcast(state) do
-    if state.pending_broadcast do
-      # Broadcast already scheduled, don't schedule another
-      state
-    else
-      # Schedule a broadcast after interval
-      timer_ref = Process.send_after(self(), :broadcast_now, @broadcast_interval_ms)
-      %{state | broadcast_timer: timer_ref, pending_broadcast: true}
-    end
   end
 
   defp parse_simulation_time(kwargs) do

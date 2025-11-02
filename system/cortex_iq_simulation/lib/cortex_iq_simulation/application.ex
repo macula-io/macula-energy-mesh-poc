@@ -7,9 +7,34 @@ defmodule CortexIqSimulation.Application do
 
   @impl true
   def start(_type, _args) do
+    # Get configuration
+    bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
+    realm = System.get_env("BONDY_REALM", "be.cortexiq.energy")
+
     children = [
       # Simulation clock - broadcasts time to all WAMP subscribers
-      CortexIqSimulation.SimulationClock
+      CortexIqSimulation.SimulationClock,
+
+      # RPC Systems - each handles one simulation control procedure
+      {CortexIqSimulation.ResetSimulation.System,
+       bondy_url: bondy_url,
+       realm: realm,
+       simulation_clock: CortexIqSimulation.SimulationClock},
+
+      {CortexIqSimulation.PauseSimulation.System,
+       bondy_url: bondy_url,
+       realm: realm,
+       simulation_clock: CortexIqSimulation.SimulationClock},
+
+      {CortexIqSimulation.ResumeSimulation.System,
+       bondy_url: bondy_url,
+       realm: realm,
+       simulation_clock: CortexIqSimulation.SimulationClock},
+
+      {CortexIqSimulation.SetSimulationSpeed.System,
+       bondy_url: bondy_url,
+       realm: realm,
+       simulation_clock: CortexIqSimulation.SimulationClock}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

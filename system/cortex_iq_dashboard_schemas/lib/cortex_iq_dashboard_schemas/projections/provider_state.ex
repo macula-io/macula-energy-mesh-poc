@@ -16,6 +16,9 @@ defmodule CortexIqDashboardSchemas.Projections.ProviderState do
     field :night_sell_price, :float
     field :switching_discount, :float
 
+    field :spot_buy_price, :float
+    field :spot_sell_price, :float
+
     field :last_event_at, :utc_datetime_usec
 
     timestamps(type: :utc_datetime_usec)
@@ -34,6 +37,8 @@ defmodule CortexIqDashboardSchemas.Projections.ProviderState do
       :day_sell_price,
       :night_sell_price,
       :switching_discount,
+      :spot_buy_price,
+      :spot_sell_price,
       :last_event_at
     ])
     |> validate_required([:provider_id])

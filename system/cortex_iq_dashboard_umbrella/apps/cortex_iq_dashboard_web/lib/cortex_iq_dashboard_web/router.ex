@@ -17,7 +17,13 @@ defmodule CortexIqDashboardWeb.Router do
   scope "/", CortexIqDashboardWeb do
     pipe_through :browser
 
-    live "/", DashboardLive
+    # New modular LiveView routes
+    live "/", OverviewLive
+    live "/homes", HomesLive
+    live "/providers", ProvidersLive
+
+    # Old monolithic dashboard (kept for reference during migration)
+    # live "/old", DashboardLive
   end
 
   # Other scopes may use custom stacks.

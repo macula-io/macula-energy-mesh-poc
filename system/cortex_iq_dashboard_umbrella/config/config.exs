@@ -9,10 +9,6 @@
 # move said applications out of the umbrella.
 import Config
 
-# Configure Mix tasks and generators
-config :cortex_iq_dashboard,
-  ecto_repos: [CortexIqDashboard.Repo]
-
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
@@ -23,7 +19,6 @@ config :cortex_iq_dashboard,
 config :cortex_iq_dashboard, CortexIqDashboard.Mailer, adapter: Swoosh.Adapters.Local
 
 config :cortex_iq_dashboard_web,
-  ecto_repos: [CortexIqDashboard.Repo],
   generators: [context_app: :cortex_iq_dashboard]
 
 # Configures the endpoint

@@ -3,13 +3,13 @@ defmodule CortexIqDashboard.EventSubscribers.TimeAdvancedSubscriber do
   Vertical slice subscriber for simulation.time_advanced events.
 
   Subscribes to: be.cortexiq.simulation.time_advanced
-  Broadcasts to: wamp:events (generic channel for simulation time)
+  Broadcasts to: dashboard:time_advanced
   """
   use GenServer
   require Logger
 
   @topic "be.cortexiq.simulation.time_advanced"
-  @pubsub_channel "wamp:events"
+  @pubsub_channel "dashboard:time_advanced"
 
   ## Client API
 
@@ -34,8 +34,9 @@ defmodule CortexIqDashboard.EventSubscribers.TimeAdvancedSubscriber do
 
   @impl true
   def handle_info(:subscribe, state) do
+    subscriber_pid = self()  # Capture subscriber PID before creating closure
     handler = fn topic, event_data ->
-      send(self(), {:event, topic, event_data})
+      send(subscriber_pid, {:event, topic, event_data})
     end
 
     case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, @topic, handler) do
@@ -49,14 +50,16 @@ defmodule CortexIqDashboard.EventSubscribers.TimeAdvancedSubscriber do
   end
 
   @impl true
-  def handle_info({:event, topic, event_data}, state) do
+  def handle_info({:event, _topic, event_data}, state) do
+    kwargs = Map.get(event_data, :kwargs, %{})
+
     Logger.debug("#{__MODULE__}: Received time advanced event")
 
-    # Broadcast with topic for backward compatibility with LiveViews
+    # Broadcast to vertical slice channel
     Phoenix.PubSub.broadcast(
       CortexIqDashboard.PubSub,
       @pubsub_channel,
-      {:wamp_event, topic, event_data}
+      {:time_advanced, kwargs}
     )
 
     {:noreply, state}

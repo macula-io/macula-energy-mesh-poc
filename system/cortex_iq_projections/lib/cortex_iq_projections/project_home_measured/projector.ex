@@ -50,32 +50,62 @@ defmodule CortexIqProjections.ProjectHomeMeasured.Projector do
     alias Broadway.Message
 
     def start_link(opts) do
-      GenStage.start_link(__MODULE__, opts, name: __MODULE__)
+      GenStage.start_link(__MODULE__, opts)
     end
 
     def enqueue_event(event_data) do
-      GenServer.cast(__MODULE__, {:enqueue, event_data})
+      # Broadway registers the producer with its own naming scheme
+      # The producer is named: ModuleName.Broadway.Producer_0
+      producer_name = :"#{CortexIqProjections.ProjectHomeMeasured.Projector}.Broadway.Producer_0"
+      Logger.info("ProjectHomeMeasured.Producer.enqueue_event: Casting to #{inspect(producer_name)}")
+      result = GenStage.cast(producer_name, {:enqueue, event_data})
+      Logger.info("ProjectHomeMeasured.Producer.enqueue_event: Cast returned #{inspect(result)}")
+      result
     end
 
     @impl true
     def init(_opts) do
       require Logger
       Logger.info("ProjectHomeMeasured.Producer init() called - GenStage producer with handle_demand!")
-      {:producer, %{queue: :queue.new()}}
+      {:producer, %{queue: :queue.new(), pending_demand: 0}}
     end
 
     # GenStage callback - called when Broadway requests messages
     @impl true
     def handle_demand(demand, state) do
-      {messages, queue} = take_from_queue(state.queue, demand, [])
-      {:noreply, messages, %{state | queue: queue}}
+      Logger.info("ProjectHomeMeasured.Producer: handle_demand called with incoming_demand=#{demand}, queue_len=#{:queue.len(state.queue)}, pending_demand=#{state.pending_demand}")
+
+      # Add new demand to pending
+      total_demand = state.pending_demand + demand
+
+      # Dispatch events from queue
+      {messages, queue} = take_from_queue(state.queue, total_demand, [])
+      remaining_demand = total_demand - length(messages)
+
+      Logger.info("ProjectHomeMeasured.Producer: Emitting #{length(messages)} messages, remaining_demand=#{remaining_demand}")
+      {:noreply, messages, %{state | queue: queue, pending_demand: remaining_demand}}
     end
 
-    # Receive events from subscriber
+    # Receive events from subscriber (GenStage callback, NOT GenServer!)
     @impl true
     def handle_cast({:enqueue, event_data}, state) do
+      # Add event to queue
       queue = :queue.in(event_data, state.queue)
-      {:noreply, [], %{state | queue: queue}}
+      queue_len = :queue.len(queue)
+
+      # If there's pending demand, dispatch immediately
+      {messages, new_queue} = take_from_queue(queue, state.pending_demand, [])
+      remaining_demand = state.pending_demand - length(messages)
+
+      if length(messages) > 0 do
+        Logger.info("ProjectHomeMeasured.Producer: Received event, dispatching #{length(messages)} immediately (pending_demand was #{state.pending_demand})")
+      end
+
+      if rem(queue_len, 100) == 0 do
+        Logger.info("ProjectHomeMeasured.Producer: Queue size: #{queue_len}")
+      end
+
+      {:noreply, messages, %{state | queue: new_queue, pending_demand: remaining_demand}}
     end
 
     defp take_from_queue(queue, 0, acc), do: {Enum.reverse(acc), queue}
@@ -128,12 +158,15 @@ defmodule CortexIqProjections.ProjectHomeMeasured.Projector do
 
   @impl true
   def handle_message(:default, %Message{data: event_data} = message, _context) do
+    Logger.info("ProjectHomeMeasured.Projector: handle_message called")
     # Just pass through to batcher - no processing needed here
     message |> Message.put_batcher(:database)
   end
 
   @impl true
   def handle_batch(:database, messages, _batch_info, _context) do
+    Logger.info("ProjectHomeMeasured.Projector: handle_batch called with #{length(messages)} messages")
+
     # Extract event data from all messages
     events = Enum.map(messages, & &1.data)
 
@@ -147,6 +180,8 @@ defmodule CortexIqProjections.ProjectHomeMeasured.Projector do
   # Projection Logic
 
   defp project_batch(events) do
+    Logger.info("ProjectHomeMeasured.Projector: project_batch called with #{length(events)} events")
+
     # Group by home_id for efficient upserts
     events_by_home = Enum.group_by(events, fn event ->
       get_in(event, [:kwargs, "home_id"])
@@ -167,6 +202,10 @@ defmodule CortexIqProjections.ProjectHomeMeasured.Projector do
   end
 
   defp project_home_measured(event_data) do
+    # DEBUG: Log the actual event structure
+    Logger.info("ProjectHomeMeasured.Projector: Received event_data keys: #{inspect(Map.keys(event_data))}")
+    Logger.info("ProjectHomeMeasured.Projector: Full event_data: #{inspect(event_data, limit: :infinity)}")
+
     # Handle both kwargs format and direct map format
     kwargs = Map.get(event_data, :kwargs, event_data)
     home_id = kwargs["home_id"] || kwargs["unique_id"]
@@ -174,6 +213,8 @@ defmodule CortexIqProjections.ProjectHomeMeasured.Projector do
     # Get production and consumption from actual event structure
     production_w = kwargs["_production_w"] || 0.0
     consumption_w = kwargs["_consumption_w"] || 0.0
+
+    Logger.info("ProjectHomeMeasured.Projector: Extracted home_id=#{home_id}, production=#{production_w}W, consumption=#{consumption_w}W")
 
     # Calculate grid power (negative when exporting, positive when importing)
     power_w = consumption_w - production_w

@@ -10,15 +10,21 @@ defmodule CortexIqUtilities.Application do
   @impl true
   def start(_type, _args) do
     # Get configuration from environment
-    provider_count = get_env("PROVIDER_COUNT", "5") |> String.to_integer()
+    providers_sources = get_env("PROVIDERS_SOURCES", "benelux_energy_providers.json")
     bondy_url = get_env("BONDY_URL", "ws://localhost:18080/ws")
     realm = get_env("BONDY_REALM", "be.cortexiq.energy")
 
-    Logger.info("Starting #{provider_count} provider bots")
+    # Load providers from JSON configuration (supports comma-separated list)
+    providers = CortexIqUtilities.ConfigLoader.load_providers_from_sources(providers_sources)
+
+    Logger.info("Starting #{length(providers)} provider bots from #{providers_sources}")
 
     children = [
       # Registry for provider bots
       {Registry, keys: :unique, name: CortexIqUtilities.Registry},
+
+      # Singleton subscriber for simulation reset events
+      {CortexIqUtilities.SubscribeSimulationReset.Subscriber, [bondy_url: bondy_url, realm: realm]},
 
       # Dynamic supervisor for provider bots
       {DynamicSupervisor, name: CortexIqUtilities.BotSupervisor, strategy: :one_for_one}
@@ -29,7 +35,7 @@ defmodule CortexIqUtilities.Application do
     case Supervisor.start_link(children, opts) do
       {:ok, pid} ->
         # Start provider bots
-        start_provider_bots(provider_count, bondy_url, realm)
+        start_provider_bots(providers, bondy_url, realm)
         {:ok, pid}
 
       error ->
@@ -37,13 +43,11 @@ defmodule CortexIqUtilities.Application do
     end
   end
 
-  defp start_provider_bots(_count, bondy_url, realm) do
-    # Get all providers from CortexIqCore
-    providers = CortexIqCore.Provider.all()
-
+  defp start_provider_bots(providers, bondy_url, realm) do
     Enum.each(providers, fn provider ->
       spec = {CortexIqUtilities.ProviderBot, [
         provider_id: provider.id,
+        provider: provider,  # Pass full provider struct
         bondy_url: bondy_url,
         realm: realm
       ]}

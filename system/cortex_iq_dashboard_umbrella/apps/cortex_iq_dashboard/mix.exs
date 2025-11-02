@@ -37,14 +37,10 @@ defmodule CortexIqDashboard.MixProject do
   defp deps do
     [
       {:cortex_iq_core, path: "../../../cortex_iq_core"},
-      {:cortex_iq_dashboard_schemas, path: "../../../cortex_iq_dashboard_schemas"},  # Shared schemas
+      {:cortex_iq_dashboard_schemas, path: "../../../cortex_iq_dashboard_schemas"},
       {:macula_sdk, path: "../../../macula_sdk"},
       {:dns_cluster, "~> 0.2.0"},
       {:phoenix_pubsub, "~> 2.1"},
-      {:ecto_sql, "~> 3.13"},
-      {:postgrex, ">= 0.0.0"},
-      {:gen_stage, "~> 1.2"},
-      {:flow, "~> 1.2"},
       {:jason, "~> 1.2"},
       {:swoosh, "~> 1.16"},
       {:req, "~> 0.5"}
@@ -57,10 +53,8 @@ defmodule CortexIqDashboard.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup"],
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run #{__DIR__}/priv/repo/seeds.exs"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+      setup: ["deps.get"],
+      test: ["test"]
     ]
   end
 end

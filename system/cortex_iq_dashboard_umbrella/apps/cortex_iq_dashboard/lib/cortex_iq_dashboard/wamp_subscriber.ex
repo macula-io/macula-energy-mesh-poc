@@ -194,6 +194,15 @@ defmodule CortexIqDashboard.WampSubscriber do
     end
   end
 
+  @impl true
+  def handle_call(:get_wamp_client, _from, %{wamp_client: nil} = state) do
+    {:reply, {:error, :not_connected}, state}
+  end
+
+  def handle_call(:get_wamp_client, _from, state) do
+    {:reply, {:ok, state.wamp_client}, state}
+  end
+
   ## Private Functions
 
   defp forward_to_database_writer(topic, event_data) do

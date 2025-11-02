@@ -11,6 +11,25 @@ defmodule CortexIqQueries.Queries do
   alias CortexIqDashboardSchemas.Projections.{HomeState, ProviderState}
 
   @doc """
+  Get a single home by home_id.
+
+  ## Parameters
+  - home_id: UUID string of the home
+
+  ## Returns
+  - home map if found
+  - nil if not found
+  """
+  def get_home(home_id) when is_binary(home_id) do
+    case Repo.get(HomeState, home_id) do
+      nil -> nil
+      home -> serialize_home(home)
+    end
+  end
+
+  def get_home(_), do: nil
+
+  @doc """
   Get paged list of homes with optional filtering and sorting.
 
   ## Options
@@ -199,7 +218,10 @@ defmodule CortexIqQueries.Queries do
   Boolean - true if home exists, false otherwise
   """
   def home_exists?(home_id) when is_binary(home_id) do
-    Repo.exists?(from h in HomeState, where: h.home_id == ^home_id)
+    # Check if home is FULLY initialized (has name and location, not just home_id)
+    # This prevents race condition where home.measured creates partial records before home.initialized
+    Repo.exists?(from h in HomeState,
+      where: h.home_id == ^home_id and not is_nil(h.name) and not is_nil(h.location))
   end
 
   def home_exists?(_), do: false
@@ -219,23 +241,149 @@ defmodule CortexIqQueries.Queries do
 
   def provider_exists?(_), do: false
 
+  @doc """
+  Reserve a home_id in the database.
+
+  Creates a minimal HomeState record with just home_id and status=RESERVED (1).
+  This prevents race conditions where multiple homes try to initialize with the same ID.
+
+  ## Parameters
+  - home_id: UUID string of the home to reserve
+
+  ## Returns
+  - `{:ok, true}` if reservation successful
+  - `{:error, :already_exists}` if home_id already reserved/initialized
+  - `{:error, reason}` for other errors
+  """
+  def reserve_home_id(home_id) when is_binary(home_id) do
+    # Check if home already exists
+    if Repo.exists?(from h in HomeState, where: h.home_id == ^home_id) do
+      {:error, :already_exists}
+    else
+      # Create minimal record with RESERVED status
+      # status = 1 (HomeStatus.reserved)
+      changeset = HomeState.changeset(%HomeState{}, %{
+        home_id: home_id,
+        status: 1,  # RESERVED flag
+        energy_bought_kwh: 0.0,
+        energy_sold_kwh: 0.0,
+        net_balance_kwh: 0.0,
+        cost_paid: 0.0,
+        revenue_received: 0.0,
+        net_cost: 0.0,
+        cortexiq_total_commission: 0.0,
+        cortexiq_total_savings: 0.0,
+        cortexiq_net_savings: 0.0,
+        contract_switches_count: 0
+      })
+
+      case Repo.insert(changeset) do
+        {:ok, _home_state} -> {:ok, true}
+        {:error, changeset} -> {:error, changeset}
+      end
+    end
+  end
+
+  def reserve_home_id(_), do: {:error, :invalid_home_id}
+
+  @doc """
+  Register a home with full seed data in the database.
+
+  Creates a complete HomeState record with all home information including
+  name, location, capacities, etc. This is called during home initialization
+  to register the complete home profile.
+
+  ## Parameters
+  - home_data: Map containing home seed data
+    - home_id: UUID string (required)
+    - name: Home name (e.g., "Peeters Family")
+    - iot_provider: IoT provider name (e.g., "HomeWizard")
+    - location: City name
+    - street: Street address
+    - postal_code: Postal code
+    - region: Region identifier
+    - latitude: Geographic latitude
+    - longitude: Geographic longitude
+    - solar_capacity_kw: Solar panel capacity in kW
+    - battery_capacity_kwh: Battery storage capacity in kWh
+
+  ## Returns
+  - `{:ok, true}` if registration successful
+  - `{:error, :already_exists}` if home_id already exists
+  - `{:error, reason}` for other errors
+  """
+  def register_home(home_data) when is_map(home_data) do
+    home_id = Map.get(home_data, :home_id)
+
+    unless home_id do
+      {:error, :invalid_home_id}
+    else
+      # Check if home already exists
+      if Repo.exists?(from h in HomeState, where: h.home_id == ^home_id) do
+        {:error, :already_exists}
+      else
+        # Create complete record with RESERVED status
+        # status = 1 (HomeStatus.reserved)
+        changeset = HomeState.changeset(%HomeState{}, %{
+          home_id: home_id,
+          name: Map.get(home_data, :name),
+          iot_provider: Map.get(home_data, :iot_provider),
+          location: Map.get(home_data, :location),
+          street: Map.get(home_data, :street),
+          postal_code: Map.get(home_data, :postal_code),
+          region: Map.get(home_data, :region),
+          latitude: Map.get(home_data, :latitude),
+          longitude: Map.get(home_data, :longitude),
+          solar_capacity_kw: Map.get(home_data, :solar_capacity_kw),
+          battery_capacity_kwh: Map.get(home_data, :battery_capacity_kwh),
+          status: 1,  # RESERVED flag
+          energy_bought_kwh: 0.0,
+          energy_sold_kwh: 0.0,
+          net_balance_kwh: 0.0,
+          cost_paid: 0.0,
+          revenue_received: 0.0,
+          net_cost: 0.0,
+          cortexiq_total_commission: 0.0,
+          cortexiq_total_savings: 0.0,
+          cortexiq_net_savings: 0.0,
+          contract_switches_count: 0
+        })
+
+        case Repo.insert(changeset) do
+          {:ok, _home_state} -> {:ok, true}
+          {:error, changeset} -> {:error, changeset}
+        end
+      end
+    end
+  end
+
+  def register_home(_), do: {:error, :invalid_home_data}
+
   # Private helpers
 
   defp serialize_home(home) do
     %{
       home_id: home.home_id,
+      name: home.name,
+      iot_provider: home.iot_provider,
       location: home.location,
+      street: home.street,
       postal_code: home.postal_code,
       region: home.region,
+      latitude: home.latitude,
+      longitude: home.longitude,
+      solar_capacity_kw: home.solar_capacity_kw,
       production_kw: home.production_kw,
       consumption_kw: home.consumption_kw,
       battery_percent: home.battery_percent,
+      battery_capacity_kwh: home.battery_capacity_kwh,
       provider_id: home.provider_id,
       contract_id: home.contract_id,
       energy_bought_kwh: home.energy_bought_kwh,
       energy_sold_kwh: home.energy_sold_kwh,
       net_balance_kwh: home.net_balance_kwh,
       cortexiq_net_savings: home.cortexiq_net_savings,
+      status: home.status || 0,
       last_event_at: home.last_event_at
     }
   end

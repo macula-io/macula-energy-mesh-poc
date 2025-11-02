@@ -42,7 +42,7 @@ defmodule CortexIqHomes.ConfigLoader do
   """
   @spec load_homes(String.t()) :: [Home.t()]
   def load_homes(filename) do
-    priv_dir = :code.priv_dir(:cortex_iq_homes)
+    priv_dir = :code.priv_dir(:cortex_iq_homes) |> to_string()
     file_path = Path.join([priv_dir, "homes", filename])
 
     Logger.info("Loading homes from #{file_path}")
@@ -64,13 +64,30 @@ defmodule CortexIqHomes.ConfigLoader do
   end
 
   @doc """
-  Parse a JSON home object into a Home struct.
+  Load homes from multiple JSON files.
+
+  Accepts a comma-separated list of filenames and returns a combined list
+  of homes from all files.
+
+  ## Examples
+
+      iex> ConfigLoader.load_homes_from_sources("file1.json,file2.json")
+      [%Home{}, %Home{}, ...]
   """
-  @spec parse_home(map()) :: Home.t()
+  @spec load_homes_from_sources(String.t()) :: [Home.t()]
+  def load_homes_from_sources(sources_string) when is_binary(sources_string) do
+    sources_string
+    |> String.split(",")
+    |> Enum.map(&String.trim/1)
+    |> Enum.reject(&(&1 == ""))
+    |> Enum.flat_map(&load_homes/1)
+  end
+
   defp parse_home(data) do
     %Home{
       id: data["id"],
       name: data["name"],
+      iot_provider: data["iot_provider"],
       location: %{
         street: data["address"]["street"],
         city: data["address"]["city"],

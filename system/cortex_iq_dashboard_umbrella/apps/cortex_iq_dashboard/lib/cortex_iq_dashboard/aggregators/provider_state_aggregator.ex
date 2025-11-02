@@ -15,9 +15,10 @@ defmodule CortexIqDashboard.Aggregators.ProviderStateAggregator do
   @impl true
   def init(_opts) do
     if connected?() do
-      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "wamp:events")
+      # Subscribe to vertical slice channels
+      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:provider_initialized")
       Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:control")
-      Logger.info("ProviderStateAggregator: Subscribed to WAMP events and dashboard control")
+      Logger.info("ProviderStateAggregator: Subscribed to vertical slice channels")
     end
 
     {:ok, %{}}
@@ -42,14 +43,12 @@ defmodule CortexIqDashboard.Aggregators.ProviderStateAggregator do
   end
 
   @impl true
-  def handle_info({:wamp_event, _subscription_topic, event_data}, state) do
-    topic = get_in(event_data, [:details, "topic"]) || "unknown"
-    kwargs = event_data[:kwargs] || %{}
+  def handle_info({:provider_initialized, kwargs}, state) do
     provider_id = Map.get(kwargs, "provider_id")
 
-    # Only process events that have a provider_id in the payload
-    if provider_id && String.ends_with?(topic, ".market.contract_proposed") do
-      route_to_provider(provider_id, kwargs)
+    if provider_id do
+      Logger.info("ProviderStateAggregator: Provider #{provider_id} initialized")
+      ensure_provider_aggregate_started(provider_id)
     end
 
     {:noreply, state}

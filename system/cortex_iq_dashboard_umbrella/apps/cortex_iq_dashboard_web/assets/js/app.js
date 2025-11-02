@@ -69,7 +69,7 @@ const BelgiumMap = {
 
     // Listen for home state updates from server
     this.handleEvent("update_home", ({home_id, city, state}) => {
-      console.log(`[BelgiumMap] Received update for ${home_id} in ${city}`)
+      // console.log(`[BelgiumMap] Received update for ${home_id} in ${city}`)
 
       // Track which homes are in which city
       if (!this.homesByCity[city]) {
@@ -77,7 +77,7 @@ const BelgiumMap = {
       }
       if (!this.homesByCity[city].includes(home_id)) {
         this.homesByCity[city].push(home_id)
-        console.log(`[BelgiumMap] Added ${home_id} to ${city}. Total homes in city: ${this.homesByCity[city].length}`)
+        // console.log(`[BelgiumMap] Added ${home_id} to ${city}. Total homes in city: ${this.homesByCity[city].length}`)
       }
 
       // Track home count
@@ -93,7 +93,7 @@ const BelgiumMap = {
       if (!this.cityMarkers[city]) {
         const location = this.locationData[city]
         if (location) {
-          console.log(`[BelgiumMap] Creating new marker for ${city} at [${location.latitude}, ${location.longitude}]`)
+          // console.log(`[BelgiumMap] Creating new marker for ${city} at [${location.latitude}, ${location.longitude}]`)
           const marker = L.circleMarker([location.latitude, location.longitude], {
             radius: 5, // Smaller initial size for 1000 homes
             fillColor: '#6b7280', // gray initially
@@ -120,7 +120,7 @@ const BelgiumMap = {
             location: location
           }
         } else {
-          console.warn(`[BelgiumMap] Location not found for city: "${city}". Available cities:`, Object.keys(this.locationData))
+          // console.warn(`[BelgiumMap] Location not found for city: "${city}". Available cities:`, Object.keys(this.locationData))
         }
       }
 
@@ -139,9 +139,9 @@ const BelgiumMap = {
         }, 0)
 
         // Log aggregate calculation occasionally
-        if (Math.random() < 0.01) { // 1% sample rate
-          console.log(`[BelgiumMap] ${city} aggregate: ${aggregateNetEnergy.toFixed(0)}W from ${homesInCity} homes`)
-        }
+        // if (Math.random() < 0.01) { // 1% sample rate
+        //   console.log(`[BelgiumMap] ${city} aggregate: ${aggregateNetEnergy.toFixed(0)}W from ${homesInCity} homes`)
+        // }
 
         // Determine color based on CITY aggregate net energy
         let color
@@ -180,10 +180,10 @@ const BelgiumMap = {
       }
 
       // Log stats every 10th home
-      const totalHomes = Object.values(this.homesByCity).reduce((sum, homes) => sum + homes.length, 0)
-      if (totalHomes % 10 === 0) {
-        console.log(`[BelgiumMap] Stats: ${totalHomes} homes across ${Object.keys(this.cityMarkers).length} cities`)
-      }
+      // const totalHomes = Object.values(this.homesByCity).reduce((sum, homes) => sum + homes.length, 0)
+      // if (totalHomes % 10 === 0) {
+      //   console.log(`[BelgiumMap] Stats: ${totalHomes} homes across ${Object.keys(this.cityMarkers).length} cities`)
+      // }
     })
   },
 
@@ -857,11 +857,31 @@ const SavingsHistoryChart = {
   }
 }
 
+// Auto-dismiss Toast Hook
+const AutoDismissToast = {
+  mounted() {
+    // Auto-dismiss after 3 seconds
+    this.timeout = setTimeout(() => {
+      this.el.style.opacity = '0'
+      this.el.style.transition = 'opacity 300ms ease-out'
+      setTimeout(() => {
+        this.pushEvent("lv:clear-flash", {})
+      }, 300)
+    }, 3000)
+  },
+
+  destroyed() {
+    if (this.timeout) {
+      clearTimeout(this.timeout)
+    }
+  }
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {BelgiumMap, PhaseChart, PowerSparkline, BatterySparkline, PricingChart, AggregatePowerChart, MarketShareChart, RegionalBalanceChart, PriceComparisonChart, SavingsHistoryChart},
+  hooks: {BelgiumMap, PhaseChart, PowerSparkline, BatterySparkline, PricingChart, AggregatePowerChart, MarketShareChart, RegionalBalanceChart, PriceComparisonChart, SavingsHistoryChart, AutoDismissToast},
 })
 
 // Show progress bar on live navigation and form submits

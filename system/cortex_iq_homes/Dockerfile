@@ -6,8 +6,8 @@
 ####################################################################################################
 
 ARG ELIXIR_VERSION=1.18.1
-ARG OTP_VERSION=26.2.5.6
-ARG ALPINE_VERSION=3.20.3
+ARG OTP_VERSION=27.2
+ARG ALPINE_VERSION=3.21.0
 
 ####################################################################################################
 # Stage 1: Builder
@@ -69,6 +69,9 @@ WORKDIR /app
 
 # Copy release from builder
 COPY --from=builder --chown=cortexiq:cortexiq /app/_build/prod/rel/cortex_iq_homes ./
+
+# Copy priv directory to the correct location for :code.priv_dir/1
+COPY --from=builder --chown=cortexiq:cortexiq /app/priv ./lib/cortex_iq_homes-0.1.0/priv
 
 USER cortexiq
 

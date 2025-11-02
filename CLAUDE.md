@@ -32,6 +32,101 @@ Create a compelling proof-of-concept that showcases **Macula** - a distributed a
 - One-command startup
 - Impressive metrics and visualizations
 
+## Architecture Principles
+
+### SCREAMING ARCHITECTURE - Critical Implementation Guideline
+
+**The intent of a module MUST be IMMEDIATELY clear from its filename.**
+
+❌ **NEVER use generic/abstract names:**
+- `SubscriberSystem` (generic - doesn't tell WHAT it subscribes to)
+- `PublisherSystem` (generic - doesn't tell WHAT it publishes)
+- `EventHandler` (generic - doesn't tell WHICH event)
+- `Manager`, `Service`, `Helper` (vague - no business meaning)
+
+✅ **ALWAYS use specific, descriptive names:**
+- `SimulationTimeAdvancedSystem` (SCREAMS: handles simulation time events!)
+- `HomeMeasuredPublisherSystem` (SCREAMS: publishes home measurements!)
+- `ContractProposedSubscriber` (SCREAMS: subscribes to contract proposals!)
+
+**Rationale:**
+- File names should tell the complete story
+- No mental mapping or configuration reading required
+- Self-documenting codebase
+- Easy navigation in large projects
+- Business domain visible in file structure
+
+**See:** `system/cortex_iq_homes/ARCHITECTURE_GUIDELINES.md` for complete guidelines and examples.
+
+### IDIOMATIC ELIXIR - Critical Coding Practices
+
+**Write declarative, pattern-matched Elixir code.**
+
+✅ **ALWAYS:**
+- Use pattern matching on function heads (primary control flow)
+- Write separate function clauses for different cases
+- Use guards for simple conditions (`when capacity > 10`)
+- Use Enum functions for collections
+- Use tail recursion when needed
+- Write declarative code (express WHAT, not HOW)
+
+❌ **AVOID:**
+- `if` statements (use pattern matching instead)
+- `case` statements (use pattern matching instead)
+- `cond` statements (use pattern matching instead)
+- `try/catch` (use pattern matching on `{:ok, _}` / `{:error, _}`)
+- Imperative code (nested logic, manual loops)
+- Loops (don't exist in Elixir - use Enum or recursion)
+
+**Example:**
+```elixir
+# ❌ BAD: Using case
+def handle_event(data, state) do
+  case data.type do
+    :measurement -> handle_measurement(data, state)
+    :contract -> handle_contract(data, state)
+  end
+end
+
+# ✅ GOOD: Pattern matching on function heads
+def handle_event(%{type: :measurement} = data, state), do: handle_measurement(data, state)
+def handle_event(%{type: :contract} = data, state), do: handle_contract(data, state)
+```
+
+**See:** `system/cortex_iq_homes/ARCHITECTURE_GUIDELINES.md` - Idiomatic Elixir section for complete examples.
+
+### TESTING REQUIREMENTS - Critical Quality Practice
+
+**No module is complete without passing tests.**
+
+✅ **ALWAYS:**
+- Write tests for every module
+- Tests must PASS before committing
+- Test public functions and edge cases
+- Mirror source structure in test directory
+- Test pattern-matched function clauses
+
+❌ **NEVER:**
+- Skip writing tests
+- Commit code without tests
+- Leave failing tests
+- Test as an afterthought
+
+**Test Structure:**
+```
+lib/cortex_iq_homes/subscribe_simulation_time_advanced/
+├── system.ex
+└── subscriber.ex
+
+test/cortex_iq_homes/subscribe_simulation_time_advanced/
+├── system_test.exs
+└── subscriber_test.exs
+```
+
+**Key Principle:** If it doesn't have tests, it's not done.
+
+**See:** `system/cortex_iq_homes/ARCHITECTURE_GUIDELINES.md` - Testing Requirements section for examples.
+
 ## Strategic Decisions Made
 
 ### 1. Technology Stack
@@ -799,3 +894,4 @@ The dashboard should make these points visually obvious:
 - **Phoenix LiveView**: https://hexdocs.pm/phoenix_live_view/
 - **WAMP Protocol**: https://wamp-proto.org/
 - in our scripts, environment variables should not reflect choices in terms of distros, but should reflect their purpose
+- CortexIQ Dashboard DOES NOT need to connect to postgres! All data in the dashboard must come from 2  sources only: eiter by subscribing to a WAMP topic (and processing the events that are published on it) OR cortex_iq_queries, by CALLING a published RPC

@@ -16,8 +16,6 @@ defmodule CortexIqDashboard.Application do
     children = [
       {DNSCluster, query: Application.get_env(:cortex_iq_dashboard, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: CortexIqDashboard.PubSub},
-      # Database repo (must start before DatabaseWriter/DatabasePersister)
-      CortexIqDashboard.Repo,
       # System supervisor manages RealmManager and WampSubscriber
       {CortexIqDashboard.System, [
         realm_uri: realm_uri,
@@ -126,22 +124,20 @@ defmodule CortexIqDashboard.Application do
         ]},
         id: :subscriber_simulation_reset
       ),
+      {CortexIqDashboard.SubscribeTotalsCalculated.System, [
+        realm_uri: realm_uri,
+        bondy_url: bondy_url
+      ]},
       # Registries for entity aggregates
       {Registry, keys: :unique, name: CortexIqDashboard.HomeRegistry},
       {Registry, keys: :unique, name: CortexIqDashboard.ProviderRegistry},
       # DynamicSupervisors for entity aggregates
       {DynamicSupervisor, strategy: :one_for_one, name: CortexIqDashboard.HomeSupervisor},
       {DynamicSupervisor, strategy: :one_for_one, name: CortexIqDashboard.ProviderSupervisor},
-      # Database I/O worker (async writes for aggregate state, no business logic)
-      CortexIqDashboard.DatabaseWriter,
-      # Flow-based time-series writer (high-throughput event logging with back-pressure)
-      CortexIqDashboard.DatabaseWriter.Pipeline,
       # Event routers (spawn entity aggregates on-demand)
       CortexIqDashboard.Aggregators.HomeStateAggregator,
       CortexIqDashboard.Aggregators.ProviderStateAggregator,
       CortexIqDashboard.Aggregators.SystemStatsAggregator,
-      # Database persistence (listens to entity state changes and persists to DB)
-      CortexIqDashboard.DatabasePersister,
       # Market components (calculate and broadcast spot prices)
       CortexIqDashboard.Market.SpotMarketBroadcaster,
       # View aggregators (maintain derived views in-memory, push updates to LiveView)

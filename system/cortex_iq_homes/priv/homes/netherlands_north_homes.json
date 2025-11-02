@@ -1,0 +1,977 @@
+[
+  {
+    "id": "019a2400-0001-7000-a001-000000000001",
+    "name": "de Jong Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9711 AA",
+      "street": "Grote Markt 12",
+      "region": "netherlands",
+      "latitude": 53.2194,
+      "longitude": 6.5665
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 10.5
+  },
+  {
+    "id": "019a2400-0002-7000-a002-000000000002",
+    "name": "Jansen Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9712 BB",
+      "street": "Vismarkt 45",
+      "region": "netherlands",
+      "latitude": 53.2176,
+      "longitude": 6.5642
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 9.2
+  },
+  {
+    "id": "019a2400-0003-7000-a003-000000000003",
+    "name": "de Vries Family",
+    "iot_provider": "Homey Pro",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9713 CC",
+      "street": "Herestraat 78",
+      "region": "netherlands",
+      "latitude": 53.2203,
+      "longitude": 6.5610
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 12.3
+  },
+  {
+    "id": "019a2400-0004-7000-a004-000000000004",
+    "name": "van den Berg Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8911 AA",
+      "street": "Voorstreek 23",
+      "region": "netherlands",
+      "latitude": 53.2012,
+      "longitude": 5.7866
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 11.0
+  },
+  {
+    "id": "019a2400-0005-7000-a005-000000000005",
+    "name": "Bakker Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8912 BB",
+      "street": "Wirdumerdijk 134",
+      "region": "netherlands",
+      "latitude": 53.1956,
+      "longitude": 5.7890
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 8.8
+  },
+  {
+    "id": "019a2400-0006-7000-a006-000000000006",
+    "name": "Visser Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8913 CC",
+      "street": "Harlingerstraatweg 56",
+      "region": "netherlands",
+      "latitude": 53.1985,
+      "longitude": 5.7823
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 13.2
+  },
+  {
+    "id": "019a2400-0007-7000-a007-000000000007",
+    "name": "Smit Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Assen",
+      "postal_code": "9401 AA",
+      "street": "Brinkstraat 15",
+      "region": "netherlands",
+      "latitude": 53.0019,
+      "longitude": 6.5623
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 7.5
+  },
+  {
+    "id": "019a2400-0008-7000-a008-000000000008",
+    "name": "Meijer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Assen",
+      "postal_code": "9402 BB",
+      "street": "Torenlaan 89",
+      "region": "netherlands",
+      "latitude": 52.9956,
+      "longitude": 6.5689
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 9.9
+  },
+  {
+    "id": "019a2400-0009-7000-a009-000000000009",
+    "name": "de Boer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Emmen",
+      "postal_code": "7811 AA",
+      "street": "Hoofdstraat 234",
+      "region": "netherlands",
+      "latitude": 52.7791,
+      "longitude": 6.8958
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 8.4
+  },
+  {
+    "id": "019a2400-0010-7000-a010-000000000010",
+    "name": "Mulder Family",
+    "iot_provider": "Growatt",
+    "address": {
+      "city": "Emmen",
+      "postal_code": "7812 BB",
+      "street": "Westeind 67",
+      "region": "netherlands",
+      "latitude": 52.7823,
+      "longitude": 6.8912
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 14.1
+  },
+  {
+    "id": "019a2400-0011-7000-a011-000000000011",
+    "name": "de Groot Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Hoogeveen",
+      "postal_code": "7901 AA",
+      "street": "Marktstraat 45",
+      "region": "netherlands",
+      "latitude": 52.7213,
+      "longitude": 6.4764
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 9.5
+  },
+  {
+    "id": "019a2400-0012-7000-a012-000000000012",
+    "name": "Bos Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Hoogeveen",
+      "postal_code": "7902 BB",
+      "street": "Bentinckslaan 123",
+      "region": "netherlands",
+      "latitude": 52.7256,
+      "longitude": 6.4801
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 7.8
+  },
+  {
+    "id": "019a2400-0013-7000-a013-000000000013",
+    "name": "Vos Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9714 DD",
+      "street": "Oosterstraat 112",
+      "region": "netherlands",
+      "latitude": 53.2167,
+      "longitude": 6.5689
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 11.7
+  },
+  {
+    "id": "019a2400-0014-7000-a014-000000000014",
+    "name": "Peters Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9715 EE",
+      "street": "Folkingestraat 56",
+      "region": "netherlands",
+      "latitude": 53.2134,
+      "longitude": 6.5723
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 13.5
+  },
+  {
+    "id": "019a2400-0015-7000-a015-000000000015",
+    "name": "Hendriks Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8914 DD",
+      "street": "Tweebaksmarkt 78",
+      "region": "netherlands",
+      "latitude": 53.2001,
+      "longitude": 5.7934
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 9.1
+  },
+  {
+    "id": "019a2400-0016-7000-a016-000000000016",
+    "name": "van Leeuwen Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8915 EE",
+      "street": "Zuidvliet 234",
+      "region": "netherlands",
+      "latitude": 53.1967,
+      "longitude": 5.7967
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 10.2
+  },
+  {
+    "id": "019a2400-0017-7000-a017-000000000017",
+    "name": "Dekker Family",
+    "iot_provider": "Homey Pro",
+    "address": {
+      "city": "Assen",
+      "postal_code": "9403 CC",
+      "street": "Vaart 67",
+      "region": "netherlands",
+      "latitude": 53.0034,
+      "longitude": 6.5745
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 12.1
+  },
+  {
+    "id": "019a2400-0018-7000-a018-000000000018",
+    "name": "Brouwer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Assen",
+      "postal_code": "9404 DD",
+      "street": "Kloosterstraat 89",
+      "region": "netherlands",
+      "latitude": 52.9989,
+      "longitude": 6.5678
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 8.9
+  },
+  {
+    "id": "019a2400-0019-7000-a019-000000000019",
+    "name": "Schouten Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Emmen",
+      "postal_code": "7813 CC",
+      "street": "Raadhuisplein 12",
+      "region": "netherlands",
+      "latitude": 52.7856,
+      "longitude": 6.8989
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 10.8
+  },
+  {
+    "id": "019a2400-0020-7000-a020-000000000020",
+    "name": "Kok Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Emmen",
+      "postal_code": "7814 DD",
+      "street": "Noordbargerstraat 156",
+      "region": "netherlands",
+      "latitude": 52.7778,
+      "longitude": 6.9023
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 7.9
+  },
+  {
+    "id": "019a2400-0021-7000-a021-000000000021",
+    "name": "de Wit Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9716 FF",
+      "street": "Peperstraat 90",
+      "region": "netherlands",
+      "latitude": 53.2145,
+      "longitude": 6.5756
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 12.8
+  },
+  {
+    "id": "019a2400-0022-7000-a022-000000000022",
+    "name": "van der Meer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9717 GG",
+      "street": "Nieuwe Ebbingestraat 34",
+      "region": "netherlands",
+      "latitude": 53.2189,
+      "longitude": 6.5701
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 9.6
+  },
+  {
+    "id": "019a2400-0023-7000-a023-000000000023",
+    "name": "Koning Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8916 FF",
+      "street": "Doelestraat 45",
+      "region": "netherlands",
+      "latitude": 53.1978,
+      "longitude": 5.7878
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 14.5
+  },
+  {
+    "id": "019a2400-0024-7000-a024-000000000024",
+    "name": "van Dijk Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8917 GG",
+      "street": "Nieuwestad 123",
+      "region": "netherlands",
+      "latitude": 53.2023,
+      "longitude": 5.7912
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 8.3
+  },
+  {
+    "id": "019a2400-0025-7000-a025-000000000025",
+    "name": "Vermeulen Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Hoogeveen",
+      "postal_code": "7903 CC",
+      "street": "Hoofdstraat 78",
+      "region": "netherlands",
+      "latitude": 52.7234,
+      "longitude": 6.4823
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 10.1
+  },
+  {
+    "id": "019a2400-0026-7000-a026-000000000026",
+    "name": "Kuiper Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Hoogeveen",
+      "postal_code": "7904 DD",
+      "street": "Zuidwolde 234",
+      "region": "netherlands",
+      "latitude": 52.7267,
+      "longitude": 6.4756
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 9.3
+  },
+  {
+    "id": "019a2400-0027-7000-a027-000000000027",
+    "name": "van den Heuvel Family",
+    "iot_provider": "Homey Pro",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9718 HH",
+      "street": "Zuiderdiep 156",
+      "region": "netherlands",
+      "latitude": 53.2112,
+      "longitude": 6.5634
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 12.6
+  },
+  {
+    "id": "019a2400-0028-7000-a028-000000000028",
+    "name": "Maas Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9719 JJ",
+      "street": "Damsterdiep 89",
+      "region": "netherlands",
+      "latitude": 53.2156,
+      "longitude": 6.5778
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 8.7
+  },
+  {
+    "id": "019a2400-0029-7000-a029-000000000029",
+    "name": "Hoekstra Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8918 HH",
+      "street": "Spanjaardslaan 67",
+      "region": "netherlands",
+      "latitude": 53.1945,
+      "longitude": 5.7845
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 11.2
+  },
+  {
+    "id": "019a2400-0030-7000-a030-000000000030",
+    "name": "Bosch Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8919 JJ",
+      "street": "Ruiterskwartier 234",
+      "region": "netherlands",
+      "latitude": 53.1989,
+      "longitude": 5.7901
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 9.8
+  },
+  {
+    "id": "019a2400-0031-7000-a031-000000000031",
+    "name": "Sanders Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Assen",
+      "postal_code": "9405 EE",
+      "street": "Beilerstraat 45",
+      "region": "netherlands",
+      "latitude": 53.0067,
+      "longitude": 6.5712
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 13.1
+  },
+  {
+    "id": "019a2400-0032-7000-a032-000000000032",
+    "name": "Jacobs Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Assen",
+      "postal_code": "9406 FF",
+      "street": "Noordersingel 123",
+      "region": "netherlands",
+      "latitude": 53.0012,
+      "longitude": 6.5656
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 8.5
+  },
+  {
+    "id": "019a2400-0033-7000-a033-000000000033",
+    "name": "Huisman Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Emmen",
+      "postal_code": "7815 EE",
+      "street": "Angelsloërdijk 78",
+      "region": "netherlands",
+      "latitude": 52.7812,
+      "longitude": 6.8945
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 10.4
+  },
+  {
+    "id": "019a2400-0034-7000-a034-000000000034",
+    "name": "van der Linden Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Emmen",
+      "postal_code": "7816 FF",
+      "street": "Verlengde Vaart 156",
+      "region": "netherlands",
+      "latitude": 52.7845,
+      "longitude": 6.9012
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 9.4
+  },
+  {
+    "id": "019a2400-0035-7000-a035-000000000035",
+    "name": "Smeets Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9720 KK",
+      "street": "Verlengde Hereweg 234",
+      "region": "netherlands",
+      "latitude": 53.2201,
+      "longitude": 6.5789
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 11.5
+  },
+  {
+    "id": "019a2400-0036-7000-a036-000000000036",
+    "name": "Smits Family",
+    "iot_provider": "Growatt",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9721 LL",
+      "street": "Coendersweg 67",
+      "region": "netherlands",
+      "latitude": 53.2178,
+      "longitude": 6.5812
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 14.0
+  },
+  {
+    "id": "019a2400-0037-7000-a037-000000000037",
+    "name": "Verhoeven Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8920 KK",
+      "street": "Industrieweg 89",
+      "region": "netherlands",
+      "latitude": 53.1934,
+      "longitude": 5.7956
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 9.0
+  },
+  {
+    "id": "019a2400-0038-7000-a038-000000000038",
+    "name": "Kramer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8921 LL",
+      "street": "Achter de Hoven 123",
+      "region": "netherlands",
+      "latitude": 53.2045,
+      "longitude": 5.7989
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 10.3
+  },
+  {
+    "id": "019a2400-0039-7000-a039-000000000039",
+    "name": "Martens Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Hoogeveen",
+      "postal_code": "7905 EE",
+      "street": "De Weide 45",
+      "region": "netherlands",
+      "latitude": 52.7289,
+      "longitude": 6.4790
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 7.7
+  },
+  {
+    "id": "019a2400-0040-7000-a040-000000000040",
+    "name": "van Beek Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Hoogeveen",
+      "postal_code": "7906 FF",
+      "street": "Meppelerdiep 234",
+      "region": "netherlands",
+      "latitude": 52.7223,
+      "longitude": 6.4834
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 10.7
+  },
+  {
+    "id": "019a2400-0041-7000-a041-000000000041",
+    "name": "Willems Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9722 MM",
+      "street": "Parkweg 156",
+      "region": "netherlands",
+      "latitude": 53.2234,
+      "longitude": 6.5623
+    },
+    "solar_capacity_kw": 5.5,
+    "battery_capacity_kwh": 14.8
+  },
+  {
+    "id": "019a2400-0042-7000-a042-000000000042",
+    "name": "de Vos Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9723 NN",
+      "street": "Concourslaan 78",
+      "region": "netherlands",
+      "latitude": 53.2156,
+      "longitude": 6.5845
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 8.6
+  },
+  {
+    "id": "019a2400-0043-7000-a043-000000000043",
+    "name": "Scholten Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8922 MM",
+      "street": "Valeriusplein 67",
+      "region": "netherlands",
+      "latitude": 53.1967,
+      "longitude": 5.7923
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 9.7
+  },
+  {
+    "id": "019a2400-0044-7000-a044-000000000044",
+    "name": "Prins Family",
+    "iot_provider": "Homey Pro",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8923 NN",
+      "street": "Snekertrekweg 234",
+      "region": "netherlands",
+      "latitude": 53.2056,
+      "longitude": 5.7867
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 12.4
+  },
+  {
+    "id": "019a2400-0045-7000-a045-000000000045",
+    "name": "Rutten Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Assen",
+      "postal_code": "9407 GG",
+      "street": "Deurzerweg 89",
+      "region": "netherlands",
+      "latitude": 53.0089,
+      "longitude": 6.5789
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 8.2
+  },
+  {
+    "id": "019a2400-0046-7000-a046-000000000046",
+    "name": "Groen Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Assen",
+      "postal_code": "9408 HH",
+      "street": "Rolderstraat 123",
+      "region": "netherlands",
+      "latitude": 53.0045,
+      "longitude": 6.5734
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 9.5
+  },
+  {
+    "id": "019a2400-0047-7000-a047-000000000047",
+    "name": "Berg Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Emmen",
+      "postal_code": "7817 GG",
+      "street": "Bargeres 45",
+      "region": "netherlands",
+      "latitude": 52.7889,
+      "longitude": 6.8978
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 10.6
+  },
+  {
+    "id": "019a2400-0048-7000-a048-000000000048",
+    "name": "Hofman Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Emmen",
+      "postal_code": "7818 HH",
+      "street": "Weerdingerstraat 234",
+      "region": "netherlands",
+      "latitude": 52.7756,
+      "longitude": 6.9045
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 9.2
+  },
+  {
+    "id": "019a2400-0049-7000-a049-000000000049",
+    "name": "Klein Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9724 PP",
+      "street": "Helperzoom 67",
+      "region": "netherlands",
+      "latitude": 53.2123,
+      "longitude": 6.5867
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 11.3
+  },
+  {
+    "id": "019a2400-0050-7000-a050-000000000050",
+    "name": "Smit Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9725 QQ",
+      "street": "Sontweg 156",
+      "region": "netherlands",
+      "latitude": 53.2189,
+      "longitude": 6.5901
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 13.4
+  },
+  {
+    "id": "019a2400-0051-7000-a051-000000000051",
+    "name": "Timmermans Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8924 PP",
+      "street": "Groningerstraatweg 89",
+      "region": "netherlands",
+      "latitude": 53.2012,
+      "longitude": 5.7934
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 8.8
+  },
+  {
+    "id": "019a2400-0052-7000-a052-000000000052",
+    "name": "van der Wal Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8925 QQ",
+      "street": "Harlingerweg 234",
+      "region": "netherlands",
+      "latitude": 53.1978,
+      "longitude": 5.7812
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 10.0
+  },
+  {
+    "id": "019a2400-0053-7000-a053-000000000053",
+    "name": "Blom Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Hoogeveen",
+      "postal_code": "7907 GG",
+      "street": "Industrieweg 45",
+      "region": "netherlands",
+      "latitude": 52.7301,
+      "longitude": 6.4867
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 7.6
+  },
+  {
+    "id": "019a2400-0054-7000-a054-000000000054",
+    "name": "Linden Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Hoogeveen",
+      "postal_code": "7908 HH",
+      "street": "Eemster 123",
+      "region": "netherlands",
+      "latitude": 52.7245,
+      "longitude": 6.4723
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 10.9
+  },
+  {
+    "id": "019a2400-0055-7000-a055-000000000055",
+    "name": "van Dam Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9726 RR",
+      "street": "Zernikeplein 234",
+      "region": "netherlands",
+      "latitude": 53.2401,
+      "longitude": 6.5367
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 11.9
+  },
+  {
+    "id": "019a2400-0056-7000-a056-000000000056",
+    "name": "Peters Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9727 SS",
+      "street": "Paddepoel 67",
+      "region": "netherlands",
+      "latitude": 53.2234,
+      "longitude": 6.5423
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 9.1
+  },
+  {
+    "id": "019a2400-0057-7000-a057-000000000057",
+    "name": "Wolters Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8926 RR",
+      "street": "Emmakade 156",
+      "region": "netherlands",
+      "latitude": 53.2089,
+      "longitude": 5.7901
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 9.8
+  },
+  {
+    "id": "019a2400-0058-7000-a058-000000000058",
+    "name": "Koster Family",
+    "iot_provider": "Growatt",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8927 SS",
+      "street": "Willemskade 89",
+      "region": "netherlands",
+      "latitude": 53.2034,
+      "longitude": 5.7845
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 14.3
+  },
+  {
+    "id": "019a2400-0059-7000-a059-000000000059",
+    "name": "Mol Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Assen",
+      "postal_code": "9409 JJ",
+      "street": "Schimmelpennincklaan 234",
+      "region": "netherlands",
+      "latitude": 53.0023,
+      "longitude": 6.5801
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 8.4
+  },
+  {
+    "id": "019a2400-0060-7000-a060-000000000060",
+    "name": "Kuipers Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Assen",
+      "postal_code": "9410 KK",
+      "street": "Overcingellaan 45",
+      "region": "netherlands",
+      "latitude": 53.0101,
+      "longitude": 6.5712
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 9.6
+  },
+  {
+    "id": "019a2400-0061-7000-a061-000000000061",
+    "name": "Post Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Emmen",
+      "postal_code": "7819 JJ",
+      "street": "Rietlanden 123",
+      "region": "netherlands",
+      "latitude": 52.7901,
+      "longitude": 6.9067
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 10.5
+  },
+  {
+    "id": "019a2400-0062-7000-a062-000000000062",
+    "name": "van Vliet Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Emmen",
+      "postal_code": "7820 KK",
+      "street": "Drentse Mondenweg 234",
+      "region": "netherlands",
+      "latitude": 52.7734,
+      "longitude": 6.9123
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 8.9
+  },
+  {
+    "id": "019a2400-0063-7000-a063-000000000063",
+    "name": "van Rijn Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9728 TT",
+      "street": "Vondellaan 67",
+      "region": "netherlands",
+      "latitude": 53.2267,
+      "longitude": 6.5534
+    },
+    "solar_capacity_kw": 5.6,
+    "battery_capacity_kwh": 14.9
+  },
+  {
+    "id": "019a2400-0064-7000-a064-000000000064",
+    "name": "Jonker Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Groningen",
+      "postal_code": "9729 UU",
+      "street": "Friesestraatweg 156",
+      "region": "netherlands",
+      "latitude": 53.2312,
+      "longitude": 6.5478
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 9.3
+  },
+  {
+    "id": "019a2400-0065-7000-a065-000000000065",
+    "name": "van Wijk Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leeuwarden",
+      "postal_code": "8928 TT",
+      "street": "Bilgaardpassage 89",
+      "region": "netherlands",
+      "latitude": 53.1956,
+      "longitude": 5.7878
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 10.1
+  }
+]

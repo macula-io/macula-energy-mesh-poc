@@ -34,8 +34,9 @@ defmodule CortexIqDashboard.EventSubscribers.HomeDisconnectedSubscriber do
 
   @impl true
   def handle_info(:subscribe, state) do
+    subscriber_pid = self()  # Capture subscriber PID before creating closure
     handler = fn _topic, event_data ->
-      send(self(), {:event, event_data})
+      send(subscriber_pid, {:event, event_data})
     end
 
     case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, @topic, handler) do
@@ -54,6 +55,7 @@ defmodule CortexIqDashboard.EventSubscribers.HomeDisconnectedSubscriber do
 
     Logger.debug("#{__MODULE__}: Received home disconnected event")
 
+    # Broadcast to vertical slice channel
     Phoenix.PubSub.broadcast(
       CortexIqDashboard.PubSub,
       @pubsub_channel,

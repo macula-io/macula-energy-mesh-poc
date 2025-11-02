@@ -1,18 +1,19 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Edge-02: Utility Providers Only (5 providers, no homes)
+# Edge-02: Belgium Flanders homes (145 homes) + Utility Providers (12 providers)
 
 resources:
   # Namespace definition
   - macula-edge-namespace.yaml
 
   # Edge applications (macula-edge namespace)
-  - cortex-iq-utilities              # Connects to hub Bondy
+  - cortex-iq-homes                  # Belgium Flanders homes (145 homes)
+  - cortex-iq-utilities              # All Benelux providers (12 providers)
 
   # Infrastructure
   - metallb
   - external-dns
 
 # Namespace Structure:
-# - macula-edge: Edge applications (utilities)
+# - macula-edge: Edge applications (homes + utilities)

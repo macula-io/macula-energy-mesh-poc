@@ -96,6 +96,9 @@ defmodule CortexIqProjections.EventPipeline do
       ["be", "cortexiq", "home", "measured"] ->
         project_combined_home_event(kwargs)
 
+      ["be", "cortexiq", "home", "initialized"] ->
+        project_home_initialized_event(kwargs)
+
       ["be", "cortexiq", "home", home_id, event_type] ->
         project_home_event(home_id, event_type, kwargs)
 
@@ -156,24 +159,38 @@ defmodule CortexIqProjections.EventPipeline do
     home_id = kwargs["home_id"]
 
     unless is_nil(home_id) do
-      internal = kwargs["_internal"] || %{}
-      production_w = internal["production_w"] || 0.0
-      consumption_w = internal["consumption_w"] || 0.0
-      battery_kwh = internal["battery_kwh"] || 0.0
-      battery_capacity_kwh = internal["battery_capacity_kwh"] || 10.0
+      # HomeWizard P1 Meter compatible event structure (DSMR 5.0)
+      # Extract all the rich meter data
+      power_w = kwargs["power_w"] || 0.0  # Instantaneous grid power (+ = import, - = export)
+      energy_import_kwh = kwargs["energy_import_kwh"] || 0.0  # Cumulative grid import
+      energy_export_kwh = kwargs["energy_export_kwh"] || 0.0  # Cumulative grid export
 
-      battery_percent = if battery_capacity_kwh > 0, do: (battery_kwh / battery_capacity_kwh) * 100.0, else: 0.0
+      # Battery state (HomeWizard Battery format)
+      battery_percent = kwargs["state_of_charge_pct"] || 0.0
+      _battery_cycles = kwargs["cycles"] || 0.0  # Available for future analytics
+
+      # Derive instantaneous production/consumption from grid power
+      # Positive power_w means importing (consumption > production)
+      # Negative power_w means exporting (production > consumption)
+      # For simplicity, store absolute values and cumulative totals
+
       simulation_time = parse_datetime(kwargs["timestamp"])
+      location = kwargs["city"]
 
       Repo.insert!(
         %HomeState{home_id: home_id},
         on_conflict: [
           set: [
-            production_kw: production_w / 1000.0,
-            consumption_kw: consumption_w / 1000.0,
+            location: location,
+            # Store instantaneous grid power (for real-time display)
+            production_kw: if(power_w < 0, do: abs(power_w) / 1000.0, else: 0.0),
+            consumption_kw: if(power_w > 0, do: power_w / 1000.0, else: 0.0),
+            # Store cumulative energy (HomeWizard P1 meter style)
+            energy_bought_kwh: energy_import_kwh,
+            energy_sold_kwh: energy_export_kwh,
+            net_balance_kwh: energy_import_kwh - energy_export_kwh,
+            # Battery state
             battery_percent: battery_percent,
-            battery_kwh: battery_kwh,
-            battery_capacity_kwh: battery_capacity_kwh,
             last_event_at: simulation_time,
             updated_at: DateTime.utc_now()
           ]
@@ -185,10 +202,10 @@ defmodule CortexIqProjections.EventPipeline do
         %EnergyEvent{
           home_id: home_id,
           simulation_time: simulation_time,
-          production_watts: production_w,
-          consumption_watts: consumption_w,
+          # Store grid power for analysis
+          production_watts: if(power_w < 0, do: abs(power_w), else: 0.0),
+          consumption_watts: if(power_w > 0, do: power_w, else: 0.0),
           battery_percent: battery_percent,
-          battery_kwh: battery_kwh,
           recorded_at: DateTime.utc_now()
         },
         on_conflict: :nothing,
@@ -197,7 +214,42 @@ defmodule CortexIqProjections.EventPipeline do
     end
   rescue
     error ->
-      Logger.error("EventPipeline: Error projecting combined home event: #{inspect(error)}")
+      Logger.error("EventPipeline: Error projecting HomeWizard-compatible measured event: #{inspect(error)}")
+      Logger.error("Stacktrace: #{inspect(__STACKTRACE__)}")
+  end
+
+  defp project_home_initialized_event(kwargs) do
+    home_id = kwargs["home_id"]
+    name = kwargs["name"]
+    iot_provider = kwargs["iot_provider"]
+    location = kwargs["location"]
+    postal_code = kwargs["postal_code"]
+    region = kwargs["region"]
+    battery_capacity_kwh = kwargs["battery_capacity_kwh"] || 10.0
+    simulation_time = parse_datetime(kwargs["simulation_time"])
+
+    unless is_nil(home_id) do
+      Repo.insert!(
+        %HomeState{home_id: home_id},
+        on_conflict: [
+          set: [
+            name: name,
+            iot_provider: iot_provider,
+            location: location,
+            postal_code: postal_code,
+            region: region,
+            battery_capacity_kwh: battery_capacity_kwh,
+            last_event_at: simulation_time,
+            updated_at: DateTime.utc_now()
+          ]
+        ],
+        conflict_target: :home_id
+      )
+    end
+  rescue
+    error ->
+      Logger.error("EventPipeline: Error projecting home.initialized event: #{inspect(error)}")
+      Logger.error("Stacktrace: #{inspect(__STACKTRACE__)}")
   end
 
   defp project_home_event(home_id, "production", kwargs) do

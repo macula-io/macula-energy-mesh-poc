@@ -9,19 +9,48 @@ defmodule CortexIqHomes.Application do
 
   @impl true
   def start(_type, _args) do
-    # Get configuration from environment
-    homes_source = get_env("HOMES_SOURCE", "flanders_test_homes.json")
-    bondy_url = get_env("BONDY_URL", "ws://localhost:18080/ws")
-    realm = get_env("BONDY_REALM", "be.cortexiq.energy")
+    Logger.info("========== CortexIqHomes.Application.start called ==========")
 
-    # Load homes from JSON configuration
-    homes = CortexIqHomes.ConfigLoader.load_homes(homes_source)
+    # Get configuration from environment variables or config files
+    # Priority: ENV > config > defaults
+    homes_sources = get_env("HOMES_SOURCES", "flanders_test_homes.json")
+    bondy_url = get_env("BONDY_URL", get_config(:bondy_url, "ws://localhost:18080/ws"))
+    realm = get_env("BONDY_REALM", get_config(:bondy_realm, "be.cortexiq.energy"))
 
-    Logger.info("Starting #{length(homes)} home bots from #{homes_source}")
+    Logger.info("Configuration loaded: homes_sources=#{homes_sources}, bondy_url=#{bondy_url}, realm=#{realm}")
+
+    # Load homes from JSON configuration (supports comma-separated list)
+    Logger.info("About to load homes from #{homes_sources}...")
+
+    homes =
+      try do
+        loaded = CortexIqHomes.ConfigLoader.load_homes_from_sources(homes_sources)
+        Logger.info("Successfully loaded #{length(loaded)} homes!")
+        loaded
+      rescue
+        error ->
+          Logger.error("FATAL: Failed to load homes: #{inspect(error)}")
+          Logger.error("Stacktrace: #{Exception.format_stacktrace(__STACKTRACE__)}")
+          raise error
+      end
+
+    Logger.info("Starting #{length(homes)} home bots from #{homes_sources}")
 
     children = [
       # Registry for home bots
       {Registry, keys: :unique, name: CortexIqHomes.Registry},
+
+      # Shared WAMP connection pool (20 connections for all homes)
+      {MaculaSdk.Wamp.Pool, [
+        url: bondy_url,
+        realm: realm,
+        pool_size: 20,
+        max_overflow: 10,
+        name: CortexIqHomes.WampPool
+      ]},
+
+      # Singleton subscriber for simulation reset events
+      {CortexIqHomes.SubscribeSimulationReset.Subscriber, [pool_name: CortexIqHomes.WampPool]},
 
       # Dynamic supervisor for home bots
       {DynamicSupervisor, name: CortexIqHomes.BotSupervisor, strategy: :one_for_one}
@@ -31,10 +60,23 @@ defmodule CortexIqHomes.Application do
 
     case Supervisor.start_link(children, opts) do
       {:ok, pid} ->
-        # Start home bots asynchronously to avoid blocking
-        # Use Task to start them in the background with staggered delays
-        Task.start(fn -> start_home_bots_staggered(homes, bondy_url, realm) end)
-        {:ok, pid}
+        # Wait for WAMP pool to be ready before starting homes
+        # This prevents :not_connected errors during subscriber initialization
+        Logger.info("Waiting for WAMP pool to be ready...")
+
+        case MaculaSdk.Wamp.Pool.wait_for_ready(CortexIqHomes.WampPool, min_ready: 5, timeout: 10_000) do
+          :ok ->
+            Logger.info("✓ WAMP pool ready, starting home bots...")
+            # Start home bots asynchronously to avoid blocking
+            # Use Task to start them in the background with staggered delays
+            Task.start(fn -> start_home_bots_staggered(homes, bondy_url, realm) end)
+            {:ok, pid}
+
+          {:error, :timeout} ->
+            Logger.error("Timeout waiting for WAMP pool to be ready. Starting homes anyway (they will retry)...")
+            Task.start(fn -> start_home_bots_staggered(homes, bondy_url, realm) end)
+            {:ok, pid}
+        end
 
       error ->
         error
@@ -46,10 +88,10 @@ defmodule CortexIqHomes.Application do
     # For 50 homes with 25ms delay = 1.25 seconds total startup time
     delay_ms = 25
 
-    Logger.info("Starting #{length(homes)} home bots with #{delay_ms}ms stagger...")
+    Logger.info("Starting #{length(homes)} home systems (vertical slices) with #{delay_ms}ms stagger...")
 
     Enum.each(homes, fn home ->
-      spec = {CortexIqHomes.HomeBot, [
+      spec = {CortexIqHomes.HomeSupervisor, [
         home: home,
         home_id: home.id,
         bondy_url: bondy_url,
@@ -61,17 +103,21 @@ defmodule CortexIqHomes.Application do
           :ok
 
         {:error, reason} ->
-          Logger.error("Failed to start HomeBot #{home.id}: #{inspect(reason)}")
+          Logger.error("Failed to start HomeSupervisor for #{home.id}: #{inspect(reason)}")
       end
 
       # Small delay to stagger WAMP connections
       Process.sleep(delay_ms)
     end)
 
-    Logger.info("Finished starting all #{length(homes)} home bots!")
+    Logger.info("Finished starting all #{length(homes)} home systems (#{length(homes) * 16} processes total)!")
   end
 
   defp get_env(key, default) do
     System.get_env(key, default)
+  end
+
+  defp get_config(key, default) do
+    Application.get_env(:cortex_iq_homes, key, default)
   end
 end

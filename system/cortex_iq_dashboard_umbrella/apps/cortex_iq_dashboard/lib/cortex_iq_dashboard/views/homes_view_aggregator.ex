@@ -5,15 +5,16 @@ defmodule CortexIqDashboard.Views.HomesViewAggregator do
   Subscribes to home entity state changes and maintains:
   - List of all homes with current state
   - Sorted by various criteria (id, location, production, etc.)
+
+  Scalability: Only tracks homes visible on current page to limit memory usage.
   """
   use GenServer
   require Logger
-  import Ecto.Query
-  alias CortexIqDashboardSchemas.Projections.HomeState
-  alias CortexIqDashboard.Repo
+  alias CortexIqDashboard.Aggregates.HomeAggregate
 
   defstruct [
     homes: %{},  # %{home_id => home_state}
+    tracked_homes: MapSet.new(),  # Set of home_ids currently being tracked (visible on UI)
     last_updated_at: nil,
     broadcast_timer: nil,  # Timer ref for throttling broadcasts
     pending_broadcast: false  # Flag indicating broadcast is scheduled
@@ -35,6 +36,14 @@ defmodule CortexIqDashboard.Views.HomesViewAggregator do
     GenServer.call(__MODULE__, {:get_home, home_id})
   end
 
+  @doc """
+  Tell the aggregator which homes to track (visible on current page).
+  Aggregates for non-tracked homes will be terminated to save resources.
+  """
+  def track_homes(home_ids) when is_list(home_ids) do
+    GenServer.cast(__MODULE__, {:track_homes, home_ids})
+  end
+
   # GenServer callbacks
 
   @impl true
@@ -42,9 +51,6 @@ defmodule CortexIqDashboard.Views.HomesViewAggregator do
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "entity:home")
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:control")
     Logger.info("HomesViewAggregator: Started and subscribed to dashboard control")
-
-    # Load initial homes from database
-    send(self(), :load_initial_homes)
 
     {:ok, %__MODULE__{}}
   end
@@ -81,35 +87,72 @@ defmodule CortexIqDashboard.Views.HomesViewAggregator do
   end
 
   @impl true
-  def handle_info({:home_state_changed, home_id, home_state}, state) do
-    new_homes = Map.put(state.homes, home_id, home_state)
-    new_state = %{state | homes: new_homes, last_updated_at: DateTime.utc_now()}
+  def handle_cast({:track_homes, home_ids}, state) do
+    new_tracked = MapSet.new(home_ids)
+    old_tracked = state.tracked_homes
 
-    # Schedule throttled broadcast
-    {:noreply, schedule_broadcast(new_state)}
-  end
+    # Find homes to stop tracking (destroy their aggregates)
+    to_untrack = MapSet.difference(old_tracked, new_tracked)
+    # Find homes to start tracking (ensure their aggregates exist)
+    to_track = MapSet.difference(new_tracked, old_tracked)
 
-  @impl true
-  def handle_info(:load_initial_homes, state) do
-    # Load all homes from database and populate in-memory state
-    # Note: Not all fields may exist in dashboard's database, only load what's available
-    query = from h in HomeState, select: h
+    Logger.info("HomesViewAggregator: Tracking #{MapSet.size(new_tracked)} homes (#{MapSet.size(to_track)} new, #{MapSet.size(to_untrack)} removed)")
 
-    homes = Repo.all(query)
+    # Terminate aggregates for homes no longer tracked
+    Enum.each(to_untrack, fn home_id ->
+      case Registry.lookup(CortexIqDashboard.HomeRegistry, home_id) do
+        [{pid, _}] ->
+          Logger.debug("HomesViewAggregator: Terminating aggregate for #{home_id}")
+          DynamicSupervisor.terminate_child(CortexIqDashboard.HomeSupervisor, pid)
+        [] ->
+          :ok
+      end
+    end)
 
-    homes_map =
-      homes
-      |> Enum.map(fn home -> {home.home_id, home} end)
-      |> Map.new()
+    # Ensure aggregates exist for newly tracked homes
+    Enum.each(to_track, fn home_id ->
+      case DynamicSupervisor.start_child(
+             CortexIqDashboard.HomeSupervisor,
+             {CortexIqDashboard.Aggregates.HomeAggregate, home_id}
+           ) do
+        {:ok, _pid} ->
+          Logger.debug("HomesViewAggregator: Created aggregate for #{home_id}")
+        {:error, {:already_started, _pid}} ->
+          # Already exists, that's fine
+          :ok
+        error ->
+          Logger.error("HomesViewAggregator: Failed to create aggregate for #{home_id}: #{inspect(error)}")
+      end
+    end)
 
-    Logger.info("HomesViewAggregator: Loaded #{map_size(homes_map)} homes from database")
+    # Remove untracked homes from state
+    new_homes = Map.drop(state.homes, MapSet.to_list(to_untrack))
 
-    new_state = %{state | homes: homes_map, last_updated_at: DateTime.utc_now()}
+    new_state = %{state |
+      tracked_homes: new_tracked,
+      homes: new_homes,
+      last_updated_at: DateTime.utc_now()
+    }
 
-    # Broadcast initial state to UI
+    # Broadcast updated view
     broadcast_view_updated()
 
     {:noreply, new_state}
+  end
+
+  @impl true
+  def handle_info({:home_state_changed, home_id, home_state}, state) do
+    # Only store state for tracked homes
+    if MapSet.member?(state.tracked_homes, home_id) do
+      new_homes = Map.put(state.homes, home_id, home_state)
+      new_state = %{state | homes: new_homes, last_updated_at: DateTime.utc_now()}
+
+      # Schedule throttled broadcast
+      {:noreply, schedule_broadcast(new_state)}
+    else
+      # Ignore state changes for non-tracked homes
+      {:noreply, state}
+    end
   end
 
   @impl true

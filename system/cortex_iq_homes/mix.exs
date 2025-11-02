@@ -32,7 +32,6 @@ defmodule CortexIqHomes.MixProject do
     [
       cortex_iq_homes: [
         include_executables_for: [:unix],
-        applications: [runtime_tools: :permanent],
         steps: [:assemble, :tar]
       ]
     ]

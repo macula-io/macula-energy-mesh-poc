@@ -68,7 +68,11 @@ defmodule CortexIqHomes.HomeBot do
     }
 
     # Publish home_initialized event after startup
+    Logger.debug("Home #{home_id}: Scheduling :publish_initialized message in 1000ms")
     Process.send_after(self(), :publish_initialized, 1_000)
+
+    # Schedule random disconnections "now and then" (every 5-15 minutes)
+    schedule_random_disconnect()
 
     {:ok, state}
   end
@@ -77,41 +81,112 @@ defmodule CortexIqHomes.HomeBot do
 
   @impl true
   def handle_info(:publish_initialized, state) do
-    # Check if home already exists in database before emitting initialized event
-    case check_home_exists(state.home_id) do
-      {:ok, false} ->
-        # Home doesn't exist, emit initialized event
-        Logger.info("Home #{state.home_id}: New home, emitting initialized event")
-        trigger_publisher(PublishHomeInitialized.Publisher, state.home_id, %{
+    Logger.info("Home #{state.home_id}: Received :publish_initialized message, registering home...")
+
+    # Register complete home data in database before emitting initialized event
+    home_data = %{
+      home_id: state.home_id,
+      name: state.home.name,
+      iot_provider: state.home.iot_provider,
+      location: state.home.location.city,
+      street: state.home.location.street,
+      postal_code: state.home.location.postal_code,
+      region: state.home.location.region,
+      latitude: state.home.location.latitude,
+      longitude: state.home.location.longitude,
+      solar_capacity_kw: state.home.solar_capacity_kw,
+      battery_capacity_kwh: state.home.battery_capacity_kwh
+    }
+
+    case register_home(home_data) do
+      {:ok, true} ->
+        # Registration successful, emit initialized event
+        Logger.info("Home #{state.home_id}: Home registered successfully, emitting initialized event")
+
+        event_data = %{
           home_id: state.home_id,
-          city: state.home.location.city,
+          name: state.home.name,
+          iot_provider: state.home.iot_provider,
+          location: state.home.location.city,
+          postal_code: state.home.location.postal_code,
+          region: state.home.location.region,
           solar_capacity_kw: state.home.solar_capacity_kw,
           battery_capacity_kwh: state.home.battery_capacity_kwh,
-          postal_code: state.home.location.postal_code
-        })
+          simulation_time: nil
+        }
 
-      {:ok, true} ->
-        # Home already exists, skip initialization
-        Logger.info("Home #{state.home_id}: Already exists, skipping initialized event")
+        Logger.debug("Home #{state.home_id}: Triggering publisher with data: #{inspect(event_data)}")
+        trigger_publisher(PublishHomeInitialized.Publisher, state.home_id, event_data)
+        Logger.info("Home #{state.home_id}: ✓ Initialized event triggered")
+
+        # Schedule home.connected event shortly after initialization
+        Process.send_after(self(), :publish_connected, 500)
+
+      {:error, :already_exists} ->
+        # Home already exists, skip initialization but emit connected event
+        Logger.info("Home #{state.home_id}: Home already registered, skipping initialized event")
+        Process.send_after(self(), :publish_connected, 500)
 
       {:error, reason} ->
-        # Error checking, emit anyway to avoid blocking startup
-        Logger.warning("Home #{state.home_id}: Failed to check existence (#{inspect(reason)}), emitting initialized event")
-        trigger_publisher(PublishHomeInitialized.Publisher, state.home_id, %{
-          home_id: state.home_id,
-          city: state.home.location.city,
-          solar_capacity_kw: state.home.solar_capacity_kw,
-          battery_capacity_kwh: state.home.battery_capacity_kwh,
-          postal_code: state.home.location.postal_code
-        })
+        # Error during registration, DO NOT emit event to avoid race conditions
+        Logger.error("Home #{state.home_id}: Failed to register home (#{inspect(reason)}), SKIPPING initialized event to prevent data corruption")
     end
+
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info(:publish_connected, state) do
+    Logger.info("Home #{state.home_id}: Emitting home.connected event")
+
+    event_data = %{
+      home_id: state.home_id,
+      simulation_time: nil
+    }
+
+    trigger_publisher(PublishHomeConnected.Publisher, state.home_id, event_data)
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info(:random_disconnect, state) do
+    Logger.info("Home #{state.home_id}: Random disconnect event - emitting home.disconnected")
+
+    event_data = %{
+      home_id: state.home_id,
+      simulation_time: nil,
+      reason: "random_disconnect"
+    }
+
+    trigger_publisher(PublishHomeDisconnected.Publisher, state.home_id, event_data)
+
+    # Schedule reconnection after 10-30 seconds
+    reconnect_delay = :rand.uniform(20_000) + 10_000
+    Process.send_after(self(), :reconnect, reconnect_delay)
+
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info(:reconnect, state) do
+    Logger.info("Home #{state.home_id}: Reconnecting - emitting home.connected")
+
+    event_data = %{
+      home_id: state.home_id,
+      simulation_time: nil
+    }
+
+    trigger_publisher(PublishHomeConnected.Publisher, state.home_id, event_data)
+
+    # Schedule next random disconnect
+    schedule_random_disconnect()
 
     {:noreply, state}
   end
 
   # From SubscribeSimulationTimeAdvanced.Subscriber
   @impl true
-  def handle_info({:time_tick, simulation_time}, state) do
+  def handle_info({:simulation_time_tick, simulation_time}, state) do
     # Delegate to HomeState for all business logic
     result = HomeState.process_time_tick(state.home_id, simulation_time)
 
@@ -126,7 +201,9 @@ defmodule CortexIqHomes.HomeBot do
 
   # From SubscribeContractProposed.Subscriber
   @impl true
-  def handle_info({:contract_proposed, provider_id, offer}, state) do
+  def handle_info({:contract_offer, offer}, state) do
+    # Extract provider_id from offer struct
+    provider_id = offer.provider_id
     HomeState.store_offer(state.home_id, provider_id, offer)
     {:noreply, state}
   end
@@ -169,24 +246,31 @@ defmodule CortexIqHomes.HomeBot do
 
   ## Helper Functions
 
-  defp check_home_exists(home_id) do
+  defp register_home(home_data) do
     try do
       case MaculaSdk.Wamp.Pool.call(
-             "be.cortexiq.energy.queries.home_exists",
+             "be.cortexiq.energy.projections.register_home",
              [],
-             %{home_id: home_id},
+             home_data,
              %{},
              CortexIqHomes.WampPool
            ) do
-        {:ok, _args, %{"exists" => exists}} when is_boolean(exists) ->
-          {:ok, exists}
+        # Success: home registered
+        {:ok, %{args: [%{"registered" => true}]}} ->
+          {:ok, true}
 
-        {:ok, _args, result} ->
-          Logger.warning("Unexpected home_exists response: #{inspect(result)}")
-          {:error, :unexpected_response}
+        # Error: home already exists
+        {:error, "wamp.error.already_exists"} ->
+          {:error, :already_exists}
 
+        # Generic error
         {:error, reason} ->
           {:error, reason}
+
+        # Unexpected response format
+        {:ok, response} ->
+          Logger.warning("Unexpected register_home response: #{inspect(response)}")
+          {:error, :unexpected_response}
       end
     catch
       :exit, reason ->
@@ -225,12 +309,16 @@ defmodule CortexIqHomes.HomeBot do
   end
 
   defp trigger_publisher(publisher_module, home_id, data) do
+    Logger.debug("Home #{home_id}: Looking up publisher #{inspect(publisher_module)}...")
+
     case whereis_publisher(publisher_module, home_id) do
       nil ->
-        Logger.warning("Publisher #{inspect(publisher_module)} for #{home_id} not found")
+        Logger.warning("Home #{home_id}: ❌ Publisher #{inspect(publisher_module)} NOT FOUND in registry")
 
       pid ->
+        Logger.debug("Home #{home_id}: ✓ Found publisher #{inspect(publisher_module)} at #{inspect(pid)}, sending {:publish, ...}")
         send(pid, {:publish, data})
+        Logger.debug("Home #{home_id}: ✓ Message sent to publisher #{inspect(publisher_module)}")
     end
   end
 
@@ -243,5 +331,12 @@ defmodule CortexIqHomes.HomeBot do
 
   defp via_tuple(home_id) do
     {:via, Registry, {CortexIqHomes.Registry, {__MODULE__, home_id}}}
+  end
+
+  # Schedule a random disconnect "now and then" (every 5-15 minutes)
+  defp schedule_random_disconnect do
+    # Random delay between 5-15 minutes (300_000 - 900_000 ms)
+    disconnect_delay = :rand.uniform(600_000) + 300_000
+    Process.send_after(self(), :random_disconnect, disconnect_delay)
   end
 end

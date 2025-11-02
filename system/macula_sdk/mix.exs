@@ -25,6 +25,9 @@ defmodule MaculaSdk.MixProject do
       {:jason, "~> 1.2"},
       {:websockex, "~> 0.4"},
 
+      # Connection pooling
+      {:poolboy, "~> 1.5"},
+
       # Metrics and telemetry
       {:telemetry, "~> 1.0"}
     ]

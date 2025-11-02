@@ -1,15 +1,5 @@
 import Config
 
-# Configure your database (read side of CQRS)
-config :cortex_iq_dashboard, CortexIqDashboard.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "mesh_hub_dev",
-  stacktrace: true,
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
-
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -86,3 +76,23 @@ config :swoosh, :api_client, false
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
+
+# WAMP / Bondy Configuration for local development
+# These environment variables will be read by CortexIqDashboard.Application
+# when starting the WAMP subscribers.
+#
+# To run the dashboard locally and connect to the cluster WAMP router:
+# 1. The KinD cluster exposes Bondy via NodePort mappings:
+#    - WAMP WebSocket: localhost:30080
+#    - Admin API: localhost:30082
+# 2. Set these environment variables before running `mix phx.server`:
+#
+#    export BONDY_URL="ws://localhost:30080/ws"
+#    export BONDY_REALM="be.cortexiq.energy"
+#    export BONDY_ADMIN_URL="http://localhost:30082"
+#
+# Or create a .env file and source it:
+#    source .env
+#
+# The dashboard will connect to the cluster's Bondy instance and receive
+# real-time events from homes/providers running in the cluster.

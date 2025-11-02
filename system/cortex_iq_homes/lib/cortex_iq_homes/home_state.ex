@@ -19,6 +19,8 @@ defmodule CortexIqHomes.HomeState do
   use GenServer
   require Logger
 
+  alias CortexIqCore.DateTimeHelpers
+
   alias CortexIqCore.{Home, Contract, ContractOffer, EnergyBalance, SimulationTime}
 
   @balance_publish_interval_ms 60_000  # Publish balance every minute
@@ -606,7 +608,7 @@ defmodule CortexIqHomes.HomeState do
     %{
       home_id: state.home_id,
       city: state.home.location.city,
-      timestamp: simulation_time |> DateTime.truncate(:microsecond) |> DateTime.to_iso8601(),
+      timestamp: DateTimeHelpers.to_iso8601(simulation_time),
       meter_model: "HWE-P1",
       unique_id: state.home_id,
       protocol_version: 50,
@@ -666,7 +668,7 @@ defmodule CortexIqHomes.HomeState do
           total: Float.round(kwh * price_per_kwh, 2),
           is_day: SimulationTime.is_day?(simulation_time),
           contract_id: contract.id,
-          simulation_time: simulation_time |> DateTime.truncate(:microsecond) |> DateTime.to_iso8601()
+          simulation_time: DateTimeHelpers.to_iso8601(simulation_time)
         }
     end
   end
@@ -690,7 +692,7 @@ defmodule CortexIqHomes.HomeState do
           total: Float.round(kwh * price_per_kwh, 2),
           is_day: SimulationTime.is_day?(simulation_time),
           contract_id: contract.id,
-          simulation_time: simulation_time |> DateTime.truncate(:microsecond) |> DateTime.to_iso8601()
+          simulation_time: DateTimeHelpers.to_iso8601(simulation_time)
         }
     end
   end
@@ -766,7 +768,7 @@ defmodule CortexIqHomes.HomeState do
       gross_savings: Float.round(gross_savings, 2),
       commission: Float.round(commission, 2),
       net_savings: Float.round(net_savings, 2),
-      simulation_time: simulation_time |> DateTime.truncate(:microsecond) |> DateTime.to_iso8601()
+      simulation_time: DateTimeHelpers.to_iso8601(simulation_time)
     }
 
     # Update financial tracking
