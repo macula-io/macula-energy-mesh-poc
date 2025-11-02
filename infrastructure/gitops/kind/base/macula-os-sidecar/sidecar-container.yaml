@@ -16,7 +16,7 @@
 
   # Upstream Bondy connection
   - name: BONDY_URL
-    value: "ws://172.20.0.2:30080/ws"
+    value: "ws://hub.macula.local:30080/ws"
 
   - name: BONDY_REALM
     value: "be.cortexiq.energy"
