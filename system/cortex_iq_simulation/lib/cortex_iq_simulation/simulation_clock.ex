@@ -203,6 +203,7 @@ defmodule CortexIqSimulation.SimulationClock do
     if state.wamp_client do
       Logger.info("SimulationClock: Subscribing to control topics...")
       subscribe_to_control_topics(state.wamp_client)
+      # Note: RPC procedures are now registered by separate vertical slice systems
     else
       Logger.warning("SimulationClock: Cannot subscribe, WAMP client not available")
     end
@@ -290,6 +291,61 @@ defmodule CortexIqSimulation.SimulationClock do
     {:noreply, new_state}
   end
 
+  # RPC request handlers
+
+  def handle_info({:rpc_reset, ref, caller_pid}, state) do
+    Logger.info("SimulationClock: RPC RESET called")
+    new_state = reset_simulation(state)
+
+    # Send success response
+    result = {:ok, %{
+      "success" => true,
+      "message" => "Simulation reset to #{DateTime.to_iso8601(@default_start_date)}",
+      "new_start_time" => DateTime.to_iso8601(@default_start_date)
+    }}
+
+    send(caller_pid, {:rpc_result, ref, result})
+    {:noreply, new_state}
+  end
+
+  def handle_info({:rpc_pause, ref, caller_pid}, state) do
+    Logger.info("SimulationClock: RPC PAUSE called")
+
+    if state.paused do
+      send(caller_pid, {:rpc_result, ref, {:ok, %{"success" => false, "message" => "Already paused"}}})
+      {:noreply, state}
+    else
+      new_state = pause_simulation(state)
+      publish_state_change_event(new_state, "paused")
+      send(caller_pid, {:rpc_result, ref, {:ok, %{"success" => true, "message" => "Simulation paused"}}})
+      {:noreply, new_state}
+    end
+  end
+
+  def handle_info({:rpc_resume, ref, caller_pid}, state) do
+    Logger.info("SimulationClock: RPC RESUME called")
+
+    if not state.paused do
+      send(caller_pid, {:rpc_result, ref, {:ok, %{"success" => false, "message" => "Already running"}}})
+      {:noreply, state}
+    else
+      new_state = resume_simulation(state)
+      publish_state_change_event(new_state, "resumed")
+      send(caller_pid, {:rpc_result, ref, {:ok, %{"success" => true, "message" => "Simulation resumed"}}})
+      {:noreply, new_state}
+    end
+  end
+
+  def handle_info({:rpc_set_speed, ref, caller_pid, kwargs}, state) do
+    speed = Map.get(kwargs, "speed", state.speed)
+    Logger.info("SimulationClock: RPC SET_SPEED called: #{speed}x")
+
+    new_state = set_speed(state, speed)
+    publish_state_change_event(new_state, "speed_changed")
+    send(caller_pid, {:rpc_result, ref, {:ok, %{"success" => true, "message" => "Speed set to #{speed}x", "speed" => speed}}})
+    {:noreply, new_state}
+  end
+
   # Private Helpers
 
   defp subscribe_to_control_topics(wamp_client) do
@@ -317,6 +373,12 @@ defmodule CortexIqSimulation.SimulationClock do
       end
     end)
   end
+
+  # Note: RPC procedure registration has been moved to separate vertical slice systems:
+  # - CortexIqSimulation.ResetSimulation.System
+  # - CortexIqSimulation.PauseSimulation.System
+  # - CortexIqSimulation.ResumeSimulation.System
+  # - CortexIqSimulation.SetSimulationSpeed.System
 
   defp pause_simulation(state) do
     # Record when we paused and how much time had elapsed
@@ -384,7 +446,12 @@ defmodule CortexIqSimulation.SimulationClock do
   defp calculate_simulation_time(state) do
     real_elapsed_ms = get_real_elapsed_ms(state)
     simulation_elapsed_ms = real_elapsed_ms * state.speed
-    DateTime.add(state.start_simulation_time, simulation_elapsed_ms, :millisecond)
+
+    # Add milliseconds and truncate to microsecond precision for database compatibility
+    # Ecto :utc_datetime_usec expects microsecond precision
+    state.start_simulation_time
+    |> DateTime.add(simulation_elapsed_ms, :millisecond)
+    |> DateTime.truncate(:microsecond)
   end
 
   defp parse_integer(str, default) when is_binary(str) do
@@ -408,4 +475,21 @@ defmodule CortexIqSimulation.SimulationClock do
     Client.publish(state.wamp_client, topic, [], event, %{})
     Logger.info("SimulationClock: Published reset event to #{topic}")
   end
+
+  defp publish_state_change_event(state, change_type) do
+    topic = "be.cortexiq.simulation.state_changed"
+    current_time = calculate_simulation_time(state)
+
+    event = %{
+      timestamp: DateTime.to_iso8601(DateTime.utc_now()),
+      change_type: change_type,
+      simulation_time: DateTime.to_iso8601(current_time),
+      simulation_speed: state.speed,
+      simulation_paused: state.paused
+    }
+
+    Client.publish(state.wamp_client, topic, [], event, %{})
+    Logger.info("SimulationClock: Published state_changed event (#{change_type}) to #{topic}")
+  end
 end
+
