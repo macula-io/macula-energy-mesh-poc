@@ -8,6 +8,8 @@ defmodule CortexIqCore.SpotPrice do
   - Updated more frequently
   """
 
+  alias CortexIqCore.DateTimeHelpers
+
   @type t :: %__MODULE__{
           provider_id: String.t(),
           buy_price: float(),
@@ -41,8 +43,8 @@ defmodule CortexIqCore.SpotPrice do
       provider_id: spot_price.provider_id,
       buy_price: spot_price.buy_price,
       sell_price: spot_price.sell_price,
-      valid_from: DateTime.to_iso8601(spot_price.valid_from),
-      simulation_time: DateTime.to_iso8601(simulation_time)
+      valid_from: DateTimeHelpers.to_iso8601(spot_price.valid_from),
+      simulation_time: DateTimeHelpers.to_iso8601(simulation_time)
     }
   end
 

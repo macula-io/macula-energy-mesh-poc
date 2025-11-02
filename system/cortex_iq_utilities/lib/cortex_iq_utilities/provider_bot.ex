@@ -25,7 +25,7 @@ defmodule CortexIqUtilities.ProviderBot do
   use GenServer
   require Logger
 
-  alias CortexIqCore.{Provider, ContractOffer, SpotPrice, Contract}
+  alias CortexIqCore.{Provider, ContractOffer, SpotPrice, Contract, DateTimeHelpers}
   alias MaculaSdk.Wamp.Client
 
   defstruct [
@@ -63,15 +63,9 @@ defmodule CortexIqUtilities.ProviderBot do
   @impl true
   def init(opts) do
     provider_id = Keyword.fetch!(opts, :provider_id)
+    provider = Keyword.fetch!(opts, :provider)  # Get provider struct from opts
     realm = Keyword.get(opts, :realm, "energy.hub")
     bondy_url = Keyword.get(opts, :bondy_url, "ws://localhost:18080/ws")
-
-    # Get provider metadata from CortexIqCore
-    provider = Provider.get(provider_id)
-
-    unless provider do
-      {:stop, {:error, "Unknown provider: #{provider_id}"}}
-    end
 
     Logger.info("Starting ProviderBot for #{provider.name} (#{provider_id})")
     Logger.info("  Strategy: #{provider.strategy}")
@@ -493,8 +487,8 @@ defmodule CortexIqUtilities.ProviderBot do
       result = %{
         success: true,
         contract_id: contract.id,
-        start_date: DateTime.to_iso8601(contract.start_date),
-        end_date: DateTime.to_iso8601(contract.end_date)
+        start_date: DateTimeHelpers.to_iso8601(contract.start_date),
+        end_date: DateTimeHelpers.to_iso8601(contract.end_date)
       }
       Client.yield(state.wamp_client, invocation_id, [result], %{})
 
@@ -578,8 +572,8 @@ defmodule CortexIqUtilities.ProviderBot do
       success: true,
       contract_id: contract.id,
       provider_id: state.provider_id,
-      start_date: DateTime.to_iso8601(contract.start_date),
-      end_date: DateTime.to_iso8601(contract.end_date),
+      start_date: DateTimeHelpers.to_iso8601(contract.start_date),
+      end_date: DateTimeHelpers.to_iso8601(contract.end_date),
       contract: contract
     }}
   end
@@ -593,10 +587,10 @@ defmodule CortexIqUtilities.ProviderBot do
       provider_id: state.provider_id,
       provider_name: state.provider.name,
       offer_id: contract.offer_id,
-      start_date: DateTime.to_iso8601(contract.start_date),
-      end_date: DateTime.to_iso8601(contract.end_date),
+      start_date: DateTimeHelpers.to_iso8601(contract.start_date),
+      end_date: DateTimeHelpers.to_iso8601(contract.end_date),
       reason: Atom.to_string(reason),
-      simulation_time: DateTime.to_iso8601(simulation_time)
+      simulation_time: DateTimeHelpers.to_iso8601(simulation_time)
     }
 
     Client.publish(state.wamp_client, topic, [], event, %{})
@@ -614,7 +608,7 @@ defmodule CortexIqUtilities.ProviderBot do
       provider_name: state.provider.name,
       offer_id: offer_id,
       reason: reason,
-      simulation_time: DateTime.to_iso8601(simulation_time)
+      simulation_time: DateTimeHelpers.to_iso8601(simulation_time)
     }
 
     Client.publish(state.wamp_client, topic, [], event, %{})

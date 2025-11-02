@@ -10,6 +10,8 @@ defmodule CortexIqCore.EnergyBalance do
   - Optimizing battery charge/discharge to shift energy across time periods
   """
 
+  alias CortexIqCore.DateTimeHelpers
+
   @type t :: %__MODULE__{
           home_id: String.t(),
           contract_id: String.t() | nil,
@@ -120,15 +122,15 @@ defmodule CortexIqCore.EnergyBalance do
     %{
       home_id: balance.home_id,
       contract_id: balance.contract_id,
-      period_start: DateTime.to_iso8601(balance.period_start),
-      period_end: DateTime.to_iso8601(balance.period_end),
+      period_start: DateTimeHelpers.to_iso8601(balance.period_start),
+      period_end: DateTimeHelpers.to_iso8601(balance.period_end),
       energy_bought_kwh: Float.round(balance.energy_bought_kwh, 2),
       energy_sold_kwh: Float.round(balance.energy_sold_kwh, 2),
       net_balance_kwh: Float.round(net_balance_kwh(balance), 2),
       cost_paid: Float.round(balance.cost_paid, 2),
       revenue_received: Float.round(balance.revenue_received, 2),
       net_cost: Float.round(net_cost(balance), 2),
-      simulation_time: DateTime.to_iso8601(simulation_time)
+      simulation_time: DateTimeHelpers.to_iso8601(simulation_time)
     }
   end
 

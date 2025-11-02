@@ -18,6 +18,8 @@ defmodule CortexIqCore.ContractOffer do
   - Actual prices fluctuate with market, potentially cheaper but riskier
   """
 
+  alias CortexIqCore.DateTimeHelpers
+
   @type contract_type :: :static | :dynamic
 
   @type t :: %__MODULE__{
@@ -129,8 +131,8 @@ defmodule CortexIqCore.ContractOffer do
       night_sell_price: offer.night_sell_price,
       switching_discount: offer.switching_discount,
       minimum_monthly_kwh: offer.minimum_monthly_kwh,
-      valid_from: DateTime.to_iso8601(offer.valid_from),
-      simulation_time: DateTime.to_iso8601(simulation_time)
+      valid_from: DateTimeHelpers.to_iso8601(offer.valid_from),
+      simulation_time: DateTimeHelpers.to_iso8601(simulation_time)
     }
   end
 
@@ -144,8 +146,8 @@ defmodule CortexIqCore.ContractOffer do
       sell_markdown: offer.sell_markdown,
       switching_discount: offer.switching_discount,
       minimum_monthly_kwh: offer.minimum_monthly_kwh,
-      valid_from: DateTime.to_iso8601(offer.valid_from),
-      simulation_time: DateTime.to_iso8601(simulation_time)
+      valid_from: DateTimeHelpers.to_iso8601(offer.valid_from),
+      simulation_time: DateTimeHelpers.to_iso8601(simulation_time)
     }
   end
 
@@ -225,7 +227,9 @@ defmodule CortexIqCore.ContractOffer do
   For dynamic contracts, requires spot_price parameter.
   """
   @spec avg_buy_price(t(), float() | nil) :: float()
-  def avg_buy_price(%__MODULE__{contract_type: :static} = offer, _spot_price \\ nil) do
+  def avg_buy_price(offer, spot_price \\ nil)
+
+  def avg_buy_price(%__MODULE__{contract_type: :static} = offer, _spot_price) do
     offer.day_buy_price * 0.6 + offer.night_buy_price * 0.4
   end
 
@@ -240,7 +244,9 @@ defmodule CortexIqCore.ContractOffer do
   For dynamic contracts, requires spot_price parameter.
   """
   @spec avg_sell_price(t(), float() | nil) :: float()
-  def avg_sell_price(%__MODULE__{contract_type: :static} = offer, _spot_price \\ nil) do
+  def avg_sell_price(offer, spot_price \\ nil)
+
+  def avg_sell_price(%__MODULE__{contract_type: :static} = offer, _spot_price) do
     offer.day_sell_price * 0.8 + offer.night_sell_price * 0.2
   end
 
