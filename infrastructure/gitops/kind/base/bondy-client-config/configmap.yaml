@@ -8,13 +8,13 @@ metadata:
     app.kubernetes.io/part-of: macula-system
 data:
   # Bondy WAMP Router connection settings
-  # For KinD multi-cluster: Use hub cluster NodePort
-  # Hub cluster control plane: 172.20.0.2 (Docker bridge network)
-  # Bondy NodePort: 30080 (maps to service port 18080)
-  BONDY_URL: "ws://172.20.0.2:30080/ws"
+  # Use DNS name via ingress (proper solution, no hardcoded IPs)
+  # DNS resolution provided by /etc/hosts or PowerDNS
+  # Ingress forwards port 80 to Bondy service port 18080
+  BONDY_URL: "ws://hub.macula.local/ws"
   BONDY_REALM: "be.cortexiq.energy"
 
   # Alternative URLs (for reference):
-  # - Via ingress: ws://172.20.255.10:80/ws
-  # - DNS name: ws://hub.macula.local:80/ws (requires DNS resolution)
+  # - Via NodePort (not recommended): ws://172.20.0.7:30080/ws
+  # - Via LoadBalancer IP: ws://172.20.255.10/ws
   # - Internal (hub cluster only): ws://bondy.macula-system.svc.cluster.local:18080/ws
