@@ -19,8 +19,8 @@ spec:
     spec:
       containers:
         - name: simulation
-          image: macula/cortex-iq-simulation:latest
-          imagePullPolicy: IfNotPresent
+          image: registry.macula.local:5000/macula/cortex-iq-simulation:latest
+          imagePullPolicy: Always
           env:
             - name: BONDY_URL
               value: "ws://bondy.macula-system.svc.cluster.local:18080/ws"

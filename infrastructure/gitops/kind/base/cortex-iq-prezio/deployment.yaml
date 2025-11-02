@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: prezio
-        image: macula/cortex-iq-prezio:latest
+        image: registry.macula.local:5000/macula/cortex-iq-prezio:latest
         imagePullPolicy: Never  # KinD uses local images
         env:
         # BEAM VM Memory Limits

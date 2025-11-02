@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: weather
-        image: macula/cortex-iq-open-weather-map:latest
+        image: registry.macula.local:5000/macula/cortex-iq-open-weather-map:latest
         imagePullPolicy: Never  # KinD uses local images
         env:
         # BEAM VM Memory Limits
