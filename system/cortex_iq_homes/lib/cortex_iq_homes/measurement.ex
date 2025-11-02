@@ -105,7 +105,7 @@ defmodule CortexIqHomes.Measurement do
       "city" => city,
       "postal_code" => postal_code,
       "region" => region,
-      "timestamp" => DateTime.utc_now() |> DateTime.to_iso8601(),
+      "timestamp" => DateTime.utc_now() |> DateTime.truncate(:microsecond) |> DateTime.to_iso8601(),
       "source" => source,
       # Total power
       "power_w" => Float.round(total_power, 2),

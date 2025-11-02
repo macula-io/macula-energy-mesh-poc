@@ -121,7 +121,7 @@ defmodule CortexIqHomes.SubscribeSimulationReset.Subscriber do
     event_data = %{
       "home_id" => home_id,
       "reason" => "reset",
-      "timestamp" => DateTime.utc_now() |> DateTime.to_iso8601()
+      "timestamp" => DateTime.utc_now() |> DateTime.truncate(:microsecond) |> DateTime.to_iso8601()
     }
 
     topic = "be.cortexiq.homes.home.disconnected"
