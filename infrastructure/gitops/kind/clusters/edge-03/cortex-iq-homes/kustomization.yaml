@@ -6,12 +6,12 @@ resources:
 
 namespace: macula-edge
 
-# Patch to use specific home data file (connects to hub Bondy by default)
+# Patch to use Wallonia North homes (40 homes)
 patches:
   - patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/env/2/value
-        value: "flanders_edge_03_homes.json"
+        value: "wallonia_north_homes.json"
     target:
       kind: Deployment
       name: cortex-iq-homes

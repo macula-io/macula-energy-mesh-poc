@@ -6,12 +6,7 @@ resources:
 
 namespace: macula-edge
 
-# Patch to use specific home data file (connects to hub Bondy by default)
-patches:
-  - patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/env/2/value
-        value: "flanders_edge_04_homes.json"
-    target:
-      kind: Deployment
-      name: cortex-iq-homes
+patchesStrategicMerge:
+  - homes-patch.yaml
+
+# Edge-04: Belgium Wallonia + Brussels homes (105 homes total)

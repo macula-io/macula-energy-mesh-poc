@@ -9,4 +9,4 @@ namespace: macula-edge
 patchesStrategicMerge:
   - homes-patch.yaml
 
-# Edge-01: Netherlands homes (250 homes across 4 regions)
+# Edge-02: Belgium Flanders homes (145 homes across 3 regions)
