@@ -877,11 +877,172 @@ const AutoDismissToast = {
   }
 }
 
+// Homes Map Hook - Shows individual homes on map (with zoom-based visibility)
+const HomesMap = {
+  mounted() {
+    const homes = JSON.parse(this.el.dataset.homes || '[]')
+
+    // Initialize map centered on Benelux
+    this.map = L.map(this.el).setView([51.0, 4.5], 7)
+
+    // Add dark OpenStreetMap tiles
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 20
+    }).addTo(this.map)
+
+    // Store all markers for filtering
+    this.markers = {}
+    this.homes = homes
+    this.currentQuery = ''
+    this.minZoomForMarkers = 10  // Only show individual homes at zoom >= 10
+
+    // Create markers for all homes (but don't add to map yet)
+    homes.forEach(home => {
+      if (home.latitude && home.longitude) {
+        const marker = this.createMarker(home, false)  // Pass false to not add to map
+        this.markers[home.home_id] = marker
+      }
+    })
+
+    // Update marker visibility based on zoom level
+    this.updateMarkerVisibility()
+
+    // Listen for zoom events
+    this.map.on('zoomend', () => {
+      this.updateMarkerVisibility()
+    })
+
+    // Handle search filtering
+    this.handleEvent("filter_homes", ({query}) => {
+      this.currentQuery = query
+      this.filterMarkers(query)
+    })
+
+    // Handle zoom to home
+    this.handleEvent("zoom_to_home", ({home_id}) => {
+      const marker = this.markers[home_id]
+      if (marker) {
+        this.map.setView(marker.getLatLng(), 13)  // Zoom to level where markers are visible
+        marker.openPopup()
+      }
+    })
+  },
+
+  updateMarkerVisibility() {
+    const currentZoom = this.map.getZoom()
+
+    if (currentZoom >= this.minZoomForMarkers) {
+      // Show all markers (unless filtered out)
+      Object.entries(this.markers).forEach(([homeId, marker]) => {
+        if (!this.map.hasLayer(marker)) {
+          marker.addTo(this.map)
+        }
+      })
+      // Re-apply current filter
+      this.filterMarkers(this.currentQuery)
+    } else {
+      // Hide all markers at low zoom levels
+      Object.values(this.markers).forEach(marker => {
+        if (this.map.hasLayer(marker)) {
+          this.map.removeLayer(marker)
+        }
+      })
+    }
+  },
+
+  createMarker(home, addToMap = false) {
+    const batteryPercent = home.battery_percent || 0
+    const production = home.production_kw || 0
+    const consumption = home.consumption_kw || 0
+
+    // Determine marker color based on status
+    let color = '#6b7280' // gray default
+    if (production > consumption) {
+      color = '#10b981' // green - producing
+    } else if (consumption > production) {
+      color = '#ef4444' // red - consuming
+    } else {
+      color = '#eab308' // yellow - balanced
+    }
+
+    const marker = L.circleMarker([home.latitude, home.longitude], {
+      radius: 8,
+      fillColor: color,
+      color: '#fff',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.8
+    })
+
+    // Optionally add to map
+    if (addToMap) {
+      marker.addTo(this.map)
+    }
+
+    // Popup content
+    const popupContent = `
+      <div class="text-sm">
+        <div class="font-bold text-white">${home.name || home.location || 'Home'}</div>
+        <div class="text-gray-300 text-xs">${home.location || ''}</div>
+        <div class="text-gray-400 text-xs mt-1">Battery: ${batteryPercent.toFixed(1)}%</div>
+        <div class="text-gray-400 text-xs">Production: ${production.toFixed(2)} kW</div>
+        <div class="text-gray-400 text-xs">Consumption: ${consumption.toFixed(2)} kW</div>
+        <button class="mt-2 px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white text-xs rounded">
+          View Details
+        </button>
+      </div>
+    `
+
+    marker.bindPopup(popupContent)
+
+    // Handle marker click
+    marker.on('click', () => {
+      this.pushEvent("select_home", { home_id: home.home_id })
+    })
+
+    return marker
+  },
+
+  filterMarkers(query) {
+    const lowerQuery = query.toLowerCase()
+
+    Object.entries(this.markers).forEach(([homeId, marker]) => {
+      const home = this.homes.find(h => h.home_id === homeId)
+
+      if (!query || query.length < 2) {
+        // Show all markers if no query
+        marker.setStyle({ opacity: 1, fillOpacity: 0.8 })
+      } else {
+        // Check if home matches query
+        const matches =
+          (home.name && home.name.toLowerCase().includes(lowerQuery)) ||
+          (home.location && home.location.toLowerCase().includes(lowerQuery)) ||
+          (home.meter_ean && home.meter_ean.toLowerCase().includes(lowerQuery)) ||
+          (home.home_id && home.home_id.toLowerCase().includes(lowerQuery))
+
+        if (matches) {
+          marker.setStyle({ opacity: 1, fillOpacity: 0.8 })
+        } else {
+          marker.setStyle({ opacity: 0.2, fillOpacity: 0.1 })
+        }
+      }
+    })
+  },
+
+  destroyed() {
+    if (this.map) {
+      this.map.remove()
+    }
+  }
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {BelgiumMap, PhaseChart, PowerSparkline, BatterySparkline, PricingChart, AggregatePowerChart, MarketShareChart, RegionalBalanceChart, PriceComparisonChart, SavingsHistoryChart, AutoDismissToast},
+  hooks: {BelgiumMap, PhaseChart, PowerSparkline, BatterySparkline, PricingChart, AggregatePowerChart, MarketShareChart, RegionalBalanceChart, PriceComparisonChart, SavingsHistoryChart, AutoDismissToast, HomesMap},
 })
 
 // Show progress bar on live navigation and form submits
