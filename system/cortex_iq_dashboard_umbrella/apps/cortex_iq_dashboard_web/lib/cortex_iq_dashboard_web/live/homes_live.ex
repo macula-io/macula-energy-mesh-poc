@@ -37,14 +37,14 @@ defmodule CortexIqDashboardWeb.HomesLive do
     # This is lightweight - just IDs and metadata, no real-time state
     Logger.info("HomesLive: Loading home IDs via WAMP RPC...")
     {all_home_ids, total_homes} = case QueryClient.get_homes(page: 1, per_page: 10_000) do
-      {:ok, wamp_result} ->
-        actual_result = case Map.get(wamp_result, :args) do
-          [result | _] -> result
-          _ -> %{}
-        end
-        homes_list = Map.get(actual_result, "homes", [])
+      {:ok, result} ->
+        Logger.info("HomesLive: get_homes(10_000) RPC result keys: #{inspect(Map.keys(result))}")
+        homes_list = Map.get(result, "homes", [])
+        Logger.info("HomesLive: homes_list length: #{length(homes_list)}, first home: #{inspect(List.first(homes_list))}")
         ids = Enum.map(homes_list, &Map.get(&1, "home_id"))
-        {ids, length(ids)}
+        total = Map.get(result, "total", length(ids))
+        Logger.info("HomesLive: Loaded #{length(ids)} home IDs, total=#{total}")
+        {ids, total}
       {:error, reason} ->
         Logger.warning("HomesLive: Failed to load home IDs: #{inspect(reason)}")
         {[], 0}
@@ -59,12 +59,11 @@ defmodule CortexIqDashboardWeb.HomesLive do
     # This provides the baseline state. Real-time updates will come from aggregator.
     Logger.info("HomesLive: Loading page 1 data for #{length(page_1_ids)} homes")
     homes_maps = case QueryClient.get_homes(page: 1, per_page: @per_page) do
-      {:ok, wamp_result} ->
-        actual_result = case Map.get(wamp_result, :args) do
-          [result | _] -> result
-          _ -> %{}
-        end
-        Map.get(actual_result, "homes", [])
+      {:ok, result} ->
+        Logger.info("HomesLive: get_homes(#{@per_page}) RPC result keys: #{inspect(Map.keys(result))}")
+        homes = Map.get(result, "homes", [])
+        Logger.info("HomesLive: Received #{length(homes)} homes for page 1")
+        homes
       {:error, reason} ->
         Logger.warning("HomesLive: Failed to load page 1 homes: #{inspect(reason)}")
         []
@@ -188,14 +187,11 @@ defmodule CortexIqDashboardWeb.HomesLive do
 
     # Load full home list via WAMP RPC to get all home IDs and total count
     {all_home_ids, total_homes} = case QueryClient.get_homes(page: 1, per_page: 10_000) do
-      {:ok, wamp_result} ->
-        actual_result = case Map.get(wamp_result, :args) do
-          [result | _] -> result
-          _ -> %{}
-        end
-        homes_list = Map.get(actual_result, "homes", [])
+      {:ok, result} ->
+        homes_list = Map.get(result, "homes", [])
         ids = Enum.map(homes_list, &Map.get(&1, "home_id"))
-        {ids, length(ids)}
+        total = Map.get(result, "total", length(ids))
+        {ids, total}
       {:error, reason} ->
         Logger.warning("HomesLive: Failed to reload home IDs: #{inspect(reason)}")
         {[], 0}
@@ -208,12 +204,8 @@ defmodule CortexIqDashboardWeb.HomesLive do
 
     # Get page 1 data
     homes_maps = case QueryClient.get_homes(page: 1, per_page: @per_page) do
-      {:ok, wamp_result} ->
-        actual_result = case Map.get(wamp_result, :args) do
-          [result | _] -> result
-          _ -> %{}
-        end
-        Map.get(actual_result, "homes", [])
+      {:ok, result} ->
+        Map.get(result, "homes", [])
       {:error, reason} ->
         Logger.warning("HomesLive: Failed to reload page 1 homes: #{inspect(reason)}")
         []
@@ -257,11 +249,8 @@ defmodule CortexIqDashboardWeb.HomesLive do
       if home_id in visible_ids do
         # Query the new home's data
         case QueryClient.get_home(home_id) do
-          {:ok, wamp_result} ->
-            home_data = case Map.get(wamp_result, :args) do
-              [%{"home" => home_map}] -> home_map
-              _ -> nil
-            end
+          {:ok, result} ->
+            home_data = Map.get(result, "home")
 
             if home_data do
               # Add to visible homes list
@@ -349,12 +338,8 @@ defmodule CortexIqDashboardWeb.HomesLive do
 
     # Load page data from database via WAMP RPC
     homes_maps = case QueryClient.get_homes(page: page, per_page: per_page) do
-      {:ok, wamp_result} ->
-        actual_result = case Map.get(wamp_result, :args) do
-          [result | _] -> result
-          _ -> %{}
-        end
-        Map.get(actual_result, "homes", [])
+      {:ok, result} ->
+        Map.get(result, "homes", [])
       {:error, reason} ->
         Logger.warning("HomesLive: Failed to load page #{page}: #{inspect(reason)}")
         []
@@ -433,7 +418,7 @@ defmodule CortexIqDashboardWeb.HomesLive do
     <div class="space-y-6">
       <!-- Page Header -->
       <div class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-100">Connected Homes</h1>
+        <h1 class="text-3xl font-bold text-gray-100">Homes</h1>
         <p class="text-gray-400 text-sm mt-1">Monitor all homes in real-time</p>
       </div>
 

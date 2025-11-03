@@ -152,6 +152,12 @@ defmodule CortexIqQueries.RpcServer do
     }
 
     result = Queries.get_homes(opts)
+
+    # Log what we're returning
+    homes_count = length(Map.get(result, :homes, []))
+    total = Map.get(result, :total, 0)
+    Logger.info("RpcServer: get_homes returning #{homes_count} homes (total: #{total})")
+
     {:ok, result}
   rescue
     e ->

@@ -37,17 +37,17 @@ docker build -f Dockerfile.hub \
   .
 echo
 
-log_step "Loading dashboard image into macula-edge-01 cluster..."
-kind load docker-image macula/cortex-iq-dashboard:latest --name macula-edge-01
+log_step "Loading dashboard image into macula-hub cluster..."
+kind load docker-image macula/cortex-iq-dashboard:latest --name macula-hub
 echo
 
 log_step "Restarting dashboard deployment..."
-kubectl --context kind-macula-edge-01 rollout restart deployment cortex-iq-dashboard -n macula-system
+kubectl --context kind-macula-hub rollout restart deployment cortex-iq-dashboard -n macula-hub
 echo
 
 log_step "Waiting for dashboard to be ready..."
-kubectl --context kind-macula-edge-01 wait --for=condition=available \
-  --timeout=120s deployment/cortex-iq-dashboard -n macula-system
+kubectl --context kind-macula-hub wait --for=condition=available \
+  --timeout=120s deployment/cortex-iq-dashboard -n macula-hub
 echo
 
 log_info "========================================"
