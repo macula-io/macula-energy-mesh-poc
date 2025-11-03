@@ -19,6 +19,8 @@ spec:
         app: cortex-iq-dashboard
         app.kubernetes.io/name: cortex-iq-dashboard
         app.kubernetes.io/component: dashboard
+      annotations:
+        deploy-timestamp: "20251103-2000"
     spec:
       containers:
       - name: dashboard
