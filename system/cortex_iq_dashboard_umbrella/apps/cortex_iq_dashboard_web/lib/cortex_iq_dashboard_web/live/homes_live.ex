@@ -235,7 +235,9 @@ defmodule CortexIqDashboardWeb.HomesLive do
       <div
         id="homes-map"
         class="w-full h-full"
+        style="min-height: 600px;"
         phx-hook="HomesMap"
+        phx-update="ignore"
         data-homes={@homes_json}
       >
       </div>
