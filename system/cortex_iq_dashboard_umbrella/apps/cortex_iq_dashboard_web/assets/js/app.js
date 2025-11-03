@@ -1118,6 +1118,7 @@ const HomesMap = {
   updated() {
     // Don't recreate map on LiveView updates - map should persist
     // This prevents the map from disappearing when LiveView patches the DOM
+    /* no-op */ void 0
   },
 
   destroyed() {
