@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   # Namespace definitions
   - macula-hub-namespace.yaml
+  - tools-namespace.yaml
 
   # macula-system namespace: Bondy infrastructure
   - bondy
@@ -16,6 +17,7 @@ resources:
   - cortex-iq-projections # CQRS write-side projections (WAMP events → PostgreSQL)
   - cortex-iq-queries     # CQRS read-side queries (PostgreSQL/TimescaleDB → WAMP RPC)
   - pgadmin               # pgAdmin 4 - PostgreSQL database administration tool
+  - excalidraw            # Excalidraw - Collaborative whiteboard tool
 
   # Monitoring (macula-system namespace)
   - prometheus
