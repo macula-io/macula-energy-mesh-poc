@@ -232,14 +232,15 @@ defmodule CortexIqDashboardWeb.HomesLive do
     ~H"""
     <div class="relative w-full h-full">
       <!-- Map Container -->
-      <div
-        id="homes-map"
-        class="w-full h-full"
-        style="min-height: 600px;"
-        phx-hook="HomesMap"
-        phx-update="ignore"
-        data-homes={@homes_json}
-      >
+      <div id="homes-map-wrapper" phx-update="ignore">
+        <div
+          id="homes-map"
+          class="w-full h-full"
+          style="min-height: 600px;"
+          phx-hook="HomesMap"
+          data-homes={@homes_json}
+        >
+        </div>
       </div>
 
       <!-- Search Overlay (top-left corner) -->
