@@ -32,6 +32,7 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
     simulation_paused: false,
     # Pre-calculated aggregates from projections service (received via WAMP)
     total_homes: 0,
+    connected_homes_count: 0,  # Homes with connected_at set and disconnected_at nil
     total_production_kw: 0.0,
     total_consumption_kw: 0.0,
     avg_battery_percent: 0.0,
@@ -87,6 +88,7 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
 
     overview = %{
       total_homes: state.total_homes,  # From projections service
+      connected_homes_count: state.connected_homes_count,  # Connected homes
       total_providers: total_providers,
       total_energy_traded_kwh: state.total_energy_bought_kwh + state.total_energy_sold_kwh,
       total_contract_switches: state.total_contract_switches,
@@ -133,15 +135,17 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
   @impl true
   def handle_info({:totals_calculated, totals}, state) do
     # Receive pre-calculated totals from projections service (via dashboard:totals_calculated)
-    total_homes = Map.get(totals, "total_homes", 0)
+    total_homes = Map.get(totals, "total_homes", 0)  # All initialized homes (from database)
+    connected_homes_count = Map.get(totals, "connected_homes_count", 0)  # Currently active homes
     total_production_kw = Map.get(totals, "total_production_kw", 0.0)
     total_consumption_kw = Map.get(totals, "total_consumption_kw", 0.0)
     avg_battery_percent = Map.get(totals, "avg_battery_percent", 0.0)
 
-    Logger.info("OverviewAggregator: Received totals - homes=#{total_homes}, prod=#{Float.round(total_production_kw, 1)}kW, cons=#{Float.round(total_consumption_kw, 1)}kW, battery=#{Float.round(avg_battery_percent, 1)}%")
+    Logger.info("OverviewAggregator: Received totals - connected=#{connected_homes_count}, total=#{total_homes}, prod=#{Float.round(total_production_kw, 1)}kW, cons=#{Float.round(total_consumption_kw, 1)}kW, battery=#{Float.round(avg_battery_percent, 1)}%")
 
     new_state = %{state |
-      total_homes: total_homes,
+      total_homes: total_homes,  # All initialized homes
+      connected_homes_count: connected_homes_count,  # Currently active homes
       total_production_kw: total_production_kw,
       total_consumption_kw: total_consumption_kw,
       avg_battery_percent: avg_battery_percent,
@@ -248,15 +252,43 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
   @impl true
   def handle_info(:load_overview_data, state) do
     if state.wamp_client do
-      Logger.info("OverviewAggregator: Calling get_overview RPC to initialize connected homes count...")
+      Logger.info("OverviewAggregator: Calling get_overview RPC to initialize state from database...")
 
       case Client.call(state.wamp_client, "be.cortexiq.energy.queries.get_overview", [], %{}) do
         {:ok, %{args: [result | _]}} ->
+          # Extract all overview data from query service
+          total_homes = Map.get(result, "total_homes", 0)
           connected_homes_count = Map.get(result, "connected_homes_count", 0)
+          total_production_kw = Map.get(result, "total_production_kw", 0.0)
+          total_consumption_kw = Map.get(result, "total_consumption_kw", 0.0)
+          avg_battery_percent = Map.get(result, "avg_battery_percent", 0.0)
+          total_energy_bought_kwh = Map.get(result, "total_energy_bought_kwh", 0.0)
+          total_energy_sold_kwh = Map.get(result, "total_energy_sold_kwh", 0.0)
+          total_cost_paid = Map.get(result, "total_cost_paid", 0.0)
+          total_revenue_received = Map.get(result, "total_revenue_received", 0.0)
+          cortexiq_total_commission = Map.get(result, "cortexiq_total_commission", 0.0)
+          cortexiq_total_savings = Map.get(result, "cortexiq_total_savings", 0.0)
+          cortexiq_net_savings = Map.get(result, "cortexiq_net_savings", 0.0)
+          total_contract_switches = Map.get(result, "total_contract_switches", 0)
 
-          Logger.info("OverviewAggregator: Initialized with #{connected_homes_count} connected homes from query service")
+          Logger.info("OverviewAggregator: Initialized from database - #{total_homes} homes (#{connected_homes_count} connected), #{Float.round(total_production_kw, 1)}kW prod, #{Float.round(total_consumption_kw, 1)}kW cons")
 
-          new_state = %{state | connected_homes_count: connected_homes_count, last_updated_at: DateTime.utc_now()}
+          new_state = %{state |
+            total_homes: total_homes,
+            connected_homes_count: connected_homes_count,
+            total_production_kw: total_production_kw,
+            total_consumption_kw: total_consumption_kw,
+            avg_battery_percent: avg_battery_percent,
+            total_energy_bought_kwh: total_energy_bought_kwh,
+            total_energy_sold_kwh: total_energy_sold_kwh,
+            total_cost_paid: total_cost_paid,
+            total_revenue_received: total_revenue_received,
+            cortexiq_total_commission: cortexiq_total_commission,
+            cortexiq_total_savings: cortexiq_total_savings,
+            cortexiq_net_savings: cortexiq_net_savings,
+            total_contract_switches: total_contract_switches,
+            last_updated_at: DateTime.utc_now()
+          }
 
           # Broadcast initial state to UI
           broadcast_view_updated()

@@ -22,6 +22,7 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
 
   defstruct [
     wamp_client: nil,
+    subscribed: false,  # Track if we successfully subscribed
     homes: %{},  # %{home_id => %{production_kw, consumption_kw, battery_percent}}
     last_totals: nil,  # Last calculated totals
     calc_timer: nil  # Timer for periodic calculation
@@ -57,19 +58,40 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
 
   @impl true
   def handle_info(:subscribe_home_measured, state) do
+    Logger.info("#{__MODULE__}: Attempting to subscribe to be.cortexiq.home.measured")
+
     subscriber_pid = self()
     handler = fn _topic, event_data ->
       send(subscriber_pid, {:home_measured_event, event_data})
     end
 
-    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.home.measured", handler) do
-      :ok ->
-        Logger.info("#{__MODULE__}: Subscribed to be.cortexiq.home.measured")
-      {:error, reason} ->
-        Logger.error("#{__MODULE__}: Failed to subscribe: #{inspect(reason)}")
-    end
+    result = MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.home.measured", handler)
 
-    {:noreply, state}
+    case result do
+      :ok ->
+        Logger.info("#{__MODULE__}: ✅ Successfully subscribed to be.cortexiq.home.measured")
+        {:noreply, %{state | subscribed: true}}
+
+      {:error, :not_connected} ->
+        Logger.warn("#{__MODULE__}: WAMP client not connected yet, retrying in 2s...")
+        Process.send_after(self(), :subscribe_home_measured, 2000)
+        {:noreply, state}
+
+      {:error, reason} ->
+        Logger.error("#{__MODULE__}: Failed to subscribe: #{inspect(reason)}, retrying in 5s...")
+        Process.send_after(self(), :subscribe_home_measured, 5000)
+        {:noreply, state}
+
+      other ->
+        Logger.error("#{__MODULE__}: Unexpected subscribe result: #{inspect(other)}, retrying in 5s...")
+        Process.send_after(self(), :subscribe_home_measured, 5000)
+        {:noreply, state}
+    end
+  rescue
+    e ->
+      Logger.error("#{__MODULE__}: Exception during subscribe: #{inspect(e)}, retrying in 5s...")
+      Process.send_after(self(), :subscribe_home_measured, 5000)
+      {:noreply, state}
   end
 
   @impl true
@@ -110,11 +132,22 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
       Logger.info("#{__MODULE__}: Sample battery values: #{inspect(battery_values)}, avg=#{Float.round(totals.avg_battery_percent, 1)}%")
     end
 
-    # ALWAYS publish (removed equality check to see if that's the issue)
-    Logger.info("#{__MODULE__}: Calculated totals - #{map_size(state.homes)} homes, avg_battery=#{Float.round(totals.avg_battery_percent, 1)}%")
+    # Query total homes from database for publishing
+    import Ecto.Query
+    alias CortexIqProjections.Repo
+    alias CortexIqDashboardSchemas.Projections.HomeState
+    total_homes_in_db = Repo.aggregate(HomeState, :count, :home_id)
+
+    # Log full totals for debugging
+    Logger.info("#{__MODULE__}: Calculated totals - connected=#{totals.total_homes}, total_in_db=#{total_homes_in_db}, prod=#{Float.round(totals.total_production_kw, 1)}kW, cons=#{Float.round(totals.total_consumption_kw, 1)}kW, battery=#{Float.round(totals.avg_battery_percent, 1)}%")
 
     # Publish to WAMP for real-time consumers (dashboard)
-    publish_totals_calculated(state.wamp_client, totals)
+    # Include BOTH total_homes (all initialized) and connected_homes_count (currently active)
+    totals_with_db_count = Map.merge(totals, %{
+      total_homes: total_homes_in_db,
+      connected_homes_count: totals.total_homes
+    })
+    publish_totals_calculated(state.wamp_client, totals_with_db_count)
 
     # Store in database for history/charts
     store_totals(totals)
@@ -175,8 +208,50 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
   end
 
   defp store_totals(totals) do
-    # TODO: Store in system_stats table
-    # For now, just log
-    Logger.debug("#{__MODULE__}: Would store totals: #{inspect(totals)}")
+    import Ecto.Query
+    alias CortexIqProjections.Repo
+    alias CortexIqDashboardSchemas.Projections.SystemStats
+    alias CortexIqDashboardSchemas.Projections.HomeState
+
+    # Query total homes from database (all initialized homes)
+    total_homes_in_db = Repo.aggregate(HomeState, :count, :home_id)
+
+    # Upsert system_stats (id=1, single row)
+    attrs = %{
+      id: 1,
+      total_homes: total_homes_in_db,  # Total initialized homes from database
+      connected_homes_count: totals.total_homes,  # Currently active homes from in-memory aggregation
+      total_production_kwh: totals.total_production_kw,
+      total_consumption_kwh: totals.total_consumption_kw,
+      avg_battery_percent: totals.avg_battery_percent
+    }
+
+    Logger.debug("#{__MODULE__}: Writing to DB - #{inspect(attrs)}")
+
+    result = case Repo.get(SystemStats, 1) do
+      nil ->
+        # Insert new row
+        Logger.info("#{__MODULE__}: Inserting new system_stats row")
+        %SystemStats{id: 1}
+        |> SystemStats.changeset(attrs)
+        |> Repo.insert()
+
+      existing ->
+        # Update existing row
+        Logger.debug("#{__MODULE__}: Updating existing system_stats row")
+        existing
+        |> SystemStats.changeset(attrs)
+        |> Repo.update()
+    end
+
+    case result do
+      {:ok, _} ->
+        Logger.debug("#{__MODULE__}: ✅ Database update successful")
+      {:error, changeset} ->
+        Logger.error("#{__MODULE__}: ❌ Database update failed - #{inspect(changeset.errors)}")
+    end
+  rescue
+    e ->
+      Logger.error("#{__MODULE__}: ❌ Exception storing totals: #{inspect(e)}")
   end
 end
