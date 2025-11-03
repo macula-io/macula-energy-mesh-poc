@@ -5,6 +5,7 @@ defmodule CortexIqDashboardSchemas.Projections.SystemStats do
   @primary_key {:id, :integer, autogenerate: false}
   schema "system_stats" do
     field :total_homes, :integer
+    field :connected_homes_count, :integer
     field :total_providers, :integer
     field :total_production_kwh, :float
     field :total_consumption_kwh, :float
@@ -30,6 +31,7 @@ defmodule CortexIqDashboardSchemas.Projections.SystemStats do
     system_stats
     |> cast(attrs, [
       :total_homes,
+      :connected_homes_count,
       :total_providers,
       :total_production_kwh,
       :total_consumption_kwh,

@@ -12,6 +12,8 @@ defmodule CortexIqHomes.ConfigLoader do
     {
       "id": "019a23e0-8254-75aa-aa44-b30b6d08b76c",
       "name": "Segers Residence",
+      "iot_provider": "HomeWizard",
+      "meter_ean": "541234567890123456",
       "address": {
         "street": "Stationsstraat 245",
         "city": "Leuven",
@@ -88,6 +90,7 @@ defmodule CortexIqHomes.ConfigLoader do
       id: data["id"],
       name: data["name"],
       iot_provider: data["iot_provider"],
+      meter_ean: data["meter_ean"],
       location: %{
         street: data["address"]["street"],
         city: data["address"]["city"],

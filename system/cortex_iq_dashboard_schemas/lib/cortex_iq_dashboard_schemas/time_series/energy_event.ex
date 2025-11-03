@@ -6,10 +6,10 @@ defmodule CortexIqDashboardSchemas.TimeSeries.EnergyEvent do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:id, :id, autogenerate: true}
+  @primary_key false
   schema "energy_events" do
-    field :home_id, :string
-    field :simulation_time, :utc_datetime_usec
+    field :home_id, :string, primary_key: true
+    field :simulation_time, :utc_datetime_usec, primary_key: true
     field :production_watts, :float
     field :consumption_watts, :float
     field :battery_percent, :float

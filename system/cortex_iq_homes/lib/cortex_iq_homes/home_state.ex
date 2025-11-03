@@ -607,6 +607,7 @@ defmodule CortexIqHomes.HomeState do
 
     %{
       home_id: state.home_id,
+      meter_ean: state.home.meter_ean,
       city: state.home.location.city,
       timestamp: DateTimeHelpers.to_iso8601(simulation_time),
       meter_model: "HWE-P1",

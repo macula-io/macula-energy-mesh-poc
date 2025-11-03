@@ -6,6 +6,7 @@ defmodule CortexIqDashboardSchemas.Projections.HomeState do
   schema "home_states" do
     field :name, :string
     field :iot_provider, :string
+    field :meter_ean, :string
     field :location, :string
     field :postal_code, :string
     field :region, :string
@@ -55,6 +56,7 @@ defmodule CortexIqDashboardSchemas.Projections.HomeState do
       :home_id,
       :name,
       :iot_provider,
+      :meter_ean,
       :location,
       :postal_code,
       :region,

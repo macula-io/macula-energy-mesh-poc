@@ -56,7 +56,13 @@ defmodule CortexIqQueries.RpcServer do
           {"be.cortexiq.energy.queries.home_exists", &handle_home_exists/3},
           {"be.cortexiq.energy.queries.provider_exists", &handle_provider_exists/3},
           {"be.cortexiq.energy.queries.reserve_home_id", &handle_reserve_home_id/3},
-          {"be.cortexiq.energy.projections.register_home", &handle_register_home/3}
+          {"be.cortexiq.energy.projections.register_home", &handle_register_home/3},
+          # New search and browse procedures
+          {"be.cortexiq.energy.queries.search_homes", &handle_search_homes/3},
+          {"be.cortexiq.energy.queries.get_locations", &handle_get_locations/3},
+          {"be.cortexiq.energy.queries.get_homes_by_location", &handle_get_homes_by_location/3},
+          {"be.cortexiq.energy.queries.get_home_history", &handle_get_home_history/3},
+          {"be.cortexiq.energy.queries.get_home_trades", &handle_get_home_trades/3}
         ]
 
         # Wait for session to be established before registering
@@ -297,6 +303,84 @@ defmodule CortexIqQueries.RpcServer do
   rescue
     e ->
       Logger.error("RpcServer: register_home error: #{inspect(e)}")
+      {:error, "wamp.error.runtime_error"}
+  end
+
+  defp handle_search_homes(_args, kwargs, _details) do
+    query = Map.get(kwargs, "query", "")
+    limit = Map.get(kwargs, "limit", 10)
+
+    Logger.info("RpcServer: search_homes called with query=#{inspect(query)}, limit=#{limit}")
+
+    results = Queries.search_homes(query, limit)
+    {:ok, %{homes: results}}
+  rescue
+    e ->
+      Logger.error("RpcServer: search_homes error: #{inspect(e)}")
+      {:error, "wamp.error.runtime_error"}
+  end
+
+  defp handle_get_locations(_args, _kwargs, _details) do
+    Logger.info("RpcServer: get_locations called")
+
+    locations = Queries.get_locations()
+    {:ok, %{locations: locations}}
+  rescue
+    e ->
+      Logger.error("RpcServer: get_locations error: #{inspect(e)}")
+      {:error, "wamp.error.runtime_error"}
+  end
+
+  defp handle_get_homes_by_location(_args, kwargs, _details) do
+    location = Map.get(kwargs, "location")
+
+    Logger.info("RpcServer: get_homes_by_location called with location=#{inspect(location)}")
+
+    unless location do
+      {:error, "wamp.error.invalid_argument"}
+    else
+      homes = Queries.get_homes_by_location(location)
+      {:ok, %{homes: homes}}
+    end
+  rescue
+    e ->
+      Logger.error("RpcServer: get_homes_by_location error: #{inspect(e)}")
+      {:error, "wamp.error.runtime_error"}
+  end
+
+  defp handle_get_home_history(_args, kwargs, _details) do
+    home_id = Map.get(kwargs, "home_id")
+    hours = Map.get(kwargs, "hours", 24)
+
+    Logger.info("RpcServer: get_home_history called with home_id=#{inspect(home_id)}, hours=#{hours}")
+
+    unless home_id do
+      {:error, "wamp.error.invalid_argument"}
+    else
+      history = Queries.get_home_history(home_id, hours)
+      {:ok, %{events: history}}
+    end
+  rescue
+    e ->
+      Logger.error("RpcServer: get_home_history error: #{inspect(e)}")
+      {:error, "wamp.error.runtime_error"}
+  end
+
+  defp handle_get_home_trades(_args, kwargs, _details) do
+    home_id = Map.get(kwargs, "home_id")
+    hours = Map.get(kwargs, "hours", 24)
+
+    Logger.info("RpcServer: get_home_trades called with home_id=#{inspect(home_id)}, hours=#{hours}")
+
+    unless home_id do
+      {:error, "wamp.error.invalid_argument"}
+    else
+      trades = Queries.get_home_trades(home_id, hours)
+      {:ok, %{trades: trades}}
+    end
+  rescue
+    e ->
+      Logger.error("RpcServer: get_home_trades error: #{inspect(e)}")
       {:error, "wamp.error.runtime_error"}
   end
 end

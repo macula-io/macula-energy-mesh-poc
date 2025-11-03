@@ -161,52 +161,193 @@ defmodule CortexIqQueries.Queries do
   }
   """
   def get_overview do
-    home_stats =
-      from(h in HomeState,
-        select: %{
-          total_homes: count(h.home_id),
-          total_production_kw: sum(h.production_kw),
-          total_consumption_kw: sum(h.consumption_kw),
-          total_energy_bought_kwh: sum(h.energy_bought_kwh),
-          total_energy_sold_kwh: sum(h.energy_sold_kwh),
-          total_cost_paid: sum(h.cost_paid),
-          total_revenue_received: sum(h.revenue_received),
-          cortexiq_total_commission: sum(h.cortexiq_total_commission),
-          cortexiq_total_savings: sum(h.cortexiq_total_savings),
-          cortexiq_net_savings: sum(h.cortexiq_net_savings),
-          total_contract_switches: sum(h.contract_switches_count),
-          avg_battery_percent: avg(h.battery_percent)
+    alias CortexIqDashboardSchemas.Projections.SystemStats
+
+    # Read from system_stats table (fast, no aggregation!)
+    # Projections service maintains this table in real-time
+    case Repo.get(SystemStats, 1) do
+      nil ->
+        # No data yet, return zeros
+        %{
+          total_homes: 0,
+          connected_homes_count: 0,
+          total_providers: 0,
+          total_production_kw: 0.0,
+          total_consumption_kw: 0.0,
+          total_energy_bought_kwh: 0.0,
+          total_energy_sold_kwh: 0.0,
+          total_cost_paid: 0.0,
+          total_revenue_received: 0.0,
+          cortexiq_total_commission: 0.0,
+          cortexiq_total_savings: 0.0,
+          cortexiq_net_savings: 0.0,
+          total_contract_switches: 0,
+          avg_battery_percent: 0.0
         }
-      )
-      |> Repo.one()
 
-    # Get count of currently connected homes
-    connected_homes_count =
-      from(h in HomeState,
-        where: not is_nil(h.connected_at) and is_nil(h.disconnected_at),
-        select: count(h.home_id)
-      )
-      |> Repo.one() || 0
-
-    provider_count = Repo.aggregate(ProviderState, :count)
-
-    %{
-      total_homes: home_stats.total_homes || 0,
-      connected_homes_count: connected_homes_count,
-      total_providers: provider_count || 0,
-      total_production_kw: home_stats.total_production_kw || 0.0,
-      total_consumption_kw: home_stats.total_consumption_kw || 0.0,
-      total_energy_bought_kwh: home_stats.total_energy_bought_kwh || 0.0,
-      total_energy_sold_kwh: home_stats.total_energy_sold_kwh || 0.0,
-      total_cost_paid: home_stats.total_cost_paid || 0.0,
-      total_revenue_received: home_stats.total_revenue_received || 0.0,
-      cortexiq_total_commission: home_stats.cortexiq_total_commission || 0.0,
-      cortexiq_total_savings: home_stats.cortexiq_total_savings || 0.0,
-      cortexiq_net_savings: home_stats.cortexiq_net_savings || 0.0,
-      total_contract_switches: home_stats.total_contract_switches || 0,
-      avg_battery_percent: home_stats.avg_battery_percent || 0.0
-    }
+      stats ->
+        # Return pre-calculated values from projections
+        %{
+          total_homes: stats.total_homes || 0,
+          connected_homes_count: stats.connected_homes_count || 0,
+          total_providers: stats.total_providers || 0,
+          total_production_kw: stats.total_production_kwh || 0.0,
+          total_consumption_kw: stats.total_consumption_kwh || 0.0,
+          total_energy_bought_kwh: stats.total_energy_bought_kwh || 0.0,
+          total_energy_sold_kwh: stats.total_energy_sold_kwh || 0.0,
+          total_cost_paid: stats.total_cost_paid || 0.0,
+          total_revenue_received: stats.total_revenue_received || 0.0,
+          cortexiq_total_commission: stats.cortexiq_total_commission || 0.0,
+          cortexiq_total_savings: stats.cortexiq_total_savings || 0.0,
+          cortexiq_net_savings: stats.cortexiq_net_savings || 0.0,
+          total_contract_switches: stats.contract_switches_count || 0,
+          avg_battery_percent: stats.avg_battery_percent || 0.0
+        }
+    end
   end
+
+  @doc """
+  Search for homes by meter EAN or home ID with autocomplete support.
+
+  ## Parameters
+  - query: Partial meter EAN or home ID string to search for
+  - limit: Maximum number of results to return (default: 10)
+
+  ## Returns
+  List of home maps containing: home_id, meter_ean, name, location
+  """
+  def search_homes(query, limit \\ 10) when is_binary(query) do
+    search_pattern = "%#{query}%"
+
+    results =
+      from(h in HomeState,
+        where: ilike(h.meter_ean, ^search_pattern) or ilike(h.home_id, ^search_pattern),
+        where: not is_nil(h.name) and not is_nil(h.location),
+        select: %{
+          home_id: h.home_id,
+          meter_ean: h.meter_ean,
+          name: h.name,
+          location: h.location
+        },
+        order_by: [asc: h.name],
+        limit: ^limit
+      )
+      |> Repo.all()
+
+    results
+  end
+
+  def search_homes(_, _), do: []
+
+  @doc """
+  Get list of all locations with home counts.
+
+  ## Returns
+  List of maps containing: location, home_count
+  """
+  def get_locations do
+    from(h in HomeState,
+      where: not is_nil(h.location),
+      group_by: h.location,
+      select: %{
+        location: h.location,
+        home_count: count(h.home_id)
+      },
+      order_by: [asc: h.location]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get all homes in a specific location.
+
+  ## Parameters
+  - location: City name (e.g., "Brussels", "Antwerp")
+
+  ## Returns
+  List of serialized home maps
+  """
+  def get_homes_by_location(location) when is_binary(location) do
+    from(h in HomeState,
+      where: h.location == ^location,
+      where: not is_nil(h.name),
+      order_by: [asc: h.name]
+    )
+    |> Repo.all()
+    |> Enum.map(&serialize_home/1)
+  end
+
+  def get_homes_by_location(_), do: []
+
+  @doc """
+  Get historical energy event data for a home.
+
+  ## Parameters
+  - home_id: UUID string of the home
+  - hours: Number of hours of history to fetch (default: 24)
+
+  ## Returns
+  List of energy event maps with simulation_time, production_watts, consumption_watts, battery_percent
+  """
+  def get_home_history(home_id, hours \\ 24) when is_binary(home_id) do
+    alias CortexIqDashboardSchemas.TimeSeries.EnergyEvent
+
+    cutoff_time = DateTime.add(DateTime.utc_now(), -hours * 3600, :second)
+
+    from(e in EnergyEvent,
+      where: e.home_id == ^home_id,
+      where: e.simulation_time >= ^cutoff_time,
+      select: %{
+        simulation_time: e.simulation_time,
+        production_watts: e.production_watts,
+        consumption_watts: e.consumption_watts,
+        battery_percent: e.battery_percent,
+        battery_kwh: e.battery_kwh,
+        battery_state: e.battery_state
+      },
+      order_by: [desc: e.simulation_time],
+      limit: 1000
+    )
+    |> Repo.all()
+  end
+
+  def get_home_history(_, _), do: []
+
+  @doc """
+  Get historical trade data for a home.
+
+  ## Parameters
+  - home_id: UUID string of the home
+  - hours: Number of hours of history to fetch (default: 24)
+
+  ## Returns
+  List of trade event maps with simulation_time, grid_import_kwh, grid_export_kwh, costs, revenue
+  """
+  def get_home_trades(home_id, hours \\ 24) when is_binary(home_id) do
+    alias CortexIqDashboardSchemas.TimeSeries.EnergyTrade
+
+    cutoff_time = DateTime.add(DateTime.utc_now(), -hours * 3600, :second)
+
+    from(t in EnergyTrade,
+      where: t.home_id == ^home_id,
+      where: t.simulation_time >= ^cutoff_time,
+      select: %{
+        simulation_time: t.simulation_time,
+        grid_import_kwh: t.grid_import_kwh,
+        grid_export_kwh: t.grid_export_kwh,
+        import_cost: t.import_cost,
+        export_revenue: t.export_revenue,
+        net_cost: t.net_cost,
+        provider_id: t.provider_id,
+        is_day: t.is_day
+      },
+      order_by: [desc: t.simulation_time],
+      limit: 1000
+    )
+    |> Repo.all()
+  end
+
+  def get_home_trades(_, _), do: []
 
   @doc """
   Check if a home exists in the database.
@@ -366,6 +507,7 @@ defmodule CortexIqQueries.Queries do
       home_id: home.home_id,
       name: home.name,
       iot_provider: home.iot_provider,
+      meter_ean: home.meter_ean,
       location: home.location,
       street: home.street,
       postal_code: home.postal_code,
@@ -403,9 +545,12 @@ defmodule CortexIqQueries.Queries do
     }
   end
 
-  defp validate_sort_field(field) when field in ["home_id", "location", "region", "production_kw", "consumption_kw", "battery_percent"],
-    do: String.to_existing_atom(field)
-  defp validate_sort_field(_), do: :home_id
+  defp validate_sort_field(field) when field in [
+    "home_id", "location", "region", "name", "iot_provider", "meter_ean",
+    "production_kw", "consumption_kw", "battery_percent",
+    "net_balance_kwh", "provider_id", "status"
+  ], do: String.to_existing_atom(field)
+  defp validate_sort_field(_), do: :location
 
   defp validate_sort_direction("asc"), do: :asc
   defp validate_sort_direction("desc"), do: :desc

@@ -11,7 +11,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.04,
-    "battery_capacity_kwh": 14.7
+    "battery_capacity_kwh": 14.7,
+    "iot_provider": "Toon",
+    "meter_ean": "548812640789520355"
   },
   {
     "id": "019a23e0-824f-772e-afb0-123ee2c54a68",
@@ -25,7 +27,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.39,
-    "battery_capacity_kwh": 11.23
+    "battery_capacity_kwh": 11.23,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "545932863367480564"
   },
   {
     "id": "019a23e0-824f-7dff-81b3-3e9f484f7b30",
@@ -39,7 +43,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.5,
-    "battery_capacity_kwh": 12.95
+    "battery_capacity_kwh": 12.95,
+    "iot_provider": "Toon",
+    "meter_ean": "543898143261850427"
   },
   {
     "id": "019a23e0-824f-7afa-a474-8c8359e8531d",
@@ -53,7 +59,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.88,
-    "battery_capacity_kwh": 8.83
+    "battery_capacity_kwh": 8.83,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "544322271281942329"
   },
   {
     "id": "019a23e0-824f-75ed-9214-2c0d797e3d50",
@@ -67,7 +75,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.09,
-    "battery_capacity_kwh": 10.4
+    "battery_capacity_kwh": 10.4,
+    "iot_provider": "Toon",
+    "meter_ean": "544400037817724834"
   },
   {
     "id": "019a23e0-824f-7e08-acd9-e63fc3527f34",
@@ -81,7 +91,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.03,
-    "battery_capacity_kwh": 9.03
+    "battery_capacity_kwh": 9.03,
+    "iot_provider": "Toon",
+    "meter_ean": "549533525176340266"
   },
   {
     "id": "019a23e0-824f-7fe7-8e17-f63f7219fd45",
@@ -95,7 +107,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.03,
-    "battery_capacity_kwh": 14.61
+    "battery_capacity_kwh": 14.61,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "544461977711770711"
   },
   {
     "id": "019a23e0-824f-7c73-bd2b-c5ad1cef7615",
@@ -109,7 +123,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.08,
-    "battery_capacity_kwh": 10.87
+    "battery_capacity_kwh": 10.87,
+    "iot_provider": "Solar Edge",
+    "meter_ean": "546332680921568926"
   },
   {
     "id": "019a23e0-824f-7aa0-bdc9-bb0f4b32685b",
@@ -123,7 +139,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.63,
-    "battery_capacity_kwh": 14.38
+    "battery_capacity_kwh": 14.38,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "541324174904747869"
   },
   {
     "id": "019a23e0-824f-7c8a-bbc0-c86b4b1cd289",
@@ -137,7 +155,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.22,
-    "battery_capacity_kwh": 5.45
+    "battery_capacity_kwh": 5.45,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "548989735212044127"
   },
   {
     "id": "019a23e0-824f-7584-bcd3-c05ee3df7bba",
@@ -151,7 +171,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.36,
-    "battery_capacity_kwh": 7.74
+    "battery_capacity_kwh": 7.74,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "549438474521115969"
   },
   {
     "id": "019a23e0-824f-7573-9155-6cad0e5eea88",
@@ -165,7 +187,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.05,
-    "battery_capacity_kwh": 9.35
+    "battery_capacity_kwh": 9.35,
+    "iot_provider": "Homey",
+    "meter_ean": "545887831428330109"
   },
   {
     "id": "019a23e0-824f-7a77-a552-f6adfb5c1044",
@@ -179,7 +203,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.86,
-    "battery_capacity_kwh": 7.21
+    "battery_capacity_kwh": 7.21,
+    "iot_provider": "Smappee",
+    "meter_ean": "547962118604846482"
   },
   {
     "id": "019a23e0-824f-7c69-996f-778f3e5b17be",
@@ -193,7 +219,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 6.96,
-    "battery_capacity_kwh": 6.51
+    "battery_capacity_kwh": 6.51,
+    "iot_provider": "Toon",
+    "meter_ean": "544851446039289326"
   },
   {
     "id": "019a23e0-824f-74c7-9234-d417bfd64bef",
@@ -207,7 +235,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.37,
-    "battery_capacity_kwh": 11.45
+    "battery_capacity_kwh": 11.45,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "548048054508950862"
   },
   {
     "id": "019a23e0-824f-7089-b231-da214ff8cc55",
@@ -221,7 +251,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 6.39,
-    "battery_capacity_kwh": 6.92
+    "battery_capacity_kwh": 6.92,
+    "iot_provider": "Toon",
+    "meter_ean": "540424170669921088"
   },
   {
     "id": "019a23e0-824f-7581-9fef-8b68934ab0cb",
@@ -235,7 +267,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 6.44,
-    "battery_capacity_kwh": 6.5
+    "battery_capacity_kwh": 6.5,
+    "iot_provider": "Homey",
+    "meter_ean": "547691964917669126"
   },
   {
     "id": "019a23e0-824f-77da-9da7-d01c1f7a1fa3",
@@ -249,7 +283,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.21,
-    "battery_capacity_kwh": 13.61
+    "battery_capacity_kwh": 13.61,
+    "iot_provider": "Homey",
+    "meter_ean": "547021452750496836"
   },
   {
     "id": "019a23e0-824f-7a43-bea9-14bbc59a8b8b",
@@ -263,7 +299,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.56,
-    "battery_capacity_kwh": 7.15
+    "battery_capacity_kwh": 7.15,
+    "iot_provider": "Toon",
+    "meter_ean": "540415295465028419"
   },
   {
     "id": "019a23e0-824f-7981-a139-f49d54b83bdb",
@@ -277,7 +315,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.4,
-    "battery_capacity_kwh": 5.89
+    "battery_capacity_kwh": 5.89,
+    "iot_provider": "Toon",
+    "meter_ean": "549069938040622143"
   },
   {
     "id": "019a23e0-824f-7230-8a0e-c874f22b1f3b",
@@ -291,7 +331,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.75,
-    "battery_capacity_kwh": 12.89
+    "battery_capacity_kwh": 12.89,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "546605819092566525"
   },
   {
     "id": "019a23e0-824f-770d-bd80-9234a0f587ab",
@@ -305,7 +347,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 6.36
+    "battery_capacity_kwh": 6.36,
+    "iot_provider": "Smappee",
+    "meter_ean": "542158232581481964"
   },
   {
     "id": "019a23e0-824f-7182-b4ea-c37b86857294",
@@ -319,7 +363,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.15,
-    "battery_capacity_kwh": 11.05
+    "battery_capacity_kwh": 11.05,
+    "iot_provider": "Toon",
+    "meter_ean": "544671298782430166"
   },
   {
     "id": "019a23e0-824f-72b6-bba6-8199f755c201",
@@ -333,7 +379,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.78,
-    "battery_capacity_kwh": 9.81
+    "battery_capacity_kwh": 9.81,
+    "iot_provider": "Smappee",
+    "meter_ean": "545570466273253887"
   },
   {
     "id": "019a23e0-824f-7e9a-a2f5-93306591b6d8",
@@ -347,7 +395,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.04,
-    "battery_capacity_kwh": 12.51
+    "battery_capacity_kwh": 12.51,
+    "iot_provider": "Toon",
+    "meter_ean": "541124039090191469"
   },
   {
     "id": "019a23e0-824f-7c1b-aa98-2d26f45e4b75",
@@ -361,7 +411,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.18,
-    "battery_capacity_kwh": 7.28
+    "battery_capacity_kwh": 7.28,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "545199452498061010"
   },
   {
     "id": "019a23e0-824f-77e9-9e1d-1d03a152760d",
@@ -375,7 +427,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.58,
-    "battery_capacity_kwh": 14.86
+    "battery_capacity_kwh": 14.86,
+    "iot_provider": "Solar Edge",
+    "meter_ean": "545854201907905306"
   },
   {
     "id": "019a23e0-824f-7e77-bd10-d7b5fbb22749",
@@ -389,7 +443,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.7,
-    "battery_capacity_kwh": 7.65
+    "battery_capacity_kwh": 7.65,
+    "iot_provider": "Solar Edge",
+    "meter_ean": "540466430847374240"
   },
   {
     "id": "019a23e0-824f-79a4-9777-1be77841bf26",
@@ -403,7 +459,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.02,
-    "battery_capacity_kwh": 6.09
+    "battery_capacity_kwh": 6.09,
+    "iot_provider": "Solar Edge",
+    "meter_ean": "549039466788097239"
   },
   {
     "id": "019a23e0-824f-775a-86fd-9a233407924a",
@@ -417,7 +475,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.09,
-    "battery_capacity_kwh": 8.96
+    "battery_capacity_kwh": 8.96,
+    "iot_provider": "Toon",
+    "meter_ean": "549721349282921152"
   },
   {
     "id": "019a23e0-824f-717a-b14f-909c80d54de0",
@@ -431,7 +491,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 6.04,
-    "battery_capacity_kwh": 11.32
+    "battery_capacity_kwh": 11.32,
+    "iot_provider": "Toon",
+    "meter_ean": "549255503396524503"
   },
   {
     "id": "019a23e0-824f-7eb3-9a1d-0373709d31c9",
@@ -445,7 +507,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.53,
-    "battery_capacity_kwh": 5.81
+    "battery_capacity_kwh": 5.81,
+    "iot_provider": "Smappee",
+    "meter_ean": "549397102065054345"
   },
   {
     "id": "019a23e0-824f-735c-b343-7fb844a62ce6",
@@ -459,7 +523,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 6.44,
-    "battery_capacity_kwh": 10.26
+    "battery_capacity_kwh": 10.26,
+    "iot_provider": "Solar Edge",
+    "meter_ean": "544324902272783358"
   },
   {
     "id": "019a23e0-824f-73ef-a2cc-bb29ee057d68",
@@ -473,7 +539,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.42,
-    "battery_capacity_kwh": 9.46
+    "battery_capacity_kwh": 9.46,
+    "iot_provider": "Toon",
+    "meter_ean": "546180080198993287"
   },
   {
     "id": "019a23e0-824f-7904-b8f6-944b21c5f303",
@@ -487,7 +555,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.52,
-    "battery_capacity_kwh": 7.99
+    "battery_capacity_kwh": 7.99,
+    "iot_provider": "Smappee",
+    "meter_ean": "543311436862578996"
   },
   {
     "id": "019a23e0-824f-7aa4-8f69-060569fe2754",
@@ -501,7 +571,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.69,
-    "battery_capacity_kwh": 12.26
+    "battery_capacity_kwh": 12.26,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "545735621533657966"
   },
   {
     "id": "019a23e0-824f-72d6-b012-29e7dd3bc1e7",
@@ -515,7 +587,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.59,
-    "battery_capacity_kwh": 11.84
+    "battery_capacity_kwh": 11.84,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "541206325265167150"
   },
   {
     "id": "019a23e0-824f-7ba2-81c4-51c5b7314d7c",
@@ -529,7 +603,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.1,
-    "battery_capacity_kwh": 11.15
+    "battery_capacity_kwh": 11.15,
+    "iot_provider": "Homey",
+    "meter_ean": "543808630212685792"
   },
   {
     "id": "019a23e0-824f-7df5-ba86-a3a18bb05237",
@@ -543,7 +619,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.51,
-    "battery_capacity_kwh": 5.26
+    "battery_capacity_kwh": 5.26,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "540294632759845364"
   },
   {
     "id": "019a23e0-824f-76a0-ac2c-73c76c6f66a2",
@@ -557,7 +635,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.74,
-    "battery_capacity_kwh": 11.23
+    "battery_capacity_kwh": 11.23,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "542234575775835476"
   },
   {
     "id": "019a23e0-824f-702e-8a7c-7388cbf911f4",
@@ -571,7 +651,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.67,
-    "battery_capacity_kwh": 6.81
+    "battery_capacity_kwh": 6.81,
+    "iot_provider": "Smappee",
+    "meter_ean": "548839500657530947"
   },
   {
     "id": "019a23e0-824f-7991-8569-a07d1dc6ce37",
@@ -585,7 +667,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.33,
-    "battery_capacity_kwh": 7.64
+    "battery_capacity_kwh": 7.64,
+    "iot_provider": "Solar Edge",
+    "meter_ean": "541202941108851119"
   },
   {
     "id": "019a23e0-824f-7eeb-aebc-9479109921fb",
@@ -599,7 +683,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.82,
-    "battery_capacity_kwh": 11.38
+    "battery_capacity_kwh": 11.38,
+    "iot_provider": "Solar Edge",
+    "meter_ean": "542767615027979670"
   },
   {
     "id": "019a23e0-824f-7b40-b2f0-103532ae87f2",
@@ -613,7 +699,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.75,
-    "battery_capacity_kwh": 14.62
+    "battery_capacity_kwh": 14.62,
+    "iot_provider": "Homey",
+    "meter_ean": "541468983324623108"
   },
   {
     "id": "019a23e0-824f-7687-9e04-fa87d7286f92",
@@ -627,7 +715,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.43,
-    "battery_capacity_kwh": 9.62
+    "battery_capacity_kwh": 9.62,
+    "iot_provider": "Smappee",
+    "meter_ean": "547435028507713306"
   },
   {
     "id": "019a23e0-824f-735d-8f7b-18a45a0af833",
@@ -641,7 +731,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 4.34,
-    "battery_capacity_kwh": 9.84
+    "battery_capacity_kwh": 9.84,
+    "iot_provider": "Homey",
+    "meter_ean": "542663209361090902"
   },
   {
     "id": "019a23e0-824f-7fdf-89e5-74fad40f58dc",
@@ -655,7 +747,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 6.4,
-    "battery_capacity_kwh": 6.04
+    "battery_capacity_kwh": 6.04,
+    "iot_provider": "HomeWizard",
+    "meter_ean": "541032582676189671"
   },
   {
     "id": "019a23e0-824f-7c42-bd32-189924b39f04",
@@ -669,7 +763,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 3.7,
-    "battery_capacity_kwh": 13.34
+    "battery_capacity_kwh": 13.34,
+    "iot_provider": "Toon",
+    "meter_ean": "543958833481478622"
   },
   {
     "id": "019a23e0-824f-7aff-8d1e-75c6d55c2b17",
@@ -683,7 +779,9 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 5.89,
-    "battery_capacity_kwh": 11.67
+    "battery_capacity_kwh": 11.67,
+    "iot_provider": "Solar Edge",
+    "meter_ean": "545752720792257588"
   },
   {
     "id": "019a23e0-824f-759f-af83-f7a5c913764d",
@@ -697,6 +795,8 @@
       "region": "flanders"
     },
     "solar_capacity_kw": 6.68,
-    "battery_capacity_kwh": 13.49
+    "battery_capacity_kwh": 13.49,
+    "iot_provider": "Smappee",
+    "meter_ean": "549601220469735700"
   }
 ]

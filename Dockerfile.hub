@@ -55,7 +55,9 @@ COPY system/cortex_iq_dashboard_umbrella/apps/cortex_iq_dashboard_web/mix.exs ./
 RUN mix deps.get --only prod
 RUN mix deps.compile
 
-# Copy application source code
+# Copy application source code (with cache busting)
+ARG CACHE_BUST=default
+RUN echo "Cache bust: $CACHE_BUST"
 COPY system/cortex_iq_dashboard_umbrella/apps ./apps
 
 # Install and build frontend assets

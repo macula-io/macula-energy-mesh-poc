@@ -13,127 +13,60 @@ defmodule CortexIqDashboardWeb.HomesLive do
 
   alias CortexIqDashboard.QueryClient
   alias CortexIqDashboard.SimulationClient
-  alias CortexIqDashboard.Views.HomesViewAggregator
   alias CortexIqDashboardWeb.Components.NavMenu
   alias CortexIqDashboardSchemas.HomeStatus
 
-  @per_page 10  # Show 10 homes per page (temporarily reduced to see pagination)
-
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
     require Logger
     Logger.info("HomesLive: mount() called, connected: #{connected?(socket)}")
 
-    # Subscribe to simulation time, control events, and home lifecycle only
-    # DISABLED: real-time home state updates to prevent shaky rendering
-    # The homes list is primarily for navigation, not live monitoring
+    # Subscribe to simulation time and control events only
     if connected?(socket) do
-      # Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "view:homes")  # DISABLED
       Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:time_advanced")
       Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:control")
-      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:home_connected")
-      Logger.info("HomesLive: Subscribed to simulation time, control events, and home lifecycle")
+      Logger.info("HomesLive: Subscribed to simulation time and control events")
     end
 
-    # Load full home list via WAMP RPC to get all home IDs and total count
-    # This is lightweight - just IDs and metadata, no real-time state
-    Logger.info("HomesLive: Loading home IDs via WAMP RPC...")
-    {all_home_ids, total_homes} = case QueryClient.get_homes(page: 1, per_page: 10_000) do
+    # Load locations for the browse interface
+    Logger.info("HomesLive: Loading locations via WAMP RPC...")
+    locations = case QueryClient.get_locations() do
       {:ok, result} ->
-        Logger.info("HomesLive: get_homes(10_000) RPC result keys: #{inspect(Map.keys(result))}")
-        homes_list = Map.get(result, "homes", [])
-        Logger.info("HomesLive: homes_list length: #{length(homes_list)}, first home: #{inspect(List.first(homes_list))}")
-        ids = Enum.map(homes_list, &Map.get(&1, "home_id"))
-        total = Map.get(result, "total", length(ids))
-        Logger.info("HomesLive: Loaded #{length(ids)} home IDs, total=#{total}")
-        {ids, total}
+        Logger.info("HomesLive: get_locations() returned #{inspect(length(Map.get(result, "locations", [])))} locations")
+        Map.get(result, "locations", [])
       {:error, reason} ->
-        Logger.warning("HomesLive: Failed to load home IDs: #{inspect(reason)}")
-        {[], 0}
-    end
-
-    Logger.info("HomesLive: Loaded #{total_homes} home IDs")
-
-    # Calculate page 1 home IDs (first @per_page homes)
-    page_1_ids = Enum.take(all_home_ids, @per_page)
-
-    # Get initial page 1 data from database via WAMP RPC
-    # This provides the baseline state. Real-time updates will come from aggregator.
-    Logger.info("HomesLive: Loading page 1 data for #{length(page_1_ids)} homes")
-    homes_maps = case QueryClient.get_homes(page: 1, per_page: @per_page) do
-      {:ok, result} ->
-        Logger.info("HomesLive: get_homes(#{@per_page}) RPC result keys: #{inspect(Map.keys(result))}")
-        homes = Map.get(result, "homes", [])
-        Logger.info("HomesLive: Received #{length(homes)} homes for page 1")
-        homes
-      {:error, reason} ->
-        Logger.warning("HomesLive: Failed to load page 1 homes: #{inspect(reason)}")
+        Logger.warning("HomesLive: Failed to load locations: #{inspect(reason)}")
         []
     end
 
-    # Tell the aggregator to track only these visible homes
-    # This creates aggregates that will receive real-time updates
-    if connected?(socket) do
-      Logger.info("HomesLive: Tracking #{length(page_1_ids)} homes for real-time updates")
-      HomesViewAggregator.track_homes(page_1_ids)
-    end
+    Logger.info("HomesLive: Loaded #{length(locations)} locations")
 
-    Logger.info("HomesLive: Loaded #{length(homes_maps)} homes for page 1")
+    # Get recent homes from session (last 5 viewed)
+    recent_home_ids = Map.get(session, "recent_homes", [])
+    Logger.info("HomesLive: Recent home IDs from session: #{inspect(recent_home_ids)}")
 
     {:ok,
      socket
      |> assign(:current_path, "/homes")
-     |> assign(:homes, homes_maps)
-     |> assign(:all_home_ids, all_home_ids)  # Keep all IDs for pagination
-     |> assign(:page, 1)
-     |> assign(:per_page, @per_page)
-     |> assign(:total_homes, total_homes)
-     |> assign(:selected_home, nil)
+     |> assign(:view_mode, :search)  # :search | :browse | :detail
      |> assign(:search_query, "")
-     |> assign(:sort_by, :location)
-     |> assign(:sort_direction, :asc)
+     |> assign(:search_results, [])
+     |> assign(:locations, locations)
+     |> assign(:selected_location, nil)
+     |> assign(:location_homes, [])
+     |> assign(:recent_homes, recent_home_ids)
+     |> assign(:selected_home, nil)
+     |> assign(:selected_home_data, nil)  # Full home data when viewing detail
+     |> assign(:home_history, [])  # Energy events for charts
+     |> assign(:home_trades, [])  # Trade data for financial charts
      |> assign(:simulation_time, nil)
      |> assign(:simulation_speed, 105_120)
      |> assign(:simulation_paused, false)}
   end
 
-  @impl true
-  def handle_info(:view_updated, socket) do
-    require Logger
-    Logger.debug("HomesLive: View updated, refreshing from local aggregator")
-
-    # Get real-time state from local aggregator (fast GenServer call, no WAMP)
-    aggregate_homes = HomesViewAggregator.get_homes()
-
-    # Merge aggregate updates with existing home data to preserve metadata
-    # Aggregates only track real-time data (production, consumption, battery, balance)
-    # Static metadata (name, location, etc.) comes from initial database load
-    existing_homes = socket.assigns.homes
-
-    updated_homes = Enum.map(existing_homes, fn existing_home ->
-      home_id = Map.get(existing_home, "home_id")
-
-      # Find corresponding aggregate for this home
-      case Enum.find(aggregate_homes, fn agg -> agg.home_id == home_id end) do
-        nil ->
-          # No aggregate update, keep existing data
-          existing_home
-
-        aggregate ->
-          # Merge real-time data from aggregate with static metadata from database
-          Map.merge(existing_home, %{
-            "production_kw" => aggregate.production_kw,
-            "consumption_kw" => aggregate.consumption_kw,
-            "battery_percent" => aggregate.state_of_charge_pct,
-            "net_balance_kwh" => aggregate.net_balance_kwh,
-            "provider_id" => aggregate.provider_id,
-            "status" => aggregate.status
-          })
-      end
-    end)
-
-    {:noreply, assign(socket, :homes, updated_homes)}
-  end
+  # Real-time updates are now handled differently:
+  # - When viewing detail, we'll subscribe to specific home updates
+  # - Search/browse views don't need real-time updates (just for navigation)
 
   @impl true
   def handle_info({:time_advanced, kwargs}, socket) do
@@ -164,199 +97,140 @@ defmodule CortexIqDashboardWeb.HomesLive do
   @impl true
   def handle_info({:reset_simulation}, socket) do
     require Logger
-    Logger.info("HomesLive: Received reset_simulation, clearing homes list and scheduling reload")
+    Logger.info("HomesLive: Received reset_simulation, clearing state")
 
-    # Clear the homes list and tell aggregator to stop tracking all homes
-    HomesViewAggregator.track_homes([])
-
-    # Schedule a reload after homes have had time to restart (homes restart with 50ms stagger)
-    # Wait 5 seconds to give all homes time to restart and publish their first events
-    Process.send_after(self(), :reload_after_reset, 5_000)
+    # Clear selected home if viewing detail
+    # Locations will be reloaded on next search/browse
 
     {:noreply,
      socket
-     |> assign(:homes, [])
-     |> assign(:all_home_ids, [])
-     |> assign(:total_homes, 0)
-     |> assign(:page, 1)
-     |> assign(:selected_home, nil)}
-  end
-
-  @impl true
-  def handle_info(:reload_after_reset, socket) do
-    require Logger
-    Logger.info("HomesLive: Reloading homes data after reset")
-
-    # Load full home list via WAMP RPC to get all home IDs and total count
-    {all_home_ids, total_homes} = case QueryClient.get_homes(page: 1, per_page: 10_000) do
-      {:ok, result} ->
-        homes_list = Map.get(result, "homes", [])
-        ids = Enum.map(homes_list, &Map.get(&1, "home_id"))
-        total = Map.get(result, "total", length(ids))
-        {ids, total}
-      {:error, reason} ->
-        Logger.warning("HomesLive: Failed to reload home IDs: #{inspect(reason)}")
-        {[], 0}
-    end
-
-    Logger.info("HomesLive: Reloaded #{total_homes} home IDs after reset")
-
-    # Calculate page 1 home IDs
-    page_1_ids = Enum.take(all_home_ids, @per_page)
-
-    # Get page 1 data
-    homes_maps = case QueryClient.get_homes(page: 1, per_page: @per_page) do
-      {:ok, result} ->
-        Map.get(result, "homes", [])
-      {:error, reason} ->
-        Logger.warning("HomesLive: Failed to reload page 1 homes: #{inspect(reason)}")
-        []
-    end
-
-    # Tell aggregator to track these homes for real-time updates
-    HomesViewAggregator.track_homes(page_1_ids)
-
-    Logger.info("HomesLive: Reloaded #{length(homes_maps)} homes for page 1 after reset")
-
-    {:noreply,
-     socket
-     |> assign(:homes, homes_maps)
-     |> assign(:all_home_ids, all_home_ids)
-     |> assign(:total_homes, total_homes)
-     |> assign(:page, 1)}
-  end
-
-  @impl true
-  def handle_info({:home_connected, kwargs}, socket) do
-    require Logger
-    home_id = Map.get(kwargs, "home_id")
-    Logger.info("HomesLive: Home connected: #{home_id}")
-
-    # Check if this home is already in our list
-    all_home_ids = socket.assigns.all_home_ids
-
-    if home_id not in all_home_ids do
-      # Add to the list of all home IDs
-      new_all_home_ids = [home_id | all_home_ids]
-      new_total = socket.assigns.total_homes + 1
-
-      Logger.info("HomesLive: Added new home #{home_id}, total homes: #{new_total}")
-
-      # If this home should be visible on current page, query its data and add it
-      current_page = socket.assigns.page
-      per_page = socket.assigns.per_page
-      start_idx = (current_page - 1) * per_page
-      visible_ids = new_all_home_ids |> Enum.drop(start_idx) |> Enum.take(per_page)
-
-      if home_id in visible_ids do
-        # Query the new home's data
-        case QueryClient.get_home(home_id) do
-          {:ok, result} ->
-            home_data = Map.get(result, "home")
-
-            if home_data do
-              # Add to visible homes list
-              new_homes = [home_data | socket.assigns.homes] |> Enum.take(per_page)
-
-              # Tell aggregator to track this new home
-              HomesViewAggregator.track_homes(visible_ids)
-
-              {:noreply,
-               socket
-               |> assign(:homes, new_homes)
-               |> assign(:all_home_ids, new_all_home_ids)
-               |> assign(:total_homes, new_total)}
-            else
-              {:noreply,
-               socket
-               |> assign(:all_home_ids, new_all_home_ids)
-               |> assign(:total_homes, new_total)}
-            end
-
-          {:error, reason} ->
-            Logger.warning("HomesLive: Failed to query new home #{home_id}: #{inspect(reason)}")
-            {:noreply,
-             socket
-             |> assign(:all_home_ids, new_all_home_ids)
-             |> assign(:total_homes, new_total)}
-        end
-      else
-        # Home is not on current page, just update the count
-        {:noreply,
-         socket
-         |> assign(:all_home_ids, new_all_home_ids)
-         |> assign(:total_homes, new_total)}
-      end
-    else
-      # Home already exists, nothing to do
-      {:noreply, socket}
-    end
+     |> assign(:view_mode, :search)
+     |> assign(:search_query, "")
+     |> assign(:search_results, [])
+     |> assign(:selected_location, nil)
+     |> assign(:location_homes, [])
+     |> assign(:selected_home, nil)
+     |> assign(:selected_home_data, nil)
+     |> assign(:home_history, [])
+     |> assign(:home_trades, [])}
   end
 
   @impl true
   def handle_event("select_home", %{"home_id" => home_id}, socket) do
-    {:noreply, assign(socket, :selected_home, home_id)}
+    require Logger
+    Logger.info("HomesLive: Selecting home #{home_id}")
+
+    # Load full home data, history, and trades via WAMP RPC
+    home_data = case QueryClient.get_home(home_id) do
+      {:ok, result} ->
+        Logger.info("HomesLive: get_home() succeeded")
+        Map.get(result, "home")
+      {:error, reason} ->
+        Logger.warning("HomesLive: Failed to load home data: #{inspect(reason)}")
+        nil
+    end
+
+    history = case QueryClient.get_home_history(home_id, 24) do
+      {:ok, result} ->
+        Logger.info("HomesLive: get_home_history() returned #{inspect(length(Map.get(result, "events", [])))} events")
+        Map.get(result, "events", [])
+      {:error, reason} ->
+        Logger.warning("HomesLive: Failed to load home history: #{inspect(reason)}")
+        []
+    end
+
+    trades = case QueryClient.get_home_trades(home_id, 24) do
+      {:ok, result} ->
+        Logger.info("HomesLive: get_home_trades() returned #{inspect(length(Map.get(result, "trades", [])))} trades")
+        Map.get(result, "trades", [])
+      {:error, reason} ->
+        Logger.warning("HomesLive: Failed to load home trades: #{inspect(reason)}")
+        []
+    end
+
+    # Add to recent homes (keep last 5)
+    recent_homes = [home_id | Enum.reject(socket.assigns.recent_homes, &(&1 == home_id))] |> Enum.take(5)
+
+    {:noreply,
+     socket
+     |> assign(:view_mode, :detail)
+     |> assign(:selected_home, home_id)
+     |> assign(:selected_home_data, home_data)
+     |> assign(:home_history, history)
+     |> assign(:home_trades, trades)
+     |> assign(:recent_homes, recent_homes)}
   end
 
   @impl true
   def handle_event("back_to_list", _params, socket) do
-    {:noreply, assign(socket, :selected_home, nil)}
-  end
-
-  @impl true
-  def handle_event("search_homes", %{"search" => query}, socket) do
-    {:noreply, assign(socket, :search_query, query)}
-  end
-
-  @impl true
-  def handle_event("sort_homes", %{"column" => column}, socket) do
-    column_atom = String.to_atom(column)
-
-    new_direction =
-      if socket.assigns.sort_by == column_atom do
-        toggle_direction(socket.assigns.sort_direction)
-      else
-        :asc
-      end
-
     {:noreply,
      socket
-     |> assign(:sort_by, column_atom)
-     |> assign(:sort_direction, new_direction)}
+     |> assign(:view_mode, :search)
+     |> assign(:selected_home, nil)
+     |> assign(:selected_home_data, nil)
+     |> assign(:home_history, [])
+     |> assign(:home_trades, [])}
   end
 
   @impl true
-  def handle_event("change_page", %{"page" => page_str}, socket) do
+  def handle_event("search_homes", %{"query" => query}, socket) when byte_size(query) >= 2 do
     require Logger
-    page = String.to_integer(page_str)
-    per_page = socket.assigns.per_page
-    all_home_ids = socket.assigns.all_home_ids
+    Logger.info("HomesLive: Searching for '#{query}'")
 
-    # Calculate visible home IDs for this page
-    start_idx = (page - 1) * per_page
-    visible_ids = all_home_ids |> Enum.drop(start_idx) |> Enum.take(per_page)
-
-    Logger.info("HomesLive: Changing to page #{page}, loading #{length(visible_ids)} homes")
-
-    # Load page data from database via WAMP RPC
-    homes_maps = case QueryClient.get_homes(page: page, per_page: per_page) do
+    # Call search RPC
+    search_results = case QueryClient.search_homes(query, 10) do
       {:ok, result} ->
+        Logger.info("HomesLive: search_homes() returned #{inspect(length(Map.get(result, "homes", [])))} results")
         Map.get(result, "homes", [])
       {:error, reason} ->
-        Logger.warning("HomesLive: Failed to load page #{page}: #{inspect(reason)}")
+        Logger.warning("HomesLive: Search failed: #{inspect(reason)}")
         []
     end
 
-    # Tell aggregator to track only these homes for real-time updates
-    # This will destroy aggregates for old page and create for new page
-    HomesViewAggregator.track_homes(visible_ids)
+    {:noreply,
+     socket
+     |> assign(:search_query, query)
+     |> assign(:search_results, search_results)}
+  end
 
-    Logger.info("HomesLive: Loaded #{length(homes_maps)} homes for page #{page}")
+  @impl true
+  def handle_event("search_homes", %{"query" => query}, socket) do
+    # Query too short, clear results
+    {:noreply,
+     socket
+     |> assign(:search_query, query)
+     |> assign(:search_results, [])}
+  end
+
+  @impl true
+  def handle_event("select_location", %{"location" => location}, socket) do
+    require Logger
+    Logger.info("HomesLive: Selecting location '#{location}'")
+
+    # Load homes for this location
+    location_homes = case QueryClient.get_homes_by_location(location) do
+      {:ok, result} ->
+        Logger.info("HomesLive: get_homes_by_location() returned #{inspect(length(Map.get(result, "homes", [])))} homes")
+        Map.get(result, "homes", [])
+      {:error, reason} ->
+        Logger.warning("HomesLive: Failed to load homes for location: #{inspect(reason)}")
+        []
+    end
 
     {:noreply,
      socket
-     |> assign(:page, page)
-     |> assign(:homes, homes_maps)}
+     |> assign(:view_mode, :browse)
+     |> assign(:selected_location, location)
+     |> assign(:location_homes, location_homes)}
+  end
+
+  @impl true
+  def handle_event("clear_location", _params, socket) do
+    {:noreply,
+     socket
+     |> assign(:view_mode, :search)
+     |> assign(:selected_location, nil)
+     |> assign(:location_homes, [])}
   end
 
   @impl true
@@ -403,10 +277,13 @@ defmodule CortexIqDashboardWeb.HomesLive do
       <!-- Main Content -->
       <div class="flex-1 overflow-auto">
         <div class="p-6">
-          <%= if @selected_home do %>
-            <%= render_home_detail(assigns) %>
-          <% else %>
-            <%= render_homes_list(assigns) %>
+          <%= case @view_mode do %>
+            <% :detail -> %>
+              <%= render_home_detail(assigns) %>
+            <% :browse -> %>
+              <%= render_location_browse(assigns) %>
+            <% _ -> %>
+              <%= render_search_interface(assigns) %>
           <% end %>
         </div>
       </div>
@@ -414,224 +291,134 @@ defmodule CortexIqDashboardWeb.HomesLive do
     """
   end
 
-  # Render homes list
-  defp render_homes_list(assigns) do
+  # Render search interface (main entry point)
+  defp render_search_interface(assigns) do
     ~H"""
     <div class="space-y-6">
       <!-- Page Header -->
       <div class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-100">Homes</h1>
-        <p class="text-gray-400 text-sm mt-1">Monitor all homes in real-time</p>
+        <h1 class="text-3xl font-bold text-gray-100">Find a Home</h1>
+        <p class="text-gray-400 text-sm mt-1">Search by meter EAN or home ID, or browse by location</p>
       </div>
 
-      <!-- Combined Search and Pagination Controls -->
-      <% total_pages = ceil(@total_homes / @per_page) %>
-      <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-        <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-          <!-- Search Input (Left Side) -->
-          <div class="flex-1 w-full lg:w-auto lg:max-w-md">
-            <input
-              type="text"
-              placeholder="Search by location..."
-              value={@search_query}
-              phx-keyup="search_homes"
-              phx-debounce="300"
-              name="search"
-              class="w-full px-4 py-2 bg-gray-900 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-500 focus:border-blue-500 focus:outline-none"
-            />
+      <!-- Search Bar -->
+      <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <label class="block text-sm font-medium text-gray-300 mb-2">Search Homes</label>
+        <input
+          type="text"
+          placeholder="Type meter EAN or home ID..."
+          value={@search_query}
+          phx-keyup="search_homes"
+          phx-debounce="300"
+          name="query"
+          class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-500 focus:border-blue-500 focus:outline-none text-lg"
+        />
+
+        <!-- Search Results (Autocomplete) -->
+        <%= if length(@search_results) > 0 do %>
+          <div class="mt-4 space-y-2">
+            <p class="text-sm text-gray-400">Results:</p>
+            <%= for result <- @search_results do %>
+              <button
+                phx-click="select_home"
+                phx-value-home_id={Map.get(result, "home_id")}
+                class="w-full p-4 bg-gray-900 hover:bg-gray-700 border border-gray-600 rounded-lg transition-colors text-left"
+              >
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="text-white font-medium"><%= Map.get(result, "name", "Unknown Home") %></div>
+                    <div class="text-sm text-gray-400"><%= Map.get(result, "location", "Unknown Location") %></div>
+                  </div>
+                  <div class="text-sm font-mono text-gray-500"><%= Map.get(result, "meter_ean") %></div>
+                </div>
+              </button>
+            <% end %>
           </div>
+        <% end %>
 
-          <!-- Pagination Controls (Right Side) -->
-          <%= if total_pages > 1 do %>
-            <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center w-full lg:w-auto">
-              <!-- Page Info -->
-              <div class="text-sm text-gray-400 whitespace-nowrap">
-                Showing <%= (@page - 1) * @per_page + 1 %>-<%= min(@page * @per_page, @total_homes) %> of <%= @total_homes %>
-              </div>
+        <%= if byte_size(@search_query) >= 2 && length(@search_results) == 0 do %>
+          <div class="mt-4 p-4 bg-gray-900 border border-gray-600 rounded-lg">
+            <p class="text-gray-400 text-sm">No homes found matching "<%= @search_query %>"</p>
+          </div>
+        <% end %>
+      </div>
 
-              <!-- Page Buttons -->
-              <div class="flex gap-2">
-                <%= if @page > 1 do %>
-                  <button
-                    phx-click="change_page"
-                    phx-value-page={@page - 1}
-                    class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-colors"
-                    title="Previous page"
-                  >
-                    ←
-                  </button>
-                <% end %>
-
-                <%= for page_num <- pagination_range(@page, total_pages) do %>
-                  <%= if page_num == :ellipsis do %>
-                    <span class="px-3 py-1 text-gray-500">...</span>
-                  <% else %>
-                    <button
-                      phx-click="change_page"
-                      phx-value-page={page_num}
-                      class={"px-3 py-1 rounded transition-colors #{if page_num == @page, do: "bg-blue-600 text-white font-semibold", else: "bg-gray-700 hover:bg-gray-600 text-gray-300"}"}
-                      title={"Go to page #{page_num}"}
-                    >
-                      <%= page_num %>
-                    </button>
-                  <% end %>
-                <% end %>
-
-                <%= if @page < total_pages do %>
-                  <button
-                    phx-click="change_page"
-                    phx-value-page={@page + 1}
-                    class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-colors"
-                    title="Next page"
-                  >
-                    →
-                  </button>
-                <% end %>
-              </div>
-            </div>
+      <!-- Location Browser -->
+      <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <h2 class="text-xl font-bold text-gray-100 mb-4">Browse by Location</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <%= for location <- @locations do %>
+            <button
+              phx-click="select_location"
+              phx-value-location={Map.get(location, "location")}
+              class="p-4 bg-gray-900 hover:bg-gray-700 border border-gray-600 rounded-lg transition-colors text-left"
+            >
+              <div class="text-white font-medium"><%= Map.get(location, "location") %></div>
+              <div class="text-sm text-gray-400"><%= Map.get(location, "home_count") %> homes</div>
+            </button>
           <% end %>
         </div>
       </div>
 
-      <!-- Homes Table -->
-      <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="bg-gray-900 border-b border-gray-700">
-              <tr>
-                <%= for {column, label} <- [
-                  {:location, "Location"},
-                  {:name, "Family"},
-                  {:iot_provider, "IoT Provider"},
-                  {:provider, "Energy Provider"},
-                  {:production, "Production"},
-                  {:consumption, "Consumption"},
-                  {:battery, "Battery"},
-                  {:balance, "Energy Balance"},
-                  {:status, "Status"}
-                ] do %>
-                  <th class="px-4 py-3 text-left">
-                    <button
-                      phx-click="sort_homes"
-                      phx-value-column={column}
-                      class="flex items-center gap-2 text-gray-400 hover:text-gray-200 font-semibold text-xs uppercase tracking-wide"
-                    >
-                      <%= label %>
-                      <%= if @sort_by == column do %>
-                        <span class="text-blue-400">
-                          <%= if @sort_direction == :asc, do: "▲", else: "▼" %>
-                        </span>
-                      <% end %>
-                    </button>
-                  </th>
-                <% end %>
-                <th class="px-4 py-3 text-left text-gray-400 font-semibold text-xs uppercase tracking-wide">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-700">
-              <%= for home <- @homes do %>
-                <tr class="hover:bg-gray-700 transition-colors">
-                  <td class="px-4 py-3">
-                    <div class="text-sm font-medium"><%= Map.get(home, "location", "Unknown") %></div>
-                  </td>
-                  <td class="px-4 py-3">
-                    <div class="text-sm text-gray-300"><%= format_family_name(home) %></div>
-                  </td>
-                  <td class="px-4 py-3">
-                    <div class="text-sm text-gray-300"><%= format_iot_provider(Map.get(home, "iot_provider")) %></div>
-                  </td>
-                  <td class="px-4 py-3">
-                    <%= if Map.get(home, "provider_id") do %>
-                      <div class="text-sm text-yellow-400"><%= get_provider_name(Map.get(home, "provider_id")) %></div>
-                    <% else %>
-                      <div class="text-sm text-gray-500">No contract</div>
-                    <% end %>
-                  </td>
-                  <td class="px-4 py-3">
-                    <div class="text-sm text-green-400">
-                      <%= format_power(Map.get(home, "production_kw", 0.0)) %>
-                    </div>
-                  </td>
-                  <td class="px-4 py-3">
-                    <div class="text-sm text-red-400">
-                      <%= format_power(Map.get(home, "consumption_kw", 0.0)) %>
-                    </div>
-                  </td>
-                  <td class="px-4 py-3">
-                    <% battery_pct = Map.get(home, "battery_percent") || 0.0 %>
-                    <div class="flex items-center gap-2">
-                      <div class="flex-1 bg-gray-700 rounded-full h-2 w-16">
-                        <div
-                          class={"h-full rounded-full #{battery_color(battery_pct)}"}
-                          style={"width: #{battery_pct}%"}
-                        >
-                        </div>
-                      </div>
-                      <span class="text-xs text-gray-400"><%= Float.round(battery_pct, 0) %>%</span>
-                    </div>
-                  </td>
-                  <td class="px-4 py-3">
-                    <% net_kwh = Map.get(home, "net_balance_kwh") || 0.0 %>
-                    <div class={"text-sm #{if net_kwh > 0, do: "text-red-400", else: "text-green-400"}"}>
-                      <%= format_energy(abs(net_kwh)) %>
-                      <span class="text-xs text-gray-500">
-                        <%= if net_kwh > 0, do: " (buying)", else: " (selling)" %>
-                      </span>
-                    </div>
-                  </td>
-                  <td class="px-4 py-3">
-                    <% status = Map.get(home, "status", 0) %>
-                    <div class={"text-xs px-2 py-1 rounded inline-block #{status_color(status)}"}>
-                      <%= format_status(status) %>
-                    </div>
-                  </td>
-                  <td class="px-4 py-3">
-                    <button
-                      phx-click="select_home"
-                      phx-value-home_id={Map.get(home, "home_id")}
-                      class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition-colors"
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Bottom Pagination (Simplified) -->
-        <%= if total_pages > 1 do %>
-          <div class="px-4 py-3 bg-gray-900 border-t border-gray-700 flex items-center justify-between">
-            <div class="text-sm text-gray-400">
-              Page <%= @page %> of <%= total_pages %>
-            </div>
-            <div class="flex gap-2">
-              <%= if @page > 1 do %>
-                <button
-                  phx-click="change_page"
-                  phx-value-page={@page - 1}
-                  class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded transition-colors"
-                  title="Previous page"
-                >
-                  ← Previous
-                </button>
-              <% end %>
-
-              <%= if @page < total_pages do %>
-                <button
-                  phx-click="change_page"
-                  phx-value-page={@page + 1}
-                  class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded transition-colors"
-                  title="Next page"
-                >
-                  Next →
-                </button>
-              <% end %>
-            </div>
+      <!-- Recent Homes (if any) -->
+      <%= if length(@recent_homes) > 0 do %>
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h2 class="text-xl font-bold text-gray-100 mb-4">Recently Viewed</h2>
+          <div class="flex flex-wrap gap-2">
+            <%= for home_id <- @recent_homes do %>
+              <button
+                phx-click="select_home"
+                phx-value-home_id={home_id}
+                class="px-4 py-2 bg-gray-900 hover:bg-gray-700 border border-gray-600 rounded-lg transition-colors text-sm text-gray-300"
+              >
+                <%= String.slice(home_id, 0..7) %>...
+              </button>
+            <% end %>
           </div>
+        </div>
+      <% end %>
+    </div>
+    """
+  end
+
+  # Render location browse view (list of homes in selected city)
+  defp render_location_browse(assigns) do
+    ~H"""
+    <div class="space-y-6">
+      <!-- Header with Back Button -->
+      <div class="flex items-center gap-4 mb-6">
+        <button
+          phx-click="clear_location"
+          class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
+        >
+          ← Back to Search
+        </button>
+        <div>
+          <h1 class="text-3xl font-bold text-gray-100">Homes in <%= @selected_location %></h1>
+          <p class="text-gray-400 text-sm mt-1"><%= length(@location_homes) %> homes found</p>
+        </div>
+      </div>
+
+      <!-- Homes Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <%= for home <- @location_homes do %>
+          <button
+            phx-click="select_home"
+            phx-value-home_id={Map.get(home, "home_id")}
+            class="p-6 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg transition-colors text-left"
+          >
+            <div class="space-y-2">
+              <div class="text-lg font-bold text-white"><%= format_family_name(home) %></div>
+              <div class="text-sm text-gray-400">
+                <span class="font-mono"><%= Map.get(home, "meter_ean", "N/A") %></span>
+              </div>
+              <%= if Map.get(home, "provider_id") do %>
+                <div class="text-xs text-yellow-400">
+                  Provider: <%= get_provider_name(Map.get(home, "provider_id")) %>
+                </div>
+              <% end %>
+            </div>
+          </button>
         <% end %>
       </div>
     </div>
@@ -643,51 +430,221 @@ defmodule CortexIqDashboardWeb.HomesLive do
     ~H"""
     <div class="space-y-6">
       <!-- Header with Back Button -->
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-4 mb-6">
         <button
           phx-click="back_to_list"
-          class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
+          class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors border border-gray-600"
         >
-          ← Back to List
+          ← Back to Search
         </button>
         <div>
-          <h1 class="text-3xl font-bold text-gray-100">Home Details</h1>
-          <p class="text-gray-400 text-sm mt-1">{@selected_home}</p>
+          <h1 class="text-3xl font-bold text-gray-100"><%= get_in(@selected_home_data, ["name"]) || "Home Details" %></h1>
+          <p class="text-gray-400 text-sm mt-1 font-mono"><%= get_in(@selected_home_data, ["meter_ean"]) || @selected_home %></p>
         </div>
       </div>
 
-      <!-- Home Detail Content -->
-      <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <p class="text-gray-400">Detailed home view coming soon...</p>
-        <p class="text-sm text-gray-500 mt-2">This will show charts, energy history, and contract details.</p>
-      </div>
+      <%= if @selected_home_data do %>
+        <!-- Static Information Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Left Column: Identification & Location -->
+          <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <h2 class="text-xl font-bold text-gray-100 mb-4">Property Information</h2>
+            <div class="space-y-3">
+              <div class="flex justify-between items-start">
+                <span class="text-gray-400 text-sm">Home ID</span>
+                <span class="text-gray-100 text-sm font-mono text-right"><%= get_in(@selected_home_data, ["home_id"]) %></span>
+              </div>
+              <div class="flex justify-between items-start">
+                <span class="text-gray-400 text-sm">Meter EAN</span>
+                <span class="text-gray-100 text-sm font-mono text-right"><%= get_in(@selected_home_data, ["meter_ean"]) || "N/A" %></span>
+              </div>
+              <div class="border-t border-gray-700 my-2"></div>
+              <div class="flex justify-between items-start">
+                <span class="text-gray-400 text-sm">Location</span>
+                <span class="text-gray-100 text-sm text-right"><%= get_in(@selected_home_data, ["location"]) || "Unknown" %></span>
+              </div>
+              <div class="flex justify-between items-start">
+                <span class="text-gray-400 text-sm">Address</span>
+                <div class="text-gray-100 text-sm text-right">
+                  <div><%= get_in(@selected_home_data, ["street"]) || "N/A" %></div>
+                  <div><%= get_in(@selected_home_data, ["postal_code"]) || "" %> <%= get_in(@selected_home_data, ["location"]) || "" %></div>
+                </div>
+              </div>
+              <div class="flex justify-between items-start">
+                <span class="text-gray-400 text-sm">Region</span>
+                <span class="text-gray-100 text-sm text-right capitalize"><%= get_in(@selected_home_data, ["region"]) || "N/A" %></span>
+              </div>
+              <%= if get_in(@selected_home_data, ["latitude"]) && get_in(@selected_home_data, ["longitude"]) do %>
+                <div class="flex justify-between items-start">
+                  <span class="text-gray-400 text-sm">Coordinates</span>
+                  <span class="text-gray-100 text-sm text-right font-mono">
+                    <%= Float.round(get_in(@selected_home_data, ["latitude"]), 4) %>,
+                    <%= Float.round(get_in(@selected_home_data, ["longitude"]), 4) %>
+                  </span>
+                </div>
+              <% end %>
+              <div class="border-t border-gray-700 my-2"></div>
+              <div class="flex justify-between items-start">
+                <span class="text-gray-400 text-sm">IoT Provider</span>
+                <span class="text-gray-100 text-sm text-right"><%= format_iot_provider(get_in(@selected_home_data, ["iot_provider"])) %></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Equipment Specs -->
+          <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+            <h2 class="text-xl font-bold text-gray-100 mb-4">Equipment</h2>
+            <div class="space-y-4">
+              <!-- Solar Panel -->
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                  <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <div class="text-gray-400 text-sm">Solar Capacity</div>
+                  <div class="text-gray-100 text-lg font-semibold"><%= Float.round(get_in(@selected_home_data, ["solar_capacity_kw"]) || 0.0, 1) %> kW</div>
+                </div>
+              </div>
+
+              <!-- Battery -->
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <div class="text-gray-400 text-sm">Battery Capacity</div>
+                  <div class="text-gray-100 text-lg font-semibold"><%= Float.round(get_in(@selected_home_data, ["battery_capacity_kwh"]) || 0.0, 1) %> kWh</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-Time Metrics Section -->
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h2 class="text-xl font-bold text-gray-100 mb-6">Real-Time Metrics</h2>
+
+          <!-- Status Badge -->
+          <div class="mb-6">
+            <span class={"px-3 py-1 rounded-full text-sm font-medium #{status_color(get_in(@selected_home_data, ["status"]))}"}>
+              <%= format_status(get_in(@selected_home_data, ["status"])) %>
+            </span>
+          </div>
+
+          <!-- Energy Flow Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <!-- Production -->
+            <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-gray-400 text-sm">Production</span>
+                <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+              <div class="text-2xl font-bold text-yellow-400">
+                <%= format_power(get_in(@selected_home_data, ["production_kw"]) || 0.0) %>
+              </div>
+            </div>
+
+            <!-- Consumption -->
+            <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-gray-400 text-sm">Consumption</span>
+                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div class="text-2xl font-bold text-red-400">
+                <%= format_power(get_in(@selected_home_data, ["consumption_kw"]) || 0.0) %>
+              </div>
+            </div>
+
+            <!-- Battery -->
+            <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-gray-400 text-sm">Battery</span>
+                <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                </svg>
+              </div>
+              <div class="text-2xl font-bold text-green-400">
+                <%= Float.round(get_in(@selected_home_data, ["battery_percent"]) || 0.0, 1) %>%
+              </div>
+              <div class="text-xs text-gray-500 mt-1">
+                <%= Float.round((get_in(@selected_home_data, ["battery_percent"]) || 0.0) * (get_in(@selected_home_data, ["battery_capacity_kwh"]) || 0.0) / 100.0, 2) %> kWh
+              </div>
+              <!-- Battery Bar -->
+              <div class="mt-2 w-full bg-gray-700 rounded-full h-2">
+                <div class={"rounded-full h-2 transition-all duration-300 #{battery_color(get_in(@selected_home_data, ["battery_percent"]) || 0.0)}"} style={"width: #{get_in(@selected_home_data, ["battery_percent"]) || 0}%"}></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Provider & Contract Info -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
+              <div class="text-gray-400 text-sm mb-1">Current Provider</div>
+              <div class="text-xl font-bold text-blue-400">
+                <%= get_provider_name(get_in(@selected_home_data, ["provider_id"])) %>
+              </div>
+              <%= if get_in(@selected_home_data, ["contract_id"]) do %>
+                <div class="text-xs text-gray-500 mt-2 font-mono">
+                  Contract: <%= String.slice(get_in(@selected_home_data, ["contract_id"]), 0..7) %>...
+                </div>
+                <%= if get_in(@selected_home_data, ["contract_expires_at"]) do %>
+                  <div class="text-xs text-gray-500">
+                    Expires: <%= Calendar.strftime(get_in(@selected_home_data, ["contract_expires_at"]), "%b %d, %Y") %>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+
+            <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">
+              <div class="text-gray-400 text-sm mb-1">Net Energy Balance</div>
+              <div class="text-xl font-bold" class={if (get_in(@selected_home_data, ["net_balance_kwh"]) || 0.0) > 0, do: "text-red-400", else: "text-green-400"}>
+                <%= format_energy(abs(get_in(@selected_home_data, ["net_balance_kwh"]) || 0.0)) %>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">
+                <%= if (get_in(@selected_home_data, ["net_balance_kwh"]) || 0.0) > 0 do %>
+                  Net import from grid
+                <% else %>
+                  Net export to grid
+                <% end %>
+              </div>
+              <%= if get_in(@selected_home_data, ["net_cost"]) do %>
+                <div class="text-xs text-gray-500 mt-2">
+                  Cost: €<%= Float.round(get_in(@selected_home_data, ["net_cost"]) || 0.0, 2) %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Section (Placeholder) -->
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h2 class="text-xl font-bold text-gray-100 mb-4">Energy History</h2>
+          <p class="text-gray-400 text-sm">Charts coming soon...</p>
+          <p class="text-xs text-gray-500 mt-1">
+            <%= length(@home_history) %> historical events loaded,
+            <%= length(@home_trades) %> trades loaded
+          </p>
+        </div>
+      <% else %>
+        <!-- Loading state or error -->
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <p class="text-gray-400">Loading home details...</p>
+        </div>
+      <% end %>
     </div>
     """
   end
 
   # Helper Functions
   # (Filtering and sorting now handled by cortex_iq_queries via WAMP RPC)
-
-  # Convert home aggregate struct to map for template (using string keys)
-  defp home_to_map(home) do
-    %{
-      "home_id" => home.home_id,
-      "location" => home.location,
-      "name" => home.name,
-      "iot_provider" => home.iot_provider,
-      "street" => home.street,
-      "latitude" => home.latitude,
-      "longitude" => home.longitude,
-      "solar_capacity_kw" => home.solar_capacity_kw,
-      "battery_capacity_kwh" => home.battery_capacity_kwh,
-      "provider_id" => home.provider_id,
-      "production_kw" => home.production_kw,
-      "consumption_kw" => home.consumption_kw,
-      "battery_percent" => home.state_of_charge_pct,
-      "net_balance_kwh" => home.net_balance_kwh,
-      "status" => home.status
-    }
-  end
 
   defp get_provider_name("provider_a"), do: "Essent"
   defp get_provider_name("provider_b"), do: "Eneco"
@@ -724,36 +681,6 @@ defmodule CortexIqDashboardWeb.HomesLive do
   defp format_iot_provider(""), do: "None"
   defp format_iot_provider(provider) when is_binary(provider), do: provider
   defp format_iot_provider(_), do: "None"
-
-  defp toggle_direction(:asc), do: :desc
-  defp toggle_direction(:desc), do: :asc
-
-  # Generate smart pagination range (e.g., 1 ... 4 5 6 ... 20)
-  defp pagination_range(_current, total) when total <= 7 do
-    # Show all pages if 7 or fewer
-    1..total |> Enum.to_list()
-  end
-
-  defp pagination_range(current, total) do
-    # Always show: first, current +/- 1, last
-    # Use :ellipsis for gaps
-    first = 1
-    last = total
-
-    cond do
-      # Current near start: 1 2 3 4 5 ... last
-      current <= 4 ->
-        [1, 2, 3, 4, 5, :ellipsis, last]
-
-      # Current near end: 1 ... N-4 N-3 N-2 N-1 N
-      current >= total - 3 ->
-        [first, :ellipsis, total - 4, total - 3, total - 2, total - 1, total]
-
-      # Current in middle: 1 ... current-1 current current+1 ... last
-      true ->
-        [first, :ellipsis, current - 1, current, current + 1, :ellipsis, last]
-    end
-  end
 
   defp battery_color(percent) when percent > 75, do: "bg-green-500"
   defp battery_color(percent) when percent > 50, do: "bg-blue-500"

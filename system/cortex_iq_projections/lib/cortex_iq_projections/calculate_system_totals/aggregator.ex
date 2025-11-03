@@ -42,8 +42,8 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
   def init(opts) do
     wamp_client = Keyword.fetch!(opts, :wamp_client)
 
-    # Subscribe to home.measured events to track measurements
-    Process.send_after(self(), :subscribe_home_measured, 2000)
+    # Subscribe to home events to track connection state and measurements
+    Process.send_after(self(), :subscribe_home_events, 2000)
 
     # Start periodic totals calculation
     timer = Process.send_after(self(), :calculate_totals, @calc_interval_ms)
@@ -57,41 +57,90 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
   end
 
   @impl true
-  def handle_info(:subscribe_home_measured, state) do
-    Logger.info("#{__MODULE__}: Attempting to subscribe to be.cortexiq.home.measured")
+  def handle_info(:subscribe_home_events, state) do
+    Logger.info("#{__MODULE__}: Subscribing to home events (connected, disconnected, measured)")
 
     subscriber_pid = self()
-    handler = fn _topic, event_data ->
+
+    # Subscribe to home.connected events
+    connected_handler = fn _topic, event_data ->
+      send(subscriber_pid, {:home_connected_event, event_data})
+    end
+
+    # Subscribe to home.disconnected events
+    disconnected_handler = fn _topic, event_data ->
+      send(subscriber_pid, {:home_disconnected_event, event_data})
+    end
+
+    # Subscribe to home.measured events
+    measured_handler = fn _topic, event_data ->
       send(subscriber_pid, {:home_measured_event, event_data})
     end
 
-    result = MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.home.measured", handler)
+    # Attempt all three subscriptions
+    results = [
+      {:connected, MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.home.connected", connected_handler)},
+      {:disconnected, MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.home.disconnected", disconnected_handler)},
+      {:measured, MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.home.measured", measured_handler)}
+    ]
 
-    case result do
-      :ok ->
-        Logger.info("#{__MODULE__}: ✅ Successfully subscribed to be.cortexiq.home.measured")
+    # Check if all succeeded
+    all_ok = Enum.all?(results, fn {_event, result} -> result == :ok end)
+
+    case all_ok do
+      true ->
+        Logger.info("#{__MODULE__}: ✅ Successfully subscribed to all home events (connected, disconnected, measured)")
         {:noreply, %{state | subscribed: true}}
 
-      {:error, :not_connected} ->
-        Logger.warn("#{__MODULE__}: WAMP client not connected yet, retrying in 2s...")
-        Process.send_after(self(), :subscribe_home_measured, 2000)
-        {:noreply, state}
-
-      {:error, reason} ->
-        Logger.error("#{__MODULE__}: Failed to subscribe: #{inspect(reason)}, retrying in 5s...")
-        Process.send_after(self(), :subscribe_home_measured, 5000)
-        {:noreply, state}
-
-      other ->
-        Logger.error("#{__MODULE__}: Unexpected subscribe result: #{inspect(other)}, retrying in 5s...")
-        Process.send_after(self(), :subscribe_home_measured, 5000)
+      false ->
+        # Find which one failed
+        failures = Enum.filter(results, fn {_event, result} -> result != :ok end)
+        Logger.error("#{__MODULE__}: Failed to subscribe to some events: #{inspect(failures)}, retrying in 5s...")
+        Process.send_after(self(), :subscribe_home_events, 5000)
         {:noreply, state}
     end
   rescue
     e ->
       Logger.error("#{__MODULE__}: Exception during subscribe: #{inspect(e)}, retrying in 5s...")
-      Process.send_after(self(), :subscribe_home_measured, 5000)
+      Process.send_after(self(), :subscribe_home_events, 5000)
       {:noreply, state}
+  end
+
+  @impl true
+  def handle_info({:home_connected_event, event_data}, state) do
+    kwargs = Map.get(event_data, :kwargs, %{})
+    home_id = Map.get(kwargs, "home_id")
+
+    if home_id do
+      # Add home to in-memory map with initial zero values
+      # If already exists (reconnection), preserve existing state
+      home_state = Map.get(state.homes, home_id, %{
+        production_kw: 0.0,
+        consumption_kw: 0.0,
+        battery_percent: 0.0
+      })
+
+      new_homes = Map.put(state.homes, home_id, home_state)
+      Logger.info("#{__MODULE__}: Home #{home_id} connected - in-memory count now #{map_size(new_homes)}")
+      {:noreply, %{state | homes: new_homes}}
+    else
+      {:noreply, state}
+    end
+  end
+
+  @impl true
+  def handle_info({:home_disconnected_event, event_data}, state) do
+    kwargs = Map.get(event_data, :kwargs, %{})
+    home_id = Map.get(kwargs, "home_id")
+
+    if home_id do
+      # Remove home from in-memory map
+      new_homes = Map.delete(state.homes, home_id)
+      Logger.info("#{__MODULE__}: Home #{home_id} disconnected - in-memory count now #{map_size(new_homes)}")
+      {:noreply, %{state | homes: new_homes}}
+    else
+      {:noreply, state}
+    end
   end
 
   @impl true
@@ -102,7 +151,9 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
     consumption_w = Map.get(kwargs, "_consumption_w", 0.0)
     battery_percent = Map.get(kwargs, "state_of_charge_pct", 0.0)
 
-    if home_id do
+    # Only update if home is already in map (connected)
+    # This ensures measurements don't add homes - only home.connected does that
+    if home_id && Map.has_key?(state.homes, home_id) do
       # Update in-memory home state
       home_state = %{
         production_kw: production_w / 1000.0,
@@ -113,6 +164,8 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
       new_homes = Map.put(state.homes, home_id, home_state)
       {:noreply, %{state | homes: new_homes}}
     else
+      # Home not in map (either disconnected or never connected)
+      # Silently ignore the measurement
       {:noreply, state}
     end
   end

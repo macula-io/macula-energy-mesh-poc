@@ -6,12 +6,12 @@ defmodule CortexIqDashboardSchemas.TimeSeries.EnergyTrade do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:id, :id, autogenerate: true}
+  @primary_key false
   schema "energy_trades" do
-    field :home_id, :string
+    field :home_id, :string, primary_key: true
     field :provider_id, :string
     field :contract_id, :string
-    field :simulation_time, :utc_datetime_usec
+    field :simulation_time, :utc_datetime_usec, primary_key: true
     field :simulation_hour, :integer
     field :grid_import_kwh, :float
     field :grid_export_kwh, :float

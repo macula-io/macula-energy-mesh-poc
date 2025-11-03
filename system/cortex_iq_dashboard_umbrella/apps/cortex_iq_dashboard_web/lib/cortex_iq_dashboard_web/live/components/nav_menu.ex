@@ -199,7 +199,7 @@ defmodule CortexIqDashboardWeb.Components.NavMenu do
     end
   end
   defp format_simulation_date(%DateTime{} = time) do
-    Calendar.strftime(time, "%Y-%m-%d %H:00")
+    Calendar.strftime(time, "%Y-%m-%d %Hh")
   end
 
   defp format_speed(nil), do: "N/A"

@@ -2,7 +2,7 @@
   {
     "id": "019a2400-0010-7000-a001-000000000001",
     "name": "Dubois Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Bruxelles",
       "postal_code": "1000",
@@ -12,12 +12,13 @@
       "longitude": 4.3525
     },
     "solar_capacity_kw": 4.7,
-    "battery_capacity_kwh": 12.2
+    "battery_capacity_kwh": 12.2,
+    "meter_ean": "547385770915231639"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000002",
     "name": "Peeters Family",
-    "iot_provider": "Smappee",
+    "iot_provider": "Homey",
     "address": {
       "city": "Bruxelles",
       "postal_code": "1000",
@@ -27,12 +28,13 @@
       "longitude": 4.3578
     },
     "solar_capacity_kw": 5.4,
-    "battery_capacity_kwh": 14.3
+    "battery_capacity_kwh": 14.3,
+    "meter_ean": "540952548066119342"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000003",
     "name": "Martin Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Etterbeek",
       "postal_code": "1040",
@@ -42,12 +44,13 @@
       "longitude": 4.3923
     },
     "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 11.2
+    "battery_capacity_kwh": 11.2,
+    "meter_ean": "541660508664006599"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000004",
     "name": "Janssens Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Toon",
     "address": {
       "city": "Etterbeek",
       "postal_code": "1040",
@@ -57,27 +60,29 @@
       "longitude": 4.3867
     },
     "solar_capacity_kw": 5.6,
-    "battery_capacity_kwh": 14.7
+    "battery_capacity_kwh": 14.7,
+    "meter_ean": "543769252526208427"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000005",
     "name": "Lambert Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Ixelles",
       "postal_code": "1050",
-      "street": "Chaussée d'Ixelles 89",
+      "street": "Chauss\u00e9e d'Ixelles 89",
       "region": "belgium_brussels",
       "latitude": 50.8289,
       "longitude": 4.3689
     },
     "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 11.7
+    "battery_capacity_kwh": 11.7,
+    "meter_ean": "540726304986485943"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000006",
     "name": "Maes Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Ixelles",
       "postal_code": "1050",
@@ -87,12 +92,13 @@
       "longitude": 4.3634
     },
     "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.9
+    "battery_capacity_kwh": 10.9,
+    "meter_ean": "541467996962645574"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000007",
     "name": "Bernard Family",
-    "iot_provider": "Smappee",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Ixelles",
       "postal_code": "1050",
@@ -102,27 +108,29 @@
       "longitude": 4.3712
     },
     "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 13.9
+    "battery_capacity_kwh": 13.9,
+    "meter_ean": "541065378562886096"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000008",
     "name": "Willems Family",
-    "iot_provider": "SolarEdge",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Saint-Gilles",
       "postal_code": "1060",
-      "street": "Chaussée de Waterloo 234",
+      "street": "Chauss\u00e9e de Waterloo 234",
       "region": "belgium_brussels",
       "latitude": 50.8356,
       "longitude": 4.3467
     },
     "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 10.4
+    "battery_capacity_kwh": 10.4,
+    "meter_ean": "541926512165593747"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000009",
     "name": "Thomas Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Saint-Gilles",
       "postal_code": "1060",
@@ -132,12 +140,13 @@
       "longitude": 4.3412
     },
     "solar_capacity_kw": 5.1,
-    "battery_capacity_kwh": 13.3
+    "battery_capacity_kwh": 13.3,
+    "meter_ean": "548680244418242897"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000010",
     "name": "Dupont Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Anderlecht",
       "postal_code": "1070",
@@ -147,12 +156,13 @@
       "longitude": 4.3123
     },
     "solar_capacity_kw": 5.5,
-    "battery_capacity_kwh": 14.4
+    "battery_capacity_kwh": 14.4,
+    "meter_ean": "549578313618224357"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000011",
     "name": "Hermans Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Anderlecht",
       "postal_code": "1070",
@@ -162,27 +172,29 @@
       "longitude": 4.3234
     },
     "solar_capacity_kw": 4.8,
-    "battery_capacity_kwh": 12.6
+    "battery_capacity_kwh": 12.6,
+    "meter_ean": "540924909382541785"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000012",
     "name": "Leroy Family",
-    "iot_provider": "Growatt",
+    "iot_provider": "HomeWizard",
     "address": {
       "city": "Molenbeek",
       "postal_code": "1080",
-      "street": "Chaussée de Gand 89",
+      "street": "Chauss\u00e9e de Gand 89",
       "region": "belgium_brussels",
       "latitude": 50.8534,
       "longitude": 4.3289
     },
     "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 11.5
+    "battery_capacity_kwh": 11.5,
+    "meter_ean": "549601748249986083"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000013",
     "name": "Claes Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Molenbeek",
       "postal_code": "1080",
@@ -192,12 +204,13 @@
       "longitude": 4.3345
     },
     "solar_capacity_kw": 4.9,
-    "battery_capacity_kwh": 12.8
+    "battery_capacity_kwh": 12.8,
+    "meter_ean": "545855123074673068"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000014",
     "name": "Robert Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Jette",
       "postal_code": "1090",
@@ -207,27 +220,29 @@
       "longitude": 4.3234
     },
     "solar_capacity_kw": 4.6,
-    "battery_capacity_kwh": 12.0
+    "battery_capacity_kwh": 12.0,
+    "meter_ean": "547724590966713182"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000015",
     "name": "Wouters Family",
-    "iot_provider": "Smappee",
+    "iot_provider": "Toon",
     "address": {
       "city": "Jette",
       "postal_code": "1090",
-      "street": "Rue Léopold I 234",
+      "street": "Rue L\u00e9opold I 234",
       "region": "belgium_brussels",
       "latitude": 50.8834,
       "longitude": 4.3312
     },
     "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 13.9
+    "battery_capacity_kwh": 13.9,
+    "meter_ean": "544634875384203024"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000016",
     "name": "Moreau Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Schaerbeek",
       "postal_code": "1030",
@@ -237,12 +252,13 @@
       "longitude": 4.3745
     },
     "solar_capacity_kw": 5.0,
-    "battery_capacity_kwh": 13.1
+    "battery_capacity_kwh": 13.1,
+    "meter_ean": "549456950166983810"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000017",
     "name": "Goossens Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "HomeWizard",
     "address": {
       "city": "Schaerbeek",
       "postal_code": "1030",
@@ -252,12 +268,13 @@
       "longitude": 4.3789
     },
     "solar_capacity_kw": 5.5,
-    "battery_capacity_kwh": 14.5
+    "battery_capacity_kwh": 14.5,
+    "meter_ean": "540889655688543083"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000018",
     "name": "Simon Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Woluwe-Saint-Pierre",
       "postal_code": "1150",
@@ -267,42 +284,45 @@
       "longitude": 4.4234
     },
     "solar_capacity_kw": 4.8,
-    "battery_capacity_kwh": 12.5
+    "battery_capacity_kwh": 12.5,
+    "meter_ean": "542316989963094384"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000019",
     "name": "Mertens Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Woluwe-Saint-Pierre",
       "postal_code": "1150",
-      "street": "Avenue des Éperviers 89",
+      "street": "Avenue des \u00c9perviers 89",
       "region": "belgium_brussels",
       "latitude": 50.8289,
       "longitude": 4.4312
     },
     "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 11.7
+    "battery_capacity_kwh": 11.7,
+    "meter_ean": "544120752290200331"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000020",
     "name": "Laurent Family",
-    "iot_provider": "Smappee",
+    "iot_provider": "Homey",
     "address": {
       "city": "Watermael-Boitsfort",
       "postal_code": "1170",
-      "street": "Chaussée de La Hulpe 145",
+      "street": "Chauss\u00e9e de La Hulpe 145",
       "region": "belgium_brussels",
       "latitude": 50.8034,
       "longitude": 4.4089
     },
     "solar_capacity_kw": 5.4,
-    "battery_capacity_kwh": 14.3
+    "battery_capacity_kwh": 14.3,
+    "meter_ean": "541416890100909315"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000021",
     "name": "Jacobs Family",
-    "iot_provider": "SolarEdge",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Watermael-Boitsfort",
       "postal_code": "1170",
@@ -312,12 +332,13 @@
       "longitude": 4.4145
     },
     "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 10.7
+    "battery_capacity_kwh": 10.7,
+    "meter_ean": "545883925018714328"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000022",
     "name": "Petit Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Woluwe-Saint-Lambert",
       "postal_code": "1200",
@@ -327,12 +348,13 @@
       "longitude": 4.4189
     },
     "solar_capacity_kw": 5.2,
-    "battery_capacity_kwh": 13.6
+    "battery_capacity_kwh": 13.6,
+    "meter_ean": "547553447067602266"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000023",
     "name": "Pauwels Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Woluwe-Saint-Lambert",
       "postal_code": "1200",
@@ -342,27 +364,29 @@
       "longitude": 4.4234
     },
     "solar_capacity_kw": 5.6,
-    "battery_capacity_kwh": 14.8
+    "battery_capacity_kwh": 14.8,
+    "meter_ean": "542653424550520226"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000024",
     "name": "Rousseau Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Uccle",
       "postal_code": "1180",
-      "street": "Chaussée de Waterloo 123",
+      "street": "Chauss\u00e9e de Waterloo 123",
       "region": "belgium_brussels",
       "latitude": 50.8089,
       "longitude": 4.3756
     },
     "solar_capacity_kw": 4.9,
-    "battery_capacity_kwh": 12.9
+    "battery_capacity_kwh": 12.9,
+    "meter_ean": "547306762998680673"
   },
   {
     "id": "019a2400-0010-7000-a001-000000000025",
     "name": "de Vos Family",
-    "iot_provider": "Growatt",
+    "iot_provider": "Toon",
     "address": {
       "city": "Uccle",
       "postal_code": "1180",
@@ -372,6 +396,7 @@
       "longitude": 4.3689
     },
     "solar_capacity_kw": 4.7,
-    "battery_capacity_kwh": 12.3
+    "battery_capacity_kwh": 12.3,
+    "meter_ean": "545183547215611393"
   }
 ]

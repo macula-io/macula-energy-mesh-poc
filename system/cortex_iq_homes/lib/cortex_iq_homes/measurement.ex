@@ -97,11 +97,13 @@ defmodule CortexIqHomes.Measurement do
     city = Keyword.get(opts, :city, "Unknown")
     postal_code = Keyword.get(opts, :postal_code, "0000")
     region = Keyword.get(opts, :region, "unknown")
+    meter_ean = Keyword.get(opts, :meter_ean)
 
     total_power = power_distribution.l1 + power_distribution.l2 + power_distribution.l3
 
     %{
       "home_id" => home_id,
+      "meter_ean" => meter_ean,
       "city" => city,
       "postal_code" => postal_code,
       "region" => region,

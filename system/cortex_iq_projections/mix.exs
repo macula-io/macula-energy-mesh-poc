@@ -45,8 +45,19 @@ defmodule CortexIqProjections.MixProject do
         version: "0.1.0",
         applications: [cortex_iq_projections: :permanent],
         include_executables_for: [:unix],
-        steps: [:assemble, :tar]
+        steps: [:assemble, &copy_migrations/1, :tar]
       ]
     ]
+  end
+
+  # Copy migrations from cortex_iq_dashboard_schemas dependency into release
+  defp copy_migrations(release) do
+    migrations_source = Path.join([:code.priv_dir(:cortex_iq_dashboard_schemas), "repo", "migrations"])
+    migrations_dest = Path.join([release.path, "lib", "cortex_iq_dashboard_schemas-#{Application.spec(:cortex_iq_dashboard_schemas, :vsn)}", "priv", "repo", "migrations"])
+
+    File.mkdir_p!(migrations_dest)
+    File.cp_r!(migrations_source, migrations_dest)
+
+    release
   end
 end

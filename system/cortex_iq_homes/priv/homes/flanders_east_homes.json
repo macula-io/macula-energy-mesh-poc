@@ -2,7 +2,7 @@
   {
     "id": "019a2400-0007-7000-a001-000000000001",
     "name": "Peeters Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -12,12 +12,13 @@
       "longitude": 5.3378
     },
     "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 11.6
+    "battery_capacity_kwh": 11.6,
+    "meter_ean": "549745140550659050"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000002",
     "name": "Claes Family",
-    "iot_provider": "Smappee",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -27,12 +28,13 @@
       "longitude": 5.3423
     },
     "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 13.9
+    "battery_capacity_kwh": 13.9,
+    "meter_ean": "547738027143685435"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000003",
     "name": "Hermans Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -42,12 +44,13 @@
       "longitude": 5.3312
     },
     "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.8
+    "battery_capacity_kwh": 10.8,
+    "meter_ean": "542978450174049537"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000004",
     "name": "Goossens Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Toon",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -57,12 +60,13 @@
       "longitude": 5.3445
     },
     "solar_capacity_kw": 5.5,
-    "battery_capacity_kwh": 14.5
+    "battery_capacity_kwh": 14.5,
+    "meter_ean": "547758557130931230"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000005",
     "name": "Willems Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -72,12 +76,13 @@
       "longitude": 5.3623
     },
     "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 11.4
+    "battery_capacity_kwh": 11.4,
+    "meter_ean": "548851514315695994"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000006",
     "name": "Janssens Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -87,12 +92,13 @@
       "longitude": 5.3512
     },
     "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 10.6
+    "battery_capacity_kwh": 10.6,
+    "meter_ean": "541727720889116115"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000007",
     "name": "Mertens Family",
-    "iot_provider": "Smappee",
+    "iot_provider": "Toon",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -102,12 +108,13 @@
       "longitude": 5.3789
     },
     "solar_capacity_kw": 5.2,
-    "battery_capacity_kwh": 13.7
+    "battery_capacity_kwh": 13.7,
+    "meter_ean": "541051085514411949"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000008",
     "name": "Wouters Family",
-    "iot_provider": "SolarEdge",
+    "iot_provider": "HomeWizard",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -117,12 +124,13 @@
       "longitude": 5.3289
     },
     "solar_capacity_kw": 3.9,
-    "battery_capacity_kwh": 9.7
+    "battery_capacity_kwh": 9.7,
+    "meter_ean": "542975373138225802"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000009",
     "name": "Jacobs Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -132,12 +140,13 @@
       "longitude": 5.3123
     },
     "solar_capacity_kw": 5.1,
-    "battery_capacity_kwh": 13.3
+    "battery_capacity_kwh": 13.3,
+    "meter_ean": "545761679394449471"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000010",
     "name": "Pauwels Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Toon",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -147,12 +156,13 @@
       "longitude": 5.3423
     },
     "solar_capacity_kw": 5.4,
-    "battery_capacity_kwh": 14.2
+    "battery_capacity_kwh": 14.2,
+    "meter_ean": "540819472061274809"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000011",
     "name": "Maes Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -162,12 +172,13 @@
       "longitude": 5.3312
     },
     "solar_capacity_kw": 4.8,
-    "battery_capacity_kwh": 12.5
+    "battery_capacity_kwh": 12.5,
+    "meter_ean": "543171761132998098"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000012",
     "name": "de Vos Family",
-    "iot_provider": "Growatt",
+    "iot_provider": "Toon",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -177,12 +188,13 @@
       "longitude": 5.3178
     },
     "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 11.2
+    "battery_capacity_kwh": 11.2,
+    "meter_ean": "544910439919902384"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000013",
     "name": "Aerts Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -192,12 +204,13 @@
       "longitude": 5.3567
     },
     "solar_capacity_kw": 5.0,
-    "battery_capacity_kwh": 13.0
+    "battery_capacity_kwh": 13.0,
+    "meter_ean": "541075163698102434"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000014",
     "name": "Verhoeven Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -207,12 +220,13 @@
       "longitude": 5.3456
     },
     "solar_capacity_kw": 4.6,
-    "battery_capacity_kwh": 12.0
+    "battery_capacity_kwh": 12.0,
+    "meter_ean": "542378238144815418"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000015",
     "name": "Claessens Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -222,12 +236,13 @@
       "longitude": 5.3234
     },
     "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 10.3
+    "battery_capacity_kwh": 10.3,
+    "meter_ean": "544020461781283980"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000016",
     "name": "Lemmens Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Hasselt",
       "postal_code": "3500",
@@ -237,12 +252,13 @@
       "longitude": 5.3389
     },
     "solar_capacity_kw": 4.9,
-    "battery_capacity_kwh": 12.7
+    "battery_capacity_kwh": 12.7,
+    "meter_ean": "541565939946363974"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000017",
     "name": "Nijs Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Genk",
       "postal_code": "3600",
@@ -252,7 +268,8 @@
       "longitude": 5.5012
     },
     "solar_capacity_kw": 4.7,
-    "battery_capacity_kwh": 12.2
+    "battery_capacity_kwh": 12.2,
+    "meter_ean": "545978272076103680"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000018",
@@ -267,12 +284,13 @@
       "longitude": 5.5089
     },
     "solar_capacity_kw": 5.4,
-    "battery_capacity_kwh": 14.3
+    "battery_capacity_kwh": 14.3,
+    "meter_ean": "543305020436677076"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000019",
     "name": "Swinkels Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Genk",
       "postal_code": "3600",
@@ -282,12 +300,13 @@
       "longitude": 5.4923
     },
     "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 11.1
+    "battery_capacity_kwh": 11.1,
+    "meter_ean": "543349774172780450"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000020",
     "name": "Moens Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Genk",
       "postal_code": "3600",
@@ -297,12 +316,13 @@
       "longitude": 5.5234
     },
     "solar_capacity_kw": 5.5,
-    "battery_capacity_kwh": 14.6
+    "battery_capacity_kwh": 14.6,
+    "meter_ean": "545225291446370250"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000021",
     "name": "Smeets Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Genk",
       "postal_code": "3600",
@@ -312,12 +332,13 @@
       "longitude": 5.4789
     },
     "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 11.7
+    "battery_capacity_kwh": 11.7,
+    "meter_ean": "545846492184030716"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000022",
     "name": "Vandenbussche Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Genk",
       "postal_code": "3600",
@@ -327,12 +348,13 @@
       "longitude": 5.5123
     },
     "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.9
+    "battery_capacity_kwh": 10.9,
+    "meter_ean": "548231074384464800"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000023",
     "name": "Desmet Family",
-    "iot_provider": "Smappee",
+    "iot_provider": "Homey",
     "address": {
       "city": "Genk",
       "postal_code": "3600",
@@ -342,12 +364,13 @@
       "longitude": 5.5212
     },
     "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 13.9
+    "battery_capacity_kwh": 13.9,
+    "meter_ean": "544031139968700179"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000024",
     "name": "Bogaert Family",
-    "iot_provider": "SolarEdge",
+    "iot_provider": "Toon",
     "address": {
       "city": "Genk",
       "postal_code": "3600",
@@ -357,12 +380,13 @@
       "longitude": 5.4912
     },
     "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 10.4
+    "battery_capacity_kwh": 10.4,
+    "meter_ean": "540213600369078203"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000025",
     "name": "Coppens Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Genk",
       "postal_code": "3600",
@@ -372,12 +396,13 @@
       "longitude": 5.4712
     },
     "solar_capacity_kw": 5.1,
-    "battery_capacity_kwh": 13.2
+    "battery_capacity_kwh": 13.2,
+    "meter_ean": "542129692474127256"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000026",
     "name": "Baert Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Toon",
     "address": {
       "city": "Genk",
       "postal_code": "3600",
@@ -387,12 +412,13 @@
       "longitude": 5.5089
     },
     "solar_capacity_kw": 5.4,
-    "battery_capacity_kwh": 14.2
+    "battery_capacity_kwh": 14.2,
+    "meter_ean": "547613765923488637"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000027",
     "name": "Declercq Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Genk",
       "postal_code": "3600",
@@ -402,12 +428,13 @@
       "longitude": 5.5345
     },
     "solar_capacity_kw": 4.9,
-    "battery_capacity_kwh": 12.8
+    "battery_capacity_kwh": 12.8,
+    "meter_ean": "546830604120654738"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000028",
     "name": "Verstraete Family",
-    "iot_provider": "Growatt",
+    "iot_provider": "HomeWizard",
     "address": {
       "city": "Genk",
       "postal_code": "3600",
@@ -417,12 +444,13 @@
       "longitude": 5.4823
     },
     "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 11.5
+    "battery_capacity_kwh": 11.5,
+    "meter_ean": "549687516497639790"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000029",
     "name": "Sys Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Genk",
       "postal_code": "3600",
@@ -432,7 +460,8 @@
       "longitude": 5.5012
     },
     "solar_capacity_kw": 4.8,
-    "battery_capacity_kwh": 12.6
+    "battery_capacity_kwh": 12.6,
+    "meter_ean": "546705614727841754"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000030",
@@ -447,7 +476,8 @@
       "longitude": 5.5156
     },
     "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 10.7
+    "battery_capacity_kwh": 10.7,
+    "meter_ean": "541807010683211099"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000031",
@@ -462,27 +492,29 @@
       "longitude": 5.5178
     },
     "solar_capacity_kw": 5.2,
-    "battery_capacity_kwh": 13.6
+    "battery_capacity_kwh": 13.6,
+    "meter_ean": "549250774928199025"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000032",
     "name": "de Smet Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
       "street": "Grote Markt 34",
       "region": "belgium_flanders",
-      "latitude": 51.3220,
+      "latitude": 51.322,
       "longitude": 4.9445
     },
     "solar_capacity_kw": 4.6,
-    "battery_capacity_kwh": 12.0
+    "battery_capacity_kwh": 12.0,
+    "meter_ean": "546557789575660133"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000033",
     "name": "van de Velde Family",
-    "iot_provider": "Smappee",
+    "iot_provider": "HomeWizard",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -492,12 +524,13 @@
       "longitude": 4.9489
     },
     "solar_capacity_kw": 5.4,
-    "battery_capacity_kwh": 14.3
+    "battery_capacity_kwh": 14.3,
+    "meter_ean": "544198877476085629"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000034",
     "name": "Verhoeven Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -507,12 +540,13 @@
       "longitude": 4.9512
     },
     "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 11.2
+    "battery_capacity_kwh": 11.2,
+    "meter_ean": "547940079704209455"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000035",
     "name": "Willems Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Homey",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -522,12 +556,13 @@
       "longitude": 4.9389
     },
     "solar_capacity_kw": 5.6,
-    "battery_capacity_kwh": 14.7
+    "battery_capacity_kwh": 14.7,
+    "meter_ean": "543614459905725032"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000036",
     "name": "Peeters Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -537,12 +572,13 @@
       "longitude": 4.9612
     },
     "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 11.7
+    "battery_capacity_kwh": 11.7,
+    "meter_ean": "540810362259988100"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000037",
     "name": "Janssens Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -552,12 +588,13 @@
       "longitude": 4.9523
     },
     "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.9
+    "battery_capacity_kwh": 10.9,
+    "meter_ean": "547105042282120301"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000038",
     "name": "Claes Family",
-    "iot_provider": "Smappee",
+    "iot_provider": "Toon",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -567,12 +604,13 @@
       "longitude": 4.9367
     },
     "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 13.9
+    "battery_capacity_kwh": 13.9,
+    "meter_ean": "547881574740570394"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000039",
     "name": "Hermans Family",
-    "iot_provider": "SolarEdge",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -582,12 +620,13 @@
       "longitude": 4.9456
     },
     "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 10.4
+    "battery_capacity_kwh": 10.4,
+    "meter_ean": "549286691970643625"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000040",
     "name": "Wouters Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -597,12 +636,13 @@
       "longitude": 4.9678
     },
     "solar_capacity_kw": 5.1,
-    "battery_capacity_kwh": 13.3
+    "battery_capacity_kwh": 13.3,
+    "meter_ean": "540047528933326094"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000041",
     "name": "Goossens Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Homey",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -612,12 +652,13 @@
       "longitude": 4.9623
     },
     "solar_capacity_kw": 5.5,
-    "battery_capacity_kwh": 14.4
+    "battery_capacity_kwh": 14.4,
+    "meter_ean": "542333881435619410"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000042",
     "name": "Mertens Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -627,12 +668,13 @@
       "longitude": 4.9823
     },
     "solar_capacity_kw": 4.8,
-    "battery_capacity_kwh": 12.6
+    "battery_capacity_kwh": 12.6,
+    "meter_ean": "540195462680397223"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000043",
     "name": "Pauwels Family",
-    "iot_provider": "Growatt",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -642,12 +684,13 @@
       "longitude": 4.9567
     },
     "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 11.5
+    "battery_capacity_kwh": 11.5,
+    "meter_ean": "549217753054789767"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000044",
     "name": "de Vos Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -657,12 +700,13 @@
       "longitude": 4.9289
     },
     "solar_capacity_kw": 5.0,
-    "battery_capacity_kwh": 13.1
+    "battery_capacity_kwh": 13.1,
+    "meter_ean": "548000359772572353"
   },
   {
     "id": "019a2400-0007-7000-a001-000000000045",
     "name": "Jacobs Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Turnhout",
       "postal_code": "2300",
@@ -672,6 +716,7 @@
       "longitude": 4.9712
     },
     "solar_capacity_kw": 4.7,
-    "battery_capacity_kwh": 12.3
+    "battery_capacity_kwh": 12.3,
+    "meter_ean": "542239471671673303"
   }
 ]

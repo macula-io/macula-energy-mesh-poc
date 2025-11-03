@@ -111,6 +111,19 @@ log_step "Pushing cortex-iq-projections..."
 docker push "$REGISTRY/macula/cortex-iq-projections:latest"
 log_info "Pushed cortex-iq-projections"
 
+# Build and push queries
+log_step "Building cortex-iq-queries..."
+docker build \
+  -f "$PROJECT_ROOT/system/cortex_iq_queries/Dockerfile" \
+  -t macula/cortex-iq-queries:latest \
+  -t "$REGISTRY/macula/cortex-iq-queries:latest" \
+  "$PROJECT_ROOT/system"
+log_info "Built cortex-iq-queries"
+
+log_step "Pushing cortex-iq-queries..."
+docker push "$REGISTRY/macula/cortex-iq-queries:latest"
+log_info "Pushed cortex-iq-queries"
+
 echo ""
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}✓ All Images Built and Pushed!${NC}"

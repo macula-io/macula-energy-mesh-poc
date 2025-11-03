@@ -68,6 +68,14 @@ docker build \
   "$PROJECT_ROOT/system"
 log_info "Projections image built"
 
+# Build queries image
+log_step "Building cortex-iq-queries image..."
+docker build \
+  -f "$PROJECT_ROOT/system/cortex_iq_queries/Dockerfile" \
+  -t macula/cortex-iq-queries:latest \
+  "$PROJECT_ROOT/system"
+log_info "Queries image built"
+
 # Load images into KinD clusters
 log_step "Loading images into KinD clusters..."
 
@@ -88,6 +96,11 @@ log_info "Simulation image loaded into hub"
 log_step "Loading projections image into macula-hub..."
 kind load docker-image macula/cortex-iq-projections:latest --name macula-hub
 log_info "Projections image loaded into hub"
+
+# Load queries into macula-hub (CQRS read-side service)
+log_step "Loading queries image into macula-hub..."
+kind load docker-image macula/cortex-iq-queries:latest --name macula-hub
+log_info "Queries image loaded into hub"
 
 # Load dashboard into macula-hub (where dashboard will run alongside Bondy)
 log_step "Loading dashboard image into macula-hub..."

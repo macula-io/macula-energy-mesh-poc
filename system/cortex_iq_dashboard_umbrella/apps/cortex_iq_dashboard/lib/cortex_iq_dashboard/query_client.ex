@@ -181,6 +181,128 @@ defmodule CortexIqDashboard.QueryClient do
     end
   end
 
+  @doc """
+  Search for homes by meter EAN or home ID with autocomplete support.
+
+  Parameters:
+    - query: search query string
+    - limit: maximum number of results (default: 10)
+
+  Returns:
+    {:ok, search_results} | {:error, reason}
+
+  Example search_results:
+    %{
+      homes: [
+        %{home_id: "...", meter_ean: "...", name: "...", location: "..."},
+        ...
+      ]
+    }
+  """
+  def search_homes(query, limit \\ 10) when is_binary(query) do
+    call_procedure("be.cortexiq.energy.queries.search_homes", [], %{query: query, limit: limit})
+  end
+
+  @doc """
+  Get list of all locations with home counts.
+
+  Returns:
+    {:ok, locations_data} | {:error, reason}
+
+  Example locations_data:
+    %{
+      locations: [
+        %{location: "Amsterdam", home_count: 15},
+        %{location: "Brussels", home_count: 12},
+        ...
+      ]
+    }
+  """
+  def get_locations do
+    call_procedure("be.cortexiq.energy.queries.get_locations", [], %{})
+  end
+
+  @doc """
+  Get all homes in a specific location.
+
+  Parameters:
+    - location: location name (city)
+
+  Returns:
+    {:ok, homes_data} | {:error, reason}
+
+  Example homes_data:
+    %{
+      homes: [
+        %{home_id: "...", name: "...", ...},
+        ...
+      ]
+    }
+  """
+  def get_homes_by_location(location) when is_binary(location) do
+    call_procedure("be.cortexiq.energy.queries.get_homes_by_location", [], %{location: location})
+  end
+
+  @doc """
+  Get historical energy event data for a home (production, consumption, battery).
+
+  Parameters:
+    - home_id: unique home identifier
+    - hours: number of hours of history to retrieve (default: 24)
+
+  Returns:
+    {:ok, history_data} | {:error, reason}
+
+  Example history_data:
+    %{
+      events: [
+        %{
+          simulation_time: ~U[2025-01-15 14:00:00.000000Z],
+          production_watts: 3500.0,
+          consumption_watts: 1200.0,
+          battery_percent: 75.0,
+          battery_kwh: 7.5,
+          battery_state: "charging"
+        },
+        ...
+      ]
+    }
+  """
+  def get_home_history(home_id, hours \\ 24) when is_binary(home_id) do
+    call_procedure("be.cortexiq.energy.queries.get_home_history", [], %{home_id: home_id, hours: hours})
+  end
+
+  @doc """
+  Get historical trade data for a home (grid imports/exports, costs, revenue).
+
+  Parameters:
+    - home_id: unique home identifier
+    - hours: number of hours of history to retrieve (default: 24)
+
+  Returns:
+    {:ok, trades_data} | {:error, reason}
+
+  Example trades_data:
+    %{
+      trades: [
+        %{
+          simulation_time: ~U[2025-01-15 14:00:00.000000Z],
+          grid_import_kwh: 0.35,
+          grid_export_kwh: 0.15,
+          import_cost: 0.0525,
+          export_revenue: 0.015,
+          net_cost: 0.0375,
+          provider_id: "provider_a",
+          is_day: true
+        },
+        ...
+      ]
+    }
+  """
+  def get_home_trades(home_id, hours \\ 24) when is_binary(home_id) do
+    call_procedure("be.cortexiq.energy.queries.get_home_trades", [], %{home_id: home_id, hours: hours})
+  end
+
   # Private Helpers
 
   defp call_procedure(uri, args, kwargs) do
@@ -192,7 +314,16 @@ defmodule CortexIqDashboard.QueryClient do
         case MaculaSdk.Wamp.Client.call(wamp_client, uri, args, kwargs, %{}) do
           {:ok, result} ->
             Logger.debug("QueryClient: RPC #{uri} succeeded")
-            {:ok, result}
+
+            # WAMP result structure: %{args: [payload], details: %{}, kwargs: %{}, request_id: ...}
+            # Extract the actual payload from the args list
+            payload = case Map.get(result, :args) do
+              [first | _rest] -> first
+              [] -> %{}
+              other -> other
+            end
+
+            {:ok, payload}
 
           {:error, reason} = error ->
             Logger.error("QueryClient: RPC #{uri} failed: #{inspect(reason)}")

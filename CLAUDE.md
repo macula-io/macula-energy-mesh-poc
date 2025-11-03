@@ -34,6 +34,64 @@ Create a compelling proof-of-concept that showcases **Macula** - a distributed a
 
 ## Architecture Principles
 
+### GITOPS DEPLOYMENT WORKFLOW - STRICT RULE
+
+**🚨 CRITICAL: NEVER use manual kubectl or kind commands for deployments! 🚨**
+
+This project uses **Flux GitOps** to manage all Kubernetes deployments. The clusters automatically pull images from the container registry and reconcile state from Git.
+
+❌ **NEVER DO THIS:**
+- `kind load docker-image` - This loads images locally but they are IGNORED by the running cluster
+- `kubectl rollout restart` - Manual deployments bypass GitOps workflow
+- `kubectl apply` - Manual manifest changes are overwritten by Flux
+- Direct `kubectl` commands for deployment changes
+
+✅ **ALWAYS DO THIS (GitOps Workflow):**
+1. **Build** Docker image:
+   ```bash
+   docker build -f Dockerfile.hub --build-arg CACHE_BUST=$(date +%s) -t macula/cortex-iq-dashboard:latest .
+   ```
+
+2. **Tag** for registry:
+   ```bash
+   docker tag macula/cortex-iq-dashboard:latest registry.macula.local:5000/cortex-iq-dashboard:latest
+   ```
+
+3. **Push** to registry:
+   ```bash
+   docker push registry.macula.local:5000/cortex-iq-dashboard:latest
+   ```
+
+4. **Deploy** (let Flux handle it, or force pod restart if needed):
+   ```bash
+   kubectl --context kind-macula-hub delete pods -n macula-hub -l app=cortex-iq-dashboard
+   ```
+
+**Why This Matters:**
+- Deployments are configured to pull from `registry.macula.local:5000/*`
+- `kind load docker-image` has NO EFFECT because pods pull from registry
+- Manual `kubectl` changes are ephemeral and will be overwritten by Flux
+- GitOps ensures reproducibility and proper versioning
+
+**Registry URLs:**
+- Hub: `registry.macula.local:5000/cortex-iq-dashboard:latest`
+- Homes: `registry.macula.local:5000/cortex-iq-homes:latest`
+- Utilities: `registry.macula.local:5000/cortex-iq-utilities:latest`
+- Projections: `registry.macula.local:5000/cortex-iq-projections:latest`
+- Queries: `registry.macula.local:5000/cortex-iq-queries:latest`
+
+**Deployment Shorthand:**
+When the user says "deploy", they mean:
+1. Build Docker image
+2. Push to registry
+3. Update GitOps manifests (if required)
+4. Push to git
+5. Let Flux reconcile the clusters
+
+**Time Cost of Mistakes:** Bypassing this workflow can waste hours debugging why "deployed" changes aren't appearing!
+
+---
+
 ### SCREAMING ARCHITECTURE - Critical Implementation Guideline
 
 **The intent of a module MUST be IMMEDIATELY clear from its filename.**

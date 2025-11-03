@@ -2,7 +2,7 @@
   {
     "id": "019a2400-0001-7000-a001-000000000001",
     "name": "de Jong Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Groningen",
       "postal_code": "9711 AA",
@@ -12,12 +12,13 @@
       "longitude": 6.5665
     },
     "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.5
+    "battery_capacity_kwh": 10.5,
+    "meter_ean": "543288154027798707"
   },
   {
     "id": "019a2400-0002-7000-a002-000000000002",
     "name": "Jansen Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Groningen",
       "postal_code": "9712 BB",
@@ -27,27 +28,29 @@
       "longitude": 6.5642
     },
     "solar_capacity_kw": 3.8,
-    "battery_capacity_kwh": 9.2
+    "battery_capacity_kwh": 9.2,
+    "meter_ean": "548395113062986066"
   },
   {
     "id": "019a2400-0003-7000-a003-000000000003",
     "name": "de Vries Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Toon",
     "address": {
       "city": "Groningen",
       "postal_code": "9713 CC",
       "street": "Herestraat 78",
       "region": "netherlands",
       "latitude": 53.2203,
-      "longitude": 6.5610
+      "longitude": 6.561
     },
     "solar_capacity_kw": 5.1,
-    "battery_capacity_kwh": 12.3
+    "battery_capacity_kwh": 12.3,
+    "meter_ean": "548024698382402551"
   },
   {
     "id": "019a2400-0004-7000-a004-000000000004",
     "name": "van den Berg Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Leeuwarden",
       "postal_code": "8911 AA",
@@ -57,22 +60,24 @@
       "longitude": 5.7866
     },
     "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 11.0
+    "battery_capacity_kwh": 11.0,
+    "meter_ean": "547252458257996010"
   },
   {
     "id": "019a2400-0005-7000-a005-000000000005",
     "name": "Bakker Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Leeuwarden",
       "postal_code": "8912 BB",
       "street": "Wirdumerdijk 134",
       "region": "netherlands",
       "latitude": 53.1956,
-      "longitude": 5.7890
+      "longitude": 5.789
     },
     "solar_capacity_kw": 3.9,
-    "battery_capacity_kwh": 8.8
+    "battery_capacity_kwh": 8.8,
+    "meter_ean": "545220963808978670"
   },
   {
     "id": "019a2400-0006-7000-a006-000000000006",
@@ -87,12 +92,13 @@
       "longitude": 5.7823
     },
     "solar_capacity_kw": 4.8,
-    "battery_capacity_kwh": 13.2
+    "battery_capacity_kwh": 13.2,
+    "meter_ean": "548371419883593589"
   },
   {
     "id": "019a2400-0007-7000-a007-000000000007",
     "name": "Smit Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Assen",
       "postal_code": "9401 AA",
@@ -102,12 +108,13 @@
       "longitude": 6.5623
     },
     "solar_capacity_kw": 3.6,
-    "battery_capacity_kwh": 7.5
+    "battery_capacity_kwh": 7.5,
+    "meter_ean": "542465715453397988"
   },
   {
     "id": "019a2400-0008-7000-a008-000000000008",
     "name": "Meijer Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Assen",
       "postal_code": "9402 BB",
@@ -117,12 +124,13 @@
       "longitude": 6.5689
     },
     "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 9.9
+    "battery_capacity_kwh": 9.9,
+    "meter_ean": "545501647488602879"
   },
   {
     "id": "019a2400-0009-7000-a009-000000000009",
     "name": "de Boer Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Emmen",
       "postal_code": "7811 AA",
@@ -132,12 +140,13 @@
       "longitude": 6.8958
     },
     "solar_capacity_kw": 3.7,
-    "battery_capacity_kwh": 8.4
+    "battery_capacity_kwh": 8.4,
+    "meter_ean": "540151470126927050"
   },
   {
     "id": "019a2400-0010-7000-a010-000000000010",
     "name": "Mulder Family",
-    "iot_provider": "Growatt",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Emmen",
       "postal_code": "7812 BB",
@@ -147,12 +156,13 @@
       "longitude": 6.8912
     },
     "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 14.1
+    "battery_capacity_kwh": 14.1,
+    "meter_ean": "546687684871659435"
   },
   {
     "id": "019a2400-0011-7000-a011-000000000011",
     "name": "de Groot Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Hoogeveen",
       "postal_code": "7901 AA",
@@ -162,12 +172,13 @@
       "longitude": 6.4764
     },
     "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 9.5
+    "battery_capacity_kwh": 9.5,
+    "meter_ean": "542894195638484911"
   },
   {
     "id": "019a2400-0012-7000-a012-000000000012",
     "name": "Bos Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Hoogeveen",
       "postal_code": "7902 BB",
@@ -177,12 +188,13 @@
       "longitude": 6.4801
     },
     "solar_capacity_kw": 3.5,
-    "battery_capacity_kwh": 7.8
+    "battery_capacity_kwh": 7.8,
+    "meter_ean": "544205468249018308"
   },
   {
     "id": "019a2400-0013-7000-a013-000000000013",
     "name": "Vos Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Groningen",
       "postal_code": "9714 DD",
@@ -192,12 +204,13 @@
       "longitude": 6.5689
     },
     "solar_capacity_kw": 4.6,
-    "battery_capacity_kwh": 11.7
+    "battery_capacity_kwh": 11.7,
+    "meter_ean": "549412015657509556"
   },
   {
     "id": "019a2400-0014-7000-a014-000000000014",
     "name": "Peters Family",
-    "iot_provider": "SolarEdge",
+    "iot_provider": "HomeWizard",
     "address": {
       "city": "Groningen",
       "postal_code": "9715 EE",
@@ -207,12 +220,13 @@
       "longitude": 6.5723
     },
     "solar_capacity_kw": 5.2,
-    "battery_capacity_kwh": 13.5
+    "battery_capacity_kwh": 13.5,
+    "meter_ean": "549518298098928665"
   },
   {
     "id": "019a2400-0015-7000-a015-000000000015",
     "name": "Hendriks Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Leeuwarden",
       "postal_code": "8914 DD",
@@ -222,12 +236,13 @@
       "longitude": 5.7934
     },
     "solar_capacity_kw": 3.9,
-    "battery_capacity_kwh": 9.1
+    "battery_capacity_kwh": 9.1,
+    "meter_ean": "543369846209928880"
   },
   {
     "id": "019a2400-0016-7000-a016-000000000016",
     "name": "van Leeuwen Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Leeuwarden",
       "postal_code": "8915 EE",
@@ -237,12 +252,13 @@
       "longitude": 5.7967
     },
     "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 10.2
+    "battery_capacity_kwh": 10.2,
+    "meter_ean": "540634642850185352"
   },
   {
     "id": "019a2400-0017-7000-a017-000000000017",
     "name": "Dekker Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Assen",
       "postal_code": "9403 CC",
@@ -252,12 +268,13 @@
       "longitude": 6.5745
     },
     "solar_capacity_kw": 4.7,
-    "battery_capacity_kwh": 12.1
+    "battery_capacity_kwh": 12.1,
+    "meter_ean": "545475388558343796"
   },
   {
     "id": "019a2400-0018-7000-a018-000000000018",
     "name": "Brouwer Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Assen",
       "postal_code": "9404 DD",
@@ -267,12 +284,13 @@
       "longitude": 6.5678
     },
     "solar_capacity_kw": 3.8,
-    "battery_capacity_kwh": 8.9
+    "battery_capacity_kwh": 8.9,
+    "meter_ean": "542735860671718625"
   },
   {
     "id": "019a2400-0019-7000-a019-000000000019",
     "name": "Schouten Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Emmen",
       "postal_code": "7813 CC",
@@ -282,12 +300,13 @@
       "longitude": 6.8989
     },
     "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 10.8
+    "battery_capacity_kwh": 10.8,
+    "meter_ean": "542330156222762345"
   },
   {
     "id": "019a2400-0020-7000-a020-000000000020",
     "name": "Kok Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Emmen",
       "postal_code": "7814 DD",
@@ -297,12 +316,13 @@
       "longitude": 6.9023
     },
     "solar_capacity_kw": 3.6,
-    "battery_capacity_kwh": 7.9
+    "battery_capacity_kwh": 7.9,
+    "meter_ean": "548313220362106607"
   },
   {
     "id": "019a2400-0021-7000-a021-000000000021",
     "name": "de Wit Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Groningen",
       "postal_code": "9716 FF",
@@ -312,12 +332,13 @@
       "longitude": 6.5756
     },
     "solar_capacity_kw": 5.0,
-    "battery_capacity_kwh": 12.8
+    "battery_capacity_kwh": 12.8,
+    "meter_ean": "549790931300981309"
   },
   {
     "id": "019a2400-0022-7000-a022-000000000022",
     "name": "van der Meer Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Groningen",
       "postal_code": "9717 GG",
@@ -327,12 +348,13 @@
       "longitude": 6.5701
     },
     "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 9.6
+    "battery_capacity_kwh": 9.6,
+    "meter_ean": "544723876977105341"
   },
   {
     "id": "019a2400-0023-7000-a023-000000000023",
     "name": "Koning Family",
-    "iot_provider": "SolarEdge",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Leeuwarden",
       "postal_code": "8916 FF",
@@ -342,7 +364,8 @@
       "longitude": 5.7878
     },
     "solar_capacity_kw": 5.4,
-    "battery_capacity_kwh": 14.5
+    "battery_capacity_kwh": 14.5,
+    "meter_ean": "543642645754978594"
   },
   {
     "id": "019a2400-0024-7000-a024-000000000024",
@@ -357,12 +380,13 @@
       "longitude": 5.7912
     },
     "solar_capacity_kw": 3.7,
-    "battery_capacity_kwh": 8.3
+    "battery_capacity_kwh": 8.3,
+    "meter_ean": "542518284934343997"
   },
   {
     "id": "019a2400-0025-7000-a025-000000000025",
     "name": "Vermeulen Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Hoogeveen",
       "postal_code": "7903 CC",
@@ -372,12 +396,13 @@
       "longitude": 6.4823
     },
     "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.1
+    "battery_capacity_kwh": 10.1,
+    "meter_ean": "541528096878113305"
   },
   {
     "id": "019a2400-0026-7000-a026-000000000026",
     "name": "Kuiper Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Hoogeveen",
       "postal_code": "7904 DD",
@@ -387,12 +412,13 @@
       "longitude": 6.4756
     },
     "solar_capacity_kw": 3.9,
-    "battery_capacity_kwh": 9.3
+    "battery_capacity_kwh": 9.3,
+    "meter_ean": "549669429811127016"
   },
   {
     "id": "019a2400-0027-7000-a027-000000000027",
     "name": "van den Heuvel Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Groningen",
       "postal_code": "9718 HH",
@@ -402,12 +428,13 @@
       "longitude": 6.5634
     },
     "solar_capacity_kw": 4.9,
-    "battery_capacity_kwh": 12.6
+    "battery_capacity_kwh": 12.6,
+    "meter_ean": "540576046977220415"
   },
   {
     "id": "019a2400-0028-7000-a028-000000000028",
     "name": "Maas Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Groningen",
       "postal_code": "9719 JJ",
@@ -417,7 +444,8 @@
       "longitude": 6.5778
     },
     "solar_capacity_kw": 3.8,
-    "battery_capacity_kwh": 8.7
+    "battery_capacity_kwh": 8.7,
+    "meter_ean": "548314823452680150"
   },
   {
     "id": "019a2400-0029-7000-a029-000000000029",
@@ -432,12 +460,13 @@
       "longitude": 5.7845
     },
     "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 11.2
+    "battery_capacity_kwh": 11.2,
+    "meter_ean": "545586444192027586"
   },
   {
     "id": "019a2400-0030-7000-a030-000000000030",
     "name": "Bosch Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Leeuwarden",
       "postal_code": "8919 JJ",
@@ -447,12 +476,13 @@
       "longitude": 5.7901
     },
     "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 9.8
+    "battery_capacity_kwh": 9.8,
+    "meter_ean": "547335744968569757"
   },
   {
     "id": "019a2400-0031-7000-a031-000000000031",
     "name": "Sanders Family",
-    "iot_provider": "Smappee",
+    "iot_provider": "Toon",
     "address": {
       "city": "Assen",
       "postal_code": "9405 EE",
@@ -462,12 +492,13 @@
       "longitude": 6.5712
     },
     "solar_capacity_kw": 5.1,
-    "battery_capacity_kwh": 13.1
+    "battery_capacity_kwh": 13.1,
+    "meter_ean": "541340490009179011"
   },
   {
     "id": "019a2400-0032-7000-a032-000000000032",
     "name": "Jacobs Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Assen",
       "postal_code": "9406 FF",
@@ -477,27 +508,29 @@
       "longitude": 6.5656
     },
     "solar_capacity_kw": 3.7,
-    "battery_capacity_kwh": 8.5
+    "battery_capacity_kwh": 8.5,
+    "meter_ean": "541849115503790720"
   },
   {
     "id": "019a2400-0033-7000-a033-000000000033",
     "name": "Huisman Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Emmen",
       "postal_code": "7815 EE",
-      "street": "Angelsloërdijk 78",
+      "street": "Angelslo\u00ebrdijk 78",
       "region": "netherlands",
       "latitude": 52.7812,
       "longitude": 6.8945
     },
     "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 10.4
+    "battery_capacity_kwh": 10.4,
+    "meter_ean": "540722767744255764"
   },
   {
     "id": "019a2400-0034-7000-a034-000000000034",
     "name": "van der Linden Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Emmen",
       "postal_code": "7816 FF",
@@ -507,12 +540,13 @@
       "longitude": 6.9012
     },
     "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 9.4
+    "battery_capacity_kwh": 9.4,
+    "meter_ean": "541505020253374809"
   },
   {
     "id": "019a2400-0035-7000-a035-000000000035",
     "name": "Smeets Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Groningen",
       "postal_code": "9720 KK",
@@ -522,12 +556,13 @@
       "longitude": 6.5789
     },
     "solar_capacity_kw": 4.6,
-    "battery_capacity_kwh": 11.5
+    "battery_capacity_kwh": 11.5,
+    "meter_ean": "541368201624171349"
   },
   {
     "id": "019a2400-0036-7000-a036-000000000036",
     "name": "Smits Family",
-    "iot_provider": "Growatt",
+    "iot_provider": "HomeWizard",
     "address": {
       "city": "Groningen",
       "postal_code": "9721 LL",
@@ -537,12 +572,13 @@
       "longitude": 6.5812
     },
     "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 14.0
+    "battery_capacity_kwh": 14.0,
+    "meter_ean": "544960973933913277"
   },
   {
     "id": "019a2400-0037-7000-a037-000000000037",
     "name": "Verhoeven Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Leeuwarden",
       "postal_code": "8920 KK",
@@ -552,12 +588,13 @@
       "longitude": 5.7956
     },
     "solar_capacity_kw": 3.9,
-    "battery_capacity_kwh": 9.0
+    "battery_capacity_kwh": 9.0,
+    "meter_ean": "549241793407781406"
   },
   {
     "id": "019a2400-0038-7000-a038-000000000038",
     "name": "Kramer Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Leeuwarden",
       "postal_code": "8921 LL",
@@ -567,22 +604,24 @@
       "longitude": 5.7989
     },
     "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.3
+    "battery_capacity_kwh": 10.3,
+    "meter_ean": "540926714171484414"
   },
   {
     "id": "019a2400-0039-7000-a039-000000000039",
     "name": "Martens Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Hoogeveen",
       "postal_code": "7905 EE",
       "street": "De Weide 45",
       "region": "netherlands",
       "latitude": 52.7289,
-      "longitude": 6.4790
+      "longitude": 6.479
     },
     "solar_capacity_kw": 3.6,
-    "battery_capacity_kwh": 7.7
+    "battery_capacity_kwh": 7.7,
+    "meter_ean": "542175927661705123"
   },
   {
     "id": "019a2400-0040-7000-a040-000000000040",
@@ -597,12 +636,13 @@
       "longitude": 6.4834
     },
     "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 10.7
+    "battery_capacity_kwh": 10.7,
+    "meter_ean": "542122931214722863"
   },
   {
     "id": "019a2400-0041-7000-a041-000000000041",
     "name": "Willems Family",
-    "iot_provider": "SolarEdge",
+    "iot_provider": "Homey",
     "address": {
       "city": "Groningen",
       "postal_code": "9722 MM",
@@ -612,12 +652,13 @@
       "longitude": 6.5623
     },
     "solar_capacity_kw": 5.5,
-    "battery_capacity_kwh": 14.8
+    "battery_capacity_kwh": 14.8,
+    "meter_ean": "542886214413051732"
   },
   {
     "id": "019a2400-0042-7000-a042-000000000042",
     "name": "de Vos Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Groningen",
       "postal_code": "9723 NN",
@@ -627,12 +668,13 @@
       "longitude": 6.5845
     },
     "solar_capacity_kw": 3.8,
-    "battery_capacity_kwh": 8.6
+    "battery_capacity_kwh": 8.6,
+    "meter_ean": "542374827378650364"
   },
   {
     "id": "019a2400-0043-7000-a043-000000000043",
     "name": "Scholten Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Leeuwarden",
       "postal_code": "8922 MM",
@@ -642,12 +684,13 @@
       "longitude": 5.7923
     },
     "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 9.7
+    "battery_capacity_kwh": 9.7,
+    "meter_ean": "541608847937246650"
   },
   {
     "id": "019a2400-0044-7000-a044-000000000044",
     "name": "Prins Family",
-    "iot_provider": "Homey Pro",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Leeuwarden",
       "postal_code": "8923 NN",
@@ -657,7 +700,8 @@
       "longitude": 5.7867
     },
     "solar_capacity_kw": 4.8,
-    "battery_capacity_kwh": 12.4
+    "battery_capacity_kwh": 12.4,
+    "meter_ean": "542930641170424747"
   },
   {
     "id": "019a2400-0045-7000-a045-000000000045",
@@ -672,7 +716,8 @@
       "longitude": 6.5789
     },
     "solar_capacity_kw": 3.7,
-    "battery_capacity_kwh": 8.2
+    "battery_capacity_kwh": 8.2,
+    "meter_ean": "543065898489722727"
   },
   {
     "id": "019a2400-0046-7000-a046-000000000046",
@@ -687,12 +732,13 @@
       "longitude": 6.5734
     },
     "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 9.5
+    "battery_capacity_kwh": 9.5,
+    "meter_ean": "542349495958552942"
   },
   {
     "id": "019a2400-0047-7000-a047-000000000047",
     "name": "Berg Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Emmen",
       "postal_code": "7817 GG",
@@ -702,12 +748,13 @@
       "longitude": 6.8978
     },
     "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 10.6
+    "battery_capacity_kwh": 10.6,
+    "meter_ean": "545739255747239809"
   },
   {
     "id": "019a2400-0048-7000-a048-000000000048",
     "name": "Hofman Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Emmen",
       "postal_code": "7818 HH",
@@ -717,12 +764,13 @@
       "longitude": 6.9045
     },
     "solar_capacity_kw": 3.9,
-    "battery_capacity_kwh": 9.2
+    "battery_capacity_kwh": 9.2,
+    "meter_ean": "546839915397519570"
   },
   {
     "id": "019a2400-0049-7000-a049-000000000049",
     "name": "Klein Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Groningen",
       "postal_code": "9724 PP",
@@ -732,12 +780,13 @@
       "longitude": 6.5867
     },
     "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 11.3
+    "battery_capacity_kwh": 11.3,
+    "meter_ean": "542140942254502475"
   },
   {
     "id": "019a2400-0050-7000-a050-000000000050",
     "name": "Smit Family",
-    "iot_provider": "Smappee",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Groningen",
       "postal_code": "9725 QQ",
@@ -747,12 +796,13 @@
       "longitude": 6.5901
     },
     "solar_capacity_kw": 5.2,
-    "battery_capacity_kwh": 13.4
+    "battery_capacity_kwh": 13.4,
+    "meter_ean": "542974024274175904"
   },
   {
     "id": "019a2400-0051-7000-a051-000000000051",
     "name": "Timmermans Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Leeuwarden",
       "postal_code": "8924 PP",
@@ -762,7 +812,8 @@
       "longitude": 5.7934
     },
     "solar_capacity_kw": 3.8,
-    "battery_capacity_kwh": 8.8
+    "battery_capacity_kwh": 8.8,
+    "meter_ean": "546837216983903349"
   },
   {
     "id": "019a2400-0052-7000-a052-000000000052",
@@ -777,12 +828,13 @@
       "longitude": 5.7812
     },
     "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.0
+    "battery_capacity_kwh": 10.0,
+    "meter_ean": "545614183766707177"
   },
   {
     "id": "019a2400-0053-7000-a053-000000000053",
     "name": "Blom Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Solar Edge",
     "address": {
       "city": "Hoogeveen",
       "postal_code": "7907 GG",
@@ -792,12 +844,13 @@
       "longitude": 6.4867
     },
     "solar_capacity_kw": 3.6,
-    "battery_capacity_kwh": 7.6
+    "battery_capacity_kwh": 7.6,
+    "meter_ean": "540394053674399267"
   },
   {
     "id": "019a2400-0054-7000-a054-000000000054",
     "name": "Linden Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Homey",
     "address": {
       "city": "Hoogeveen",
       "postal_code": "7908 HH",
@@ -807,12 +860,13 @@
       "longitude": 6.4723
     },
     "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 10.9
+    "battery_capacity_kwh": 10.9,
+    "meter_ean": "540955809284440433"
   },
   {
     "id": "019a2400-0055-7000-a055-000000000055",
     "name": "van Dam Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Groningen",
       "postal_code": "9726 RR",
@@ -822,12 +876,13 @@
       "longitude": 6.5367
     },
     "solar_capacity_kw": 4.7,
-    "battery_capacity_kwh": 11.9
+    "battery_capacity_kwh": 11.9,
+    "meter_ean": "546332415581852454"
   },
   {
     "id": "019a2400-0056-7000-a056-000000000056",
     "name": "Peters Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Smappee",
     "address": {
       "city": "Groningen",
       "postal_code": "9727 SS",
@@ -837,7 +892,8 @@
       "longitude": 6.5423
     },
     "solar_capacity_kw": 3.9,
-    "battery_capacity_kwh": 9.1
+    "battery_capacity_kwh": 9.1,
+    "meter_ean": "540796111540109570"
   },
   {
     "id": "019a2400-0057-7000-a057-000000000057",
@@ -852,12 +908,13 @@
       "longitude": 5.7901
     },
     "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 9.8
+    "battery_capacity_kwh": 9.8,
+    "meter_ean": "542413783463619521"
   },
   {
     "id": "019a2400-0058-7000-a058-000000000058",
     "name": "Koster Family",
-    "iot_provider": "Growatt",
+    "iot_provider": "HomeWizard",
     "address": {
       "city": "Leeuwarden",
       "postal_code": "8927 SS",
@@ -867,7 +924,8 @@
       "longitude": 5.7845
     },
     "solar_capacity_kw": 5.4,
-    "battery_capacity_kwh": 14.3
+    "battery_capacity_kwh": 14.3,
+    "meter_ean": "544329698605088364"
   },
   {
     "id": "019a2400-0059-7000-a059-000000000059",
@@ -882,7 +940,8 @@
       "longitude": 6.5801
     },
     "solar_capacity_kw": 3.7,
-    "battery_capacity_kwh": 8.4
+    "battery_capacity_kwh": 8.4,
+    "meter_ean": "545828250173165544"
   },
   {
     "id": "019a2400-0060-7000-a060-000000000060",
@@ -897,12 +956,13 @@
       "longitude": 6.5712
     },
     "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 9.6
+    "battery_capacity_kwh": 9.6,
+    "meter_ean": "545297960571304887"
   },
   {
     "id": "019a2400-0061-7000-a061-000000000061",
     "name": "Post Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Emmen",
       "postal_code": "7819 JJ",
@@ -912,7 +972,8 @@
       "longitude": 6.9067
     },
     "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 10.5
+    "battery_capacity_kwh": 10.5,
+    "meter_ean": "544936132625361220"
   },
   {
     "id": "019a2400-0062-7000-a062-000000000062",
@@ -927,12 +988,13 @@
       "longitude": 6.9123
     },
     "solar_capacity_kw": 3.8,
-    "battery_capacity_kwh": 8.9
+    "battery_capacity_kwh": 8.9,
+    "meter_ean": "547359324175732638"
   },
   {
     "id": "019a2400-0063-7000-a063-000000000063",
     "name": "van Rijn Family",
-    "iot_provider": "SolarEdge",
+    "iot_provider": "Homey",
     "address": {
       "city": "Groningen",
       "postal_code": "9728 TT",
@@ -942,12 +1004,13 @@
       "longitude": 6.5534
     },
     "solar_capacity_kw": 5.6,
-    "battery_capacity_kwh": 14.9
+    "battery_capacity_kwh": 14.9,
+    "meter_ean": "540710528095822860"
   },
   {
     "id": "019a2400-0064-7000-a064-000000000064",
     "name": "Jonker Family",
-    "iot_provider": "HomeWizard",
+    "iot_provider": "Toon",
     "address": {
       "city": "Groningen",
       "postal_code": "9729 UU",
@@ -957,7 +1020,8 @@
       "longitude": 6.5478
     },
     "solar_capacity_kw": 3.9,
-    "battery_capacity_kwh": 9.3
+    "battery_capacity_kwh": 9.3,
+    "meter_ean": "546999241050460047"
   },
   {
     "id": "019a2400-0065-7000-a065-000000000065",
@@ -972,6 +1036,7 @@
       "longitude": 5.7878
     },
     "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.1
+    "battery_capacity_kwh": 10.1,
+    "meter_ean": "548945912530012359"
   }
 ]
