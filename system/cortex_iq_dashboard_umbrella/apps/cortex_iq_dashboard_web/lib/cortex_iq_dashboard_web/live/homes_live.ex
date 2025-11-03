@@ -24,13 +24,15 @@ defmodule CortexIqDashboardWeb.HomesLive do
     require Logger
     Logger.info("HomesLive: mount() called, connected: #{connected?(socket)}")
 
-    # Subscribe to homes view updates, simulation time, control events, and home lifecycle
+    # Subscribe to simulation time, control events, and home lifecycle only
+    # DISABLED: real-time home state updates to prevent shaky rendering
+    # The homes list is primarily for navigation, not live monitoring
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "view:homes")
+      # Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "view:homes")  # DISABLED
       Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:time_advanced")
       Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:control")
       Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:home_connected")
-      Logger.info("HomesLive: Subscribed to homes updates, simulation time, control events, and home lifecycle")
+      Logger.info("HomesLive: Subscribed to simulation time, control events, and home lifecycle")
     end
 
     # Load full home list via WAMP RPC to get all home IDs and total count
@@ -514,10 +516,10 @@ defmodule CortexIqDashboardWeb.HomesLive do
                       phx-value-column={column}
                       class="flex items-center gap-2 text-gray-400 hover:text-gray-200 font-semibold text-xs uppercase tracking-wide"
                     >
-                      {label}
+                      <%= label %>
                       <%= if @sort_by == column do %>
                         <span class="text-blue-400">
-                          {if @sort_direction == :asc, do: "▲", else: "▼"}
+                          <%= if @sort_direction == :asc, do: "▲", else: "▼" %>
                         </span>
                       <% end %>
                     </button>
@@ -532,30 +534,29 @@ defmodule CortexIqDashboardWeb.HomesLive do
               <%= for home <- @homes do %>
                 <tr class="hover:bg-gray-700 transition-colors">
                   <td class="px-4 py-3">
-                    <div class="text-sm font-medium">{Map.get(home, "location", "Unknown")}</div>
-                    <div class="text-xs text-gray-500">{Map.get(home, "home_id", "")}</div>
+                    <div class="text-sm font-medium"><%= Map.get(home, "location", "Unknown") %></div>
                   </td>
                   <td class="px-4 py-3">
-                    <div class="text-sm text-gray-300">{format_family_name(home)}</div>
+                    <div class="text-sm text-gray-300"><%= format_family_name(home) %></div>
                   </td>
                   <td class="px-4 py-3">
-                    <div class="text-sm text-gray-300">{format_iot_provider(Map.get(home, "iot_provider"))}</div>
+                    <div class="text-sm text-gray-300"><%= format_iot_provider(Map.get(home, "iot_provider")) %></div>
                   </td>
                   <td class="px-4 py-3">
                     <%= if Map.get(home, "provider_id") do %>
-                      <div class="text-sm text-yellow-400">{get_provider_name(Map.get(home, "provider_id"))}</div>
+                      <div class="text-sm text-yellow-400"><%= get_provider_name(Map.get(home, "provider_id")) %></div>
                     <% else %>
                       <div class="text-sm text-gray-500">No contract</div>
                     <% end %>
                   </td>
                   <td class="px-4 py-3">
                     <div class="text-sm text-green-400">
-                      {format_power(Map.get(home, "production_kw", 0.0))}
+                      <%= format_power(Map.get(home, "production_kw", 0.0)) %>
                     </div>
                   </td>
                   <td class="px-4 py-3">
                     <div class="text-sm text-red-400">
-                      {format_power(Map.get(home, "consumption_kw", 0.0))}
+                      <%= format_power(Map.get(home, "consumption_kw", 0.0)) %>
                     </div>
                   </td>
                   <td class="px-4 py-3">
@@ -568,22 +569,22 @@ defmodule CortexIqDashboardWeb.HomesLive do
                         >
                         </div>
                       </div>
-                      <span class="text-xs text-gray-400">{Float.round(battery_pct, 0)}%</span>
+                      <span class="text-xs text-gray-400"><%= Float.round(battery_pct, 0) %>%</span>
                     </div>
                   </td>
                   <td class="px-4 py-3">
                     <% net_kwh = Map.get(home, "net_balance_kwh") || 0.0 %>
                     <div class={"text-sm #{if net_kwh > 0, do: "text-red-400", else: "text-green-400"}"}>
-                      {format_energy(abs(net_kwh))}
+                      <%= format_energy(abs(net_kwh)) %>
                       <span class="text-xs text-gray-500">
-                        {if net_kwh > 0, do: " (buying)", else: " (selling)"}
+                        <%= if net_kwh > 0, do: " (buying)", else: " (selling)" %>
                       </span>
                     </div>
                   </td>
                   <td class="px-4 py-3">
                     <% status = Map.get(home, "status", 0) %>
                     <div class={"text-xs px-2 py-1 rounded inline-block #{status_color(status)}"}>
-                      {format_status(status)}
+                      <%= format_status(status) %>
                     </div>
                   </td>
                   <td class="px-4 py-3">
@@ -780,10 +781,20 @@ defmodule CortexIqDashboardWeb.HomesLive do
   defp format_energy(_), do: "0 kWh"
 
   defp format_status(status) when is_integer(status) do
-    HomeStatus.highest(status)
+    status
+    |> HomeStatus.highest()
+    |> format_status_atom()
   end
 
   defp format_status(_), do: "Unknown"
+
+  # Convert status atoms to readable strings
+  defp format_status_atom(:connected), do: "Connected"
+  defp format_status_atom(:disconnected), do: "Disconnected"
+  defp format_status_atom(:initialized), do: "Initialized"
+  defp format_status_atom(:reserved), do: "Reserved"
+  defp format_status_atom(atom) when is_atom(atom), do: atom |> Atom.to_string() |> String.capitalize()
+  defp format_status_atom(_), do: "Unknown"
 
   defp status_color(status) when is_integer(status) do
     cond do
