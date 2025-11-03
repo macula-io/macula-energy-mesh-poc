@@ -877,7 +877,7 @@ const AutoDismissToast = {
   }
 }
 
-// Homes Map Hook - Shows individual homes on map (with zoom-based visibility)
+// Homes Map Hook - Hierarchical clustering: city markers at low zoom, individual homes at high zoom
 const HomesMap = {
   mounted() {
     const homes = JSON.parse(this.el.dataset.homes || '[]')
@@ -892,18 +892,33 @@ const HomesMap = {
       maxZoom: 20
     }).addTo(this.map)
 
-    // Store all markers for filtering
-    this.markers = {}
+    // Store markers and data
     this.homes = homes
+    this.markers = {}        // Individual home markers
+    this.cityMarkers = {}    // City cluster markers
+    this.homesByCity = {}    // Homes grouped by city
     this.currentQuery = ''
-    this.minZoomForMarkers = 10  // Only show individual homes at zoom >= 10
+    this.minZoomForHomes = 10  // Show individual homes at zoom >= 10
 
-    // Create markers for all homes (but don't add to map yet)
+    // Group homes by location (city)
     homes.forEach(home => {
-      if (home.latitude && home.longitude) {
-        const marker = this.createMarker(home, false)  // Pass false to not add to map
+      if (home.latitude && home.longitude && home.location) {
+        const city = home.location
+
+        if (!this.homesByCity[city]) {
+          this.homesByCity[city] = []
+        }
+        this.homesByCity[city].push(home)
+
+        // Create individual home marker (don't add to map yet)
+        const marker = this.createHomeMarker(home, false)
         this.markers[home.home_id] = marker
       }
+    })
+
+    // Create city cluster markers
+    Object.entries(this.homesByCity).forEach(([city, cityHomes]) => {
+      this.createCityCluster(city, cityHomes)
     })
 
     // Update marker visibility based on zoom level
@@ -930,29 +945,98 @@ const HomesMap = {
     })
   },
 
+  createCityCluster(city, cityHomes) {
+    // Calculate average position for city
+    const avgLat = cityHomes.reduce((sum, h) => sum + h.latitude, 0) / cityHomes.length
+    const avgLon = cityHomes.reduce((sum, h) => sum + h.longitude, 0) / cityHomes.length
+
+    // Calculate aggregate stats
+    const totalHomes = cityHomes.length
+    const totalProduction = cityHomes.reduce((sum, h) => sum + (h.production_kw || 0), 0)
+    const totalConsumption = cityHomes.reduce((sum, h) => sum + (h.consumption_kw || 0), 0)
+    const netEnergy = (totalProduction - totalConsumption) * 1000  // Convert to watts
+
+    // Determine cluster color based on net energy
+    let color
+    if (netEnergy > 500) {
+      color = '#10b981' // green - net producing
+    } else if (netEnergy < -500) {
+      color = '#ef4444' // red - net consuming
+    } else {
+      color = '#eab308' // yellow - balanced
+    }
+
+    // Create circle marker for city
+    const radius = Math.min(8 + (totalHomes / 2), 20)  // Scale with home count
+    const marker = L.circleMarker([avgLat, avgLon], {
+      radius: radius,
+      fillColor: color,
+      color: '#fff',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.7
+    })
+
+    // Popup content
+    const netKw = (netEnergy / 1000).toFixed(1)
+    const netStatus = netEnergy > 500 ? 'producing' : netEnergy < -500 ? 'consuming' : 'balanced'
+    const popupContent = `
+      <div class="text-sm">
+        <div class="font-bold text-white text-base">${city}</div>
+        <div class="text-gray-300 text-xs mt-1"><strong>${totalHomes} home(s) online</strong></div>
+        <div class="text-gray-400 text-xs">Net: ${netKw} kW (${netStatus})</div>
+        <div class="text-gray-400 text-xs mt-1">Production: ${totalProduction.toFixed(2)} kW</div>
+        <div class="text-gray-400 text-xs">Consumption: ${totalConsumption.toFixed(2)} kW</div>
+        <div class="text-gray-500 text-xs mt-2 italic">Zoom in to see individual homes</div>
+      </div>
+    `
+
+    marker.bindPopup(popupContent)
+
+    // Handle marker click - zoom to this city
+    marker.on('click', () => {
+      this.map.setView([avgLat, avgLon], 12)  // Zoom to show individual homes
+    })
+
+    this.cityMarkers[city] = marker
+  },
+
   updateMarkerVisibility() {
     const currentZoom = this.map.getZoom()
 
-    if (currentZoom >= this.minZoomForMarkers) {
-      // Show all markers (unless filtered out)
-      Object.entries(this.markers).forEach(([homeId, marker]) => {
+    if (currentZoom >= this.minZoomForHomes) {
+      // HIGH ZOOM: Show individual home markers, hide city clusters
+      Object.values(this.cityMarkers).forEach(marker => {
+        if (this.map.hasLayer(marker)) {
+          this.map.removeLayer(marker)
+        }
+      })
+
+      Object.values(this.markers).forEach(marker => {
         if (!this.map.hasLayer(marker)) {
           marker.addTo(this.map)
         }
       })
+
       // Re-apply current filter
       this.filterMarkers(this.currentQuery)
     } else {
-      // Hide all markers at low zoom levels
+      // LOW ZOOM: Show city clusters, hide individual home markers
       Object.values(this.markers).forEach(marker => {
         if (this.map.hasLayer(marker)) {
           this.map.removeLayer(marker)
         }
       })
+
+      Object.values(this.cityMarkers).forEach(marker => {
+        if (!this.map.hasLayer(marker)) {
+          marker.addTo(this.map)
+        }
+      })
     }
   },
 
-  createMarker(home, addToMap = false) {
+  createHomeMarker(home, addToMap = false) {
     const batteryPercent = home.battery_percent || 0
     const production = home.production_kw || 0
     const consumption = home.consumption_kw || 0
@@ -968,10 +1052,10 @@ const HomesMap = {
     }
 
     const marker = L.circleMarker([home.latitude, home.longitude], {
-      radius: 8,
+      radius: 6,
       fillColor: color,
       color: '#fff',
-      weight: 2,
+      weight: 1.5,
       opacity: 1,
       fillOpacity: 0.8
     })
@@ -1029,6 +1113,11 @@ const HomesMap = {
         }
       }
     })
+  },
+
+  updated() {
+    // Don't recreate map on LiveView updates - map should persist
+    // This prevents the map from disappearing when LiveView patches the DOM
   },
 
   destroyed() {
