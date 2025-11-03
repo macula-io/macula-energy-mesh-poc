@@ -380,6 +380,9 @@ defmodule CortexIqDashboardWeb.OverviewLive do
     # Handle both atom keys (from OverviewAggregator) and string keys (from WAMP RPC)
     %{
       homes: Map.get(overview_data, :total_homes, Map.get(overview_data, "total_homes", 0)),
+      connected_homes: Map.get(overview_data, :connected_homes_count, Map.get(overview_data, "connected_homes_count", 0)),
+      total_production_kw: Map.get(overview_data, :total_production_kw, Map.get(overview_data, "total_production_kw", 0.0)),
+      total_consumption_kw: Map.get(overview_data, :total_consumption_kw, Map.get(overview_data, "total_consumption_kw", 0.0)),
       total_energy_bought_kwh: Map.get(overview_data, :total_energy_bought_kwh, Map.get(overview_data, "total_energy_bought_kwh", 0.0)),
       total_energy_sold_kwh: Map.get(overview_data, :total_energy_sold_kwh, Map.get(overview_data, "total_energy_sold_kwh", 0.0)),
       total_cost_paid: Map.get(overview_data, :total_cost_paid, Map.get(overview_data, "total_cost_paid", 0.0)),
@@ -397,6 +400,9 @@ defmodule CortexIqDashboardWeb.OverviewLive do
   defp default_stats do
     %{
       homes: 0,
+      connected_homes: 0,
+      total_production_kw: 0.0,
+      total_consumption_kw: 0.0,
       total_energy_bought_kwh: 0.0,
       total_energy_sold_kwh: 0.0,
       total_cost_paid: 0.0,
