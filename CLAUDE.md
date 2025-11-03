@@ -92,6 +92,60 @@ When the user says "deploy", they mean:
 
 ---
 
+### LOCAL DEPLOYMENT INFRASTRUCTURE
+
+This project runs on **KinD (Kubernetes in Docker)** clusters with local DNS routing.
+
+**Cluster Architecture:**
+- 1 Hub cluster: `macula-hub` (Bondy, Dashboard, Projections, Queries, Simulation)
+- 4 Edge clusters: `macula-edge-01`, `macula-edge-02`, `macula-edge-03`, `macula-edge-04` (Homes, Utilities)
+
+**Local Registry:**
+- URL: `registry.macula.local:5000`
+- Docker registry running on host machine
+- All Kubernetes deployments pull from this registry
+- Build script: `infrastructure/registry/build-and-push-all.sh`
+
+**DNS Setup (via /etc/hosts):**
+- `dashboard.cortexiq.local` → Dashboard web interface (macula-hub)
+- `hub.macula.local:8080` → Bondy Admin API (macula-hub)
+- `console.macula.local:8080` → Bondy Console (macula-hub)
+- `registry.macula.local:5000` → Local Docker registry
+
+**Accessing Services:**
+
+1. **Dashboard** - http://dashboard.cortexiq.local
+   - Main CortexIQ web interface
+   - Real-time metrics, home search, charts
+   - Connected to Kubernetes deployment (NOT localhost dev server)
+
+2. **Bondy Console** - http://console.macula.local:8080
+   - WAMP router management interface
+   - View realms, sessions, registrations, subscriptions
+
+3. **Port-forwarding alternatives:**
+   - Dashboard: `kubectl --context kind-macula-hub port-forward -n macula-hub svc/cortex-iq-dashboard 4001:4000`
+   - Then access: http://localhost:4001
+
+**Important Notes:**
+- The dashboard at `dashboard.cortexiq.local` is the CLUSTER deployment
+- Running `mix phx.server` locally creates a SEPARATE dev server (localhost:4000)
+- The local dev server is useful for development but NOT for testing deployed code
+- Always test deployed changes via `dashboard.cortexiq.local` or port-forwarding
+
+**Build and Deploy Script:**
+```bash
+# Rebuild all services and push to registry
+./infrastructure/registry/build-and-push-all.sh
+
+# Restart deployments to pull new images
+kubectl --context kind-macula-hub rollout restart deployment/cortex-iq-dashboard -n macula-hub
+kubectl --context kind-macula-hub rollout restart deployment/cortex-iq-queries -n macula-hub
+kubectl --context kind-macula-hub rollout restart deployment/cortex-iq-projections -n macula-hub
+```
+
+---
+
 ### SCREAMING ARCHITECTURE - Critical Implementation Guideline
 
 **The intent of a module MUST be IMMEDIATELY clear from its filename.**
