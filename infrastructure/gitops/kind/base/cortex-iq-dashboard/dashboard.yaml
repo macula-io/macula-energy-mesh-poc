@@ -22,8 +22,8 @@ spec:
     spec:
       containers:
       - name: dashboard
-        image: macula/cortex-iq-dashboard:latest
-        imagePullPolicy: IfNotPresent
+        image: registry.macula.local:5000/cortex-iq-dashboard:latest
+        imagePullPolicy: Always
         ports:
         - name: http
           containerPort: 4000
