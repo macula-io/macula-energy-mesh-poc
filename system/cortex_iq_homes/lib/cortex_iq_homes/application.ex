@@ -40,6 +40,9 @@ defmodule CortexIqHomes.Application do
       # Registry for home bots
       {Registry, keys: :unique, name: CortexIqHomes.Registry},
 
+      # PubSub for internal event broadcasting
+      {Phoenix.PubSub, name: CortexIqHomes.PubSub},
+
       # Shared WAMP connection pool (20 connections for all homes)
       {MaculaSdk.Wamp.Pool, [
         url: bondy_url,
@@ -47,6 +50,12 @@ defmodule CortexIqHomes.Application do
         pool_size: 20,
         max_overflow: 10,
         name: CortexIqHomes.WampPool
+      ]},
+
+      # Simulation time subscription (broadcasts to all homes via PubSub)
+      {CortexIqHomes.SubscribeSimulationTimeAdvanced.System, [
+        bondy_url: bondy_url,
+        realm_uri: realm
       ]},
 
       # Singleton subscriber for simulation reset events
