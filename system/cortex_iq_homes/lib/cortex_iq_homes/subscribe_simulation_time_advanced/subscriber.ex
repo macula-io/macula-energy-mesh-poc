@@ -1,34 +1,34 @@
 defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber do
   @moduledoc """
-  Subscribes to simulation.time_advanced events.
+  Subscribes to simulation.time_advanced events and broadcasts to all homes via PubSub.
 
-  Topic: be.cortexiq.simulation.time_advanced
-  Notifies: HomeBot via {:simulation_time_tick, simulation_time}
+  Subscribes to: be.cortexiq.simulation.time_advanced
+  Broadcasts to: homes:simulation_time_tick
+  Message format: {:simulation_time_tick, simulation_time}
   """
   use GenServer
   require Logger
 
   @topic "be.cortexiq.simulation.time_advanced"
+  @pubsub_channel "homes:simulation_time_tick"
 
   ## Client API
 
   def start_link(opts) do
-    home_id = Keyword.fetch!(opts, :home_id)
-    GenServer.start_link(__MODULE__, opts, name: via_tuple(home_id))
+    GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
   ## Server Callbacks
 
   @impl true
   def init(opts) do
-    pool_name = Keyword.get(opts, :pool_name, CortexIqHomes.WampPool)
-    home_id = Keyword.fetch!(opts, :home_id)
+    wamp_client = Keyword.fetch!(opts, :wamp_client)
 
     state = %{
-      pool_name: pool_name,
-      home_id: home_id
+      wamp_client: wamp_client
     }
 
+    Logger.info("#{__MODULE__}: INIT - Scheduling subscription in 2 seconds, wamp_client=#{inspect(wamp_client)}")
     Process.send_after(self(), :subscribe, 2_000)
 
     {:ok, state}
@@ -42,8 +42,13 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber do
       send(subscriber_pid, {:event, event_data})
     end
 
-    MaculaSdk.Wamp.Pool.subscribe(@topic, handler, %{}, state.pool_name)
-    |> log_subscription_result(state.home_id, @topic)
+    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, @topic, handler) do
+      :ok ->
+        Logger.info("#{__MODULE__}: ✅ Subscribed to #{@topic}")
+      {:error, reason} ->
+        Logger.error("#{__MODULE__}: ❌ Failed to subscribe: #{inspect(reason)}, retrying in 5s...")
+        Process.send_after(self(), :subscribe, 5_000)
+    end
 
     {:noreply, state}
   end
@@ -56,30 +61,19 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber do
       kwargs["simulation_time"]
       |> parse_simulation_time()
 
-    state.home_id
-    |> CortexIqHomes.HomeBot.whereis()
-    |> notify_home_bot({:simulation_time_tick, simulation_time}, state.home_id)
+    # Broadcast to all homes via PubSub
+    Phoenix.PubSub.broadcast(
+      CortexIqHomes.PubSub,
+      @pubsub_channel,
+      {:simulation_time_tick, simulation_time}
+    )
+
+    Logger.debug("#{__MODULE__}: Broadcasted time tick to PubSub channel #{@pubsub_channel}")
 
     {:noreply, state}
   end
 
   ## Private Functions
-
-  defp log_subscription_result(:ok, home_id, topic) do
-    Logger.info("#{__MODULE__}: Home #{home_id} subscribed to #{topic}")
-  end
-
-  defp log_subscription_result({:error, reason}, home_id, _topic) do
-    Logger.error("#{__MODULE__}: Home #{home_id} failed to subscribe: #{inspect(reason)}")
-  end
-
-  defp notify_home_bot(nil, _message, home_id) do
-    Logger.warning("HomeBot #{home_id} not found")
-  end
-
-  defp notify_home_bot(pid, message, _home_id) when is_pid(pid) do
-    send(pid, message)
-  end
 
   defp parse_simulation_time(nil), do: nil
 
@@ -89,8 +83,4 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber do
 
   defp parse_iso8601_result({:ok, dt, _offset}), do: dt
   defp parse_iso8601_result(_error), do: nil
-
-  defp via_tuple(home_id) do
-    {:via, Registry, {CortexIqHomes.Registry, {__MODULE__, home_id}}}
-  end
 end
