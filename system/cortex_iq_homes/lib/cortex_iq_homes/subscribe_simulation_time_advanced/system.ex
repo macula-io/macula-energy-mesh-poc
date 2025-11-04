@@ -27,16 +27,19 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.System do
 
   @impl true
   def init(opts) do
+    Logger.info("🟢 SubscribeSimulationTimeAdvanced.System.init called")
+
     bondy_url = Keyword.get(opts, :bondy_url, System.get_env("BONDY_URL", "ws://localhost:18080/ws"))
     realm_uri = Keyword.get(opts, :realm_uri, System.get_env("BONDY_REALM", "be.cortexiq.energy"))
 
     # Unique WAMP client name for this subscription
     wamp_client_name = :wamp_subscribe_simulation_time_advanced
 
-    Logger.info("SubscribeSimulationTimeAdvanced.System starting")
+    Logger.info("📝 SubscribeSimulationTimeAdvanced.System configuration:")
     Logger.info("  WAMP client: #{inspect(wamp_client_name)}")
     Logger.info("  Bondy URL: #{bondy_url}")
     Logger.info("  Realm: #{realm_uri}")
+    Logger.info("  Strategy: :rest_for_one")
 
     children = [
       # 1. WAMP Client - dedicated connection for simulation time events
@@ -58,7 +61,11 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.System do
       ]}
     ]
 
+    Logger.info("🚀 SubscribeSimulationTimeAdvanced.System initializing #{length(children)} children...")
+
     # rest_for_one: if WAMP crashes, subscriber restarts too
-    Supervisor.init(children, strategy: :rest_for_one)
+    result = Supervisor.init(children, strategy: :rest_for_one)
+    Logger.info("✅ SubscribeSimulationTimeAdvanced.System init completed: #{inspect(result)}")
+    result
   end
 end

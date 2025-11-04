@@ -36,6 +36,14 @@ defmodule CortexIqHomes.Application do
 
     Logger.info("Starting #{length(homes)} home bots from #{homes_sources}")
 
+    Logger.info("🔧 Building supervision tree with 6 children...")
+    Logger.info("  1. Registry")
+    Logger.info("  2. Phoenix.PubSub")
+    Logger.info("  3. MaculaSdk.Wamp.Pool")
+    Logger.info("  4. SubscribeSimulationTimeAdvanced.System")
+    Logger.info("  5. SubscribeSimulationReset.Subscriber")
+    Logger.info("  6. DynamicSupervisor (BotSupervisor)")
+
     children = [
       # Registry for home bots
       {Registry, keys: :unique, name: CortexIqHomes.Registry},
@@ -67,11 +75,33 @@ defmodule CortexIqHomes.Application do
 
     opts = [strategy: :one_for_one, name: CortexIqHomes.Supervisor]
 
+    Logger.info("🚀 Starting Supervisor with #{length(children)} children...")
+
     case Supervisor.start_link(children, opts) do
       {:ok, pid} ->
+        Logger.info("✅ Supervisor started successfully with PID: #{inspect(pid)}")
+        Logger.info("📊 Verifying children are alive...")
+
+        # Verify critical children started
+        children_status = [
+          {"Registry", Process.whereis(CortexIqHomes.Registry)},
+          {"PubSub", Process.whereis(CortexIqHomes.PubSub)},
+          {"WampPool", Process.whereis(CortexIqHomes.WampPool)},
+          {"SubscribeSimulationTimeAdvanced.System", Process.whereis(CortexIqHomes.SubscribeSimulationTimeAdvanced.System)},
+          {"BotSupervisor", Process.whereis(CortexIqHomes.BotSupervisor)}
+        ]
+
+        Enum.each(children_status, fn {name, pid} ->
+          if pid do
+            Logger.info("  ✓ #{name}: #{inspect(pid)}")
+          else
+            Logger.error("  ❌ #{name}: NOT FOUND")
+          end
+        end)
+
         # Wait for WAMP pool to be ready before starting homes
         # This prevents :not_connected errors during subscriber initialization
-        Logger.info("Waiting for WAMP pool to be ready...")
+        Logger.info("⏳ Waiting for WAMP pool to be ready...")
 
         case MaculaSdk.Wamp.Pool.wait_for_ready(CortexIqHomes.WampPool, min_ready: 5, timeout: 10_000) do
           :ok ->
@@ -82,12 +112,13 @@ defmodule CortexIqHomes.Application do
             {:ok, pid}
 
           {:error, :timeout} ->
-            Logger.error("Timeout waiting for WAMP pool to be ready. Starting homes anyway (they will retry)...")
+            Logger.error("⚠️  Timeout waiting for WAMP pool to be ready. Starting homes anyway (they will retry)...")
             Task.start(fn -> start_home_bots_staggered(homes, bondy_url, realm) end)
             {:ok, pid}
         end
 
       error ->
+        Logger.error("❌ Failed to start Supervisor: #{inspect(error)}")
         error
     end
   end

@@ -36,7 +36,9 @@ defmodule CortexIqHomes.HomeBot do
 
   defstruct [
     :home_id,
-    :home
+    :home,
+    :last_measurement_ms,  # Timestamp of last published measurement
+    :measurement_frequency_ms  # How often to publish measurements (env: MEASUREMENT_FREQUENCY_MS, default: 1000)
   ]
 
   ## Client API
@@ -60,11 +62,30 @@ defmodule CortexIqHomes.HomeBot do
     home = Keyword.fetch!(opts, :home)
     home_id = home.id
 
-    Logger.info("Starting HomeCoordinator for #{home_id} (#{home.location.city})")
+    # Read measurement frequency from environment (default: 1000ms = 1/sec)
+    measurement_frequency_ms =
+      System.get_env("MEASUREMENT_FREQUENCY_MS", "1000")
+      |> String.to_integer()
+
+    Logger.info("🏠 Starting HomeCoordinator for #{home_id} (#{home.location.city})")
+    Logger.info("  Measurement frequency: #{measurement_frequency_ms}ms (#{1000 / measurement_frequency_ms} measurements/sec)")
+
+    # Subscribe to PubSub for simulation time ticks
+    Logger.info("🔌 Home #{home_id}: Subscribing to PubSub channel 'homes:simulation_time_tick'...")
+    result = Phoenix.PubSub.subscribe(CortexIqHomes.PubSub, "homes:simulation_time_tick")
+    Logger.info("  PubSub.subscribe result: #{inspect(result)}")
+
+    if result == :ok do
+      Logger.info("✅ Home #{home_id}: Successfully subscribed to PubSub channel")
+    else
+      Logger.error("❌ Home #{home_id}: Failed to subscribe to PubSub: #{inspect(result)}")
+    end
 
     state = %__MODULE__{
       home_id: home_id,
-      home: home
+      home: home,
+      last_measurement_ms: 0,  # Initialize to 0 to publish first measurement immediately
+      measurement_frequency_ms: measurement_frequency_ms
     }
 
     # Publish home_initialized event after startup
@@ -189,16 +210,44 @@ defmodule CortexIqHomes.HomeBot do
   # From SubscribeSimulationTimeAdvanced.Subscriber
   @impl true
   def handle_info({:simulation_time_tick, simulation_time}, state) do
+    Logger.debug("⏰ Home #{state.home_id}: Received :simulation_time_tick from PubSub")
+    Logger.debug("  simulation_time: #{inspect(simulation_time)}")
+
+    # Check if enough time has elapsed since last measurement
+    now_ms = System.monotonic_time(:millisecond)
+    elapsed_ms = now_ms - state.last_measurement_ms
+    should_publish_measurement = elapsed_ms >= state.measurement_frequency_ms
+
+    Logger.debug("  elapsed=#{elapsed_ms}ms, freq=#{state.measurement_frequency_ms}ms, should_publish=#{should_publish_measurement}")
+
     # Delegate to HomeState for all business logic
     result = HomeState.process_time_tick(state.home_id, simulation_time)
 
+    Logger.debug("  result - measurements=#{if result.measurements, do: "present", else: "nil"}")
+
     # Trigger publishers based on result
-    trigger_measurement_publisher(state, result.measurements)
+    # Only publish measurements if enough time has elapsed (throttling)
+    if should_publish_measurement do
+      Logger.info("Home #{state.home_id}: ✅ Publishing measurement (elapsed #{elapsed_ms}ms >= #{state.measurement_frequency_ms}ms)")
+      trigger_measurement_publisher(state, result.measurements)
+    else
+      Logger.debug("Home #{state.home_id}: ⏸ Skipping measurement (elapsed #{elapsed_ms}ms < #{state.measurement_frequency_ms}ms)")
+    end
+
+    # Always publish trades, arbitrage, and balance (not throttled)
     trigger_trade_publishers(state, result.trades)
     trigger_arbitrage_publisher(state, result.arbitrage)
     trigger_balance_publisher(state, result.balance)
 
-    {:noreply, state}
+    # Update last measurement timestamp if we published
+    new_state =
+      if should_publish_measurement do
+        %{state | last_measurement_ms: now_ms}
+      else
+        state
+      end
+
+    {:noreply, new_state}
   end
 
   # From SubscribeContractProposed.Subscriber
