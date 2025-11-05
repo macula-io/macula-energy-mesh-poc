@@ -28,6 +28,20 @@ data:
     api_gateway.http.acceptors_pool_size = 200
     api_gateway.http.max_connections = 500000
 
+    # WebSocket ping/pong to keep connections alive
+    wamp.websocket.ping.enabled = on
+    wamp.websocket.ping.idle_timeout = 30s
+    wamp.websocket.ping.timeout = 10s
+    wamp.websocket.ping.max_attempts = 3
+
+    # WebSocket connection timeout
+    wamp.websocket.idle_timeout = 300s
+    wamp.websocket.max_frame_size = 1MB
+
+    # WAMP call timeouts
+    wamp.call_timeout = 30s
+    wamp.max_call_timeout = 120s
+
     # Admin API
     admin_api.http.enabled = on
     admin_api.http.port = 18081
