@@ -26,8 +26,8 @@ spec:
         fsGroup: 1000
       containers:
       - name: bondy
-        image: leapsight/bondy:1.0.0-rc.47
-        imagePullPolicy: IfNotPresent
+        image: registry.macula.local:5000/macula/bondy:1.0.0-rc.47-patched
+        imagePullPolicy: Always
         ports:
         - name: http-ws
           containerPort: 18080
