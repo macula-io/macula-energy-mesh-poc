@@ -51,12 +51,13 @@ defmodule CortexIqHomes.Application do
       # PubSub for internal event broadcasting
       {Phoenix.PubSub, name: CortexIqHomes.PubSub},
 
-      # Shared WAMP connection pool (20 connections for all homes)
+      # Shared WAMP connection pool (150 connections for all homes)
+      # Each pod runs ~145 homes, all publishing measurements simultaneously
       {MaculaSdk.Wamp.Pool, [
         url: bondy_url,
         realm: realm,
-        pool_size: 20,
-        max_overflow: 10,
+        pool_size: 150,
+        max_overflow: 50,
         name: CortexIqHomes.WampPool
       ]},
 
@@ -103,7 +104,7 @@ defmodule CortexIqHomes.Application do
         # This prevents :not_connected errors during subscriber initialization
         Logger.info("⏳ Waiting for WAMP pool to be ready...")
 
-        case MaculaSdk.Wamp.Pool.wait_for_ready(CortexIqHomes.WampPool, min_ready: 5, timeout: 10_000) do
+        case MaculaSdk.Wamp.Pool.wait_for_ready(CortexIqHomes.WampPool, min_ready: 50, timeout: 30_000) do
           :ok ->
             Logger.info("✓ WAMP pool ready, starting home bots...")
             # Start home bots asynchronously to avoid blocking
@@ -125,10 +126,14 @@ defmodule CortexIqHomes.Application do
 
   defp start_home_bots_staggered(homes, bondy_url, realm) do
     # Stagger startup to avoid overwhelming Bondy with connections
-    # For 50 homes with 25ms delay = 1.25 seconds total startup time
-    delay_ms = 25
+    # For large home counts (e.g., 1360 homes), we need significant delays
+    # Target: ~15-20 connections/second to Bondy (manageable load)
+    # Formula: base_delay + random jitter
+    base_delay_ms = 50
+    jitter_ms = 50  # Random 0-50ms added to each delay
 
-    Logger.info("Starting #{length(homes)} home systems (vertical slices) with #{delay_ms}ms stagger...")
+    total_time_estimate = length(homes) * (base_delay_ms + (jitter_ms / 2)) / 1000
+    Logger.info("Starting #{length(homes)} home systems with #{base_delay_ms}ms + 0-#{jitter_ms}ms jitter stagger (est. #{Float.round(total_time_estimate, 1)}s total)...")
 
     Enum.each(homes, fn home ->
       spec = {CortexIqHomes.HomeSupervisor, [
@@ -146,8 +151,9 @@ defmodule CortexIqHomes.Application do
           Logger.error("Failed to start HomeSupervisor for #{home.id}: #{inspect(reason)}")
       end
 
-      # Small delay to stagger WAMP connections
-      Process.sleep(delay_ms)
+      # Staggered delay with random jitter to avoid synchronized connection waves
+      delay = base_delay_ms + :rand.uniform(jitter_ms)
+      Process.sleep(delay)
     end)
 
     Logger.info("Finished starting all #{length(homes)} home systems (#{length(homes) * 16} processes total)!")
