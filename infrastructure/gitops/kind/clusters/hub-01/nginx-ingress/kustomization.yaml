@@ -27,7 +27,8 @@ patches:
           - --validating-webhook-key=/usr/local/certificates/key
           - --watch-ingress-without-class=true
           - --publish-status-address=172.20.255.10
+      - op: remove
+        path: /spec/strategy/rollingUpdate
       - op: replace
-        path: /spec/strategy
-        value:
-          type: Recreate
+        path: /spec/strategy/type
+        value: Recreate
