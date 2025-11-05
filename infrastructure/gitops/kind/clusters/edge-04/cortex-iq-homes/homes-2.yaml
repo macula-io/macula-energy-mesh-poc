@@ -37,8 +37,8 @@ spec:
           value: "brussels_homes.json"
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "200m"
+            memory: "768Mi"
+            cpu: "250m"
           limits:
-            memory: "2Gi"
-            cpu: "500m"
+            memory: "3Gi"
+            cpu: "750m"

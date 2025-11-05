@@ -34,7 +34,7 @@ spec:
               name: bondy-client-config
               key: BONDY_REALM
         - name: HOMES_SOURCES
-          value: "wallonia_south_homes.json"
+          value: "wallonia_north_homes.json"
         resources:
           requests:
             memory: "768Mi"
