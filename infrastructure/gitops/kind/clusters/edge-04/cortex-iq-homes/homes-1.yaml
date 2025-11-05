@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cortex-iq-homes-1
+  namespace: macula-edge
+  labels:
+    app: cortex-iq-homes
+    group: homes-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cortex-iq-homes
+      group: homes-1
+  template:
+    metadata:
+      labels:
+        app: cortex-iq-homes
+        group: homes-1
+    spec:
+      containers:
+      - name: homes
+        image: registry.macula.local:5000/macula/cortex-iq-homes:latest
+        imagePullPolicy: Always
+        env:
+        - name: BONDY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_URL
+        - name: BONDY_REALM
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_REALM
+        - name: HOMES_SOURCES
+          value: "wallonia_south_homes.json"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "2Gi"
+            cpu: "500m"

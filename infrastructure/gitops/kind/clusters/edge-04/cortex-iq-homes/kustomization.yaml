@@ -1,12 +1,16 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+# Use multiple separate deployments for split home distribution
 resources:
-  - ../../../base/cortex-iq-homes
+  - homes-1.yaml
+  - homes-2.yaml
+  - ../../../base/secrets/cortex-iq-homes-macula-apikey.yaml
+  - ../../../base/bondy-client-config-cm.yaml
 
 namespace: macula-edge
 
-patchesStrategicMerge:
-  - homes-patch.yaml
-
-# Edge-04: Belgium Wallonia + Brussels homes (105 homes total)
+# Edge-04: Belgium Wallonia South + Brussels homes split across 2 deployments
+# - homes-1: 272 homes (wallonia_south)
+# - homes-2: 272 homes (brussels)
+# Total: 544 unique homes

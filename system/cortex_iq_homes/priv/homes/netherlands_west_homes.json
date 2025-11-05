@@ -1,1042 +1,5585 @@
 [
   {
-    "id": "019a2400-0002-7000-a001-000000000001",
-    "name": "de Vries Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1012 AB",
-      "street": "Prinsengracht 263",
-      "region": "netherlands",
-      "latitude": 52.3676,
-      "longitude": 4.9041
-    },
-    "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 10.5,
-    "meter_ean": "548061450451882737"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000002",
-    "name": "van den Berg Family",
-    "iot_provider": "Smappee",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1015 CD",
-      "street": "Jordaan 45",
-      "region": "netherlands",
-      "latitude": 52.3702,
-      "longitude": 4.8952
-    },
-    "solar_capacity_kw": 3.8,
-    "battery_capacity_kwh": 9.2,
-    "meter_ean": "544623915683106119"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000003",
-    "name": "Bakker Family",
-    "iot_provider": "HomeWizard",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1018 EF",
-      "street": "Plantage Middenlaan 78",
-      "region": "netherlands",
-      "latitude": 52.3667,
-      "longitude": 4.9097
-    },
-    "solar_capacity_kw": 5.2,
-    "battery_capacity_kwh": 13.5,
-    "meter_ean": "545291319838935996"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000004",
-    "name": "Jansen Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1021 GH",
-      "street": "Buiksloterweg 123",
-      "region": "netherlands",
-      "latitude": 52.3912,
-      "longitude": 4.9123
-    },
-    "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 10.8,
-    "meter_ean": "545522033649499546"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000005",
-    "name": "Visser Family",
-    "iot_provider": "Smappee",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1054 IJ",
-      "street": "Overtoom 234",
-      "region": "netherlands",
-      "latitude": 52.3587,
-      "longitude": 4.8678
-    },
-    "solar_capacity_kw": 3.9,
-    "battery_capacity_kwh": 8.7,
-    "meter_ean": "546227785506903913"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000006",
-    "name": "Smit Family",
-    "iot_provider": "HomeWizard",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1061 KL",
-      "street": "Lelylaan 89",
-      "region": "netherlands",
-      "latitude": 52.3534,
-      "longitude": 4.8334
-    },
-    "solar_capacity_kw": 4.7,
-    "battery_capacity_kwh": 12.1,
-    "meter_ean": "542299663176266834"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000007",
-    "name": "Meijer Family",
-    "iot_provider": "HomeWizard",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1071 MN",
-      "street": "Museumplein 12",
-      "region": "netherlands",
-      "latitude": 52.3579,
-      "longitude": 4.8823
-    },
-    "solar_capacity_kw": 5.6,
-    "battery_capacity_kwh": 14.9,
-    "meter_ean": "546039920929313544"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000008",
-    "name": "de Boer Family",
-    "iot_provider": "Solar Edge",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1074 OP",
-      "street": "De Pijp 167",
-      "region": "netherlands",
-      "latitude": 52.3512,
-      "longitude": 4.8934
-    },
-    "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 11.3,
-    "meter_ean": "540514768583061315"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000009",
-    "name": "Mulder Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1082 QR",
-      "street": "Apollolaan 56",
-      "region": "netherlands",
-      "latitude": 52.3423,
-      "longitude": 4.8745
-    },
-    "solar_capacity_kw": 3.7,
-    "battery_capacity_kwh": 9.8,
-    "meter_ean": "541148573478141689"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000010",
-    "name": "Hendriks Family",
-    "iot_provider": "Smappee",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1091 ST",
-      "street": "Oosterpark 234",
-      "region": "netherlands",
-      "latitude": 52.3589,
-      "longitude": 4.9245
-    },
-    "solar_capacity_kw": 4.9,
-    "battery_capacity_kwh": 12.7,
-    "meter_ean": "549811605958042345"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000011",
-    "name": "van Dijk Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1095 UV",
-      "street": "Zeeburg 78",
-      "region": "netherlands",
-      "latitude": 52.3678,
-      "longitude": 4.9456
-    },
-    "solar_capacity_kw": 5.1,
-    "battery_capacity_kwh": 13.2,
-    "meter_ean": "544947340185651232"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000012",
-    "name": "Jacobs Family",
-    "iot_provider": "Smappee",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1098 WX",
-      "street": "IJburg 145",
-      "region": "netherlands",
-      "latitude": 52.3623,
-      "longitude": 5.0112
-    },
-    "solar_capacity_kw": 4.6,
-    "battery_capacity_kwh": 11.9,
-    "meter_ean": "548070606530162461"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000013",
-    "name": "Peters Family",
-    "iot_provider": "Solar Edge",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1101 YZ",
-      "street": "Amsterdam-Zuidoost 234",
-      "region": "netherlands",
-      "latitude": 52.3112,
-      "longitude": 4.9678
-    },
-    "solar_capacity_kw": 3.5,
-    "battery_capacity_kwh": 8.5,
-    "meter_ean": "544360982088228133"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000014",
-    "name": "Willems Family",
-    "iot_provider": "HomeWizard",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1105 AB",
-      "street": "Bijlmer 89",
-      "region": "netherlands",
-      "latitude": 52.3234,
-      "longitude": 4.9789
-    },
-    "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.4,
-    "meter_ean": "549207174415398371"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000015",
-    "name": "van Leeuwen Family",
-    "iot_provider": "HomeWizard",
-    "address": {
-      "city": "Amsterdam",
-      "postal_code": "1109 CD",
-      "street": "Duivendrecht 56",
-      "region": "netherlands",
-      "latitude": 52.3267,
-      "longitude": 4.9345
-    },
-    "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 14.1,
-    "meter_ean": "542873808661154965"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000016",
-    "name": "de Groot Family",
-    "iot_provider": "Smappee",
+    "id": "019a2400-1633-7000-a001-000000001633",
+    "name": "De Wit Family",
+    "iot_provider": "SMA Sunny Portal",
     "address": {
       "city": "Rotterdam",
-      "postal_code": "3011 EF",
-      "street": "Coolsingel 124",
-      "region": "netherlands",
-      "latitude": 51.9225,
-      "longitude": 4.4792
-    },
-    "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 11.2,
-    "meter_ean": "542739719005283229"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000017",
-    "name": "Martens Family",
-    "iot_provider": "HomeWizard",
-    "address": {
-      "city": "Rotterdam",
-      "postal_code": "3014 GH",
-      "street": "Delfshaven 67",
-      "region": "netherlands",
-      "latitude": 51.9123,
-      "longitude": 4.4567
-    },
-    "solar_capacity_kw": 3.9,
-    "battery_capacity_kwh": 9.5,
-    "meter_ean": "544196233699214379"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000018",
-    "name": "Vermeulen Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Rotterdam",
-      "postal_code": "3021 IJ",
-      "street": "Schiedam 234",
-      "region": "netherlands",
-      "latitude": 51.9278,
-      "longitude": 4.4234
-    },
-    "solar_capacity_kw": 5.0,
-    "battery_capacity_kwh": 12.8,
-    "meter_ean": "540308912572452666"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000019",
-    "name": "van den Broek Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Rotterdam",
-      "postal_code": "3024 KL",
-      "street": "Spangen 89",
-      "region": "netherlands",
-      "latitude": 51.9189,
-      "longitude": 4.4389
-    },
-    "solar_capacity_kw": 4.8,
-    "battery_capacity_kwh": 12.3,
-    "meter_ean": "549786929201213164"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000020",
-    "name": "Dekker Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Rotterdam",
-      "postal_code": "3031 MN",
-      "street": "Noord 145",
-      "region": "netherlands",
-      "latitude": 51.9345,
-      "longitude": 4.4912
-    },
-    "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 10.6,
-    "meter_ean": "540961197251478952"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000021",
-    "name": "Scholten Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Rotterdam",
-      "postal_code": "3036 OP",
-      "street": "Blijdorp 78",
-      "region": "netherlands",
-      "latitude": 51.9267,
-      "longitude": 4.4678
+      "postal_code": "3000",
+      "street": "Straat 178",
+      "region": "netherlands_west",
+      "latitude": 51.9316,
+      "longitude": 4.4771
     },
     "solar_capacity_kw": 3.6,
-    "battery_capacity_kwh": 8.9,
-    "meter_ean": "540288868802750948"
+    "battery_capacity_kwh": 10.6,
+    "meters": {
+      "electricity_day_ean": "871686354592365079",
+      "electricity_night_ean": "871686459410072722",
+      "water_ean": "871688037367251851"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000022",
-    "name": "Kok Family",
-    "iot_provider": "Toon",
+    "id": "019a2400-1634-7000-a001-000000001634",
+    "name": "Visser Family",
+    "iot_provider": "Huawei FusionSolar",
     "address": {
       "city": "Rotterdam",
-      "postal_code": "3043 QR",
-      "street": "Charlois 234",
-      "region": "netherlands",
-      "latitude": 51.8834,
-      "longitude": 4.4945
-    },
-    "solar_capacity_kw": 5.4,
-    "battery_capacity_kwh": 14.3,
-    "meter_ean": "548091354150992042"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000023",
-    "name": "Brouwer Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Rotterdam",
-      "postal_code": "3051 ST",
-      "street": "Kralingen 56",
-      "region": "netherlands",
-      "latitude": 51.9245,
-      "longitude": 4.5123
-    },
-    "solar_capacity_kw": 4.7,
-    "battery_capacity_kwh": 11.8,
-    "meter_ean": "548658944424499231"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000024",
-    "name": "van der Meer Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Rotterdam",
-      "postal_code": "3054 UV",
-      "street": "Hillegersberg 123",
-      "region": "netherlands",
-      "latitude": 51.9412,
-      "longitude": 4.4756
-    },
-    "solar_capacity_kw": 3.8,
-    "battery_capacity_kwh": 9.3,
-    "meter_ean": "548210012239568883"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000025",
-    "name": "Kuiper Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Rotterdam",
-      "postal_code": "3061 WX",
-      "street": "Zuidwijk 67",
-      "region": "netherlands",
-      "latitude": 51.8956,
-      "longitude": 4.5234
-    },
-    "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 11.1,
-    "meter_ean": "549187965440481075"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000026",
-    "name": "Schouten Family",
-    "iot_provider": "Smappee",
-    "address": {
-      "city": "Rotterdam",
-      "postal_code": "3071 YZ",
-      "street": "Ijsselmonde 234",
-      "region": "netherlands",
-      "latitude": 51.8923,
-      "longitude": 4.5456
-    },
-    "solar_capacity_kw": 5.2,
-    "battery_capacity_kwh": 13.7,
-    "meter_ean": "544295331197270071"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000027",
-    "name": "Vos Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Rotterdam",
-      "postal_code": "3081 AB",
-      "street": "Pernis 89",
-      "region": "netherlands",
-      "latitude": 51.8867,
-      "longitude": 4.3923
-    },
-    "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 10.2,
-    "meter_ean": "541595157448248077"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000028",
-    "name": "van Wijk Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Rotterdam",
-      "postal_code": "3091 CD",
-      "street": "Hoogvliet 145",
-      "region": "netherlands",
-      "latitude": 51.8623,
-      "longitude": 4.3567
-    },
-    "solar_capacity_kw": 4.9,
-    "battery_capacity_kwh": 12.6,
-    "meter_ean": "543820213470542145"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000029",
-    "name": "van Beek Family",
-    "iot_provider": "Smappee",
-    "address": {
-      "city": "Den Haag",
-      "postal_code": "2511 EF",
-      "street": "Binnenhof 23",
-      "region": "netherlands",
-      "latitude": 52.0795,
-      "longitude": 4.3113
-    },
-    "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 11.5,
-    "meter_ean": "549914986181155515"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000030",
-    "name": "Janssen Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Den Haag",
-      "postal_code": "2514 GH",
-      "street": "Plein 67",
-      "region": "netherlands",
-      "latitude": 52.0804,
-      "longitude": 4.3145
-    },
-    "solar_capacity_kw": 3.7,
-    "battery_capacity_kwh": 9.1,
-    "meter_ean": "544371690244683788"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000031",
-    "name": "van der Linden Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Den Haag",
-      "postal_code": "2517 IJ",
-      "street": "Scheveningen 234",
-      "region": "netherlands",
-      "latitude": 52.1045,
-      "longitude": 4.2756
-    },
-    "solar_capacity_kw": 5.1,
-    "battery_capacity_kwh": 13.4,
-    "meter_ean": "546163316886797480"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000032",
-    "name": "Hoekstra Family",
-    "iot_provider": "Smappee",
-    "address": {
-      "city": "Den Haag",
-      "postal_code": "2521 KL",
-      "street": "Benoordenhout 89",
-      "region": "netherlands",
-      "latitude": 52.0923,
-      "longitude": 4.3345
-    },
-    "solar_capacity_kw": 4.6,
-    "battery_capacity_kwh": 12.0,
-    "meter_ean": "548249090454940850"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000033",
-    "name": "Koning Family",
-    "iot_provider": "Smappee",
-    "address": {
-      "city": "Den Haag",
-      "postal_code": "2531 MN",
-      "street": "Duinoord 145",
-      "region": "netherlands",
-      "latitude": 52.0645,
-      "longitude": 4.2823
-    },
-    "solar_capacity_kw": 3.9,
-    "battery_capacity_kwh": 9.7,
-    "meter_ean": "545619241211568865"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000034",
-    "name": "Bosch Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Den Haag",
-      "postal_code": "2541 OP",
-      "street": "Segbroek 56",
-      "region": "netherlands",
-      "latitude": 52.0678,
-      "longitude": 4.2567
-    },
-    "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 14.0,
-    "meter_ean": "547238752652258692"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000035",
-    "name": "van Vliet Family",
-    "iot_provider": "Smappee",
-    "address": {
-      "city": "Den Haag",
-      "postal_code": "2551 QR",
-      "street": "Laak 234",
-      "region": "netherlands",
-      "latitude": 52.0612,
-      "longitude": 4.3234
-    },
-    "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.9,
-    "meter_ean": "548893143316464448"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000036",
-    "name": "Driessen Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Den Haag",
-      "postal_code": "2561 ST",
-      "street": "Loosduinen 78",
-      "region": "netherlands",
-      "latitude": 52.0534,
-      "longitude": 4.2456
+      "postal_code": "3000",
+      "street": "Straat 60",
+      "region": "netherlands_west",
+      "latitude": 51.9266,
+      "longitude": 4.4856
     },
     "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 11.6,
+    "meters": {
+      "electricity_day_ean": "871686266513774461",
+      "electricity_night_ean": "871686178687452012",
+      "water_ean": "871688998776916070"
+    }
+  },
+  {
+    "id": "019a2400-1635-7000-a001-000000001635",
+    "name": "Van der Linden Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 60",
+      "region": "netherlands_west",
+      "latitude": 52.0656,
+      "longitude": 4.2936
+    },
+    "solar_capacity_kw": 4.2,
     "battery_capacity_kwh": 12.4,
-    "meter_ean": "541161777101069102"
+    "meters": {
+      "electricity_day_ean": "871686903875798124",
+      "electricity_night_ean": "871686985932751053",
+      "gas_ean": "871687901576263309",
+      "water_ean": "871688935493578567"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000037",
-    "name": "Verhoeven Family",
-    "iot_provider": "HomeWizard",
+    "id": "019a2400-1636-7000-a001-000000001636",
+    "name": "Koning Family",
+    "iot_provider": "Enphase",
     "address": {
       "city": "Den Haag",
-      "postal_code": "2571 UV",
-      "street": "Escamp 123",
-      "region": "netherlands",
-      "latitude": 52.0456,
-      "longitude": 4.2912
-    },
-    "solar_capacity_kw": 3.5,
-    "battery_capacity_kwh": 8.6,
-    "meter_ean": "544309397063642267"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000038",
-    "name": "van der Ven Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Den Haag",
-      "postal_code": "2581 WX",
-      "street": "Ypenburg 234",
-      "region": "netherlands",
-      "latitude": 52.0389,
-      "longitude": 4.3678
-    },
-    "solar_capacity_kw": 5.0,
-    "battery_capacity_kwh": 12.9,
-    "meter_ean": "541516014735226026"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000039",
-    "name": "Hermans Family",
-    "iot_provider": "HomeWizard",
-    "address": {
-      "city": "Den Haag",
-      "postal_code": "2591 YZ",
-      "street": "Leidschenveen 89",
-      "region": "netherlands",
-      "latitude": 52.0567,
-      "longitude": 4.4012
-    },
-    "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 11.4,
-    "meter_ean": "541515767868021806"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000040",
-    "name": "van Hoof Family",
-    "iot_provider": "Solar Edge",
-    "address": {
-      "city": "Den Haag",
-      "postal_code": "2595 AB",
-      "street": "Mariahoeve 56",
-      "region": "netherlands",
-      "latitude": 52.0734,
-      "longitude": 4.2678
-    },
-    "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 10.7,
-    "meter_ean": "541900316014718652"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000041",
-    "name": "Timmermans Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Haarlem",
-      "postal_code": "2011 CD",
-      "street": "Grote Markt 34",
-      "region": "netherlands",
-      "latitude": 52.381,
-      "longitude": 4.6368
-    },
-    "solar_capacity_kw": 4.7,
-    "battery_capacity_kwh": 12.2,
-    "meter_ean": "544536297574252080"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000042",
-    "name": "Wouters Family",
-    "iot_provider": "HomeWizard",
-    "address": {
-      "city": "Haarlem",
-      "postal_code": "2014 EF",
-      "street": "Damstraat 67",
-      "region": "netherlands",
-      "latitude": 52.3789,
-      "longitude": 4.6312
+      "postal_code": "2500",
+      "street": "Straat 21",
+      "region": "netherlands_west",
+      "latitude": 52.0735,
+      "longitude": 4.3073
     },
     "solar_capacity_kw": 3.8,
     "battery_capacity_kwh": 9.4,
-    "meter_ean": "547396621563496408"
+    "meters": {
+      "electricity_day_ean": "871686268610264060",
+      "electricity_night_ean": "871686524024762233",
+      "gas_ean": "871687369363995620",
+      "water_ean": "871688460789271455"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000043",
-    "name": "Goossens Family",
-    "iot_provider": "HomeWizard",
+    "id": "019a2400-1637-7000-a001-000000001637",
+    "name": "Visser Family",
+    "iot_provider": "SolarEdge",
     "address": {
-      "city": "Haarlem",
-      "postal_code": "2017 GH",
-      "street": "Spaarne 123",
-      "region": "netherlands",
-      "latitude": 52.3845,
-      "longitude": 4.6423
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 126",
+      "region": "netherlands_west",
+      "latitude": 51.929,
+      "longitude": 4.4724
     },
-    "solar_capacity_kw": 5.2,
+    "solar_capacity_kw": 2.8,
     "battery_capacity_kwh": 13.6,
-    "meter_ean": "543868717616747300"
+    "meters": {
+      "electricity_day_ean": "871686553613253357",
+      "electricity_night_ean": "871686553172737925"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000044",
-    "name": "Claessens Family",
-    "iot_provider": "Toon",
+    "id": "019a2400-1638-7000-a001-000000001638",
+    "name": "De Vries Family",
+    "iot_provider": "Tesla Powerwall",
     "address": {
-      "city": "Haarlem",
-      "postal_code": "2021 IJ",
-      "street": "Noord 234",
-      "region": "netherlands",
-      "latitude": 52.3923,
-      "longitude": 4.6534
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 140",
+      "region": "netherlands_west",
+      "latitude": 51.9237,
+      "longitude": 4.4788
     },
-    "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 11.0,
-    "meter_ean": "541492958274058141"
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 13.2,
+    "meters": {
+      "electricity_day_ean": "871686697341204275",
+      "electricity_night_ean": "871686934295546870",
+      "gas_ean": "871687914037269045",
+      "water_ean": "871688115696786232"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000045",
-    "name": "Maes Family",
-    "iot_provider": "Smappee",
+    "id": "019a2400-1639-7000-a001-000000001639",
+    "name": "Mulder Family",
+    "iot_provider": "Enphase",
     "address": {
-      "city": "Haarlem",
-      "postal_code": "2024 KL",
-      "street": "Oost 89",
-      "region": "netherlands",
-      "latitude": 52.3867,
-      "longitude": 4.6678
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 186",
+      "region": "netherlands_west",
+      "latitude": 51.8075,
+      "longitude": 4.681
     },
-    "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 10.3,
-    "meter_ean": "545819000340563319"
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 8.7,
+    "meters": {
+      "electricity_day_ean": "871686863216957246",
+      "electricity_night_ean": "871686881174394139",
+      "gas_ean": "871687062921070782",
+      "water_ean": "871688397393208001"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000046",
-    "name": "Aerts Family",
-    "iot_provider": "HomeWizard",
+    "id": "019a2400-1640-7000-a001-000000001640",
+    "name": "Brouwer Family",
+    "iot_provider": "SMA Sunny Portal",
     "address": {
-      "city": "Haarlem",
-      "postal_code": "2027 MN",
-      "street": "West 145",
-      "region": "netherlands",
-      "latitude": 52.3756,
-      "longitude": 4.6123
-    },
-    "solar_capacity_kwh": 5.4,
-    "battery_capacity_kwh": 14.2,
-    "meter_ean": "545847916540946291"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000047",
-    "name": "Peeters Family",
-    "iot_provider": "HomeWizard",
-    "address": {
-      "city": "Haarlem",
-      "postal_code": "2031 OP",
-      "street": "Zuid 56",
-      "region": "netherlands",
-      "latitude": 52.3689,
-      "longitude": 4.6445
-    },
-    "solar_capacity_kw": 3.6,
-    "battery_capacity_kwh": 8.8,
-    "meter_ean": "547427210857321463"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000048",
-    "name": "Cools Family",
-    "iot_provider": "HomeWizard",
-    "address": {
-      "city": "Haarlem",
-      "postal_code": "2034 QR",
-      "street": "Schalkwijk 234",
-      "region": "netherlands",
-      "latitude": 52.3612,
-      "longitude": 4.6234
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 54",
+      "region": "netherlands_west",
+      "latitude": 52.1678,
+      "longitude": 4.4904
     },
     "solar_capacity_kw": 4.9,
-    "battery_capacity_kwh": 12.5,
-    "meter_ean": "546144704432951518"
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "871686862957470623",
+      "electricity_night_ean": "871686277671813273"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000049",
-    "name": "van Dam Family",
-    "iot_provider": "Solar Edge",
+    "id": "019a2400-1641-7000-a001-000000001641",
+    "name": "Jansen Family",
+    "iot_provider": "SolarEdge",
     "address": {
-      "city": "Haarlem",
-      "postal_code": "2037 ST",
-      "street": "Haarlem-Noord 78",
-      "region": "netherlands",
-      "latitude": 52.3945,
-      "longitude": 4.6312
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 135",
+      "region": "netherlands_west",
+      "latitude": 52.0761,
+      "longitude": 4.2935
     },
-    "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 11.6,
-    "meter_ean": "546049819636268938"
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 12.8,
+    "meters": {
+      "electricity_day_ean": "871686465860077894",
+      "electricity_night_ean": "871686034695023544",
+      "gas_ean": "871687289889973838",
+      "water_ean": "871688012737211397"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000050",
-    "name": "de Wit Family",
-    "iot_provider": "Solar Edge",
+    "id": "019a2400-1642-7000-a001-000000001642",
+    "name": "De Vries Family",
+    "iot_provider": "Tesla Powerwall",
     "address": {
-      "city": "Leiden",
-      "postal_code": "2311 UV",
-      "street": "Breestraat 45",
-      "region": "netherlands",
-      "latitude": 52.1601,
-      "longitude": 4.4894
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 108",
+      "region": "netherlands_west",
+      "latitude": 52.0641,
+      "longitude": 4.3017
     },
-    "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.8,
-    "meter_ean": "544496892968920032"
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 11.0,
+    "meters": {
+      "electricity_day_ean": "871686506002453904",
+      "electricity_night_ean": "871686709825940893",
+      "gas_ean": "871687882339794943",
+      "water_ean": "871688459678548471"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000051",
-    "name": "Claes Family",
-    "iot_provider": "Solar Edge",
+    "id": "019a2400-1643-7000-a001-000000001643",
+    "name": "De Boer Family",
+    "iot_provider": "Huawei FusionSolar",
     "address": {
-      "city": "Leiden",
-      "postal_code": "2314 WX",
-      "street": "Rapenburg 123",
-      "region": "netherlands",
-      "latitude": 52.1578,
-      "longitude": 4.4823
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 199",
+      "region": "netherlands_west",
+      "latitude": 51.8078,
+      "longitude": 4.6887
     },
     "solar_capacity_kw": 3.9,
     "battery_capacity_kwh": 9.6,
-    "meter_ean": "545331844058105858"
+    "meters": {
+      "electricity_day_ean": "871686702623904848",
+      "electricity_night_ean": "871686498903611494",
+      "gas_ean": "871687467632244847",
+      "water_ean": "871688397685401087"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000052",
-    "name": "Swinkels Family",
+    "id": "019a2400-1644-7000-a001-000000001644",
+    "name": "Van der Linden Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 159",
+      "region": "netherlands_west",
+      "latitude": 52.1628,
+      "longitude": 4.4873
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 11.9,
+    "meters": {
+      "electricity_day_ean": "871686505338261053",
+      "electricity_night_ean": "871686460244056929",
+      "gas_ean": "871687645604230002"
+    }
+  },
+  {
+    "id": "019a2400-1645-7000-a001-000000001645",
+    "name": "De Haan Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 30",
+      "region": "netherlands_west",
+      "latitude": 52.1632,
+      "longitude": 4.487
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 13.3,
+    "meters": {
+      "electricity_day_ean": "871686977613884180",
+      "electricity_night_ean": "871686732834810444",
+      "gas_ean": "871687619224781216",
+      "water_ean": "871688589679233352"
+    }
+  },
+  {
+    "id": "019a2400-1646-7000-a001-000000001646",
+    "name": "Hendriks Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 46",
+      "region": "netherlands_west",
+      "latitude": 52.0199,
+      "longitude": 4.348
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 13.1,
+    "meters": {
+      "electricity_day_ean": "871686339047029776",
+      "electricity_night_ean": "871686270611983790"
+    }
+  },
+  {
+    "id": "019a2400-1647-7000-a001-000000001647",
+    "name": "De Vries Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 60",
+      "region": "netherlands_west",
+      "latitude": 52.0201,
+      "longitude": 4.3609
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 9.5,
+    "meters": {
+      "electricity_day_ean": "871686088079044383",
+      "electricity_night_ean": "871686284469389984",
+      "water_ean": "871688075209155371"
+    }
+  },
+  {
+    "id": "019a2400-1648-7000-a001-000000001648",
+    "name": "De Haan Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 7",
+      "region": "netherlands_west",
+      "latitude": 52.1673,
+      "longitude": 4.5015
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 12.4,
+    "meters": {
+      "electricity_day_ean": "871686642574270438",
+      "electricity_night_ean": "871686083692691334",
+      "gas_ean": "871687468612430864",
+      "water_ean": "871688183720631739"
+    }
+  },
+  {
+    "id": "019a2400-1649-7000-a001-000000001649",
+    "name": "Vos Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 113",
+      "region": "netherlands_west",
+      "latitude": 51.9278,
+      "longitude": 4.4724
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 13.7,
+    "meters": {
+      "electricity_day_ean": "871686169287482825",
+      "electricity_night_ean": "871686450575655996",
+      "gas_ean": "871687276942606067",
+      "water_ean": "871688825472226892"
+    }
+  },
+  {
+    "id": "019a2400-1650-7000-a001-000000001650",
+    "name": "De Vries Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 96",
+      "region": "netherlands_west",
+      "latitude": 52.0671,
+      "longitude": 4.3082
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 10.4,
+    "meters": {
+      "electricity_day_ean": "871686686947159874",
+      "electricity_night_ean": "871686633442463036",
+      "gas_ean": "871687296633445998",
+      "water_ean": "871688442872926765"
+    }
+  },
+  {
+    "id": "019a2400-1651-7000-a001-000000001651",
+    "name": "Van den Berg Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 138",
+      "region": "netherlands_west",
+      "latitude": 51.8102,
+      "longitude": 4.6909
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 13.0,
+    "meters": {
+      "electricity_day_ean": "871686799397448995",
+      "electricity_night_ean": "871686953296968214",
+      "gas_ean": "871687484030899445",
+      "water_ean": "871688926312286626"
+    }
+  },
+  {
+    "id": "019a2400-1652-7000-a001-000000001652",
+    "name": "De Wit Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 68",
+      "region": "netherlands_west",
+      "latitude": 52.0168,
+      "longitude": 4.3589
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "871686360999129925",
+      "electricity_night_ean": "871686379939100233",
+      "water_ean": "871688973335020139"
+    }
+  },
+  {
+    "id": "019a2400-1653-7000-a001-000000001653",
+    "name": "Visser Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 83",
+      "region": "netherlands_west",
+      "latitude": 52.0696,
+      "longitude": 4.2975
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 10.7,
+    "meters": {
+      "electricity_day_ean": "871686327588785144",
+      "electricity_night_ean": "871686521434746219",
+      "gas_ean": "871687371277098659"
+    }
+  },
+  {
+    "id": "019a2400-1654-7000-a001-000000001654",
+    "name": "Bos Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 189",
+      "region": "netherlands_west",
+      "latitude": 51.9173,
+      "longitude": 4.4753
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 13.2,
+    "meters": {
+      "electricity_day_ean": "871686869969134841",
+      "electricity_night_ean": "871686539651760551",
+      "gas_ean": "871687434329420366",
+      "water_ean": "871688746906169492"
+    }
+  },
+  {
+    "id": "019a2400-1655-7000-a001-000000001655",
+    "name": "Hendriks Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 58",
+      "region": "netherlands_west",
+      "latitude": 51.8232,
+      "longitude": 4.6964
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 13.5,
+    "meters": {
+      "electricity_day_ean": "871686229938144308",
+      "electricity_night_ean": "871686288448274419",
+      "gas_ean": "871687090834351827",
+      "water_ean": "871688776935317265"
+    }
+  },
+  {
+    "id": "019a2400-1656-7000-a001-000000001656",
+    "name": "Koning Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 186",
+      "region": "netherlands_west",
+      "latitude": 52.063,
+      "longitude": 4.2947
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 12.0,
+    "meters": {
+      "electricity_day_ean": "871686196440648980",
+      "electricity_night_ean": "871686603296678965",
+      "gas_ean": "871687342127495065",
+      "water_ean": "871688145608290286"
+    }
+  },
+  {
+    "id": "019a2400-1657-7000-a001-000000001657",
+    "name": "De Haan Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 87",
+      "region": "netherlands_west",
+      "latitude": 51.823,
+      "longitude": 4.6942
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 11.9,
+    "meters": {
+      "electricity_day_ean": "871686732217853123",
+      "electricity_night_ean": "871686041168810904",
+      "gas_ean": "871687510984827712",
+      "water_ean": "871688419253710329"
+    }
+  },
+  {
+    "id": "019a2400-1658-7000-a001-000000001658",
+    "name": "Meijer Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 17",
+      "region": "netherlands_west",
+      "latitude": 52.0692,
+      "longitude": 4.2919
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 8.4,
+    "meters": {
+      "electricity_day_ean": "871686525756697981",
+      "electricity_night_ean": "871686548377944634",
+      "gas_ean": "871687524713020512",
+      "water_ean": "871688113510127861"
+    }
+  },
+  {
+    "id": "019a2400-1659-7000-a001-000000001659",
+    "name": "De Vries Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 75",
+      "region": "netherlands_west",
+      "latitude": 51.9266,
+      "longitude": 4.4881
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 10.4,
+    "meters": {
+      "electricity_day_ean": "871686325950695073",
+      "electricity_night_ean": "871686989352009570",
+      "gas_ean": "871687718453970087",
+      "water_ean": "871688776733247427"
+    }
+  },
+  {
+    "id": "019a2400-1660-7000-a001-000000001660",
+    "name": "Van der Meer Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 31",
+      "region": "netherlands_west",
+      "latitude": 52.16,
+      "longitude": 4.4979
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 12.1,
+    "meters": {
+      "electricity_day_ean": "871686585840672113",
+      "electricity_night_ean": "871686429610581384",
+      "gas_ean": "871687219126828708",
+      "water_ean": "871688895753901962"
+    }
+  },
+  {
+    "id": "019a2400-1661-7000-a001-000000001661",
+    "name": "Van der Linden Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 64",
+      "region": "netherlands_west",
+      "latitude": 51.9206,
+      "longitude": 4.4737
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 9.5,
+    "meters": {
+      "electricity_day_ean": "871686955942476917",
+      "electricity_night_ean": "871686777836935659",
+      "gas_ean": "871687115074282908",
+      "water_ean": "871688332938962035"
+    }
+  },
+  {
+    "id": "019a2400-1662-7000-a001-000000001662",
+    "name": "De Wit Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 17",
+      "region": "netherlands_west",
+      "latitude": 51.8136,
+      "longitude": 4.6994
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 10.7,
+    "meters": {
+      "electricity_day_ean": "871686053598593402",
+      "electricity_night_ean": "871686307568138714",
+      "gas_ean": "871687996965896400",
+      "water_ean": "871688621276440593"
+    }
+  },
+  {
+    "id": "019a2400-1663-7000-a001-000000001663",
+    "name": "Vos Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 123",
+      "region": "netherlands_west",
+      "latitude": 52.0201,
+      "longitude": 4.3516
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 10.7,
+    "meters": {
+      "electricity_day_ean": "871686560736191082",
+      "electricity_night_ean": "871686420354342377",
+      "gas_ean": "871687518504839866",
+      "water_ean": "871688829274355446"
+    }
+  },
+  {
+    "id": "019a2400-1664-7000-a001-000000001664",
+    "name": "Jacobs Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 158",
+      "region": "netherlands_west",
+      "latitude": 51.8218,
+      "longitude": 4.6823
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 8.1,
+    "meters": {
+      "electricity_day_ean": "871686742900520308",
+      "electricity_night_ean": "871686152575362529"
+    }
+  },
+  {
+    "id": "019a2400-1665-7000-a001-000000001665",
+    "name": "De Groot Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 70",
+      "region": "netherlands_west",
+      "latitude": 51.8211,
+      "longitude": 4.6848
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 10.0,
+    "meters": {
+      "electricity_day_ean": "871686027278025316",
+      "electricity_night_ean": "871686239277912309",
+      "water_ean": "871688262851188270"
+    }
+  },
+  {
+    "id": "019a2400-1666-7000-a001-000000001666",
+    "name": "Van Dijk Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 185",
+      "region": "netherlands_west",
+      "latitude": 52.0625,
+      "longitude": 4.2949
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 9.0,
+    "meters": {
+      "electricity_day_ean": "871686542252973164",
+      "electricity_night_ean": "871686453335836350",
+      "water_ean": "871688041834163015"
+    }
+  },
+  {
+    "id": "019a2400-1667-7000-a001-000000001667",
+    "name": "Koning Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 185",
+      "region": "netherlands_west",
+      "latitude": 52.0611,
+      "longitude": 4.3063
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 9.6,
+    "meters": {
+      "electricity_day_ean": "871686055111007624",
+      "electricity_night_ean": "871686700513018545",
+      "gas_ean": "871687015868053008"
+    }
+  },
+  {
+    "id": "019a2400-1668-7000-a001-000000001668",
+    "name": "De Vries Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 200",
+      "region": "netherlands_west",
+      "latitude": 51.8099,
+      "longitude": 4.6917
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 11.6,
+    "meters": {
+      "electricity_day_ean": "871686308258389017",
+      "electricity_night_ean": "871686395601119102",
+      "gas_ean": "871687930157576297",
+      "water_ean": "871688227654487714"
+    }
+  },
+  {
+    "id": "019a2400-1669-7000-a001-000000001669",
+    "name": "Jacobs Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 164",
+      "region": "netherlands_west",
+      "latitude": 51.928,
+      "longitude": 4.4784
+    },
+    "solar_capacity_kw": 3.1,
+    "battery_capacity_kwh": 10.2,
+    "meters": {
+      "electricity_day_ean": "871686455923110817",
+      "electricity_night_ean": "871686090371956336",
+      "gas_ean": "871687715836406698",
+      "water_ean": "871688649719350601"
+    }
+  },
+  {
+    "id": "019a2400-1670-7000-a001-000000001670",
+    "name": "De Boer Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 36",
+      "region": "netherlands_west",
+      "latitude": 52.1504,
+      "longitude": 4.4944
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 10.7,
+    "meters": {
+      "electricity_day_ean": "871686143295079018",
+      "electricity_night_ean": "871686729645645338",
+      "water_ean": "871688450575505588"
+    }
+  },
+  {
+    "id": "019a2400-1671-7000-a001-000000001671",
+    "name": "Visser Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 188",
+      "region": "netherlands_west",
+      "latitude": 51.9169,
+      "longitude": 4.4768
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 13.6,
+    "meters": {
+      "electricity_day_ean": "871686892300016336",
+      "electricity_night_ean": "871686616655849028",
+      "gas_ean": "871687312802755564",
+      "water_ean": "871688300738756555"
+    }
+  },
+  {
+    "id": "019a2400-1672-7000-a001-000000001672",
+    "name": "Koning Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 33",
+      "region": "netherlands_west",
+      "latitude": 51.8101,
+      "longitude": 4.6954
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 12.4,
+    "meters": {
+      "electricity_day_ean": "871686252173662561",
+      "electricity_night_ean": "871686331638106121",
+      "gas_ean": "871687335315355101",
+      "water_ean": "871688138486897779"
+    }
+  },
+  {
+    "id": "019a2400-1673-7000-a001-000000001673",
+    "name": "Vos Family",
     "iot_provider": "Smappee",
     "address": {
       "city": "Leiden",
-      "postal_code": "2317 YZ",
-      "street": "Pieterskerk 234",
-      "region": "netherlands",
-      "latitude": 52.1623,
-      "longitude": 4.4956
+      "postal_code": "2300",
+      "street": "Straat 115",
+      "region": "netherlands_west",
+      "latitude": 52.1633,
+      "longitude": 4.498
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 13.2,
+    "meters": {
+      "electricity_day_ean": "871686010107758805",
+      "electricity_night_ean": "871686284420624644",
+      "gas_ean": "871687530177444950",
+      "water_ean": "871688042321318283"
+    }
+  },
+  {
+    "id": "019a2400-1674-7000-a001-000000001674",
+    "name": "Jacobs Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 40",
+      "region": "netherlands_west",
+      "latitude": 51.8187,
+      "longitude": 4.688
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "871686873324331633",
+      "electricity_night_ean": "871686278940395512",
+      "gas_ean": "871687859858105781",
+      "water_ean": "871688772457637520"
+    }
+  },
+  {
+    "id": "019a2400-1675-7000-a001-000000001675",
+    "name": "De Jong Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 195",
+      "region": "netherlands_west",
+      "latitude": 52.1655,
+      "longitude": 4.4899
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 10.5,
+    "meters": {
+      "electricity_day_ean": "871686726661018133",
+      "electricity_night_ean": "871686458883529864",
+      "gas_ean": "871687450261975525",
+      "water_ean": "871688017913567955"
+    }
+  },
+  {
+    "id": "019a2400-1676-7000-a001-000000001676",
+    "name": "De Wit Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 62",
+      "region": "netherlands_west",
+      "latitude": 52.0158,
+      "longitude": 4.359
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 12.2,
+    "meters": {
+      "electricity_day_ean": "871686948823496098",
+      "electricity_night_ean": "871686757011577442",
+      "gas_ean": "871687403378686072",
+      "water_ean": "871688525906059318"
+    }
+  },
+  {
+    "id": "019a2400-1677-7000-a001-000000001677",
+    "name": "Peters Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 113",
+      "region": "netherlands_west",
+      "latitude": 51.8057,
+      "longitude": 4.6833
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 12.5,
+    "meters": {
+      "electricity_day_ean": "871686048284771683",
+      "electricity_night_ean": "871686964962066867",
+      "gas_ean": "871687590757450389",
+      "water_ean": "871688780441156604"
+    }
+  },
+  {
+    "id": "019a2400-1678-7000-a001-000000001678",
+    "name": "Mulder Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 71",
+      "region": "netherlands_west",
+      "latitude": 52.1588,
+      "longitude": 4.4933
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 13.0,
+    "meters": {
+      "electricity_day_ean": "871686021886701832",
+      "electricity_night_ean": "871686258062087277",
+      "gas_ean": "871687469528277908"
+    }
+  },
+  {
+    "id": "019a2400-1679-7000-a001-000000001679",
+    "name": "De Wit Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 84",
+      "region": "netherlands_west",
+      "latitude": 51.813,
+      "longitude": 4.6812
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "871686311122397259",
+      "electricity_night_ean": "871686050978593871",
+      "water_ean": "871688970801172961"
+    }
+  },
+  {
+    "id": "019a2400-1680-7000-a001-000000001680",
+    "name": "Jansen Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 45",
+      "region": "netherlands_west",
+      "latitude": 51.814,
+      "longitude": 4.6952
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "871686618175284982",
+      "electricity_night_ean": "871686855979386048",
+      "gas_ean": "871687899031636193",
+      "water_ean": "871688924534801660"
+    }
+  },
+  {
+    "id": "019a2400-1681-7000-a001-000000001681",
+    "name": "De Boer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 178",
+      "region": "netherlands_west",
+      "latitude": 51.808,
+      "longitude": 4.6988
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "871686280769697066",
+      "electricity_night_ean": "871686148954405504",
+      "gas_ean": "871687107130693182",
+      "water_ean": "871688020267083890"
+    }
+  },
+  {
+    "id": "019a2400-1682-7000-a001-000000001682",
+    "name": "Peters Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 180",
+      "region": "netherlands_west",
+      "latitude": 52.0607,
+      "longitude": 4.3029
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 8.9,
+    "meters": {
+      "electricity_day_ean": "871686088902431000",
+      "electricity_night_ean": "871686226307353242",
+      "gas_ean": "871687025880517867",
+      "water_ean": "871688576021269664"
+    }
+  },
+  {
+    "id": "019a2400-1683-7000-a001-000000001683",
+    "name": "Bakker Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 141",
+      "region": "netherlands_west",
+      "latitude": 51.8108,
+      "longitude": 4.6955
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 10.1,
+    "meters": {
+      "electricity_day_ean": "871686327211077976",
+      "electricity_night_ean": "871686020509710924",
+      "water_ean": "871688118556195925"
+    }
+  },
+  {
+    "id": "019a2400-1684-7000-a001-000000001684",
+    "name": "Mulder Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 36",
+      "region": "netherlands_west",
+      "latitude": 51.8107,
+      "longitude": 4.6948
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 13.5,
+    "meters": {
+      "electricity_day_ean": "871686709857919753",
+      "electricity_night_ean": "871686306547444275",
+      "water_ean": "871688836688976966"
+    }
+  },
+  {
+    "id": "019a2400-1685-7000-a001-000000001685",
+    "name": "Dekker Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 117",
+      "region": "netherlands_west",
+      "latitude": 51.92,
+      "longitude": 4.4716
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "871686613465548600",
+      "electricity_night_ean": "871686385321787262"
+    }
+  },
+  {
+    "id": "019a2400-1686-7000-a001-000000001686",
+    "name": "Dekker Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 189",
+      "region": "netherlands_west",
+      "latitude": 51.9176,
+      "longitude": 4.4837
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 10.2,
+    "meters": {
+      "electricity_day_ean": "871686320917207546",
+      "electricity_night_ean": "871686952018824025",
+      "gas_ean": "871687115157358461",
+      "water_ean": "871688524333814402"
+    }
+  },
+  {
+    "id": "019a2400-1687-7000-a001-000000001687",
+    "name": "De Wit Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 168",
+      "region": "netherlands_west",
+      "latitude": 51.9242,
+      "longitude": 4.4795
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 12.9,
+    "meters": {
+      "electricity_day_ean": "871686033264083427",
+      "electricity_night_ean": "871686521545819732",
+      "gas_ean": "871687464368374398",
+      "water_ean": "871688452885633358"
+    }
+  },
+  {
+    "id": "019a2400-1688-7000-a001-000000001688",
+    "name": "Meijer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 119",
+      "region": "netherlands_west",
+      "latitude": 51.8069,
+      "longitude": 4.6853
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 13.5,
+    "meters": {
+      "electricity_day_ean": "871686961223524026",
+      "electricity_night_ean": "871686942669092868",
+      "gas_ean": "871687887951904883",
+      "water_ean": "871688096577401355"
+    }
+  },
+  {
+    "id": "019a2400-1689-7000-a001-000000001689",
+    "name": "Bakker Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 32",
+      "region": "netherlands_west",
+      "latitude": 52.1612,
+      "longitude": 4.488
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 13.2,
+    "meters": {
+      "electricity_day_ean": "871686759330878977",
+      "electricity_night_ean": "871686122329445240"
+    }
+  },
+  {
+    "id": "019a2400-1690-7000-a001-000000001690",
+    "name": "Dekker Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 25",
+      "region": "netherlands_west",
+      "latitude": 51.9292,
+      "longitude": 4.4777
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 12.8,
+    "meters": {
+      "electricity_day_ean": "871686557494675857",
+      "electricity_night_ean": "871686238302945498",
+      "water_ean": "871688045523708691"
+    }
+  },
+  {
+    "id": "019a2400-1691-7000-a001-000000001691",
+    "name": "Vos Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 87",
+      "region": "netherlands_west",
+      "latitude": 52.0078,
+      "longitude": 4.3578
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 13.6,
+    "meters": {
+      "electricity_day_ean": "871686466280127993",
+      "electricity_night_ean": "871686379070885584",
+      "gas_ean": "871687762903234278",
+      "water_ean": "871688113315185255"
+    }
+  },
+  {
+    "id": "019a2400-1692-7000-a001-000000001692",
+    "name": "Peters Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 75",
+      "region": "netherlands_west",
+      "latitude": 52.1634,
+      "longitude": 4.5037
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 12.2,
+    "meters": {
+      "electricity_day_ean": "871686150374943721",
+      "electricity_night_ean": "871686272335063058",
+      "gas_ean": "871687564064760756",
+      "water_ean": "871688391595232754"
+    }
+  },
+  {
+    "id": "019a2400-1693-7000-a001-000000001693",
+    "name": "Van Dijk Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 51",
+      "region": "netherlands_west",
+      "latitude": 51.9209,
+      "longitude": 4.4863
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 11.9,
+    "meters": {
+      "electricity_day_ean": "871686352283905809",
+      "electricity_night_ean": "871686198755491989",
+      "water_ean": "871688137665588631"
+    }
+  },
+  {
+    "id": "019a2400-1694-7000-a001-000000001694",
+    "name": "Brouwer Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 41",
+      "region": "netherlands_west",
+      "latitude": 51.9192,
+      "longitude": 4.4801
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 12.1,
+    "meters": {
+      "electricity_day_ean": "871686399277031950",
+      "electricity_night_ean": "871686549494613716",
+      "gas_ean": "871687191417969388",
+      "water_ean": "871688385993041190"
+    }
+  },
+  {
+    "id": "019a2400-1695-7000-a001-000000001695",
+    "name": "De Vries Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 22",
+      "region": "netherlands_west",
+      "latitude": 52.1593,
+      "longitude": 4.4896
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 11.5,
+    "meters": {
+      "electricity_day_ean": "871686092241379479",
+      "electricity_night_ean": "871686854077809963",
+      "water_ean": "871688255746908285"
+    }
+  },
+  {
+    "id": "019a2400-1696-7000-a001-000000001696",
+    "name": "Peters Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 125",
+      "region": "netherlands_west",
+      "latitude": 51.9252,
+      "longitude": 4.4822
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 8.7,
+    "meters": {
+      "electricity_day_ean": "871686686054292107",
+      "electricity_night_ean": "871686250489804803"
+    }
+  },
+  {
+    "id": "019a2400-1697-7000-a001-000000001697",
+    "name": "De Vries Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 5",
+      "region": "netherlands_west",
+      "latitude": 52.0144,
+      "longitude": 4.3561
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 12.0,
+    "meters": {
+      "electricity_day_ean": "871686660289264520",
+      "electricity_night_ean": "871686594793301478",
+      "gas_ean": "871687203556457150",
+      "water_ean": "871688066911366396"
+    }
+  },
+  {
+    "id": "019a2400-1698-7000-a001-000000001698",
+    "name": "Van Dijk Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 173",
+      "region": "netherlands_west",
+      "latitude": 52.0156,
+      "longitude": 4.3657
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 11.4,
+    "meters": {
+      "electricity_day_ean": "871686197931454609",
+      "electricity_night_ean": "871686896086831682",
+      "gas_ean": "871687958908259289",
+      "water_ean": "871688741963540585"
+    }
+  },
+  {
+    "id": "019a2400-1699-7000-a001-000000001699",
+    "name": "Bos Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 35",
+      "region": "netherlands_west",
+      "latitude": 52.0716,
+      "longitude": 4.3074
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 13.3,
+    "meters": {
+      "electricity_day_ean": "871686888958887901",
+      "electricity_night_ean": "871686857365950289",
+      "gas_ean": "871687374278164052",
+      "water_ean": "871688105531798448"
+    }
+  },
+  {
+    "id": "019a2400-1700-7000-a001-000000001700",
+    "name": "Van der Linden Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 62",
+      "region": "netherlands_west",
+      "latitude": 52.0076,
+      "longitude": 4.3615
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 9.0,
+    "meters": {
+      "electricity_day_ean": "871686714847896270",
+      "electricity_night_ean": "871686801712074726",
+      "water_ean": "871688969544326284"
+    }
+  },
+  {
+    "id": "019a2400-1701-7000-a001-000000001701",
+    "name": "Koning Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 186",
+      "region": "netherlands_west",
+      "latitude": 52.1556,
+      "longitude": 4.5063
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 12.4,
+    "meters": {
+      "electricity_day_ean": "871686266262821780",
+      "electricity_night_ean": "871686251161996393",
+      "gas_ean": "871687954720600853",
+      "water_ean": "871688320087633964"
+    }
+  },
+  {
+    "id": "019a2400-1702-7000-a001-000000001702",
+    "name": "Vos Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 181",
+      "region": "netherlands_west",
+      "latitude": 51.9222,
+      "longitude": 4.488
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 11.3,
+    "meters": {
+      "electricity_day_ean": "871686759120586181",
+      "electricity_night_ean": "871686850624878057",
+      "water_ean": "871688212367239513"
+    }
+  },
+  {
+    "id": "019a2400-1703-7000-a001-000000001703",
+    "name": "Koning Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 86",
+      "region": "netherlands_west",
+      "latitude": 51.9209,
+      "longitude": 4.4727
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 11.6,
+    "meters": {
+      "electricity_day_ean": "871686901086900222",
+      "electricity_night_ean": "871686092400643722",
+      "gas_ean": "871687517599922339",
+      "water_ean": "871688468362280435"
+    }
+  },
+  {
+    "id": "019a2400-1704-7000-a001-000000001704",
+    "name": "Brouwer Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 75",
+      "region": "netherlands_west",
+      "latitude": 51.9206,
+      "longitude": 4.4836
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 13.9,
+    "meters": {
+      "electricity_day_ean": "871686031596961835",
+      "electricity_night_ean": "871686747733589412",
+      "gas_ean": "871687079691744894"
+    }
+  },
+  {
+    "id": "019a2400-1705-7000-a001-000000001705",
+    "name": "Meijer Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 11",
+      "region": "netherlands_west",
+      "latitude": 52.0645,
+      "longitude": 4.3032
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 10.4,
+    "meters": {
+      "electricity_day_ean": "871686823973120069",
+      "electricity_night_ean": "871686644873699747",
+      "water_ean": "871688617375744860"
+    }
+  },
+  {
+    "id": "019a2400-1706-7000-a001-000000001706",
+    "name": "De Boer Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 144",
+      "region": "netherlands_west",
+      "latitude": 52.1675,
+      "longitude": 4.5029
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "871686646096343280",
+      "electricity_night_ean": "871686308249482282",
+      "gas_ean": "871687124859464898",
+      "water_ean": "871688229190643151"
+    }
+  },
+  {
+    "id": "019a2400-1707-7000-a001-000000001707",
+    "name": "Meijer Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 168",
+      "region": "netherlands_west",
+      "latitude": 51.8109,
+      "longitude": 4.6857
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 10.2,
+    "meters": {
+      "electricity_day_ean": "871686419660132362",
+      "electricity_night_ean": "871686420631452081",
+      "gas_ean": "871687117728359079",
+      "water_ean": "871688587291738300"
+    }
+  },
+  {
+    "id": "019a2400-1708-7000-a001-000000001708",
+    "name": "Jacobs Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 149",
+      "region": "netherlands_west",
+      "latitude": 51.93,
+      "longitude": 4.4757
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 8.8,
+    "meters": {
+      "electricity_day_ean": "871686428220865005",
+      "electricity_night_ean": "871686829455535665",
+      "gas_ean": "871687208636845478",
+      "water_ean": "871688179543586944"
+    }
+  },
+  {
+    "id": "019a2400-1709-7000-a001-000000001709",
+    "name": "Bos Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 106",
+      "region": "netherlands_west",
+      "latitude": 51.8045,
+      "longitude": 4.6817
+    },
+    "solar_capacity_kw": 3.1,
+    "battery_capacity_kwh": 12.1,
+    "meters": {
+      "electricity_day_ean": "871686467953104585",
+      "electricity_night_ean": "871686972948084987",
+      "gas_ean": "871687506397182282",
+      "water_ean": "871688250954344582"
+    }
+  },
+  {
+    "id": "019a2400-1710-7000-a001-000000001710",
+    "name": "Bos Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 38",
+      "region": "netherlands_west",
+      "latitude": 51.9188,
+      "longitude": 4.4704
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "871686631327113174",
+      "electricity_night_ean": "871686856755273586",
+      "gas_ean": "871687207479291770",
+      "water_ean": "871688299354759339"
+    }
+  },
+  {
+    "id": "019a2400-1711-7000-a001-000000001711",
+    "name": "Peters Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 176",
+      "region": "netherlands_west",
+      "latitude": 52.0664,
+      "longitude": 4.3103
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 11.2,
+    "meters": {
+      "electricity_day_ean": "871686304882162233",
+      "electricity_night_ean": "871686692650510809",
+      "gas_ean": "871687579524042556",
+      "water_ean": "871688015434410103"
+    }
+  },
+  {
+    "id": "019a2400-1712-7000-a001-000000001712",
+    "name": "Van den Berg Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 23",
+      "region": "netherlands_west",
+      "latitude": 52.1681,
+      "longitude": 4.4882
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 9.4,
+    "meters": {
+      "electricity_day_ean": "871686737630380928",
+      "electricity_night_ean": "871686546034588580",
+      "gas_ean": "871687975599792734",
+      "water_ean": "871688624926923573"
+    }
+  },
+  {
+    "id": "019a2400-1713-7000-a001-000000001713",
+    "name": "Hendriks Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 108",
+      "region": "netherlands_west",
+      "latitude": 52.0751,
+      "longitude": 4.2985
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 11.0,
+    "meters": {
+      "electricity_day_ean": "871686561216053321",
+      "electricity_night_ean": "871686524790379126",
+      "gas_ean": "871687601112288450",
+      "water_ean": "871688104538924072"
+    }
+  },
+  {
+    "id": "019a2400-1714-7000-a001-000000001714",
+    "name": "Dekker Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 41",
+      "region": "netherlands_west",
+      "latitude": 52.0114,
+      "longitude": 4.364
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 9.0,
+    "meters": {
+      "electricity_day_ean": "871686929470200301",
+      "electricity_night_ean": "871686302984057729",
+      "gas_ean": "871687091515553576"
+    }
+  },
+  {
+    "id": "019a2400-1715-7000-a001-000000001715",
+    "name": "Jansen Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 131",
+      "region": "netherlands_west",
+      "latitude": 52.1547,
+      "longitude": 4.4926
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 8.2,
+    "meters": {
+      "electricity_day_ean": "871686930769014889",
+      "electricity_night_ean": "871686619774615524",
+      "gas_ean": "871687429013352223",
+      "water_ean": "871688096536608376"
+    }
+  },
+  {
+    "id": "019a2400-1716-7000-a001-000000001716",
+    "name": "De Jong Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 144",
+      "region": "netherlands_west",
+      "latitude": 51.8193,
+      "longitude": 4.6897
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 13.9,
+    "meters": {
+      "electricity_day_ean": "871686478796386626",
+      "electricity_night_ean": "871686058165789542",
+      "water_ean": "871688025372872096"
+    }
+  },
+  {
+    "id": "019a2400-1717-7000-a001-000000001717",
+    "name": "Meijer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 88",
+      "region": "netherlands_west",
+      "latitude": 52.0653,
+      "longitude": 4.2983
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "871686316974323000",
+      "electricity_night_ean": "871686816378304875",
+      "gas_ean": "871687811603688186",
+      "water_ean": "871688460322337268"
+    }
+  },
+  {
+    "id": "019a2400-1718-7000-a001-000000001718",
+    "name": "Vos Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 135",
+      "region": "netherlands_west",
+      "latitude": 51.8145,
+      "longitude": 4.6883
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "871686460584458677",
+      "electricity_night_ean": "871686282781167154"
+    }
+  },
+  {
+    "id": "019a2400-1719-7000-a001-000000001719",
+    "name": "Visser Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 130",
+      "region": "netherlands_west",
+      "latitude": 52.0782,
+      "longitude": 4.2938
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 12.5,
+    "meters": {
+      "electricity_day_ean": "871686553365605938",
+      "electricity_night_ean": "871686957582491746",
+      "gas_ean": "871687751512134674",
+      "water_ean": "871688762165258842"
+    }
+  },
+  {
+    "id": "019a2400-1720-7000-a001-000000001720",
+    "name": "Koning Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 16",
+      "region": "netherlands_west",
+      "latitude": 52.1579,
+      "longitude": 4.4912
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 9.9,
+    "meters": {
+      "electricity_day_ean": "871686291619605498",
+      "electricity_night_ean": "871686957819018274",
+      "gas_ean": "871687214729293626",
+      "water_ean": "871688808226412119"
+    }
+  },
+  {
+    "id": "019a2400-1721-7000-a001-000000001721",
+    "name": "De Vries Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 105",
+      "region": "netherlands_west",
+      "latitude": 51.9207,
+      "longitude": 4.4719
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 12.6,
+    "meters": {
+      "electricity_day_ean": "871686375548112461",
+      "electricity_night_ean": "871686359251345530",
+      "gas_ean": "871687975656607617",
+      "water_ean": "871688801709661080"
+    }
+  },
+  {
+    "id": "019a2400-1722-7000-a001-000000001722",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 60",
+      "region": "netherlands_west",
+      "latitude": 52.152,
+      "longitude": 4.5046
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 13.9,
+    "meters": {
+      "electricity_day_ean": "871686063293342329",
+      "electricity_night_ean": "871686478827737867",
+      "gas_ean": "871687913098513704"
+    }
+  },
+  {
+    "id": "019a2400-1723-7000-a001-000000001723",
+    "name": "Jansen Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 107",
+      "region": "netherlands_west",
+      "latitude": 52.0102,
+      "longitude": 4.3604
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 9.1,
+    "meters": {
+      "electricity_day_ean": "871686045746039245",
+      "electricity_night_ean": "871686003498968063",
+      "gas_ean": "871687139181427064",
+      "water_ean": "871688951789212369"
+    }
+  },
+  {
+    "id": "019a2400-1724-7000-a001-000000001724",
+    "name": "Van den Berg Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 151",
+      "region": "netherlands_west",
+      "latitude": 51.8181,
+      "longitude": 4.6905
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "871686152767202001",
+      "electricity_night_ean": "871686816777734905",
+      "gas_ean": "871687668727687833"
+    }
+  },
+  {
+    "id": "019a2400-1725-7000-a001-000000001725",
+    "name": "Kok Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 11",
+      "region": "netherlands_west",
+      "latitude": 52.0674,
+      "longitude": 4.2988
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 8.7,
+    "meters": {
+      "electricity_day_ean": "871686501774720419",
+      "electricity_night_ean": "871686800401130976",
+      "gas_ean": "871687118884509686"
+    }
+  },
+  {
+    "id": "019a2400-1726-7000-a001-000000001726",
+    "name": "Mulder Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 183",
+      "region": "netherlands_west",
+      "latitude": 51.8176,
+      "longitude": 4.6816
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "871686967050592409",
+      "electricity_night_ean": "871686758013235810",
+      "gas_ean": "871687633271220314"
+    }
+  },
+  {
+    "id": "019a2400-1727-7000-a001-000000001727",
+    "name": "Koning Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 37",
+      "region": "netherlands_west",
+      "latitude": 51.8133,
+      "longitude": 4.6823
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 11.7,
+    "meters": {
+      "electricity_day_ean": "871686290824258212",
+      "electricity_night_ean": "871686057716500800",
+      "water_ean": "871688859415222315"
+    }
+  },
+  {
+    "id": "019a2400-1728-7000-a001-000000001728",
+    "name": "Koning Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 3",
+      "region": "netherlands_west",
+      "latitude": 52.1682,
+      "longitude": 4.4917
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 9.5,
+    "meters": {
+      "electricity_day_ean": "871686750171132942",
+      "electricity_night_ean": "871686856913959006",
+      "water_ean": "871688455912263131"
+    }
+  },
+  {
+    "id": "019a2400-1729-7000-a001-000000001729",
+    "name": "De Haan Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 119",
+      "region": "netherlands_west",
+      "latitude": 52.1574,
+      "longitude": 4.487
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "871686734283708696",
+      "electricity_night_ean": "871686221496156984",
+      "gas_ean": "871687806668593390",
+      "water_ean": "871688012147459309"
+    }
+  },
+  {
+    "id": "019a2400-1730-7000-a001-000000001730",
+    "name": "De Groot Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 103",
+      "region": "netherlands_west",
+      "latitude": 52.154,
+      "longitude": 4.499
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 13.3,
+    "meters": {
+      "electricity_day_ean": "871686549597871356",
+      "electricity_night_ean": "871686430675503625",
+      "gas_ean": "871687848284046320"
+    }
+  },
+  {
+    "id": "019a2400-1731-7000-a001-000000001731",
+    "name": "Van der Meer Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 106",
+      "region": "netherlands_west",
+      "latitude": 51.9231,
+      "longitude": 4.474
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 8.2,
+    "meters": {
+      "electricity_day_ean": "871686473225167069",
+      "electricity_night_ean": "871686596031783549",
+      "gas_ean": "871687348711704657",
+      "water_ean": "871688468399432190"
+    }
+  },
+  {
+    "id": "019a2400-1732-7000-a001-000000001732",
+    "name": "Dekker Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 58",
+      "region": "netherlands_west",
+      "latitude": 52.079,
+      "longitude": 4.2916
     },
     "solar_capacity_kw": 5.1,
-    "battery_capacity_kwh": 13.3,
-    "meter_ean": "545679248154476229"
+    "battery_capacity_kwh": 11.1,
+    "meters": {
+      "electricity_day_ean": "871686441025634721",
+      "electricity_night_ean": "871686232103990638",
+      "gas_ean": "871687205436843357"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000053",
-    "name": "Lemmens Family",
+    "id": "019a2400-1733-7000-a001-000000001733",
+    "name": "De Boer Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 72",
+      "region": "netherlands_west",
+      "latitude": 51.804,
+      "longitude": 4.6837
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 9.9,
+    "meters": {
+      "electricity_day_ean": "871686487995810835",
+      "electricity_night_ean": "871686857316275877",
+      "gas_ean": "871687375937908741"
+    }
+  },
+  {
+    "id": "019a2400-1734-7000-a001-000000001734",
+    "name": "Smit Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 80",
+      "region": "netherlands_west",
+      "latitude": 51.922,
+      "longitude": 4.4748
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 11.7,
+    "meters": {
+      "electricity_day_ean": "871686838988884935",
+      "electricity_night_ean": "871686765973549952",
+      "gas_ean": "871687189969616821",
+      "water_ean": "871688675959515622"
+    }
+  },
+  {
+    "id": "019a2400-1735-7000-a001-000000001735",
+    "name": "Peters Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 157",
+      "region": "netherlands_west",
+      "latitude": 52.1579,
+      "longitude": 4.5043
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 11.9,
+    "meters": {
+      "electricity_day_ean": "871686857364707168",
+      "electricity_night_ean": "871686003862000981",
+      "gas_ean": "871687791228028832",
+      "water_ean": "871688258853161805"
+    }
+  },
+  {
+    "id": "019a2400-1736-7000-a001-000000001736",
+    "name": "Jacobs Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 125",
+      "region": "netherlands_west",
+      "latitude": 52.1601,
+      "longitude": 4.5037
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "871686656828085936",
+      "electricity_night_ean": "871686115812248978",
+      "gas_ean": "871687629901516067",
+      "water_ean": "871688010468530071"
+    }
+  },
+  {
+    "id": "019a2400-1737-7000-a001-000000001737",
+    "name": "Koning Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 116",
+      "region": "netherlands_west",
+      "latitude": 52.0623,
+      "longitude": 4.2998
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 12.2,
+    "meters": {
+      "electricity_day_ean": "871686161198718715",
+      "electricity_night_ean": "871686514666271168",
+      "water_ean": "871688170744823013"
+    }
+  },
+  {
+    "id": "019a2400-1738-7000-a001-000000001738",
+    "name": "Van den Berg Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 108",
+      "region": "netherlands_west",
+      "latitude": 52.0611,
+      "longitude": 4.2922
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 8.3,
+    "meters": {
+      "electricity_day_ean": "871686561468918500",
+      "electricity_night_ean": "871686228382038624",
+      "gas_ean": "871687309379015938",
+      "water_ean": "871688723283684498"
+    }
+  },
+  {
+    "id": "019a2400-1739-7000-a001-000000001739",
+    "name": "Bakker Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 22",
+      "region": "netherlands_west",
+      "latitude": 51.8178,
+      "longitude": 4.6879
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 8.3,
+    "meters": {
+      "electricity_day_ean": "871686333579108582",
+      "electricity_night_ean": "871686493108059604",
+      "gas_ean": "871687046335556154"
+    }
+  },
+  {
+    "id": "019a2400-1740-7000-a001-000000001740",
+    "name": "Smit Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 185",
+      "region": "netherlands_west",
+      "latitude": 52.0801,
+      "longitude": 4.301
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 11.0,
+    "meters": {
+      "electricity_day_ean": "871686299076183211",
+      "electricity_night_ean": "871686935221777645",
+      "gas_ean": "871687905272775352",
+      "water_ean": "871688048165941914"
+    }
+  },
+  {
+    "id": "019a2400-1741-7000-a001-000000001741",
+    "name": "De Wit Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 76",
+      "region": "netherlands_west",
+      "latitude": 52.1609,
+      "longitude": 4.5067
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 12.7,
+    "meters": {
+      "electricity_day_ean": "871686471395040542",
+      "electricity_night_ean": "871686025219544578",
+      "gas_ean": "871687859430241149",
+      "water_ean": "871688088985760239"
+    }
+  },
+  {
+    "id": "019a2400-1742-7000-a001-000000001742",
+    "name": "Dekker Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 15",
+      "region": "netherlands_west",
+      "latitude": 51.8055,
+      "longitude": 4.6894
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 14.0,
+    "meters": {
+      "electricity_day_ean": "871686913960021484",
+      "electricity_night_ean": "871686994675947253",
+      "gas_ean": "871687916291926021",
+      "water_ean": "871688449213162991"
+    }
+  },
+  {
+    "id": "019a2400-1743-7000-a001-000000001743",
+    "name": "Meijer Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 62",
+      "region": "netherlands_west",
+      "latitude": 52.0104,
+      "longitude": 4.3499
+    },
+    "solar_capacity_kw": 5.5,
+    "battery_capacity_kwh": 12.9,
+    "meters": {
+      "electricity_day_ean": "871686472085148127",
+      "electricity_night_ean": "871686546445081206",
+      "water_ean": "871688227168064555"
+    }
+  },
+  {
+    "id": "019a2400-1744-7000-a001-000000001744",
+    "name": "De Groot Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 88",
+      "region": "netherlands_west",
+      "latitude": 52.0705,
+      "longitude": 4.3004
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 8.4,
+    "meters": {
+      "electricity_day_ean": "871686332551833851",
+      "electricity_night_ean": "871686543257330905",
+      "water_ean": "871688915255628086"
+    }
+  },
+  {
+    "id": "019a2400-1745-7000-a001-000000001745",
+    "name": "Hendriks Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 168",
+      "region": "netherlands_west",
+      "latitude": 52.1551,
+      "longitude": 4.5025
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 9.3,
+    "meters": {
+      "electricity_day_ean": "871686911545863079",
+      "electricity_night_ean": "871686968213220337",
+      "gas_ean": "871687640137755293"
+    }
+  },
+  {
+    "id": "019a2400-1746-7000-a001-000000001746",
+    "name": "Dekker Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 49",
+      "region": "netherlands_west",
+      "latitude": 52.0654,
+      "longitude": 4.2977
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 13.0,
+    "meters": {
+      "electricity_day_ean": "871686894542971903",
+      "electricity_night_ean": "871686866538647567",
+      "gas_ean": "871687300201304332",
+      "water_ean": "871688674760025061"
+    }
+  },
+  {
+    "id": "019a2400-1747-7000-a001-000000001747",
+    "name": "Jacobs Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 49",
+      "region": "netherlands_west",
+      "latitude": 51.9145,
+      "longitude": 4.4807
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 10.4,
+    "meters": {
+      "electricity_day_ean": "871686746683919842",
+      "electricity_night_ean": "871686095551609430",
+      "gas_ean": "871687572302710460",
+      "water_ean": "871688360060663495"
+    }
+  },
+  {
+    "id": "019a2400-1748-7000-a001-000000001748",
+    "name": "Van der Meer Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 103",
+      "region": "netherlands_west",
+      "latitude": 52.1682,
+      "longitude": 4.5031
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 8.9,
+    "meters": {
+      "electricity_day_ean": "871686425779032763",
+      "electricity_night_ean": "871686344650281687",
+      "water_ean": "871688120435610169"
+    }
+  },
+  {
+    "id": "019a2400-1749-7000-a001-000000001749",
+    "name": "Van Dijk Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 131",
+      "region": "netherlands_west",
+      "latitude": 52.0154,
+      "longitude": 4.3624
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 9.3,
+    "meters": {
+      "electricity_day_ean": "871686625734567601",
+      "electricity_night_ean": "871686558004761074",
+      "gas_ean": "871687917242960718",
+      "water_ean": "871688578462079396"
+    }
+  },
+  {
+    "id": "019a2400-1750-7000-a001-000000001750",
+    "name": "Van der Linden Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 20",
+      "region": "netherlands_west",
+      "latitude": 51.8039,
+      "longitude": 4.6842
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 12.8,
+    "meters": {
+      "electricity_day_ean": "871686687712136318",
+      "electricity_night_ean": "871686789804602255",
+      "water_ean": "871688692951879855"
+    }
+  },
+  {
+    "id": "019a2400-1751-7000-a001-000000001751",
+    "name": "Koning Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 138",
+      "region": "netherlands_west",
+      "latitude": 52.0728,
+      "longitude": 4.2919
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "871686341127533215",
+      "electricity_night_ean": "871686864869904715",
+      "gas_ean": "871687388191825979",
+      "water_ean": "871688001027156721"
+    }
+  },
+  {
+    "id": "019a2400-1752-7000-a001-000000001752",
+    "name": "De Boer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 118",
+      "region": "netherlands_west",
+      "latitude": 51.8129,
+      "longitude": 4.6936
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 13.1,
+    "meters": {
+      "electricity_day_ean": "871686996562869553",
+      "electricity_night_ean": "871686524524632569",
+      "gas_ean": "871687479831694816"
+    }
+  },
+  {
+    "id": "019a2400-1753-7000-a001-000000001753",
+    "name": "Hendriks Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 197",
+      "region": "netherlands_west",
+      "latitude": 51.9144,
+      "longitude": 4.4756
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 10.6,
+    "meters": {
+      "electricity_day_ean": "871686218202326837",
+      "electricity_night_ean": "871686881799688087",
+      "gas_ean": "871687290156004712",
+      "water_ean": "871688224743961760"
+    }
+  },
+  {
+    "id": "019a2400-1754-7000-a001-000000001754",
+    "name": "De Haan Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 181",
+      "region": "netherlands_west",
+      "latitude": 51.8153,
+      "longitude": 4.6816
+    },
+    "solar_capacity_kw": 3.1,
+    "battery_capacity_kwh": 11.9,
+    "meters": {
+      "electricity_day_ean": "871686073895543697",
+      "electricity_night_ean": "871686546879332102",
+      "gas_ean": "871687570496486679",
+      "water_ean": "871688992014543432"
+    }
+  },
+  {
+    "id": "019a2400-1755-7000-a001-000000001755",
+    "name": "Meijer Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 137",
+      "region": "netherlands_west",
+      "latitude": 51.9245,
+      "longitude": 4.4751
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 10.7,
+    "meters": {
+      "electricity_day_ean": "871686260393362052",
+      "electricity_night_ean": "871686233297611463",
+      "gas_ean": "871687970084245695",
+      "water_ean": "871688362133620837"
+    }
+  },
+  {
+    "id": "019a2400-1756-7000-a001-000000001756",
+    "name": "Kok Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 112",
+      "region": "netherlands_west",
+      "latitude": 52.1685,
+      "longitude": 4.506
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 9.5,
+    "meters": {
+      "electricity_day_ean": "871686022053986470",
+      "electricity_night_ean": "871686005636798254",
+      "gas_ean": "871687172487644134",
+      "water_ean": "871688092813047578"
+    }
+  },
+  {
+    "id": "019a2400-1757-7000-a001-000000001757",
+    "name": "Hendriks Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 12",
+      "region": "netherlands_west",
+      "latitude": 52.0204,
+      "longitude": 4.3619
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 8.9,
+    "meters": {
+      "electricity_day_ean": "871686280477000337",
+      "electricity_night_ean": "871686986109071657",
+      "gas_ean": "871687758989032713",
+      "water_ean": "871688982721211271"
+    }
+  },
+  {
+    "id": "019a2400-1758-7000-a001-000000001758",
+    "name": "Kok Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 173",
+      "region": "netherlands_west",
+      "latitude": 52.0047,
+      "longitude": 4.3552
+    },
+    "solar_capacity_kw": 5.5,
+    "battery_capacity_kwh": 12.2,
+    "meters": {
+      "electricity_day_ean": "871686007209492000",
+      "electricity_night_ean": "871686434590699995",
+      "gas_ean": "871687836949323614",
+      "water_ean": "871688088185545338"
+    }
+  },
+  {
+    "id": "019a2400-1759-7000-a001-000000001759",
+    "name": "Jacobs Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 51",
+      "region": "netherlands_west",
+      "latitude": 51.8092,
+      "longitude": 4.6898
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 11.5,
+    "meters": {
+      "electricity_day_ean": "871686097189415260",
+      "electricity_night_ean": "871686212294574069",
+      "water_ean": "871688785391576812"
+    }
+  },
+  {
+    "id": "019a2400-1760-7000-a001-000000001760",
+    "name": "Hendriks Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 28",
+      "region": "netherlands_west",
+      "latitude": 51.9266,
+      "longitude": 4.4868
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 12.3,
+    "meters": {
+      "electricity_day_ean": "871686667914410017",
+      "electricity_night_ean": "871686283200298480",
+      "gas_ean": "871687998621970462",
+      "water_ean": "871688772074363198"
+    }
+  },
+  {
+    "id": "019a2400-1761-7000-a001-000000001761",
+    "name": "Vos Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 136",
+      "region": "netherlands_west",
+      "latitude": 52.0801,
+      "longitude": 4.3106
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 10.5,
+    "meters": {
+      "electricity_day_ean": "871686339494701071",
+      "electricity_night_ean": "871686198990356167",
+      "gas_ean": "871687812190423101"
+    }
+  },
+  {
+    "id": "019a2400-1762-7000-a001-000000001762",
+    "name": "Visser Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 149",
+      "region": "netherlands_west",
+      "latitude": 51.8141,
+      "longitude": 4.6818
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 10.5,
+    "meters": {
+      "electricity_day_ean": "871686026811331331",
+      "electricity_night_ean": "871686699732201737",
+      "water_ean": "871688102803628941"
+    }
+  },
+  {
+    "id": "019a2400-1763-7000-a001-000000001763",
+    "name": "Dekker Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 22",
+      "region": "netherlands_west",
+      "latitude": 52.0076,
+      "longitude": 4.35
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 13.0,
+    "meters": {
+      "electricity_day_ean": "871686841718047112",
+      "electricity_night_ean": "871686799547440728",
+      "water_ean": "871688502897922562"
+    }
+  },
+  {
+    "id": "019a2400-1764-7000-a001-000000001764",
+    "name": "De Groot Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 42",
+      "region": "netherlands_west",
+      "latitude": 52.0127,
+      "longitude": 4.3475
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 11.0,
+    "meters": {
+      "electricity_day_ean": "871686937471453629",
+      "electricity_night_ean": "871686145759630454",
+      "water_ean": "871688628581059646"
+    }
+  },
+  {
+    "id": "019a2400-1765-7000-a001-000000001765",
+    "name": "Dekker Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 183",
+      "region": "netherlands_west",
+      "latitude": 52.0671,
+      "longitude": 4.2927
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 11.4,
+    "meters": {
+      "electricity_day_ean": "871686343178544758",
+      "electricity_night_ean": "871686234606071010",
+      "water_ean": "871688137719795881"
+    }
+  },
+  {
+    "id": "019a2400-1766-7000-a001-000000001766",
+    "name": "Vos Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 50",
+      "region": "netherlands_west",
+      "latitude": 52.0101,
+      "longitude": 4.3583
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 9.9,
+    "meters": {
+      "electricity_day_ean": "871686754368897894",
+      "electricity_night_ean": "871686011354292367",
+      "gas_ean": "871687487724982529",
+      "water_ean": "871688687923060823"
+    }
+  },
+  {
+    "id": "019a2400-1767-7000-a001-000000001767",
+    "name": "Peters Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 70",
+      "region": "netherlands_west",
+      "latitude": 51.9127,
+      "longitude": 4.476
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "871686460579347571",
+      "electricity_night_ean": "871686040968313933",
+      "gas_ean": "871687316353944982",
+      "water_ean": "871688412711059456"
+    }
+  },
+  {
+    "id": "019a2400-1768-7000-a001-000000001768",
+    "name": "De Wit Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 58",
+      "region": "netherlands_west",
+      "latitude": 51.8097,
+      "longitude": 4.6992
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 12.5,
+    "meters": {
+      "electricity_day_ean": "871686758292295764",
+      "electricity_night_ean": "871686631765767735"
+    }
+  },
+  {
+    "id": "019a2400-1769-7000-a001-000000001769",
+    "name": "Van der Meer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 104",
+      "region": "netherlands_west",
+      "latitude": 51.9239,
+      "longitude": 4.4693
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "871686315498719901",
+      "electricity_night_ean": "871686286370800532",
+      "gas_ean": "871687989954443500",
+      "water_ean": "871688454299791919"
+    }
+  },
+  {
+    "id": "019a2400-1770-7000-a001-000000001770",
+    "name": "Jansen Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 142",
+      "region": "netherlands_west",
+      "latitude": 52.0736,
+      "longitude": 4.2953
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 12.7,
+    "meters": {
+      "electricity_day_ean": "871686377685747100",
+      "electricity_night_ean": "871686716811770186",
+      "gas_ean": "871687481202157868"
+    }
+  },
+  {
+    "id": "019a2400-1771-7000-a001-000000001771",
+    "name": "Mulder Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 105",
+      "region": "netherlands_west",
+      "latitude": 52.1562,
+      "longitude": 4.4931
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 12.2,
+    "meters": {
+      "electricity_day_ean": "871686355891440953",
+      "electricity_night_ean": "871686652650664586",
+      "gas_ean": "871687614865793103"
+    }
+  },
+  {
+    "id": "019a2400-1772-7000-a001-000000001772",
+    "name": "Dekker Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 45",
+      "region": "netherlands_west",
+      "latitude": 52.0049,
+      "longitude": 4.3652
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 11.5,
+    "meters": {
+      "electricity_day_ean": "871686385548410388",
+      "electricity_night_ean": "871686875756059563",
+      "gas_ean": "871687740487756044"
+    }
+  },
+  {
+    "id": "019a2400-1773-7000-a001-000000001773",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 128",
+      "region": "netherlands_west",
+      "latitude": 51.9309,
+      "longitude": 4.4708
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 12.4,
+    "meters": {
+      "electricity_day_ean": "871686983675055306",
+      "electricity_night_ean": "871686863672287470",
+      "gas_ean": "871687984075096124",
+      "water_ean": "871688325963026202"
+    }
+  },
+  {
+    "id": "019a2400-1774-7000-a001-000000001774",
+    "name": "Dekker Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 71",
+      "region": "netherlands_west",
+      "latitude": 51.8067,
+      "longitude": 4.691
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 9.0,
+    "meters": {
+      "electricity_day_ean": "871686156185900684",
+      "electricity_night_ean": "871686282451573313",
+      "gas_ean": "871687148115030662",
+      "water_ean": "871688072227280278"
+    }
+  },
+  {
+    "id": "019a2400-1775-7000-a001-000000001775",
+    "name": "Bakker Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 10",
+      "region": "netherlands_west",
+      "latitude": 51.9266,
+      "longitude": 4.4783
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 12.0,
+    "meters": {
+      "electricity_day_ean": "871686216832379414",
+      "electricity_night_ean": "871686869806441887",
+      "water_ean": "871688538253592131"
+    }
+  },
+  {
+    "id": "019a2400-1776-7000-a001-000000001776",
+    "name": "De Groot Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 107",
+      "region": "netherlands_west",
+      "latitude": 52.002,
+      "longitude": 4.3477
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 10.4,
+    "meters": {
+      "electricity_day_ean": "871686785637672802",
+      "electricity_night_ean": "871686814211621051",
+      "gas_ean": "871687329802755778",
+      "water_ean": "871688967938959674"
+    }
+  },
+  {
+    "id": "019a2400-1777-7000-a001-000000001777",
+    "name": "Meijer Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 166",
+      "region": "netherlands_west",
+      "latitude": 51.8065,
+      "longitude": 4.6917
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 8.9,
+    "meters": {
+      "electricity_day_ean": "871686123325370529",
+      "electricity_night_ean": "871686974938899473",
+      "gas_ean": "871687805488168146",
+      "water_ean": "871688403818738150"
+    }
+  },
+  {
+    "id": "019a2400-1778-7000-a001-000000001778",
+    "name": "Kok Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 144",
+      "region": "netherlands_west",
+      "latitude": 52.0712,
+      "longitude": 4.292
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 11.9,
+    "meters": {
+      "electricity_day_ean": "871686873753592075",
+      "electricity_night_ean": "871686203513527843",
+      "gas_ean": "871687859970171410",
+      "water_ean": "871688342481755275"
+    }
+  },
+  {
+    "id": "019a2400-1779-7000-a001-000000001779",
+    "name": "Jansen Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 10",
+      "region": "netherlands_west",
+      "latitude": 51.8215,
+      "longitude": 4.6895
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 11.2,
+    "meters": {
+      "electricity_day_ean": "871686171210011947",
+      "electricity_night_ean": "871686706221445156",
+      "water_ean": "871688326484420066"
+    }
+  },
+  {
+    "id": "019a2400-1780-7000-a001-000000001780",
+    "name": "Van den Berg Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 102",
+      "region": "netherlands_west",
+      "latitude": 52.0163,
+      "longitude": 4.3498
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 11.2,
+    "meters": {
+      "electricity_day_ean": "871686117127169497",
+      "electricity_night_ean": "871686951562683900",
+      "gas_ean": "871687276200441281"
+    }
+  },
+  {
+    "id": "019a2400-1781-7000-a001-000000001781",
+    "name": "De Jong Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 170",
+      "region": "netherlands_west",
+      "latitude": 51.8099,
+      "longitude": 4.686
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 10.0,
+    "meters": {
+      "electricity_day_ean": "871686362807257165",
+      "electricity_night_ean": "871686989838352871",
+      "gas_ean": "871687419014305766",
+      "water_ean": "871688309382330541"
+    }
+  },
+  {
+    "id": "019a2400-1782-7000-a001-000000001782",
+    "name": "De Vries Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 103",
+      "region": "netherlands_west",
+      "latitude": 52.064,
+      "longitude": 4.3025
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 13.4,
+    "meters": {
+      "electricity_day_ean": "871686180651606930",
+      "electricity_night_ean": "871686672497362258",
+      "water_ean": "871688756754411412"
+    }
+  },
+  {
+    "id": "019a2400-1783-7000-a001-000000001783",
+    "name": "Brouwer Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 141",
+      "region": "netherlands_west",
+      "latitude": 52.008,
+      "longitude": 4.3569
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 12.8,
+    "meters": {
+      "electricity_day_ean": "871686829135731371",
+      "electricity_night_ean": "871686699230327538",
+      "gas_ean": "871687762660652961",
+      "water_ean": "871688134392403986"
+    }
+  },
+  {
+    "id": "019a2400-1784-7000-a001-000000001784",
+    "name": "De Boer Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 73",
+      "region": "netherlands_west",
+      "latitude": 51.9306,
+      "longitude": 4.4874
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 13.3,
+    "meters": {
+      "electricity_day_ean": "871686676433022609",
+      "electricity_night_ean": "871686725543100701",
+      "water_ean": "871688957190473847"
+    }
+  },
+  {
+    "id": "019a2400-1785-7000-a001-000000001785",
+    "name": "Smit Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 184",
+      "region": "netherlands_west",
+      "latitude": 51.9206,
+      "longitude": 4.4779
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 13.8,
+    "meters": {
+      "electricity_day_ean": "871686358687253644",
+      "electricity_night_ean": "871686260541595348",
+      "gas_ean": "871687429278887240",
+      "water_ean": "871688622397461135"
+    }
+  },
+  {
+    "id": "019a2400-1786-7000-a001-000000001786",
+    "name": "Smit Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 183",
+      "region": "netherlands_west",
+      "latitude": 52.0215,
+      "longitude": 4.3662
+    },
+    "solar_capacity_kw": 3.1,
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "871686130229939722",
+      "electricity_night_ean": "871686670028727907",
+      "gas_ean": "871687878497096086",
+      "water_ean": "871688091974608204"
+    }
+  },
+  {
+    "id": "019a2400-1787-7000-a001-000000001787",
+    "name": "De Groot Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 164",
+      "region": "netherlands_west",
+      "latitude": 51.9253,
+      "longitude": 4.4724
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 10.2,
+    "meters": {
+      "electricity_day_ean": "871686338120828145",
+      "electricity_night_ean": "871686886395785258",
+      "gas_ean": "871687724905241128",
+      "water_ean": "871688353260533445"
+    }
+  },
+  {
+    "id": "019a2400-1788-7000-a001-000000001788",
+    "name": "De Jong Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 33",
+      "region": "netherlands_west",
+      "latitude": 51.9268,
+      "longitude": 4.4712
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 8.7,
+    "meters": {
+      "electricity_day_ean": "871686918456449589",
+      "electricity_night_ean": "871686098309351122",
+      "gas_ean": "871687314017195923",
+      "water_ean": "871688876746345238"
+    }
+  },
+  {
+    "id": "019a2400-1789-7000-a001-000000001789",
+    "name": "Kok Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 77",
+      "region": "netherlands_west",
+      "latitude": 52.1635,
+      "longitude": 4.4965
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 10.1,
+    "meters": {
+      "electricity_day_ean": "871686322752554642",
+      "electricity_night_ean": "871686119187599275",
+      "water_ean": "871688259223365694"
+    }
+  },
+  {
+    "id": "019a2400-1790-7000-a001-000000001790",
+    "name": "Van der Linden Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 125",
+      "region": "netherlands_west",
+      "latitude": 52.159,
+      "longitude": 4.4947
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 12.0,
+    "meters": {
+      "electricity_day_ean": "871686665023370659",
+      "electricity_night_ean": "871686160541716368",
+      "water_ean": "871688166216504195"
+    }
+  },
+  {
+    "id": "019a2400-1791-7000-a001-000000001791",
+    "name": "Van den Berg Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 185",
+      "region": "netherlands_west",
+      "latitude": 52.0167,
+      "longitude": 4.3507
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 10.7,
+    "meters": {
+      "electricity_day_ean": "871686220823583644",
+      "electricity_night_ean": "871686398994353467",
+      "gas_ean": "871687442277507163",
+      "water_ean": "871688333076012845"
+    }
+  },
+  {
+    "id": "019a2400-1792-7000-a001-000000001792",
+    "name": "Van der Meer Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 125",
+      "region": "netherlands_west",
+      "latitude": 52.0618,
+      "longitude": 4.3072
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 12.9,
+    "meters": {
+      "electricity_day_ean": "871686218536007840",
+      "electricity_night_ean": "871686256018133871",
+      "gas_ean": "871687574028589414",
+      "water_ean": "871688432660853109"
+    }
+  },
+  {
+    "id": "019a2400-1793-7000-a001-000000001793",
+    "name": "Meijer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 100",
+      "region": "netherlands_west",
+      "latitude": 51.8085,
+      "longitude": 4.699
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 10.0,
+    "meters": {
+      "electricity_day_ean": "871686873581672320",
+      "electricity_night_ean": "871686707647960758",
+      "water_ean": "871688479610438049"
+    }
+  },
+  {
+    "id": "019a2400-1794-7000-a001-000000001794",
+    "name": "Brouwer Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 27",
+      "region": "netherlands_west",
+      "latitude": 51.927,
+      "longitude": 4.4851
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 10.0,
+    "meters": {
+      "electricity_day_ean": "871686458670919483",
+      "electricity_night_ean": "871686305794268311",
+      "water_ean": "871688688266817898"
+    }
+  },
+  {
+    "id": "019a2400-1795-7000-a001-000000001795",
+    "name": "Brouwer Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 184",
+      "region": "netherlands_west",
+      "latitude": 52.0763,
+      "longitude": 4.3063
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "871686169130676238",
+      "electricity_night_ean": "871686482248279898"
+    }
+  },
+  {
+    "id": "019a2400-1796-7000-a001-000000001796",
+    "name": "Brouwer Family",
     "iot_provider": "Smappee",
     "address": {
       "city": "Leiden",
-      "postal_code": "2321 AB",
-      "street": "Leiden-Noord 89",
-      "region": "netherlands",
-      "latitude": 52.1723,
-      "longitude": 4.4812
+      "postal_code": "2300",
+      "street": "Straat 114",
+      "region": "netherlands_west",
+      "latitude": 52.1515,
+      "longitude": 4.5024
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 8.9,
+    "meters": {
+      "electricity_day_ean": "871686023898077165",
+      "electricity_night_ean": "871686917783782851",
+      "water_ean": "871688975547810277"
+    }
+  },
+  {
+    "id": "019a2400-1797-7000-a001-000000001797",
+    "name": "De Groot Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 11",
+      "region": "netherlands_west",
+      "latitude": 51.8162,
+      "longitude": 4.6939
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 9.6,
+    "meters": {
+      "electricity_day_ean": "871686289999245799",
+      "electricity_night_ean": "871686194322041703",
+      "gas_ean": "871687336795319816",
+      "water_ean": "871688984332425546"
+    }
+  },
+  {
+    "id": "019a2400-1798-7000-a001-000000001798",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 191",
+      "region": "netherlands_west",
+      "latitude": 52.0139,
+      "longitude": 4.3525
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 11.3,
+    "meters": {
+      "electricity_day_ean": "871686312783257542",
+      "electricity_night_ean": "871686836574533222",
+      "gas_ean": "871687528304137501",
+      "water_ean": "871688545309629383"
+    }
+  },
+  {
+    "id": "019a2400-1799-7000-a001-000000001799",
+    "name": "Van der Linden Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 179",
+      "region": "netherlands_west",
+      "latitude": 52.074,
+      "longitude": 4.2983
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 13.2,
+    "meters": {
+      "electricity_day_ean": "871686625993400605",
+      "electricity_night_ean": "871686062927621587",
+      "gas_ean": "871687875196797881",
+      "water_ean": "871688008490059577"
+    }
+  },
+  {
+    "id": "019a2400-1800-7000-a001-000000001800",
+    "name": "De Wit Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 75",
+      "region": "netherlands_west",
+      "latitude": 51.8065,
+      "longitude": 4.6828
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 9.1,
+    "meters": {
+      "electricity_day_ean": "871686056165224093",
+      "electricity_night_ean": "871686635875125946",
+      "gas_ean": "871687203715428868"
+    }
+  },
+  {
+    "id": "019a2400-1801-7000-a001-000000001801",
+    "name": "Bakker Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 10",
+      "region": "netherlands_west",
+      "latitude": 52.1564,
+      "longitude": 4.5039
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 9.3,
+    "meters": {
+      "electricity_day_ean": "871686608914790993",
+      "electricity_night_ean": "871686173359258223",
+      "water_ean": "871688581523359181"
+    }
+  },
+  {
+    "id": "019a2400-1802-7000-a001-000000001802",
+    "name": "Van der Linden Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 197",
+      "region": "netherlands_west",
+      "latitude": 51.8051,
+      "longitude": 4.6815
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 11.3,
+    "meters": {
+      "electricity_day_ean": "871686849177011033",
+      "electricity_night_ean": "871686641714233013",
+      "gas_ean": "871687607069883773",
+      "water_ean": "871688307537891992"
+    }
+  },
+  {
+    "id": "019a2400-1803-7000-a001-000000001803",
+    "name": "Dekker Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 167",
+      "region": "netherlands_west",
+      "latitude": 52.1657,
+      "longitude": 4.4988
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 9.4,
+    "meters": {
+      "electricity_day_ean": "871686731183039605",
+      "electricity_night_ean": "871686855138648120",
+      "gas_ean": "871687170149351193"
+    }
+  },
+  {
+    "id": "019a2400-1804-7000-a001-000000001804",
+    "name": "Van der Meer Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 64",
+      "region": "netherlands_west",
+      "latitude": 51.8172,
+      "longitude": 4.6875
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 10.7,
+    "meters": {
+      "electricity_day_ean": "871686714361456596",
+      "electricity_night_ean": "871686428468960624",
+      "gas_ean": "871687088528285829",
+      "water_ean": "871688860971128365"
+    }
+  },
+  {
+    "id": "019a2400-1805-7000-a001-000000001805",
+    "name": "Van der Linden Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 78",
+      "region": "netherlands_west",
+      "latitude": 51.8086,
+      "longitude": 4.6885
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "871686392929647939",
+      "electricity_night_ean": "871686839089977589",
+      "gas_ean": "871687514862705622",
+      "water_ean": "871688340084193694"
+    }
+  },
+  {
+    "id": "019a2400-1806-7000-a001-000000001806",
+    "name": "Visser Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 35",
+      "region": "netherlands_west",
+      "latitude": 51.9189,
+      "longitude": 4.4871
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 10.7,
+    "meters": {
+      "electricity_day_ean": "871686992337859360",
+      "electricity_night_ean": "871686321754513982",
+      "water_ean": "871688544680512539"
+    }
+  },
+  {
+    "id": "019a2400-1807-7000-a001-000000001807",
+    "name": "De Haan Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 92",
+      "region": "netherlands_west",
+      "latitude": 52.0149,
+      "longitude": 4.3565
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "871686124376123051",
+      "electricity_night_ean": "871686754371806986",
+      "gas_ean": "871687720540782387",
+      "water_ean": "871688310321545319"
+    }
+  },
+  {
+    "id": "019a2400-1808-7000-a001-000000001808",
+    "name": "Brouwer Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 147",
+      "region": "netherlands_west",
+      "latitude": 51.9255,
+      "longitude": 4.4787
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 12.2,
+    "meters": {
+      "electricity_day_ean": "871686205520768001",
+      "electricity_night_ean": "871686627663552220",
+      "gas_ean": "871687616370115918"
+    }
+  },
+  {
+    "id": "019a2400-1809-7000-a001-000000001809",
+    "name": "De Boer Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 184",
+      "region": "netherlands_west",
+      "latitude": 51.8221,
+      "longitude": 4.6872
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 11.9,
+    "meters": {
+      "electricity_day_ean": "871686582389444875",
+      "electricity_night_ean": "871686972490236327",
+      "gas_ean": "871687222950717438",
+      "water_ean": "871688400528695735"
+    }
+  },
+  {
+    "id": "019a2400-1810-7000-a001-000000001810",
+    "name": "Jacobs Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 200",
+      "region": "netherlands_west",
+      "latitude": 52.0757,
+      "longitude": 4.2957
     },
     "solar_capacity_kw": 4.8,
     "battery_capacity_kwh": 12.3,
-    "meter_ean": "546130736111664886"
+    "meters": {
+      "electricity_day_ean": "871686661569317820",
+      "electricity_night_ean": "871686210786886791",
+      "gas_ean": "871687276709513725",
+      "water_ean": "871688044802820060"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000054",
-    "name": "Geerts Family",
-    "iot_provider": "HomeWizard",
+    "id": "019a2400-1811-7000-a001-000000001811",
+    "name": "Jansen Family",
+    "iot_provider": "Tesla Powerwall",
     "address": {
       "city": "Leiden",
-      "postal_code": "2324 CD",
-      "street": "Leiden-Oost 56",
-      "region": "netherlands",
-      "latitude": 52.1645,
-      "longitude": 4.5123
+      "postal_code": "2300",
+      "street": "Straat 67",
+      "region": "netherlands_west",
+      "latitude": 52.1565,
+      "longitude": 4.498
     },
-    "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 10.5,
-    "meter_ean": "545307952006432445"
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 11.3,
+    "meters": {
+      "electricity_day_ean": "871686943621357296",
+      "electricity_night_ean": "871686111480424451",
+      "water_ean": "871688358650670602"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000055",
-    "name": "Nijs Family",
-    "iot_provider": "Smappee",
+    "id": "019a2400-1812-7000-a001-000000001812",
+    "name": "Van der Meer Family",
+    "iot_provider": "SolarEdge",
     "address": {
-      "city": "Leiden",
-      "postal_code": "2327 EF",
-      "street": "Leiden-Zuid 145",
-      "region": "netherlands",
-      "latitude": 52.1512,
-      "longitude": 4.5034
-    },
-    "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 14.1,
-    "meter_ean": "540787568460334345"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000056",
-    "name": "Vandenberghe Family",
-    "iot_provider": "Smappee",
-    "address": {
-      "city": "Leiden",
-      "postal_code": "2331 GH",
-      "street": "Leiden-West 234",
-      "region": "netherlands",
-      "latitude": 52.1589,
-      "longitude": 4.4656
-    },
-    "solar_capacity_kw": 3.7,
-    "battery_capacity_kwh": 9.2,
-    "meter_ean": "547303008268052067"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000057",
-    "name": "Desmet Family",
-    "iot_provider": "Smappee",
-    "address": {
-      "city": "Leiden",
-      "postal_code": "2334 IJ",
-      "street": "Stevenshof 78",
-      "region": "netherlands",
-      "latitude": 52.1456,
-      "longitude": 4.4789
-    },
-    "solar_capacity_kw": 4.6,
-    "battery_capacity_kwh": 11.9,
-    "meter_ean": "548105399737068783"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000058",
-    "name": "van Es Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Leiden",
-      "postal_code": "2332 KL",
-      "street": "Merenwijk 123",
-      "region": "netherlands",
-      "latitude": 52.1534,
-      "longitude": 4.4534
-    },
-    "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 10.1,
-    "meter_ean": "547646421052789346"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000059",
-    "name": "Moens Family",
-    "iot_provider": "Solar Edge",
-    "address": {
-      "city": "Delft",
-      "postal_code": "2611 MN",
-      "street": "Markt 23",
-      "region": "netherlands",
-      "latitude": 52.0115,
-      "longitude": 4.3571
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 196",
+      "region": "netherlands_west",
+      "latitude": 52.0649,
+      "longitude": 4.2912
     },
     "solar_capacity_kw": 4.7,
-    "battery_capacity_kwh": 12.1,
-    "meter_ean": "542218307595382511"
+    "battery_capacity_kwh": 11.7,
+    "meters": {
+      "electricity_day_ean": "871686011621180856",
+      "electricity_night_ean": "871686554563754942",
+      "water_ean": "871688234421624029"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000060",
-    "name": "van der Laan Family",
-    "iot_provider": "Solar Edge",
+    "id": "019a2400-1813-7000-a001-000000001813",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "SolarEdge",
     "address": {
-      "city": "Delft",
-      "postal_code": "2614 OP",
-      "street": "Oude Delft 67",
-      "region": "netherlands",
-      "latitude": 52.0089,
-      "longitude": 4.3623
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 133",
+      "region": "netherlands_west",
+      "latitude": 52.0676,
+      "longitude": 4.2975
     },
-    "solar_capacity_kw": 3.8,
-    "battery_capacity_kwh": 9.3,
-    "meter_ean": "549536531787986841"
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 12.3,
+    "meters": {
+      "electricity_day_ean": "871686194205077178",
+      "electricity_night_ean": "871686938685919049",
+      "gas_ean": "871687695153756084",
+      "water_ean": "871688356105710542"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000061",
-    "name": "Hermans Family",
-    "iot_provider": "HomeWizard",
+    "id": "019a2400-1814-7000-a001-000000001814",
+    "name": "Van den Berg Family",
+    "iot_provider": "Smappee",
     "address": {
-      "city": "Delft",
-      "postal_code": "2617 QR",
-      "street": "Nieuwe Kerk 123",
-      "region": "netherlands",
-      "latitude": 52.0123,
-      "longitude": 4.3567
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 183",
+      "region": "netherlands_west",
+      "latitude": 52.0606,
+      "longitude": 4.2966
     },
-    "solar_capacity_kw": 5.2,
-    "battery_capacity_kwh": 13.5,
-    "meter_ean": "540318215406420844"
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "871686129187236035",
+      "electricity_night_ean": "871686652250969865",
+      "gas_ean": "871687379537931508"
+    }
   },
   {
-    "id": "019a2400-0002-7000-a001-000000000062",
-    "name": "Pauwels Family",
-    "iot_provider": "HomeWizard",
+    "id": "019a2400-1815-7000-a001-000000001815",
+    "name": "Bos Family",
+    "iot_provider": "SolarEdge",
     "address": {
-      "city": "Delft",
-      "postal_code": "2621 ST",
-      "street": "Delft-Noord 234",
-      "region": "netherlands",
-      "latitude": 52.0234,
-      "longitude": 4.3612
-    },
-    "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 11.3,
-    "meter_ean": "548177428055446668"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000063",
-    "name": "Smeets Family",
-    "iot_provider": "Solar Edge",
-    "address": {
-      "city": "Delft",
-      "postal_code": "2624 UV",
-      "street": "Delft-Zuid 89",
-      "region": "netherlands",
-      "latitude": 51.9989,
-      "longitude": 4.3534
-    },
-    "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 10.6,
-    "meter_ean": "547378898845793901"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000064",
-    "name": "Verstraeten Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Delft",
-      "postal_code": "2627 WX",
-      "street": "TU Delft 56",
-      "region": "netherlands",
-      "latitude": 52.0023,
-      "longitude": 4.3734
-    },
-    "solar_capacity_kw": 5.5,
-    "battery_capacity_kwh": 14.8,
-    "meter_ean": "541672470182523493"
-  },
-  {
-    "id": "019a2400-0002-7000-a001-000000000065",
-    "name": "Verbeek Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Delft",
-      "postal_code": "2629 YZ",
-      "street": "Delft-West 145",
-      "region": "netherlands",
-      "latitude": 52.0078,
-      "longitude": 4.3412
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 141",
+      "region": "netherlands_west",
+      "latitude": 51.9186,
+      "longitude": 4.4745
     },
     "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 9.3,
+    "meters": {
+      "electricity_day_ean": "871686974022390317",
+      "electricity_night_ean": "871686026116682359",
+      "gas_ean": "871687411765519613"
+    }
+  },
+  {
+    "id": "019a2400-1816-7000-a001-000000001816",
+    "name": "Jansen Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 39",
+      "region": "netherlands_west",
+      "latitude": 51.9174,
+      "longitude": 4.4819
+    },
+    "solar_capacity_kw": 2.5,
+    "battery_capacity_kwh": 11.3,
+    "meters": {
+      "electricity_day_ean": "871686125122840585",
+      "electricity_night_ean": "871686057327773415",
+      "water_ean": "871688978262452637"
+    }
+  },
+  {
+    "id": "019a2400-1817-7000-a001-000000001817",
+    "name": "De Groot Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 48",
+      "region": "netherlands_west",
+      "latitude": 51.9137,
+      "longitude": 4.4695
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 13.1,
+    "meters": {
+      "electricity_day_ean": "871686137744787776",
+      "electricity_night_ean": "871686792646741503",
+      "gas_ean": "871687996291552487",
+      "water_ean": "871688320895872386"
+    }
+  },
+  {
+    "id": "019a2400-1818-7000-a001-000000001818",
+    "name": "Van den Berg Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 141",
+      "region": "netherlands_west",
+      "latitude": 52.164,
+      "longitude": 4.4957
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 8.9,
+    "meters": {
+      "electricity_day_ean": "871686290940601608",
+      "electricity_night_ean": "871686732658738688",
+      "water_ean": "871688468174858324"
+    }
+  },
+  {
+    "id": "019a2400-1819-7000-a001-000000001819",
+    "name": "De Boer Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 50",
+      "region": "netherlands_west",
+      "latitude": 52.0125,
+      "longitude": 4.367
+    },
+    "solar_capacity_kw": 5.3,
     "battery_capacity_kwh": 9.7,
-    "meter_ean": "542726807962126354"
+    "meters": {
+      "electricity_day_ean": "871686594559508924",
+      "electricity_night_ean": "871686861193769321",
+      "gas_ean": "871687063138162139",
+      "water_ean": "871688083879386941"
+    }
+  },
+  {
+    "id": "019a2400-1820-7000-a001-000000001820",
+    "name": "Jansen Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 199",
+      "region": "netherlands_west",
+      "latitude": 52.0169,
+      "longitude": 4.352
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 12.0,
+    "meters": {
+      "electricity_day_ean": "871686689079838548",
+      "electricity_night_ean": "871686545560295179",
+      "gas_ean": "871687078739712406"
+    }
+  },
+  {
+    "id": "019a2400-1821-7000-a001-000000001821",
+    "name": "Brouwer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 97",
+      "region": "netherlands_west",
+      "latitude": 52.0731,
+      "longitude": 4.296
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 9.6,
+    "meters": {
+      "electricity_day_ean": "871686127392676305",
+      "electricity_night_ean": "871686984737340086",
+      "gas_ean": "871687857588628058"
+    }
+  },
+  {
+    "id": "019a2400-1822-7000-a001-000000001822",
+    "name": "Bakker Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 43",
+      "region": "netherlands_west",
+      "latitude": 51.9294,
+      "longitude": 4.4841
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 10.5,
+    "meters": {
+      "electricity_day_ean": "871686758630811846",
+      "electricity_night_ean": "871686037246042583",
+      "water_ean": "871688073620001678"
+    }
+  },
+  {
+    "id": "019a2400-1823-7000-a001-000000001823",
+    "name": "Van den Berg Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 28",
+      "region": "netherlands_west",
+      "latitude": 52.1593,
+      "longitude": 4.5005
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 14.0,
+    "meters": {
+      "electricity_day_ean": "871686354581296476",
+      "electricity_night_ean": "871686233037555476",
+      "gas_ean": "871687932704183345",
+      "water_ean": "871688054633999974"
+    }
+  },
+  {
+    "id": "019a2400-1824-7000-a001-000000001824",
+    "name": "Van Dijk Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 127",
+      "region": "netherlands_west",
+      "latitude": 51.8164,
+      "longitude": 4.6841
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 13.5,
+    "meters": {
+      "electricity_day_ean": "871686518953162315",
+      "electricity_night_ean": "871686155274112163",
+      "gas_ean": "871687401343104807",
+      "water_ean": "871688625197939686"
+    }
+  },
+  {
+    "id": "019a2400-1825-7000-a001-000000001825",
+    "name": "Van der Linden Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 64",
+      "region": "netherlands_west",
+      "latitude": 51.9155,
+      "longitude": 4.4717
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 10.5,
+    "meters": {
+      "electricity_day_ean": "871686465052909250",
+      "electricity_night_ean": "871686578289181796",
+      "gas_ean": "871687824374707307",
+      "water_ean": "871688782703385036"
+    }
+  },
+  {
+    "id": "019a2400-1826-7000-a001-000000001826",
+    "name": "Van der Linden Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 91",
+      "region": "netherlands_west",
+      "latitude": 52.1538,
+      "longitude": 4.4931
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "871686793190626746",
+      "electricity_night_ean": "871686417690125232",
+      "gas_ean": "871687779616126524",
+      "water_ean": "871688795121756743"
+    }
+  },
+  {
+    "id": "019a2400-1827-7000-a001-000000001827",
+    "name": "Bos Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 159",
+      "region": "netherlands_west",
+      "latitude": 52.0105,
+      "longitude": 4.367
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 9.0,
+    "meters": {
+      "electricity_day_ean": "871686570456595118",
+      "electricity_night_ean": "871686973120942163",
+      "gas_ean": "871687044935458115",
+      "water_ean": "871688664434916931"
+    }
+  },
+  {
+    "id": "019a2400-1828-7000-a001-000000001828",
+    "name": "De Vries Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 139",
+      "region": "netherlands_west",
+      "latitude": 51.8148,
+      "longitude": 4.6936
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 11.1,
+    "meters": {
+      "electricity_day_ean": "871686282469831992",
+      "electricity_night_ean": "871686309581487450",
+      "water_ean": "871688800265261016"
+    }
+  },
+  {
+    "id": "019a2400-1829-7000-a001-000000001829",
+    "name": "Van den Berg Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 87",
+      "region": "netherlands_west",
+      "latitude": 51.9309,
+      "longitude": 4.4881
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 9.6,
+    "meters": {
+      "electricity_day_ean": "871686522593405023",
+      "electricity_night_ean": "871686810473787909",
+      "gas_ean": "871687735242788770",
+      "water_ean": "871688610639425903"
+    }
+  },
+  {
+    "id": "019a2400-1830-7000-a001-000000001830",
+    "name": "De Vries Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 152",
+      "region": "netherlands_west",
+      "latitude": 52.0029,
+      "longitude": 4.3578
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "871686245328640685",
+      "electricity_night_ean": "871686496577716245",
+      "gas_ean": "871687009360633042"
+    }
+  },
+  {
+    "id": "019a2400-1831-7000-a001-000000001831",
+    "name": "Van Dijk Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 188",
+      "region": "netherlands_west",
+      "latitude": 52.0715,
+      "longitude": 4.2986
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 10.1,
+    "meters": {
+      "electricity_day_ean": "871686164477260567",
+      "electricity_night_ean": "871686889924033986",
+      "gas_ean": "871687775055039098",
+      "water_ean": "871688421632006519"
+    }
+  },
+  {
+    "id": "019a2400-1832-7000-a001-000000001832",
+    "name": "Koning Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 104",
+      "region": "netherlands_west",
+      "latitude": 51.8089,
+      "longitude": 4.6832
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 13.4,
+    "meters": {
+      "electricity_day_ean": "871686740528537006",
+      "electricity_night_ean": "871686850481450658",
+      "gas_ean": "871687103416459912",
+      "water_ean": "871688807983182842"
+    }
+  },
+  {
+    "id": "019a2400-1833-7000-a001-000000001833",
+    "name": "Van Dijk Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 198",
+      "region": "netherlands_west",
+      "latitude": 52.003,
+      "longitude": 4.3482
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 8.9,
+    "meters": {
+      "electricity_day_ean": "871686608950254477",
+      "electricity_night_ean": "871686975001454740",
+      "gas_ean": "871687506489308317"
+    }
+  },
+  {
+    "id": "019a2400-1834-7000-a001-000000001834",
+    "name": "Meijer Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 140",
+      "region": "netherlands_west",
+      "latitude": 52.0142,
+      "longitude": 4.3595
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "871686504945663213",
+      "electricity_night_ean": "871686428113596996",
+      "gas_ean": "871687512078139297",
+      "water_ean": "871688410941773821"
+    }
+  },
+  {
+    "id": "019a2400-1835-7000-a001-000000001835",
+    "name": "De Boer Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 145",
+      "region": "netherlands_west",
+      "latitude": 51.9161,
+      "longitude": 4.4704
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 10.7,
+    "meters": {
+      "electricity_day_ean": "871686743366456311",
+      "electricity_night_ean": "871686140306005468"
+    }
+  },
+  {
+    "id": "019a2400-1836-7000-a001-000000001836",
+    "name": "Dekker Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 74",
+      "region": "netherlands_west",
+      "latitude": 51.9262,
+      "longitude": 4.4746
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 13.8,
+    "meters": {
+      "electricity_day_ean": "871686744772554621",
+      "electricity_night_ean": "871686774713458770"
+    }
+  },
+  {
+    "id": "019a2400-1837-7000-a001-000000001837",
+    "name": "Brouwer Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 43",
+      "region": "netherlands_west",
+      "latitude": 52.0749,
+      "longitude": 4.3106
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 8.7,
+    "meters": {
+      "electricity_day_ean": "871686835531824427",
+      "electricity_night_ean": "871686462020155495",
+      "water_ean": "871688861171465187"
+    }
+  },
+  {
+    "id": "019a2400-1838-7000-a001-000000001838",
+    "name": "Jansen Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 15",
+      "region": "netherlands_west",
+      "latitude": 52.1599,
+      "longitude": 4.4871
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 9.0,
+    "meters": {
+      "electricity_day_ean": "871686324747604212",
+      "electricity_night_ean": "871686509391975764",
+      "water_ean": "871688315873175411"
+    }
+  },
+  {
+    "id": "019a2400-1839-7000-a001-000000001839",
+    "name": "Van der Meer Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 128",
+      "region": "netherlands_west",
+      "latitude": 52.0737,
+      "longitude": 4.3058
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 11.1,
+    "meters": {
+      "electricity_day_ean": "871686940600399458",
+      "electricity_night_ean": "871686735049119151",
+      "gas_ean": "871687839090226960",
+      "water_ean": "871688723208836439"
+    }
+  },
+  {
+    "id": "019a2400-1840-7000-a001-000000001840",
+    "name": "Van der Meer Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 175",
+      "region": "netherlands_west",
+      "latitude": 52.1605,
+      "longitude": 4.4873
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 11.9,
+    "meters": {
+      "electricity_day_ean": "871686662491810076",
+      "electricity_night_ean": "871686483207827138",
+      "gas_ean": "871687237847307363"
+    }
+  },
+  {
+    "id": "019a2400-1841-7000-a001-000000001841",
+    "name": "Hendriks Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 85",
+      "region": "netherlands_west",
+      "latitude": 52.1534,
+      "longitude": 4.4946
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 9.8,
+    "meters": {
+      "electricity_day_ean": "871686286573276397",
+      "electricity_night_ean": "871686187831754201",
+      "gas_ean": "871687762477327015",
+      "water_ean": "871688893674020891"
+    }
+  },
+  {
+    "id": "019a2400-1842-7000-a001-000000001842",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 71",
+      "region": "netherlands_west",
+      "latitude": 52.0641,
+      "longitude": 4.2931
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "871686256170168652",
+      "electricity_night_ean": "871686017226593545",
+      "gas_ean": "871687900212735708"
+    }
+  },
+  {
+    "id": "019a2400-1843-7000-a001-000000001843",
+    "name": "Vos Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 3",
+      "region": "netherlands_west",
+      "latitude": 51.9178,
+      "longitude": 4.4842
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 8.7,
+    "meters": {
+      "electricity_day_ean": "871686927433541180",
+      "electricity_night_ean": "871686910887533102"
+    }
+  },
+  {
+    "id": "019a2400-1844-7000-a001-000000001844",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 86",
+      "region": "netherlands_west",
+      "latitude": 52.0175,
+      "longitude": 4.3669
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 13.8,
+    "meters": {
+      "electricity_day_ean": "871686610203504035",
+      "electricity_night_ean": "871686024910463197",
+      "gas_ean": "871687957150719312",
+      "water_ean": "871688828375413423"
+    }
+  },
+  {
+    "id": "019a2400-1845-7000-a001-000000001845",
+    "name": "Van der Linden Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 5",
+      "region": "netherlands_west",
+      "latitude": 52.0632,
+      "longitude": 4.2911
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "871686156018249810",
+      "electricity_night_ean": "871686835395753642",
+      "water_ean": "871688769210101966"
+    }
+  },
+  {
+    "id": "019a2400-1846-7000-a001-000000001846",
+    "name": "De Jong Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 65",
+      "region": "netherlands_west",
+      "latitude": 52.1549,
+      "longitude": 4.4912
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 12.8,
+    "meters": {
+      "electricity_day_ean": "871686649122418588",
+      "electricity_night_ean": "871686498167667359",
+      "water_ean": "871688468045470077"
+    }
+  },
+  {
+    "id": "019a2400-1847-7000-a001-000000001847",
+    "name": "Jacobs Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 80",
+      "region": "netherlands_west",
+      "latitude": 52.0748,
+      "longitude": 4.3087
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 12.9,
+    "meters": {
+      "electricity_day_ean": "871686927515372969",
+      "electricity_night_ean": "871686237929842134",
+      "gas_ean": "871687024247749432",
+      "water_ean": "871688794656975343"
+    }
+  },
+  {
+    "id": "019a2400-1848-7000-a001-000000001848",
+    "name": "Jacobs Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 71",
+      "region": "netherlands_west",
+      "latitude": 52.1639,
+      "longitude": 4.4987
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 12.4,
+    "meters": {
+      "electricity_day_ean": "871686059475297770",
+      "electricity_night_ean": "871686764458516318",
+      "water_ean": "871688876553549848"
+    }
+  },
+  {
+    "id": "019a2400-1849-7000-a001-000000001849",
+    "name": "Van der Meer Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 19",
+      "region": "netherlands_west",
+      "latitude": 52.0017,
+      "longitude": 4.3666
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "871686690144090276",
+      "electricity_night_ean": "871686433396636152",
+      "water_ean": "871688836579419245"
+    }
+  },
+  {
+    "id": "019a2400-1850-7000-a001-000000001850",
+    "name": "Meijer Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 178",
+      "region": "netherlands_west",
+      "latitude": 52.154,
+      "longitude": 4.4951
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "871686555711459716",
+      "electricity_night_ean": "871686048288041708",
+      "water_ean": "871688897893444833"
+    }
+  },
+  {
+    "id": "019a2400-1851-7000-a001-000000001851",
+    "name": "Vos Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 133",
+      "region": "netherlands_west",
+      "latitude": 51.8191,
+      "longitude": 4.685
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 11.7,
+    "meters": {
+      "electricity_day_ean": "871686617731001637",
+      "electricity_night_ean": "871686376129083344",
+      "gas_ean": "871687635252849913",
+      "water_ean": "871688497442170741"
+    }
+  },
+  {
+    "id": "019a2400-1852-7000-a001-000000001852",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 197",
+      "region": "netherlands_west",
+      "latitude": 52.0655,
+      "longitude": 4.2943
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 13.3,
+    "meters": {
+      "electricity_day_ean": "871686292427892930",
+      "electricity_night_ean": "871686369779658565",
+      "gas_ean": "871687351984373852",
+      "water_ean": "871688113338017391"
+    }
+  },
+  {
+    "id": "019a2400-1853-7000-a001-000000001853",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 115",
+      "region": "netherlands_west",
+      "latitude": 51.9132,
+      "longitude": 4.4754
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 10.9,
+    "meters": {
+      "electricity_day_ean": "871686593790212069",
+      "electricity_night_ean": "871686954253032354",
+      "gas_ean": "871687576124341844",
+      "water_ean": "871688803141701769"
+    }
+  },
+  {
+    "id": "019a2400-1854-7000-a001-000000001854",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 102",
+      "region": "netherlands_west",
+      "latitude": 52.0076,
+      "longitude": 4.3517
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 8.3,
+    "meters": {
+      "electricity_day_ean": "871686042659210977",
+      "electricity_night_ean": "871686598585239514",
+      "gas_ean": "871687441475603040",
+      "water_ean": "871688849577947679"
+    }
+  },
+  {
+    "id": "019a2400-1855-7000-a001-000000001855",
+    "name": "Van Dijk Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 13",
+      "region": "netherlands_west",
+      "latitude": 52.0646,
+      "longitude": 4.2981
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 10.7,
+    "meters": {
+      "electricity_day_ean": "871686046336389546",
+      "electricity_night_ean": "871686778719596924",
+      "gas_ean": "871687833302529325",
+      "water_ean": "871688410676955305"
+    }
+  },
+  {
+    "id": "019a2400-1856-7000-a001-000000001856",
+    "name": "Van der Meer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 19",
+      "region": "netherlands_west",
+      "latitude": 52.1517,
+      "longitude": 4.5053
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 8.1,
+    "meters": {
+      "electricity_day_ean": "871686971518537021",
+      "electricity_night_ean": "871686494420504974",
+      "gas_ean": "871687063863279807",
+      "water_ean": "871688860157430170"
+    }
+  },
+  {
+    "id": "019a2400-1857-7000-a001-000000001857",
+    "name": "Smit Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 100",
+      "region": "netherlands_west",
+      "latitude": 52.0035,
+      "longitude": 4.3607
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 13.0,
+    "meters": {
+      "electricity_day_ean": "871686144531451402",
+      "electricity_night_ean": "871686226674829401",
+      "gas_ean": "871687623660341983"
+    }
+  },
+  {
+    "id": "019a2400-1858-7000-a001-000000001858",
+    "name": "Meijer Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 180",
+      "region": "netherlands_west",
+      "latitude": 51.9193,
+      "longitude": 4.483
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 11.0,
+    "meters": {
+      "electricity_day_ean": "871686571214103736",
+      "electricity_night_ean": "871686641892317659",
+      "gas_ean": "871687838213487880"
+    }
+  },
+  {
+    "id": "019a2400-1859-7000-a001-000000001859",
+    "name": "De Jong Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 102",
+      "region": "netherlands_west",
+      "latitude": 51.9296,
+      "longitude": 4.4796
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 10.1,
+    "meters": {
+      "electricity_day_ean": "871686883003002271",
+      "electricity_night_ean": "871686532759327998",
+      "gas_ean": "871687345106315235"
+    }
+  },
+  {
+    "id": "019a2400-1860-7000-a001-000000001860",
+    "name": "Van Dijk Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 38",
+      "region": "netherlands_west",
+      "latitude": 51.8186,
+      "longitude": 4.6984
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 8.8,
+    "meters": {
+      "electricity_day_ean": "871686764347175303",
+      "electricity_night_ean": "871686816221211694",
+      "gas_ean": "871687256419374411",
+      "water_ean": "871688954055742491"
+    }
+  },
+  {
+    "id": "019a2400-1861-7000-a001-000000001861",
+    "name": "Visser Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 69",
+      "region": "netherlands_west",
+      "latitude": 52.0646,
+      "longitude": 4.2949
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "871686681149032902",
+      "electricity_night_ean": "871686900177514741",
+      "gas_ean": "871687446067051318",
+      "water_ean": "871688347151515395"
+    }
+  },
+  {
+    "id": "019a2400-1862-7000-a001-000000001862",
+    "name": "Van der Linden Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 81",
+      "region": "netherlands_west",
+      "latitude": 51.8142,
+      "longitude": 4.6813
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 9.3,
+    "meters": {
+      "electricity_day_ean": "871686071585360278",
+      "electricity_night_ean": "871686303405323404",
+      "gas_ean": "871687474284639321",
+      "water_ean": "871688815956922008"
+    }
+  },
+  {
+    "id": "019a2400-1863-7000-a001-000000001863",
+    "name": "De Boer Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 6",
+      "region": "netherlands_west",
+      "latitude": 51.8079,
+      "longitude": 4.6833
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 12.6,
+    "meters": {
+      "electricity_day_ean": "871686525346544093",
+      "electricity_night_ean": "871686224612839464",
+      "gas_ean": "871687089693749909",
+      "water_ean": "871688359224442684"
+    }
+  },
+  {
+    "id": "019a2400-1864-7000-a001-000000001864",
+    "name": "Van der Meer Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 174",
+      "region": "netherlands_west",
+      "latitude": 52.162,
+      "longitude": 4.4949
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 10.1,
+    "meters": {
+      "electricity_day_ean": "871686795950544391",
+      "electricity_night_ean": "871686493457175115",
+      "gas_ean": "871687710135840278",
+      "water_ean": "871688292343366642"
+    }
+  },
+  {
+    "id": "019a2400-1865-7000-a001-000000001865",
+    "name": "Mulder Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 198",
+      "region": "netherlands_west",
+      "latitude": 52.0743,
+      "longitude": 4.3091
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 13.4,
+    "meters": {
+      "electricity_day_ean": "871686746308640356",
+      "electricity_night_ean": "871686307897771914",
+      "gas_ean": "871687204169713609",
+      "water_ean": "871688035523208297"
+    }
+  },
+  {
+    "id": "019a2400-1866-7000-a001-000000001866",
+    "name": "Bos Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 22",
+      "region": "netherlands_west",
+      "latitude": 51.914,
+      "longitude": 4.4829
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 11.7,
+    "meters": {
+      "electricity_day_ean": "871686911879523134",
+      "electricity_night_ean": "871686444376293903",
+      "gas_ean": "871687849409212547",
+      "water_ean": "871688930248686990"
+    }
+  },
+  {
+    "id": "019a2400-1867-7000-a001-000000001867",
+    "name": "De Haan Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 92",
+      "region": "netherlands_west",
+      "latitude": 51.8123,
+      "longitude": 4.6888
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 9.9,
+    "meters": {
+      "electricity_day_ean": "871686899504345098",
+      "electricity_night_ean": "871686932499619615",
+      "gas_ean": "871687195055536265"
+    }
+  },
+  {
+    "id": "019a2400-1868-7000-a001-000000001868",
+    "name": "Van der Linden Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 82",
+      "region": "netherlands_west",
+      "latitude": 51.9197,
+      "longitude": 4.4826
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 9.7,
+    "meters": {
+      "electricity_day_ean": "871686930240287876",
+      "electricity_night_ean": "871686691303769725",
+      "gas_ean": "871687107354609524",
+      "water_ean": "871688309487903769"
+    }
+  },
+  {
+    "id": "019a2400-1869-7000-a001-000000001869",
+    "name": "Dekker Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 65",
+      "region": "netherlands_west",
+      "latitude": 52.1542,
+      "longitude": 4.4985
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "871686113534698200",
+      "electricity_night_ean": "871686493496064657",
+      "gas_ean": "871687677232374651",
+      "water_ean": "871688634989846557"
+    }
+  },
+  {
+    "id": "019a2400-1870-7000-a001-000000001870",
+    "name": "De Wit Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 18",
+      "region": "netherlands_west",
+      "latitude": 52.004,
+      "longitude": 4.3486
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 13.6,
+    "meters": {
+      "electricity_day_ean": "871686373953180966",
+      "electricity_night_ean": "871686584226100992",
+      "gas_ean": "871687325907426734",
+      "water_ean": "871688357837368904"
+    }
+  },
+  {
+    "id": "019a2400-1871-7000-a001-000000001871",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 130",
+      "region": "netherlands_west",
+      "latitude": 52.0169,
+      "longitude": 4.3544
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 12.3,
+    "meters": {
+      "electricity_day_ean": "871686328605473956",
+      "electricity_night_ean": "871686992329224021",
+      "gas_ean": "871687609917656392"
+    }
+  },
+  {
+    "id": "019a2400-1872-7000-a001-000000001872",
+    "name": "De Wit Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 108",
+      "region": "netherlands_west",
+      "latitude": 52.1527,
+      "longitude": 4.4966
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 11.9,
+    "meters": {
+      "electricity_day_ean": "871686401432716132",
+      "electricity_night_ean": "871686827490071014",
+      "gas_ean": "871687326556983387"
+    }
+  },
+  {
+    "id": "019a2400-1873-7000-a001-000000001873",
+    "name": "De Vries Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 169",
+      "region": "netherlands_west",
+      "latitude": 51.9307,
+      "longitude": 4.4746
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 11.8,
+    "meters": {
+      "electricity_day_ean": "871686068643515306",
+      "electricity_night_ean": "871686454649964296",
+      "gas_ean": "871687190632115429",
+      "water_ean": "871688015451464589"
+    }
+  },
+  {
+    "id": "019a2400-1874-7000-a001-000000001874",
+    "name": "De Boer Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 142",
+      "region": "netherlands_west",
+      "latitude": 52.064,
+      "longitude": 4.3032
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 9.6,
+    "meters": {
+      "electricity_day_ean": "871686924057404059",
+      "electricity_night_ean": "871686242237235441",
+      "water_ean": "871688125906210830"
+    }
+  },
+  {
+    "id": "019a2400-1875-7000-a001-000000001875",
+    "name": "Vos Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 108",
+      "region": "netherlands_west",
+      "latitude": 52.0789,
+      "longitude": 4.3084
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 10.6,
+    "meters": {
+      "electricity_day_ean": "871686129643253498",
+      "electricity_night_ean": "871686437370976771",
+      "gas_ean": "871687204271616876",
+      "water_ean": "871688683479328573"
+    }
+  },
+  {
+    "id": "019a2400-1876-7000-a001-000000001876",
+    "name": "De Jong Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 198",
+      "region": "netherlands_west",
+      "latitude": 52.1554,
+      "longitude": 4.501
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 10.1,
+    "meters": {
+      "electricity_day_ean": "871686382795171404",
+      "electricity_night_ean": "871686795450426768",
+      "gas_ean": "871687204982020777"
+    }
+  },
+  {
+    "id": "019a2400-1877-7000-a001-000000001877",
+    "name": "Hendriks Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 156",
+      "region": "netherlands_west",
+      "latitude": 51.9314,
+      "longitude": 4.484
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 13.2,
+    "meters": {
+      "electricity_day_ean": "871686329273964486",
+      "electricity_night_ean": "871686766252609028",
+      "gas_ean": "871687620124904018"
+    }
+  },
+  {
+    "id": "019a2400-1878-7000-a001-000000001878",
+    "name": "Van der Linden Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 15",
+      "region": "netherlands_west",
+      "latitude": 51.8094,
+      "longitude": 4.6981
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 12.4,
+    "meters": {
+      "electricity_day_ean": "871686475277098610",
+      "electricity_night_ean": "871686491964697425",
+      "gas_ean": "871687571351065068",
+      "water_ean": "871688553786736370"
+    }
+  },
+  {
+    "id": "019a2400-1879-7000-a001-000000001879",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 63",
+      "region": "netherlands_west",
+      "latitude": 51.8155,
+      "longitude": 4.6847
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 8.8,
+    "meters": {
+      "electricity_day_ean": "871686727492982114",
+      "electricity_night_ean": "871686931875873524",
+      "water_ean": "871688592897410081"
+    }
+  },
+  {
+    "id": "019a2400-1880-7000-a001-000000001880",
+    "name": "De Haan Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 34",
+      "region": "netherlands_west",
+      "latitude": 52.0704,
+      "longitude": 4.292
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 9.8,
+    "meters": {
+      "electricity_day_ean": "871686022046620018",
+      "electricity_night_ean": "871686483222599354",
+      "gas_ean": "871687041777777118",
+      "water_ean": "871688123985112114"
+    }
+  },
+  {
+    "id": "019a2400-1881-7000-a001-000000001881",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 140",
+      "region": "netherlands_west",
+      "latitude": 52.0151,
+      "longitude": 4.3505
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 9.3,
+    "meters": {
+      "electricity_day_ean": "871686375217749929",
+      "electricity_night_ean": "871686571451966020",
+      "gas_ean": "871687435798427305",
+      "water_ean": "871688415953466205"
+    }
+  },
+  {
+    "id": "019a2400-1882-7000-a001-000000001882",
+    "name": "De Vries Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 154",
+      "region": "netherlands_west",
+      "latitude": 51.9202,
+      "longitude": 4.4825
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 13.8,
+    "meters": {
+      "electricity_day_ean": "871686884526661870",
+      "electricity_night_ean": "871686173714453940",
+      "gas_ean": "871687997908687196",
+      "water_ean": "871688952344314808"
+    }
+  },
+  {
+    "id": "019a2400-1883-7000-a001-000000001883",
+    "name": "Bos Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 51",
+      "region": "netherlands_west",
+      "latitude": 52.1648,
+      "longitude": 4.5008
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 12.3,
+    "meters": {
+      "electricity_day_ean": "871686349319894810",
+      "electricity_night_ean": "871686908067663239",
+      "gas_ean": "871687886401760243",
+      "water_ean": "871688901945148516"
+    }
+  },
+  {
+    "id": "019a2400-1884-7000-a001-000000001884",
+    "name": "Smit Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 85",
+      "region": "netherlands_west",
+      "latitude": 52.013,
+      "longitude": 4.3663
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 8.8,
+    "meters": {
+      "electricity_day_ean": "871686028704897213",
+      "electricity_night_ean": "871686407264200584",
+      "gas_ean": "871687390178940452"
+    }
+  },
+  {
+    "id": "019a2400-1885-7000-a001-000000001885",
+    "name": "Dekker Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 67",
+      "region": "netherlands_west",
+      "latitude": 51.9143,
+      "longitude": 4.4877
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 12.5,
+    "meters": {
+      "electricity_day_ean": "871686872099575599",
+      "electricity_night_ean": "871686543837816717",
+      "gas_ean": "871687865326079919",
+      "water_ean": "871688273483719034"
+    }
+  },
+  {
+    "id": "019a2400-1886-7000-a001-000000001886",
+    "name": "Visser Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 191",
+      "region": "netherlands_west",
+      "latitude": 52.0682,
+      "longitude": 4.2992
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 13.8,
+    "meters": {
+      "electricity_day_ean": "871686536060821045",
+      "electricity_night_ean": "871686276998079996",
+      "gas_ean": "871687318321407342",
+      "water_ean": "871688583137107908"
+    }
+  },
+  {
+    "id": "019a2400-1887-7000-a001-000000001887",
+    "name": "Van Leeuwen Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 117",
+      "region": "netherlands_west",
+      "latitude": 51.8149,
+      "longitude": 4.6894
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 10.7,
+    "meters": {
+      "electricity_day_ean": "871686901964155585",
+      "electricity_night_ean": "871686999492936491",
+      "gas_ean": "871687917611899866",
+      "water_ean": "871688303214225354"
+    }
+  },
+  {
+    "id": "019a2400-1888-7000-a001-000000001888",
+    "name": "Dekker Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 3",
+      "region": "netherlands_west",
+      "latitude": 52.0803,
+      "longitude": 4.2982
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 8.0,
+    "meters": {
+      "electricity_day_ean": "871686827692560204",
+      "electricity_night_ean": "871686442795348639",
+      "gas_ean": "871687542323530846",
+      "water_ean": "871688012935552015"
+    }
+  },
+  {
+    "id": "019a2400-1889-7000-a001-000000001889",
+    "name": "De Groot Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 149",
+      "region": "netherlands_west",
+      "latitude": 51.819,
+      "longitude": 4.6986
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 8.8,
+    "meters": {
+      "electricity_day_ean": "871686862552688752",
+      "electricity_night_ean": "871686184905285224",
+      "gas_ean": "871687225936097396",
+      "water_ean": "871688394020495728"
+    }
+  },
+  {
+    "id": "019a2400-1890-7000-a001-000000001890",
+    "name": "Mulder Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 144",
+      "region": "netherlands_west",
+      "latitude": 51.9156,
+      "longitude": 4.4848
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 12.8,
+    "meters": {
+      "electricity_day_ean": "871686854502568965",
+      "electricity_night_ean": "871686451810006361"
+    }
+  },
+  {
+    "id": "019a2400-1891-7000-a001-000000001891",
+    "name": "De Wit Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 117",
+      "region": "netherlands_west",
+      "latitude": 51.8076,
+      "longitude": 4.6845
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 11.2,
+    "meters": {
+      "electricity_day_ean": "871686596936279807",
+      "electricity_night_ean": "871686774504440677",
+      "gas_ean": "871687921420139187",
+      "water_ean": "871688610966787466"
+    }
+  },
+  {
+    "id": "019a2400-1892-7000-a001-000000001892",
+    "name": "Bos Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 22",
+      "region": "netherlands_west",
+      "latitude": 52.015,
+      "longitude": 4.3654
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 10.6,
+    "meters": {
+      "electricity_day_ean": "871686110028438065",
+      "electricity_night_ean": "871686086961763105",
+      "gas_ean": "871687504959987641",
+      "water_ean": "871688033102536716"
+    }
+  },
+  {
+    "id": "019a2400-1893-7000-a001-000000001893",
+    "name": "Jacobs Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 113",
+      "region": "netherlands_west",
+      "latitude": 52.0061,
+      "longitude": 4.3606
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 9.0,
+    "meters": {
+      "electricity_day_ean": "871686000582274730",
+      "electricity_night_ean": "871686142287411228",
+      "water_ean": "871688087710296678"
+    }
+  },
+  {
+    "id": "019a2400-1894-7000-a001-000000001894",
+    "name": "Dekker Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 3",
+      "region": "netherlands_west",
+      "latitude": 52.167,
+      "longitude": 4.4901
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 9.5,
+    "meters": {
+      "electricity_day_ean": "871686958603700442",
+      "electricity_night_ean": "871686320674170830",
+      "gas_ean": "871687557468160693",
+      "water_ean": "871688201245151570"
+    }
+  },
+  {
+    "id": "019a2400-1895-7000-a001-000000001895",
+    "name": "Jansen Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Rotterdam",
+      "postal_code": "3000",
+      "street": "Straat 65",
+      "region": "netherlands_west",
+      "latitude": 51.9208,
+      "longitude": 4.4857
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 12.1,
+    "meters": {
+      "electricity_day_ean": "871686083240451579",
+      "electricity_night_ean": "871686920007058238",
+      "gas_ean": "871687387785519418",
+      "water_ean": "871688763809164567"
+    }
+  },
+  {
+    "id": "019a2400-1896-7000-a001-000000001896",
+    "name": "Brouwer Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 74",
+      "region": "netherlands_west",
+      "latitude": 52.0655,
+      "longitude": 4.2933
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 12.5,
+    "meters": {
+      "electricity_day_ean": "871686265347124524",
+      "electricity_night_ean": "871686201736975223",
+      "gas_ean": "871687710455272701",
+      "water_ean": "871688961431991143"
+    }
+  },
+  {
+    "id": "019a2400-1897-7000-a001-000000001897",
+    "name": "De Haan Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 45",
+      "region": "netherlands_west",
+      "latitude": 52.0627,
+      "longitude": 4.3087
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 10.0,
+    "meters": {
+      "electricity_day_ean": "871686144070928535",
+      "electricity_night_ean": "871686862395296225",
+      "gas_ean": "871687491713226203",
+      "water_ean": "871688526359266167"
+    }
+  },
+  {
+    "id": "019a2400-1898-7000-a001-000000001898",
+    "name": "Smit Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 173",
+      "region": "netherlands_west",
+      "latitude": 52.1672,
+      "longitude": 4.4875
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 10.9,
+    "meters": {
+      "electricity_day_ean": "871686076134835218",
+      "electricity_night_ean": "871686091618997026",
+      "gas_ean": "871687674526859904",
+      "water_ean": "871688016203972167"
+    }
+  },
+  {
+    "id": "019a2400-1899-7000-a001-000000001899",
+    "name": "Van den Berg Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Delft",
+      "postal_code": "2600",
+      "street": "Straat 30",
+      "region": "netherlands_west",
+      "latitude": 52.0185,
+      "longitude": 4.3473
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 8.7,
+    "meters": {
+      "electricity_day_ean": "871686941292135144",
+      "electricity_night_ean": "871686630990086162",
+      "gas_ean": "871687869788718507",
+      "water_ean": "871688420294266139"
+    }
+  },
+  {
+    "id": "019a2400-1900-7000-a001-000000001900",
+    "name": "Koning Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Den Haag",
+      "postal_code": "2500",
+      "street": "Straat 60",
+      "region": "netherlands_west",
+      "latitude": 52.0738,
+      "longitude": 4.3017
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 13.8,
+    "meters": {
+      "electricity_day_ean": "871686924030392156",
+      "electricity_night_ean": "871686526465770827",
+      "water_ean": "871688572123348571"
+    }
+  },
+  {
+    "id": "019a2400-1901-7000-a001-000000001901",
+    "name": "De Jong Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 99",
+      "region": "netherlands_west",
+      "latitude": 52.1677,
+      "longitude": 4.4948
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 12.7,
+    "meters": {
+      "electricity_day_ean": "871686406589132328",
+      "electricity_night_ean": "871686210044755729"
+    }
+  },
+  {
+    "id": "019a2400-1902-7000-a001-000000001902",
+    "name": "De Jong Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Dordrecht",
+      "postal_code": "3300",
+      "street": "Straat 195",
+      "region": "netherlands_west",
+      "latitude": 51.8036,
+      "longitude": 4.6831
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 13.7,
+    "meters": {
+      "electricity_day_ean": "871686173736660783",
+      "electricity_night_ean": "871686434598775125",
+      "water_ean": "871688296883860361"
+    }
+  },
+  {
+    "id": "019a2400-1903-7000-a001-000000001903",
+    "name": "Visser Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 113",
+      "region": "netherlands_west",
+      "latitude": 52.1585,
+      "longitude": 4.4937
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 9.1,
+    "meters": {
+      "electricity_day_ean": "871686622066956276",
+      "electricity_night_ean": "871686132334661289",
+      "gas_ean": "871687066931299474",
+      "water_ean": "871688906393712039"
+    }
+  },
+  {
+    "id": "019a2400-1904-7000-a001-000000001904",
+    "name": "Bos Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Leiden",
+      "postal_code": "2300",
+      "street": "Straat 34",
+      "region": "netherlands_west",
+      "latitude": 52.1683,
+      "longitude": 4.4979
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 12.8,
+    "meters": {
+      "electricity_day_ean": "871686372887220058",
+      "electricity_night_ean": "871686156079778337",
+      "gas_ean": "871687521743436495",
+      "water_ean": "871688822035965185"
+    }
   }
 ]

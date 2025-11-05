@@ -1,642 +1,5566 @@
 [
   {
-    "id": "019a2400-0009-7000-a001-000000000001",
-    "name": "Dubois Family",
-    "iot_provider": "HomeWizard",
+    "id": "019a2400-1361-7000-a001-000000001361",
+    "name": "Vandenberghe Family",
+    "iot_provider": "Huawei FusionSolar",
     "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Place Charles II 23",
-      "region": "belgium_wallonia",
-      "latitude": 50.4108,
-      "longitude": 4.4446
-    },
-    "solar_capacity_kw": 4.6,
-    "battery_capacity_kwh": 12.0,
-    "meter_ean": "542651826842574903"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000002",
-    "name": "Martin Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue de Marchienne 145",
-      "region": "belgium_wallonia",
-      "latitude": 50.4089,
-      "longitude": 4.4512
-    },
-    "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 13.9,
-    "meter_ean": "546556889760136269"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000003",
-    "name": "Bernard Family",
-    "iot_provider": "Solar Edge",
-    "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Boulevard Tirou 67",
-      "region": "belgium_wallonia",
-      "latitude": 50.4134,
-      "longitude": 4.4389
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 42",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.69,
+      "longitude": 5.8173
     },
     "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.8,
-    "meter_ean": "540750419528394603"
+    "battery_capacity_kwh": 13.6,
+    "meters": {
+      "electricity_day_ean": "541449525258072273",
+      "electricity_night_ean": "541449233000116255",
+      "gas_ean": "374606243344057557"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000004",
-    "name": "Thomas Family",
+    "id": "019a2400-1362-7000-a001-000000001362",
+    "name": "Rousseau Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 2",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5789,
+      "longitude": 5.49
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "541449665262437287",
+      "electricity_night_ean": "541449232876145987",
+      "gas_ean": "374606033284459749",
+      "water_ean": "550778058635196984"
+    }
+  },
+  {
+    "id": "019a2400-1363-7000-a001-000000001363",
+    "name": "Fontaine Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 125",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5968,
+      "longitude": 5.8729
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 13.3,
+    "meters": {
+      "electricity_day_ean": "541449441302968214",
+      "electricity_night_ean": "541449224273477200",
+      "gas_ean": "374606855675104364",
+      "water_ean": "550778725787869949"
+    }
+  },
+  {
+    "id": "019a2400-1364-7000-a001-000000001364",
+    "name": "Claessens Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 116",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5883,
+      "longitude": 5.8637
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 9.3,
+    "meters": {
+      "electricity_day_ean": "541449275523606835",
+      "electricity_night_ean": "541449456494305692",
+      "gas_ean": "374606344536949028"
+    }
+  },
+  {
+    "id": "019a2400-1365-7000-a001-000000001365",
+    "name": "Janssens Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 4",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6781,
+      "longitude": 5.8254
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "541449710853316286",
+      "electricity_night_ean": "541449804650739639",
+      "gas_ean": "374606433470667254",
+      "water_ean": "550778799223108648"
+    }
+  },
+  {
+    "id": "019a2400-1366-7000-a001-000000001366",
+    "name": "Jacobs Family",
     "iot_provider": "Smappee",
     "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue de la Montagne 234",
-      "region": "belgium_wallonia",
-      "latitude": 50.4156,
-      "longitude": 4.4423
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 126",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5791,
+      "longitude": 5.5044
     },
-    "solar_capacity_kw": 5.5,
-    "battery_capacity_kwh": 14.5,
-    "meter_ean": "542932916552614871"
+    "solar_capacity_kw": 2.5,
+    "battery_capacity_kwh": 8.7,
+    "meters": {
+      "electricity_day_ean": "541449722785986865",
+      "electricity_night_ean": "541449939012579015",
+      "gas_ean": "374606425334740960"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000005",
-    "name": "Robert Family",
-    "iot_provider": "HomeWizard",
+    "id": "019a2400-1367-7000-a001-000000001367",
+    "name": "Claessens Family",
+    "iot_provider": "Huawei FusionSolar",
     "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue de Dampremy 89",
-      "region": "belgium_wallonia",
-      "latitude": 50.4023,
-      "longitude": 4.4589
-    },
-    "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 11.4,
-    "meter_ean": "543017414369258889"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000006",
-    "name": "Petit Family",
-    "iot_provider": "HomeWizard",
-    "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue des Cayats 145",
-      "region": "belgium_wallonia",
-      "latitude": 50.4189,
-      "longitude": 4.4312
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 150",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.678,
+      "longitude": 5.8153
     },
     "solar_capacity_kw": 4.1,
-    "battery_capacity_kwh": 10.6,
-    "meter_ean": "541589730346406676"
+    "battery_capacity_kwh": 12.7,
+    "meters": {
+      "electricity_day_ean": "541449364655927196",
+      "electricity_night_ean": "541449307422445799",
+      "gas_ean": "374606342677924403",
+      "water_ean": "550778690695119709"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000007",
-    "name": "Durand Family",
-    "iot_provider": "Toon",
+    "id": "019a2400-1368-7000-a001-000000001368",
+    "name": "Vandenberghe Family",
+    "iot_provider": "SolarEdge",
     "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Boulevard Audent 56",
-      "region": "belgium_wallonia",
-      "latitude": 50.4067,
-      "longitude": 4.4478
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 196",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.459,
+      "longitude": 4.8756
     },
-    "solar_capacity_kw": 5.2,
-    "battery_capacity_kwh": 13.7,
-    "meter_ean": "540317168917067022"
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 13.9,
+    "meters": {
+      "electricity_day_ean": "541449052636870514",
+      "electricity_night_ean": "541449323060087112",
+      "gas_ean": "374606942730302493",
+      "water_ean": "550778855404894066"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000008",
-    "name": "Leroy Family",
-    "iot_provider": "Homey",
+    "id": "019a2400-1369-7000-a001-000000001369",
+    "name": "Claes Family",
+    "iot_provider": "Huawei FusionSolar",
     "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue de Couillet 234",
-      "region": "belgium_wallonia",
-      "latitude": 50.3956,
-      "longitude": 4.4634
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 76",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5823,
+      "longitude": 5.5095
     },
-    "solar_capacity_kw": 3.9,
-    "battery_capacity_kwh": 9.7,
-    "meter_ean": "542344987731373471"
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 14.0,
+    "meters": {
+      "electricity_day_ean": "541449127109785371",
+      "electricity_night_ean": "541449527296422655",
+      "water_ean": "550778353081137816"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000009",
-    "name": "Moreau Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue de Lodelinsart 78",
-      "region": "belgium_wallonia",
-      "latitude": 50.4212,
-      "longitude": 4.4589
-    },
-    "solar_capacity_kw": 5.1,
-    "battery_capacity_kwh": 13.3,
-    "meter_ean": "544844427161543328"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000010",
-    "name": "Simon Family",
+    "id": "019a2400-1370-7000-a001-000000001370",
+    "name": "Janssens Family",
     "iot_provider": "Smappee",
     "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue de Monceau 123",
-      "region": "belgium_wallonia",
-      "latitude": 50.4278,
-      "longitude": 4.4512
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 108",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6343,
+      "longitude": 5.5857
     },
-    "solar_capacity_kw": 5.4,
-    "battery_capacity_kwh": 14.2,
-    "meter_ean": "541698334340901473"
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 9.4,
+    "meters": {
+      "electricity_day_ean": "541449764281169651",
+      "electricity_night_ean": "541449563577319541",
+      "gas_ean": "374606762216839703",
+      "water_ean": "550778657906637167"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000011",
+    "id": "019a2400-1371-7000-a001-000000001371",
+    "name": "Vincent Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 147",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5916,
+      "longitude": 5.4975
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 9.5,
+    "meters": {
+      "electricity_day_ean": "541449765151303221",
+      "electricity_night_ean": "541449237055991839",
+      "gas_ean": "374606217045544508",
+      "water_ean": "550778911578043967"
+    }
+  },
+  {
+    "id": "019a2400-1372-7000-a001-000000001372",
+    "name": "Laurent Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 164",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4772,
+      "longitude": 4.8637
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 11.2,
+    "meters": {
+      "electricity_day_ean": "541449475693991363",
+      "electricity_night_ean": "541449568891609830",
+      "water_ean": "550778764489876856"
+    }
+  },
+  {
+    "id": "019a2400-1373-7000-a001-000000001373",
+    "name": "Wouters Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 197",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5802,
+      "longitude": 5.4901
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 12.7,
+    "meters": {
+      "electricity_day_ean": "541449951449214235",
+      "electricity_night_ean": "541449325036452130",
+      "gas_ean": "374606369203446744",
+      "water_ean": "550778701971443831"
+    }
+  },
+  {
+    "id": "019a2400-1374-7000-a001-000000001374",
+    "name": "Devos Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 191",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4666,
+      "longitude": 4.8706
+    },
+    "solar_capacity_kw": 3.1,
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "541449969374432361",
+      "electricity_night_ean": "541449231859277284",
+      "gas_ean": "374606013695006503"
+    }
+  },
+  {
+    "id": "019a2400-1375-7000-a001-000000001375",
+    "name": "Wouters Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 65",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5863,
+      "longitude": 5.4916
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 11.4,
+    "meters": {
+      "electricity_day_ean": "541449874782781396",
+      "electricity_night_ean": "541449781137389141",
+      "gas_ean": "374606990681083502"
+    }
+  },
+  {
+    "id": "019a2400-1376-7000-a001-000000001376",
+    "name": "Bogaert Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 48",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5917,
+      "longitude": 5.5034
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 14.0,
+    "meters": {
+      "electricity_day_ean": "541449942173587888",
+      "electricity_night_ean": "541449804442055483",
+      "gas_ean": "374606896157927830"
+    }
+  },
+  {
+    "id": "019a2400-1377-7000-a001-000000001377",
+    "name": "Hermans Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 15",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5779,
+      "longitude": 5.5054
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 11.6,
+    "meters": {
+      "electricity_day_ean": "541449651481525776",
+      "electricity_night_ean": "541449917477816926",
+      "gas_ean": "374606008739550526",
+      "water_ean": "550778846280869125"
+    }
+  },
+  {
+    "id": "019a2400-1378-7000-a001-000000001378",
+    "name": "Michiels Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 23",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4615,
+      "longitude": 4.8658
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "541449526158762445",
+      "electricity_night_ean": "541449559894861760",
+      "gas_ean": "374606301157262337"
+    }
+  },
+  {
+    "id": "019a2400-1379-7000-a001-000000001379",
+    "name": "Desmet Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 83",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5899,
+      "longitude": 5.4999
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 9.9,
+    "meters": {
+      "electricity_day_ean": "541449177224170080",
+      "electricity_night_ean": "541449643727699238",
+      "gas_ean": "374606926937088899",
+      "water_ean": "550778161343027043"
+    }
+  },
+  {
+    "id": "019a2400-1380-7000-a001-000000001380",
+    "name": "Aerts Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 132",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.471,
+      "longitude": 4.8749
+    },
+    "solar_capacity_kw": 3.1,
+    "battery_capacity_kwh": 9.9,
+    "meters": {
+      "electricity_day_ean": "541449954403496183",
+      "electricity_night_ean": "541449033756567178",
+      "gas_ean": "374606860620203980",
+      "water_ean": "550778671077181306"
+    }
+  },
+  {
+    "id": "019a2400-1381-7000-a001-000000001381",
+    "name": "Fontaine Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 55",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5949,
+      "longitude": 5.8692
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 10.0,
+    "meters": {
+      "electricity_day_ean": "541449963431376288",
+      "electricity_night_ean": "541449297949210743",
+      "water_ean": "550778862429863796"
+    }
+  },
+  {
+    "id": "019a2400-1382-7000-a001-000000001382",
+    "name": "Dewilde Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 132",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4674,
+      "longitude": 4.8699
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 9.1,
+    "meters": {
+      "electricity_day_ean": "541449147090289225",
+      "electricity_night_ean": "541449070964941505",
+      "water_ean": "550778445004849820"
+    }
+  },
+  {
+    "id": "019a2400-1383-7000-a001-000000001383",
+    "name": "Dupont Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 101",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5871,
+      "longitude": 5.8677
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 13.3,
+    "meters": {
+      "electricity_day_ean": "541449587719868273",
+      "electricity_night_ean": "541449163135560683",
+      "gas_ean": "374606481321525947",
+      "water_ean": "550778676456615826"
+    }
+  },
+  {
+    "id": "019a2400-1384-7000-a001-000000001384",
+    "name": "Dewilde Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 26",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5961,
+      "longitude": 5.8684
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 12.5,
+    "meters": {
+      "electricity_day_ean": "541449832139830536",
+      "electricity_night_ean": "541449056539826790",
+      "water_ean": "550778045844871341"
+    }
+  },
+  {
+    "id": "019a2400-1385-7000-a001-000000001385",
+    "name": "Claes Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 144",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6854,
+      "longitude": 5.8122
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 12.8,
+    "meters": {
+      "electricity_day_ean": "541449117354942286",
+      "electricity_night_ean": "541449207978099566",
+      "gas_ean": "374606685215599274",
+      "water_ean": "550778584280183956"
+    }
+  },
+  {
+    "id": "019a2400-1386-7000-a001-000000001386",
+    "name": "Simon Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 134",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6235,
+      "longitude": 5.5717
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 13.7,
+    "meters": {
+      "electricity_day_ean": "541449301135110415",
+      "electricity_night_ean": "541449781383237832",
+      "gas_ean": "374606223241600580",
+      "water_ean": "550778898294736924"
+    }
+  },
+  {
+    "id": "019a2400-1387-7000-a001-000000001387",
+    "name": "Simon Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 123",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4621,
+      "longitude": 4.8725
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 11.2,
+    "meters": {
+      "electricity_day_ean": "541449769737769450",
+      "electricity_night_ean": "541449347491063234",
+      "gas_ean": "374606192962678015",
+      "water_ean": "550778998680394675"
+    }
+  },
+  {
+    "id": "019a2400-1388-7000-a001-000000001388",
+    "name": "Verhoeven Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 156",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6253,
+      "longitude": 5.5765
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 13.9,
+    "meters": {
+      "electricity_day_ean": "541449500605117617",
+      "electricity_night_ean": "541449890589238664",
+      "gas_ean": "374606788227305464",
+      "water_ean": "550778593100583429"
+    }
+  },
+  {
+    "id": "019a2400-1389-7000-a001-000000001389",
+    "name": "Claessens Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 50",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5895,
+      "longitude": 5.8568
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 11.9,
+    "meters": {
+      "electricity_day_ean": "541449424033652812",
+      "electricity_night_ean": "541449760730633737",
+      "gas_ean": "374606735800828070",
+      "water_ean": "550778741184160744"
+    }
+  },
+  {
+    "id": "019a2400-1390-7000-a001-000000001390",
+    "name": "Dupont Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 192",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6861,
+      "longitude": 5.8174
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 11.4,
+    "meters": {
+      "electricity_day_ean": "541449498504179371",
+      "electricity_night_ean": "541449961058687708",
+      "gas_ean": "374606786512911437"
+    }
+  },
+  {
+    "id": "019a2400-1391-7000-a001-000000001391",
+    "name": "Martens Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 60",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4588,
+      "longitude": 4.8763
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 12.2,
+    "meters": {
+      "electricity_day_ean": "541449054288413856",
+      "electricity_night_ean": "541449679801154011",
+      "gas_ean": "374606713962902651"
+    }
+  },
+  {
+    "id": "019a2400-1392-7000-a001-000000001392",
+    "name": "Bogaert Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 21",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5862,
+      "longitude": 5.8602
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 12.4,
+    "meters": {
+      "electricity_day_ean": "541449244647532592",
+      "electricity_night_ean": "541449104745978866",
+      "water_ean": "550778793526952230"
+    }
+  },
+  {
+    "id": "019a2400-1393-7000-a001-000000001393",
+    "name": "Lambert Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 185",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6763,
+      "longitude": 5.8193
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 9.5,
+    "meters": {
+      "electricity_day_ean": "541449198754027878",
+      "electricity_night_ean": "541449504648802876",
+      "water_ean": "550778217637005714"
+    }
+  },
+  {
+    "id": "019a2400-1394-7000-a001-000000001394",
     "name": "Laurent Family",
     "iot_provider": "Smappee",
     "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue de Gosselies 234",
-      "region": "belgium_wallonia",
-      "latitude": 50.4334,
-      "longitude": 4.4678
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 23",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6862,
+      "longitude": 5.8102
     },
-    "solar_capacity_kw": 4.8,
-    "battery_capacity_kwh": 12.5,
-    "meter_ean": "542503920103822456"
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 11.0,
+    "meters": {
+      "electricity_day_ean": "541449770059128302",
+      "electricity_night_ean": "541449062659686484",
+      "water_ean": "550778221814130466"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000012",
-    "name": "Lefebvre Family",
-    "iot_provider": "Toon",
+    "id": "019a2400-1395-7000-a001-000000001395",
+    "name": "Bogaert Family",
+    "iot_provider": "SolarEdge",
     "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue de Jumet 89",
-      "region": "belgium_wallonia",
-      "latitude": 50.4412,
-      "longitude": 4.4289
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 99",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6819,
+      "longitude": 5.8205
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 13.6,
+    "meters": {
+      "electricity_day_ean": "541449205233210435",
+      "electricity_night_ean": "541449555855346602"
+    }
+  },
+  {
+    "id": "019a2400-1396-7000-a001-000000001396",
+    "name": "Fontaine Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 148",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4614,
+      "longitude": 4.8735
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 11.9,
+    "meters": {
+      "electricity_day_ean": "541449741957033483",
+      "electricity_night_ean": "541449793518208283",
+      "gas_ean": "374606821019254666"
+    }
+  },
+  {
+    "id": "019a2400-1397-7000-a001-000000001397",
+    "name": "Verhoeven Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 99",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6323,
+      "longitude": 5.5766
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 10.6,
+    "meters": {
+      "electricity_day_ean": "541449980642297752",
+      "electricity_night_ean": "541449385526088369",
+      "gas_ean": "374606098795295605"
+    }
+  },
+  {
+    "id": "019a2400-1398-7000-a001-000000001398",
+    "name": "Van den Berg Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 140",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5793,
+      "longitude": 5.8666
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 9.9,
+    "meters": {
+      "electricity_day_ean": "541449734839820411",
+      "electricity_night_ean": "541449643783580375",
+      "gas_ean": "374606434897900147",
+      "water_ean": "550778539186509215"
+    }
+  },
+  {
+    "id": "019a2400-1399-7000-a001-000000001399",
+    "name": "Hermans Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 138",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6898,
+      "longitude": 5.808
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "541449002593980262",
+      "electricity_night_ean": "541449678118188106",
+      "gas_ean": "374606405759191532",
+      "water_ean": "550778343970559487"
+    }
+  },
+  {
+    "id": "019a2400-1400-7000-a001-000000001400",
+    "name": "Fontaine Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 143",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6255,
+      "longitude": 5.5697
     },
     "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 11.2,
-    "meter_ean": "549854114787343942"
+    "battery_capacity_kwh": 8.0,
+    "meters": {
+      "electricity_day_ean": "541449768361328324",
+      "electricity_night_ean": "541449508817118397",
+      "gas_ean": "374606510291629391",
+      "water_ean": "550778571766420628"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000013",
-    "name": "Michel Family",
-    "iot_provider": "Solar Edge",
-    "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue de Montignies 145",
-      "region": "belgium_wallonia",
-      "latitude": 50.3989,
-      "longitude": 4.4712
-    },
-    "solar_capacity_kw": 5.0,
-    "battery_capacity_kwh": 13.0,
-    "meter_ean": "542732993236316762"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000014",
-    "name": "Garcia Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue de Roux 56",
-      "region": "belgium_wallonia",
-      "latitude": 50.4456,
-      "longitude": 4.4423
-    },
-    "solar_capacity_kw": 4.6,
-    "battery_capacity_kwh": 12.0,
-    "meter_ean": "548095403268285308"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000015",
-    "name": "David Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue de Gilly 234",
-      "region": "belgium_wallonia",
-      "latitude": 50.4234,
-      "longitude": 4.4734
-    },
-    "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 13.9,
-    "meter_ean": "547418001003746433"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000016",
-    "name": "Bertrand Family",
-    "iot_provider": "Solar Edge",
-    "address": {
-      "city": "Charleroi",
-      "postal_code": "6000",
-      "street": "Rue de Ch\u00e2telet 78",
-      "region": "belgium_wallonia",
-      "latitude": 50.3867,
-      "longitude": 4.4523
-    },
-    "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 10.3,
-    "meter_ean": "548281654652050962"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000017",
-    "name": "Roux Family",
-    "iot_provider": "HomeWizard",
-    "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Grand-Place 45",
-      "region": "belgium_wallonia",
-      "latitude": 50.4542,
-      "longitude": 3.9522
-    },
-    "solar_capacity_kw": 4.7,
-    "battery_capacity_kwh": 12.2,
-    "meter_ean": "541366263344652718"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000018",
+    "id": "019a2400-1401-7000-a001-000000001401",
     "name": "Vincent Family",
     "iot_provider": "Smappee",
     "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Rue de Nimy 123",
-      "region": "belgium_wallonia",
-      "latitude": 50.4589,
-      "longitude": 3.9589
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 189",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6255,
+      "longitude": 5.5722
     },
-    "solar_capacity_kw": 5.4,
-    "battery_capacity_kwh": 14.3,
-    "meter_ean": "549738919461891856"
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 10.9,
+    "meters": {
+      "electricity_day_ean": "541449585912039705",
+      "electricity_night_ean": "541449070620057376",
+      "water_ean": "550778969882703369"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000019",
-    "name": "Fournier Family",
+    "id": "019a2400-1402-7000-a001-000000001402",
+    "name": "Claes Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 102",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5783,
+      "longitude": 5.5035
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "541449629744286133",
+      "electricity_night_ean": "541449199027065835",
+      "gas_ean": "374606912527864601",
+      "water_ean": "550778939208371040"
+    }
+  },
+  {
+    "id": "019a2400-1403-7000-a001-000000001403",
+    "name": "Claessens Family",
     "iot_provider": "Smappee",
     "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Rue de la Chauss\u00e9e 67",
-      "region": "belgium_wallonia",
-      "latitude": 50.4512,
-      "longitude": 3.9467
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 97",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4723,
+      "longitude": 4.8747
     },
-    "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 11.1,
-    "meter_ean": "543740964560988233"
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 11.7,
+    "meters": {
+      "electricity_day_ean": "541449845948599600",
+      "electricity_night_ean": "541449594189055203",
+      "gas_ean": "374606463364856127",
+      "water_ean": "550778851599963539"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000020",
-    "name": "Rousseau Family",
-    "iot_provider": "Solar Edge",
+    "id": "019a2400-1404-7000-a001-000000001404",
+    "name": "Jacobs Family",
+    "iot_provider": "Tesla Powerwall",
     "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Rue d'Havr\u00e9 234",
-      "region": "belgium_wallonia",
-      "latitude": 50.4623,
-      "longitude": 3.9612
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 63",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.577,
+      "longitude": 5.4988
     },
-    "solar_capacity_kw": 5.6,
-    "battery_capacity_kwh": 14.7,
-    "meter_ean": "543357307139868019"
+    "solar_capacity_kw": 2.5,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "541449302762983234",
+      "electricity_night_ean": "541449546309530491",
+      "water_ean": "550778024378876159"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000021",
+    "id": "019a2400-1405-7000-a001-000000001405",
+    "name": "Fontaine Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 98",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5991,
+      "longitude": 5.8701
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 9.7,
+    "meters": {
+      "electricity_day_ean": "541449644787080771",
+      "electricity_night_ean": "541449107161569893",
+      "gas_ean": "374606658787859406",
+      "water_ean": "550778777443974722"
+    }
+  },
+  {
+    "id": "019a2400-1406-7000-a001-000000001406",
+    "name": "Rousseau Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 80",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5862,
+      "longitude": 5.8548
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 13.7,
+    "meters": {
+      "electricity_day_ean": "541449157557670380",
+      "electricity_night_ean": "541449023752406937",
+      "gas_ean": "374606865389617705",
+      "water_ean": "550778938617493490"
+    }
+  },
+  {
+    "id": "019a2400-1407-7000-a001-000000001407",
+    "name": "Smet Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 187",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5972,
+      "longitude": 5.8539
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 9.9,
+    "meters": {
+      "electricity_day_ean": "541449225719788564",
+      "electricity_night_ean": "541449424261351070",
+      "gas_ean": "374606139695690114"
+    }
+  },
+  {
+    "id": "019a2400-1408-7000-a001-000000001408",
+    "name": "Claessens Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 19",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5807,
+      "longitude": 5.5098
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 11.6,
+    "meters": {
+      "electricity_day_ean": "541449213095380770",
+      "electricity_night_ean": "541449184802532997",
+      "gas_ean": "374606181238976870",
+      "water_ean": "550778657905046196"
+    }
+  },
+  {
+    "id": "019a2400-1409-7000-a001-000000001409",
+    "name": "Dewilde Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 61",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5946,
+      "longitude": 5.497
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 13.6,
+    "meters": {
+      "electricity_day_ean": "541449927670165290",
+      "electricity_night_ean": "541449738615649946",
+      "gas_ean": "374606996139574199",
+      "water_ean": "550778745648883604"
+    }
+  },
+  {
+    "id": "019a2400-1410-7000-a001-000000001410",
+    "name": "Janssens Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 78",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5906,
+      "longitude": 5.8657
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 13.3,
+    "meters": {
+      "electricity_day_ean": "541449682976348392",
+      "electricity_night_ean": "541449533284643775",
+      "gas_ean": "374606864745655496"
+    }
+  },
+  {
+    "id": "019a2400-1411-7000-a001-000000001411",
+    "name": "Vincent Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 137",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5884,
+      "longitude": 5.8696
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 13.0,
+    "meters": {
+      "electricity_day_ean": "541449942989616767",
+      "electricity_night_ean": "541449685979979974",
+      "gas_ean": "374606710991362483",
+      "water_ean": "550778386707767124"
+    }
+  },
+  {
+    "id": "019a2400-1412-7000-a001-000000001412",
+    "name": "Desmet Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 61",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.461,
+      "longitude": 4.8624
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 9.5,
+    "meters": {
+      "electricity_day_ean": "541449747000182169",
+      "electricity_night_ean": "541449633906019109",
+      "water_ean": "550778840801671162"
+    }
+  },
+  {
+    "id": "019a2400-1413-7000-a001-000000001413",
+    "name": "Claessens Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 146",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6413,
+      "longitude": 5.5758
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 12.4,
+    "meters": {
+      "electricity_day_ean": "541449597607912982",
+      "electricity_night_ean": "541449929525629016"
+    }
+  },
+  {
+    "id": "019a2400-1414-7000-a001-000000001414",
+    "name": "Rousseau Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 58",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5804,
+      "longitude": 5.8607
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 9.7,
+    "meters": {
+      "electricity_day_ean": "541449552716689124",
+      "electricity_night_ean": "541449776808575333",
+      "gas_ean": "374606952956813939",
+      "water_ean": "550778755789325097"
+    }
+  },
+  {
+    "id": "019a2400-1415-7000-a001-000000001415",
+    "name": "Baert Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 168",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5925,
+      "longitude": 5.867
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 12.5,
+    "meters": {
+      "electricity_day_ean": "541449024765481916",
+      "electricity_night_ean": "541449657266302155",
+      "gas_ean": "374606097735912922",
+      "water_ean": "550778379060985968"
+    }
+  },
+  {
+    "id": "019a2400-1416-7000-a001-000000001416",
+    "name": "Vandenberghe Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 29",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4598,
+      "longitude": 4.8662
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 9.4,
+    "meters": {
+      "electricity_day_ean": "541449993118304364",
+      "electricity_night_ean": "541449124054121252",
+      "water_ean": "550778969549462210"
+    }
+  },
+  {
+    "id": "019a2400-1417-7000-a001-000000001417",
     "name": "Lambert Family",
     "iot_provider": "Smappee",
     "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Boulevard Kennedy 89",
-      "region": "belgium_wallonia",
-      "latitude": 50.4456,
-      "longitude": 3.9423
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 19",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6822,
+      "longitude": 5.8207
     },
-    "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 11.7,
-    "meter_ean": "547712782320869173"
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 13.6,
+    "meters": {
+      "electricity_day_ean": "541449330113900306",
+      "electricity_night_ean": "541449318704300576",
+      "gas_ean": "374606955999890930",
+      "water_ean": "550778482520922672"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000022",
-    "name": "Fontaine Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Rue de Bertaimont 145",
-      "region": "belgium_wallonia",
-      "latitude": 50.4489,
-      "longitude": 3.9378
-    },
-    "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.9,
-    "meter_ean": "543281412187631425"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000023",
-    "name": "Girard Family",
-    "iot_provider": "Solar Edge",
-    "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Rue de la Grande Triperie 56",
-      "region": "belgium_wallonia",
-      "latitude": 50.4567,
-      "longitude": 3.9545
-    },
-    "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 13.9,
-    "meter_ean": "542366970380393261"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000024",
-    "name": "Bonnet Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Rue des Clercs 234",
-      "region": "belgium_wallonia",
-      "latitude": 50.4534,
-      "longitude": 3.9489
-    },
-    "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 10.4,
-    "meter_ean": "546962488921190557"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000025",
-    "name": "Dupont Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Rue de Houdain 78",
-      "region": "belgium_wallonia",
-      "latitude": 50.4678,
-      "longitude": 3.9634
-    },
-    "solar_capacity_kw": 5.1,
-    "battery_capacity_kwh": 13.2,
-    "meter_ean": "542717051165793558"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000026",
-    "name": "Henry Family",
-    "iot_provider": "Solar Edge",
-    "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Avenue Reine Astrid 123",
-      "region": "belgium_wallonia",
-      "latitude": 50.4423,
-      "longitude": 3.9523
-    },
-    "solar_capacity_kw": 5.5,
-    "battery_capacity_kwh": 14.4,
-    "meter_ean": "542735547348488376"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000027",
-    "name": "Masson Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Rue de Fl\u00e9nu 234",
-      "region": "belgium_wallonia",
-      "latitude": 50.4389,
-      "longitude": 3.9712
-    },
-    "solar_capacity_kw": 4.8,
-    "battery_capacity_kwh": 12.6,
-    "meter_ean": "544812246793996114"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000028",
-    "name": "Deschamps Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Rue de Ciply 89",
-      "region": "belgium_wallonia",
-      "latitude": 50.4312,
-      "longitude": 3.9412
-    },
-    "solar_capacity_kw": 4.4,
-    "battery_capacity_kwh": 11.5,
-    "meter_ean": "545133755400211044"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000029",
-    "name": "Arnaud Family",
+    "id": "019a2400-1418-7000-a001-000000001418",
+    "name": "Vandenberghe Family",
     "iot_provider": "HomeWizard",
     "address": {
-      "city": "Mons",
-      "postal_code": "7000",
-      "street": "Rue de Ghlin 145",
-      "region": "belgium_wallonia",
-      "latitude": 50.4756,
-      "longitude": 3.9534
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 184",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6269,
+      "longitude": 5.5836
     },
-    "solar_capacity_kw": 4.9,
-    "battery_capacity_kwh": 12.8,
-    "meter_ean": "542373229846478309"
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 10.2,
+    "meters": {
+      "electricity_day_ean": "541449961796758831",
+      "electricity_night_ean": "541449861371657833",
+      "gas_ean": "374606784819474468",
+      "water_ean": "550778471411623603"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000030",
-    "name": "Blanc Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Tournai",
-      "postal_code": "7500",
-      "street": "Grand-Place 34",
-      "region": "belgium_wallonia",
-      "latitude": 50.6059,
-      "longitude": 3.3889
-    },
-    "solar_capacity_kw": 4.6,
-    "battery_capacity_kwh": 12.0,
-    "meter_ean": "541309191880184461"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000031",
-    "name": "Mercier Family",
+    "id": "019a2400-1419-7000-a001-000000001419",
+    "name": "Michiels Family",
     "iot_provider": "Smappee",
     "address": {
-      "city": "Tournai",
-      "postal_code": "7500",
-      "street": "Rue Royale 123",
-      "region": "belgium_wallonia",
-      "latitude": 50.6034,
-      "longitude": 3.3912
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 67",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5949,
+      "longitude": 5.4986
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 13.7,
+    "meters": {
+      "electricity_day_ean": "541449077306024170",
+      "electricity_night_ean": "541449635888873502",
+      "gas_ean": "374606962305611443",
+      "water_ean": "550778124749571970"
+    }
+  },
+  {
+    "id": "019a2400-1420-7000-a001-000000001420",
+    "name": "Laurent Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 76",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.599,
+      "longitude": 5.8615
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 12.7,
+    "meters": {
+      "electricity_day_ean": "541449776739696509",
+      "electricity_night_ean": "541449478613217940",
+      "water_ean": "550778111316605306"
+    }
+  },
+  {
+    "id": "019a2400-1421-7000-a001-000000001421",
+    "name": "Simon Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 132",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6424,
+      "longitude": 5.5796
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "541449120512071925",
+      "electricity_night_ean": "541449786649958234",
+      "water_ean": "550778785060558674"
+    }
+  },
+  {
+    "id": "019a2400-1422-7000-a001-000000001422",
+    "name": "Coppens Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 112",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4768,
+      "longitude": 4.871
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 11.4,
+    "meters": {
+      "electricity_day_ean": "541449877464084089",
+      "electricity_night_ean": "541449507234575878",
+      "gas_ean": "374606572023207240",
+      "water_ean": "550778926187074508"
+    }
+  },
+  {
+    "id": "019a2400-1423-7000-a001-000000001423",
+    "name": "Dubois Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 80",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6819,
+      "longitude": 5.8179
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 12.8,
+    "meters": {
+      "electricity_day_ean": "541449272910974692",
+      "electricity_night_ean": "541449848703054858",
+      "gas_ean": "374606720758046195",
+      "water_ean": "550778341992942555"
+    }
+  },
+  {
+    "id": "019a2400-1424-7000-a001-000000001424",
+    "name": "Willems Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 68",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.595,
+      "longitude": 5.8546
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 13.1,
+    "meters": {
+      "electricity_day_ean": "541449102686302238",
+      "electricity_night_ean": "541449904818713098",
+      "gas_ean": "374606038208288214"
+    }
+  },
+  {
+    "id": "019a2400-1425-7000-a001-000000001425",
+    "name": "Baert Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 89",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6768,
+      "longitude": 5.8136
     },
     "solar_capacity_kw": 5.4,
-    "battery_capacity_kwh": 14.3,
-    "meter_ean": "545151250823839627"
+    "battery_capacity_kwh": 12.4,
+    "meters": {
+      "electricity_day_ean": "541449776931339989",
+      "electricity_night_ean": "541449357523817799",
+      "water_ean": "550778771970335112"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000032",
-    "name": "Denis Family",
-    "iot_provider": "Smappee",
-    "address": {
-      "city": "Tournai",
-      "postal_code": "7500",
-      "street": "Rue des Choraux 67",
-      "region": "belgium_wallonia",
-      "latitude": 50.6078,
-      "longitude": 3.3856
-    },
-    "solar_capacity_kw": 4.3,
-    "battery_capacity_kwh": 11.2,
-    "meter_ean": "544738180883760194"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000033",
-    "name": "Meyer Family",
-    "iot_provider": "Homey",
-    "address": {
-      "city": "Tournai",
-      "postal_code": "7500",
-      "street": "Rue de Maire 234",
-      "region": "belgium_wallonia",
-      "latitude": 50.6012,
-      "longitude": 3.3823
-    },
-    "solar_capacity_kw": 5.6,
-    "battery_capacity_kwh": 14.8,
-    "meter_ean": "543515829623945990"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000034",
-    "name": "Nicolas Family",
+    "id": "019a2400-1426-7000-a001-000000001426",
+    "name": "Janssens Family",
     "iot_provider": "HomeWizard",
     "address": {
-      "city": "Tournai",
-      "postal_code": "7500",
-      "street": "Rue de l'H\u00f4pital Notre-Dame 89",
-      "region": "belgium_wallonia",
-      "latitude": 50.6089,
-      "longitude": 3.3934
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 191",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5985,
+      "longitude": 5.858
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 10.7,
+    "meters": {
+      "electricity_day_ean": "541449433549065371",
+      "electricity_night_ean": "541449192798513290",
+      "gas_ean": "374606382653627109",
+      "water_ean": "550778957477747101"
+    }
+  },
+  {
+    "id": "019a2400-1427-7000-a001-000000001427",
+    "name": "Hendrickx Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 117",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5893,
+      "longitude": 5.8579
     },
     "solar_capacity_kw": 4.5,
-    "battery_capacity_kwh": 11.7,
-    "meter_ean": "546256427886617415"
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "541449846244676484",
+      "electricity_night_ean": "541449457319413865"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000035",
-    "name": "Lemoine Family",
-    "iot_provider": "Solar Edge",
+    "id": "019a2400-1428-7000-a001-000000001428",
+    "name": "Smet Family",
+    "iot_provider": "Huawei FusionSolar",
     "address": {
-      "city": "Tournai",
-      "postal_code": "7500",
-      "street": "Rue Saint-Martin 145",
-      "region": "belgium_wallonia",
-      "latitude": 50.6123,
-      "longitude": 3.3867
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 103",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6337,
+      "longitude": 5.5796
     },
-    "solar_capacity_kw": 4.2,
-    "battery_capacity_kwh": 10.9,
-    "meter_ean": "540658458624716577"
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 9.0,
+    "meters": {
+      "electricity_day_ean": "541449404330238413",
+      "electricity_night_ean": "541449067679241580",
+      "gas_ean": "374606979698790891"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000036",
-    "name": "Leclerc Family",
-    "iot_provider": "Homey",
+    "id": "019a2400-1429-7000-a001-000000001429",
+    "name": "Wouters Family",
+    "iot_provider": "Enphase",
     "address": {
-      "city": "Tournai",
-      "postal_code": "7500",
-      "street": "Rue de l'Yser 56",
-      "region": "belgium_wallonia",
-      "latitude": 50.5989,
-      "longitude": 3.3789
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 1",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4664,
+      "longitude": 4.8792
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 11.6,
+    "meters": {
+      "electricity_day_ean": "541449610520178927",
+      "electricity_night_ean": "541449308304355207",
+      "gas_ean": "374606716833503231",
+      "water_ean": "550778332610064669"
+    }
+  },
+  {
+    "id": "019a2400-1430-7000-a001-000000001430",
+    "name": "Vandenberghe Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 97",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5779,
+      "longitude": 5.5062
+    },
+    "solar_capacity_kw": 2.5,
+    "battery_capacity_kwh": 9.8,
+    "meters": {
+      "electricity_day_ean": "541449791231670780",
+      "electricity_night_ean": "541449755490359820",
+      "gas_ean": "374606115625220593",
+      "water_ean": "550778282507745664"
+    }
+  },
+  {
+    "id": "019a2400-1431-7000-a001-000000001431",
+    "name": "Dewilde Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 194",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6814,
+      "longitude": 5.8185
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 11.8,
+    "meters": {
+      "electricity_day_ean": "541449856327174421",
+      "electricity_night_ean": "541449157138235264",
+      "water_ean": "550778894492966451"
+    }
+  },
+  {
+    "id": "019a2400-1432-7000-a001-000000001432",
+    "name": "Mertens Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 110",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6903,
+      "longitude": 5.8242
+    },
+    "solar_capacity_kw": 3.1,
+    "battery_capacity_kwh": 11.6,
+    "meters": {
+      "electricity_day_ean": "541449914368943662",
+      "electricity_night_ean": "541449983033214437",
+      "water_ean": "550778988507790142"
+    }
+  },
+  {
+    "id": "019a2400-1433-7000-a001-000000001433",
+    "name": "Desmet Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 36",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6266,
+      "longitude": 5.5718
     },
     "solar_capacity_kw": 5.3,
-    "battery_capacity_kwh": 13.9,
-    "meter_ean": "540871497004508188"
+    "battery_capacity_kwh": 9.6,
+    "meters": {
+      "electricity_day_ean": "541449468678867507",
+      "electricity_night_ean": "541449175960533404"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000037",
-    "name": "Roy Family",
-    "iot_provider": "Solar Edge",
+    "id": "019a2400-1434-7000-a001-000000001434",
+    "name": "Fontaine Family",
+    "iot_provider": "SolarEdge",
     "address": {
-      "city": "Tournai",
-      "postal_code": "7500",
-      "street": "Boulevard Lalaing 234",
-      "region": "belgium_wallonia",
-      "latitude": 50.6156,
-      "longitude": 3.3923
-    },
-    "solar_capacity_kw": 4.0,
-    "battery_capacity_kwh": 10.4,
-    "meter_ean": "542260974655494588"
-  },
-  {
-    "id": "019a2400-0009-7000-a001-000000000038",
-    "name": "Colin Family",
-    "iot_provider": "Toon",
-    "address": {
-      "city": "Tournai",
-      "postal_code": "7500",
-      "street": "Rue de Cortil 78",
-      "region": "belgium_wallonia",
-      "latitude": 50.5956,
-      "longitude": 3.3945
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 5",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5915,
+      "longitude": 5.8637
     },
     "solar_capacity_kw": 5.1,
     "battery_capacity_kwh": 13.3,
-    "meter_ean": "542817852861889012"
+    "meters": {
+      "electricity_day_ean": "541449848660819751",
+      "electricity_night_ean": "541449080373151245",
+      "gas_ean": "374606147469246509",
+      "water_ean": "550778669145930466"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000039",
-    "name": "Vidal Family",
-    "iot_provider": "Solar Edge",
+    "id": "019a2400-1435-7000-a001-000000001435",
+    "name": "Van den Berg Family",
+    "iot_provider": "Enphase",
     "address": {
-      "city": "Tournai",
-      "postal_code": "7500",
-      "street": "Rue des J\u00e9suites 123",
-      "region": "belgium_wallonia",
-      "latitude": 50.6045,
-      "longitude": 3.3978
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 126",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5926,
+      "longitude": 5.4973
     },
-    "solar_capacity_kw": 5.5,
-    "battery_capacity_kwh": 14.5,
-    "meter_ean": "544599192066657690"
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 12.7,
+    "meters": {
+      "electricity_day_ean": "541449933238575035",
+      "electricity_night_ean": "541449919828149344",
+      "water_ean": "550778086162437150"
+    }
   },
   {
-    "id": "019a2400-0009-7000-a001-000000000040",
-    "name": "Moulin Family",
+    "id": "019a2400-1436-7000-a001-000000001436",
+    "name": "Wouters Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 31",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4591,
+      "longitude": 4.8629
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 11.1,
+    "meters": {
+      "electricity_day_ean": "541449145445008060",
+      "electricity_night_ean": "541449758835509030",
+      "gas_ean": "374606282258310822",
+      "water_ean": "550778810655748708"
+    }
+  },
+  {
+    "id": "019a2400-1437-7000-a001-000000001437",
+    "name": "Maes Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 101",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.583,
+      "longitude": 5.8585
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "541449737234362408",
+      "electricity_night_ean": "541449867903412048",
+      "water_ean": "550778135399646706"
+    }
+  },
+  {
+    "id": "019a2400-1438-7000-a001-000000001438",
+    "name": "Claessens Family",
     "iot_provider": "HomeWizard",
     "address": {
-      "city": "Tournai",
-      "postal_code": "7500",
-      "street": "Rue de Pont 234",
-      "region": "belgium_wallonia",
-      "latitude": 50.6189,
-      "longitude": 3.3834
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 192",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.465,
+      "longitude": 4.8809
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 12.7,
+    "meters": {
+      "electricity_day_ean": "541449617703334796",
+      "electricity_night_ean": "541449375781233608",
+      "water_ean": "550778156428949833"
+    }
+  },
+  {
+    "id": "019a2400-1439-7000-a001-000000001439",
+    "name": "Peeters Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 173",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5821,
+      "longitude": 5.502
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 8.7,
+    "meters": {
+      "electricity_day_ean": "541449703815776248",
+      "electricity_night_ean": "541449190706167204",
+      "gas_ean": "374606433644522938",
+      "water_ean": "550778559191735051"
+    }
+  },
+  {
+    "id": "019a2400-1440-7000-a001-000000001440",
+    "name": "Desmet Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 174",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5829,
+      "longitude": 5.4902
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 10.5,
+    "meters": {
+      "electricity_day_ean": "541449415875188716",
+      "electricity_night_ean": "541449820035581106",
+      "gas_ean": "374606817840920746",
+      "water_ean": "550778977533675408"
+    }
+  },
+  {
+    "id": "019a2400-1441-7000-a001-000000001441",
+    "name": "Baert Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 171",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4769,
+      "longitude": 4.8753
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 10.6,
+    "meters": {
+      "electricity_day_ean": "541449986648417343",
+      "electricity_night_ean": "541449882301559712",
+      "water_ean": "550778444811551032"
+    }
+  },
+  {
+    "id": "019a2400-1442-7000-a001-000000001442",
+    "name": "Dupont Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 127",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6277,
+      "longitude": 5.5754
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 12.4,
+    "meters": {
+      "electricity_day_ean": "541449158206882060",
+      "electricity_night_ean": "541449451587722430",
+      "water_ean": "550778233231282934"
+    }
+  },
+  {
+    "id": "019a2400-1443-7000-a001-000000001443",
+    "name": "Desmet Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 82",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6378,
+      "longitude": 5.5816
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 12.0,
+    "meters": {
+      "electricity_day_ean": "541449040120801522",
+      "electricity_night_ean": "541449122229961256",
+      "gas_ean": "374606019559193285",
+      "water_ean": "550778955966550193"
+    }
+  },
+  {
+    "id": "019a2400-1444-7000-a001-000000001444",
+    "name": "Claessens Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 191",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6901,
+      "longitude": 5.8122
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 10.2,
+    "meters": {
+      "electricity_day_ean": "541449654619000759",
+      "electricity_night_ean": "541449467569972765",
+      "gas_ean": "374606687373796085"
+    }
+  },
+  {
+    "id": "019a2400-1445-7000-a001-000000001445",
+    "name": "Lambert Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 138",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5897,
+      "longitude": 5.4913
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 13.8,
+    "meters": {
+      "electricity_day_ean": "541449714707325104",
+      "electricity_night_ean": "541449208748124583",
+      "gas_ean": "374606516063487685"
+    }
+  },
+  {
+    "id": "019a2400-1446-7000-a001-000000001446",
+    "name": "Bogaert Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 178",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6831,
+      "longitude": 5.8184
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 10.4,
+    "meters": {
+      "electricity_day_ean": "541449789867341930",
+      "electricity_night_ean": "541449383882730510",
+      "gas_ean": "374606539205836583",
+      "water_ean": "550778157994585783"
+    }
+  },
+  {
+    "id": "019a2400-1447-7000-a001-000000001447",
+    "name": "Devos Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 83",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4707,
+      "longitude": 4.867
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 13.0,
+    "meters": {
+      "electricity_day_ean": "541449055788529894",
+      "electricity_night_ean": "541449482342167846",
+      "gas_ean": "374606716837094819",
+      "water_ean": "550778677325800676"
+    }
+  },
+  {
+    "id": "019a2400-1448-7000-a001-000000001448",
+    "name": "Willems Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 130",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6248,
+      "longitude": 5.581
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 12.0,
+    "meters": {
+      "electricity_day_ean": "541449142437136935",
+      "electricity_night_ean": "541449477819609130",
+      "gas_ean": "374606141883782088",
+      "water_ean": "550778188096789373"
+    }
+  },
+  {
+    "id": "019a2400-1449-7000-a001-000000001449",
+    "name": "Smet Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 82",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5889,
+      "longitude": 5.501
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "541449363848133698",
+      "electricity_night_ean": "541449641625768816",
+      "gas_ean": "374606045518370720"
+    }
+  },
+  {
+    "id": "019a2400-1450-7000-a001-000000001450",
+    "name": "Rousseau Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 147",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4669,
+      "longitude": 4.8772
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "541449846114655026",
+      "electricity_night_ean": "541449631098574737",
+      "water_ean": "550778808902584733"
+    }
+  },
+  {
+    "id": "019a2400-1451-7000-a001-000000001451",
+    "name": "Wouters Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 33",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.688,
+      "longitude": 5.8228
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 13.2,
+    "meters": {
+      "electricity_day_ean": "541449991422730791",
+      "electricity_night_ean": "541449985989987828",
+      "gas_ean": "374606883430693074"
+    }
+  },
+  {
+    "id": "019a2400-1452-7000-a001-000000001452",
+    "name": "Fontaine Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 17",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6922,
+      "longitude": 5.8098
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 12.2,
+    "meters": {
+      "electricity_day_ean": "541449036351565822",
+      "electricity_night_ean": "541449059037329168",
+      "gas_ean": "374606595999435592",
+      "water_ean": "550778617962384834"
+    }
+  },
+  {
+    "id": "019a2400-1453-7000-a001-000000001453",
+    "name": "Baert Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 182",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4728,
+      "longitude": 4.8796
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "541449081889912781",
+      "electricity_night_ean": "541449136203853403",
+      "gas_ean": "374606250288640874",
+      "water_ean": "550778217289565564"
+    }
+  },
+  {
+    "id": "019a2400-1454-7000-a001-000000001454",
+    "name": "Baert Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 84",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6783,
+      "longitude": 5.808
+    },
+    "solar_capacity_kw": 2.5,
+    "battery_capacity_kwh": 13.3,
+    "meters": {
+      "electricity_day_ean": "541449622151994029",
+      "electricity_night_ean": "541449109256378455",
+      "gas_ean": "374606570316110242",
+      "water_ean": "550778479566276738"
+    }
+  },
+  {
+    "id": "019a2400-1455-7000-a001-000000001455",
+    "name": "Bogaert Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 114",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5855,
+      "longitude": 5.8679
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 13.9,
+    "meters": {
+      "electricity_day_ean": "541449227563744436",
+      "electricity_night_ean": "541449709447987599",
+      "gas_ean": "374606647308708418",
+      "water_ean": "550778150660620487"
+    }
+  },
+  {
+    "id": "019a2400-1456-7000-a001-000000001456",
+    "name": "Laurent Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 70",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5954,
+      "longitude": 5.4913
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 10.5,
+    "meters": {
+      "electricity_day_ean": "541449381832554011",
+      "electricity_night_ean": "541449536018327386",
+      "water_ean": "550778713315671758"
+    }
+  },
+  {
+    "id": "019a2400-1457-7000-a001-000000001457",
+    "name": "Baert Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 168",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6825,
+      "longitude": 5.8144
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 9.7,
+    "meters": {
+      "electricity_day_ean": "541449942993041160",
+      "electricity_night_ean": "541449683339976925",
+      "gas_ean": "374606534065832297",
+      "water_ean": "550778901972464542"
+    }
+  },
+  {
+    "id": "019a2400-1458-7000-a001-000000001458",
+    "name": "Lambert Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 43",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5886,
+      "longitude": 5.8548
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 11.8,
+    "meters": {
+      "electricity_day_ean": "541449681711814301",
+      "electricity_night_ean": "541449757898616556",
+      "gas_ean": "374606913097652460",
+      "water_ean": "550778811595828382"
+    }
+  },
+  {
+    "id": "019a2400-1459-7000-a001-000000001459",
+    "name": "Maes Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 88",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6398,
+      "longitude": 5.5893
     },
     "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 9.6,
+    "meters": {
+      "electricity_day_ean": "541449175583552168",
+      "electricity_night_ean": "541449877952852992",
+      "water_ean": "550778147492383800"
+    }
+  },
+  {
+    "id": "019a2400-1460-7000-a001-000000001460",
+    "name": "Vandenberghe Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 101",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6941,
+      "longitude": 5.8209
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 11.7,
+    "meters": {
+      "electricity_day_ean": "541449330985714287",
+      "electricity_night_ean": "541449232716533971",
+      "water_ean": "550778349804340512"
+    }
+  },
+  {
+    "id": "019a2400-1461-7000-a001-000000001461",
+    "name": "Simon Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 44",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5843,
+      "longitude": 5.8622
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 10.2,
+    "meters": {
+      "electricity_day_ean": "541449343274813119",
+      "electricity_night_ean": "541449639729303405",
+      "gas_ean": "374606622810994331",
+      "water_ean": "550778597300011432"
+    }
+  },
+  {
+    "id": "019a2400-1462-7000-a001-000000001462",
+    "name": "Jacobs Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 141",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6348,
+      "longitude": 5.584
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 11.0,
+    "meters": {
+      "electricity_day_ean": "541449315091497669",
+      "electricity_night_ean": "541449659217411741",
+      "gas_ean": "374606953102295030",
+      "water_ean": "550778126338682998"
+    }
+  },
+  {
+    "id": "019a2400-1463-7000-a001-000000001463",
+    "name": "Maes Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 79",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5827,
+      "longitude": 5.5059
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 12.9,
+    "meters": {
+      "electricity_day_ean": "541449899560369986",
+      "electricity_night_ean": "541449686413141705",
+      "water_ean": "550778823030170870"
+    }
+  },
+  {
+    "id": "019a2400-1464-7000-a001-000000001464",
+    "name": "Aerts Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 25",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6882,
+      "longitude": 5.8248
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 13.6,
+    "meters": {
+      "electricity_day_ean": "541449927162664717",
+      "electricity_night_ean": "541449925187188175",
+      "gas_ean": "374606686595203862",
+      "water_ean": "550778220273465665"
+    }
+  },
+  {
+    "id": "019a2400-1465-7000-a001-000000001465",
+    "name": "Devos Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 36",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.582,
+      "longitude": 5.8647
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 11.6,
+    "meters": {
+      "electricity_day_ean": "541449105869662857",
+      "electricity_night_ean": "541449308968239455",
+      "gas_ean": "374606850958881607",
+      "water_ean": "550778077694481645"
+    }
+  },
+  {
+    "id": "019a2400-1466-7000-a001-000000001466",
+    "name": "Maes Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 68",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4678,
+      "longitude": 4.8724
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 9.7,
+    "meters": {
+      "electricity_day_ean": "541449102402313801",
+      "electricity_night_ean": "541449397208532525",
+      "water_ean": "550778170759447632"
+    }
+  },
+  {
+    "id": "019a2400-1467-7000-a001-000000001467",
+    "name": "Devos Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 116",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5862,
+      "longitude": 5.8579
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 13.3,
+    "meters": {
+      "electricity_day_ean": "541449018164540800",
+      "electricity_night_ean": "541449139226179568",
+      "gas_ean": "374606364127346361",
+      "water_ean": "550778823723316098"
+    }
+  },
+  {
+    "id": "019a2400-1468-7000-a001-000000001468",
+    "name": "Bogaert Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 114",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6306,
+      "longitude": 5.5771
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 8.4,
+    "meters": {
+      "electricity_day_ean": "541449141494737239",
+      "electricity_night_ean": "541449281761472561",
+      "gas_ean": "374606057892337423",
+      "water_ean": "550778799061373988"
+    }
+  },
+  {
+    "id": "019a2400-1469-7000-a001-000000001469",
+    "name": "Dubois Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 26",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.623,
+      "longitude": 5.5851
+    },
+    "solar_capacity_kw": 2.5,
+    "battery_capacity_kwh": 9.0,
+    "meters": {
+      "electricity_day_ean": "541449433137912327",
+      "electricity_night_ean": "541449128364468752",
+      "gas_ean": "374606356805636732",
+      "water_ean": "550778729837222456"
+    }
+  },
+  {
+    "id": "019a2400-1470-7000-a001-000000001470",
+    "name": "Vandenberghe Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 137",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5832,
+      "longitude": 5.8574
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 8.4,
+    "meters": {
+      "electricity_day_ean": "541449637540966881",
+      "electricity_night_ean": "541449585772449704",
+      "water_ean": "550778889600792191"
+    }
+  },
+  {
+    "id": "019a2400-1471-7000-a001-000000001471",
+    "name": "Hendrickx Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 141",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.595,
+      "longitude": 5.8564
+    },
+    "solar_capacity_kw": 2.5,
+    "battery_capacity_kwh": 13.2,
+    "meters": {
+      "electricity_day_ean": "541449314065899667",
+      "electricity_night_ean": "541449463001877925",
+      "gas_ean": "374606242401876067",
+      "water_ean": "550778587815318188"
+    }
+  },
+  {
+    "id": "019a2400-1472-7000-a001-000000001472",
+    "name": "Janssens Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 130",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5986,
+      "longitude": 5.858
+    },
+    "solar_capacity_kw": 5.5,
+    "battery_capacity_kwh": 9.6,
+    "meters": {
+      "electricity_day_ean": "541449909870084067",
+      "electricity_night_ean": "541449911139905106",
+      "gas_ean": "374606134825207866",
+      "water_ean": "550778047853227237"
+    }
+  },
+  {
+    "id": "019a2400-1473-7000-a001-000000001473",
+    "name": "Michiels Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 60",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6783,
+      "longitude": 5.8213
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 11.7,
+    "meters": {
+      "electricity_day_ean": "541449334075913482",
+      "electricity_night_ean": "541449354781302104",
+      "gas_ean": "374606594441414433"
+    }
+  },
+  {
+    "id": "019a2400-1474-7000-a001-000000001474",
+    "name": "Coppens Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 40",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4605,
+      "longitude": 4.8814
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 13.6,
+    "meters": {
+      "electricity_day_ean": "541449562841038739",
+      "electricity_night_ean": "541449525090713979",
+      "water_ean": "550778076913943519"
+    }
+  },
+  {
+    "id": "019a2400-1475-7000-a001-000000001475",
+    "name": "Bogaert Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 90",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6763,
+      "longitude": 5.811
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 9.4,
+    "meters": {
+      "electricity_day_ean": "541449427118845225",
+      "electricity_night_ean": "541449321972794112",
+      "gas_ean": "374606384836020266",
+      "water_ean": "550778570365578125"
+    }
+  },
+  {
+    "id": "019a2400-1476-7000-a001-000000001476",
+    "name": "Coppens Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 4",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6283,
+      "longitude": 5.5858
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 11.2,
+    "meters": {
+      "electricity_day_ean": "541449729118767657",
+      "electricity_night_ean": "541449114936771441",
+      "water_ean": "550778987228825350"
+    }
+  },
+  {
+    "id": "019a2400-1477-7000-a001-000000001477",
+    "name": "Gerard Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 1",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6321,
+      "longitude": 5.5752
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 12.8,
+    "meters": {
+      "electricity_day_ean": "541449682391774069",
+      "electricity_night_ean": "541449003868902378",
+      "gas_ean": "374606505252284849",
+      "water_ean": "550778452016573220"
+    }
+  },
+  {
+    "id": "019a2400-1478-7000-a001-000000001478",
+    "name": "Baert Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 1",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4626,
+      "longitude": 4.8702
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 8.2,
+    "meters": {
+      "electricity_day_ean": "541449893349569711",
+      "electricity_night_ean": "541449478078226145",
+      "gas_ean": "374606655120844105",
+      "water_ean": "550778290664636890"
+    }
+  },
+  {
+    "id": "019a2400-1479-7000-a001-000000001479",
+    "name": "Dubois Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 124",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6805,
+      "longitude": 5.8252
+    },
+    "solar_capacity_kw": 4.6,
     "battery_capacity_kwh": 12.6,
-    "meter_ean": "540159635458261457"
+    "meters": {
+      "electricity_day_ean": "541449094365463075",
+      "electricity_night_ean": "541449798616942730",
+      "water_ean": "550778734120363133"
+    }
+  },
+  {
+    "id": "019a2400-1480-7000-a001-000000001480",
+    "name": "Vermeulen Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 196",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6245,
+      "longitude": 5.5761
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 12.3,
+    "meters": {
+      "electricity_day_ean": "541449604642533858",
+      "electricity_night_ean": "541449722515726631",
+      "water_ean": "550778849218098057"
+    }
+  },
+  {
+    "id": "019a2400-1481-7000-a001-000000001481",
+    "name": "Vermeulen Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 146",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4696,
+      "longitude": 4.8621
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 13.5,
+    "meters": {
+      "electricity_day_ean": "541449476404816996",
+      "electricity_night_ean": "541449665382495287",
+      "gas_ean": "374606766801574576",
+      "water_ean": "550778222885964776"
+    }
+  },
+  {
+    "id": "019a2400-1482-7000-a001-000000001482",
+    "name": "Dubois Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 150",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5798,
+      "longitude": 5.5031
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 11.3,
+    "meters": {
+      "electricity_day_ean": "541449259071056823",
+      "electricity_night_ean": "541449996914531106",
+      "water_ean": "550778282540912442"
+    }
+  },
+  {
+    "id": "019a2400-1483-7000-a001-000000001483",
+    "name": "Dupont Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 63",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5987,
+      "longitude": 5.8704
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 12.5,
+    "meters": {
+      "electricity_day_ean": "541449236135544729",
+      "electricity_night_ean": "541449152577197253",
+      "gas_ean": "374606886405130786"
+    }
+  },
+  {
+    "id": "019a2400-1484-7000-a001-000000001484",
+    "name": "Fontaine Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 31",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6371,
+      "longitude": 5.582
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 9.4,
+    "meters": {
+      "electricity_day_ean": "541449407594683639",
+      "electricity_night_ean": "541449116228374169",
+      "gas_ean": "374606319794281515",
+      "water_ean": "550778523283008839"
+    }
+  },
+  {
+    "id": "019a2400-1485-7000-a001-000000001485",
+    "name": "Wouters Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 52",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5799,
+      "longitude": 5.5022
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 8.2,
+    "meters": {
+      "electricity_day_ean": "541449207666130376",
+      "electricity_night_ean": "541449643713920440",
+      "gas_ean": "374606217081594026",
+      "water_ean": "550778931604112516"
+    }
+  },
+  {
+    "id": "019a2400-1486-7000-a001-000000001486",
+    "name": "Maes Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 77",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.685,
+      "longitude": 5.8213
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 8.9,
+    "meters": {
+      "electricity_day_ean": "541449350174690773",
+      "electricity_night_ean": "541449793448763587",
+      "gas_ean": "374606594853866998",
+      "water_ean": "550778216164251906"
+    }
+  },
+  {
+    "id": "019a2400-1487-7000-a001-000000001487",
+    "name": "Goossens Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 104",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6347,
+      "longitude": 5.5773
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 8.9,
+    "meters": {
+      "electricity_day_ean": "541449351503126770",
+      "electricity_night_ean": "541449518819716752",
+      "gas_ean": "374606594133111649",
+      "water_ean": "550778650110093476"
+    }
+  },
+  {
+    "id": "019a2400-1488-7000-a001-000000001488",
+    "name": "Peeters Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 97",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5865,
+      "longitude": 5.4988
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 8.4,
+    "meters": {
+      "electricity_day_ean": "541449295995929346",
+      "electricity_night_ean": "541449182134767346",
+      "gas_ean": "374606383263124011",
+      "water_ean": "550778956433364512"
+    }
+  },
+  {
+    "id": "019a2400-1489-7000-a001-000000001489",
+    "name": "Hermans Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 82",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6354,
+      "longitude": 5.5732
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "541449930921199042",
+      "electricity_night_ean": "541449458292448146",
+      "gas_ean": "374606001164485558",
+      "water_ean": "550778324374662135"
+    }
+  },
+  {
+    "id": "019a2400-1490-7000-a001-000000001490",
+    "name": "Janssens Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 36",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6278,
+      "longitude": 5.5745
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 13.5,
+    "meters": {
+      "electricity_day_ean": "541449961948482754",
+      "electricity_night_ean": "541449333623720636",
+      "water_ean": "550778293315238795"
+    }
+  },
+  {
+    "id": "019a2400-1491-7000-a001-000000001491",
+    "name": "Desmet Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 80",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5981,
+      "longitude": 5.8639
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 13.0,
+    "meters": {
+      "electricity_day_ean": "541449088859626861",
+      "electricity_night_ean": "541449828695645852",
+      "gas_ean": "374606009089059472",
+      "water_ean": "550778792072376121"
+    }
+  },
+  {
+    "id": "019a2400-1492-7000-a001-000000001492",
+    "name": "Fontaine Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 128",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5901,
+      "longitude": 5.4954
+    },
+    "solar_capacity_kw": 2.5,
+    "battery_capacity_kwh": 9.9,
+    "meters": {
+      "electricity_day_ean": "541449937329588658",
+      "electricity_night_ean": "541449607056580026",
+      "gas_ean": "374606838565643950",
+      "water_ean": "550778586005006857"
+    }
+  },
+  {
+    "id": "019a2400-1493-7000-a001-000000001493",
+    "name": "Vandenberghe Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 42",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4669,
+      "longitude": 4.8758
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 12.8,
+    "meters": {
+      "electricity_day_ean": "541449768785362032",
+      "electricity_night_ean": "541449114713657852",
+      "gas_ean": "374606960553884719",
+      "water_ean": "550778466242240748"
+    }
+  },
+  {
+    "id": "019a2400-1494-7000-a001-000000001494",
+    "name": "Willems Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 179",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5877,
+      "longitude": 5.5068
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 9.3,
+    "meters": {
+      "electricity_day_ean": "541449023637769862",
+      "electricity_night_ean": "541449365255048741",
+      "water_ean": "550778983910887312"
+    }
+  },
+  {
+    "id": "019a2400-1495-7000-a001-000000001495",
+    "name": "Jacobs Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 121",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6325,
+      "longitude": 5.575
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 8.7,
+    "meters": {
+      "electricity_day_ean": "541449205736528061",
+      "electricity_night_ean": "541449055668481205",
+      "water_ean": "550778136191397565"
+    }
+  },
+  {
+    "id": "019a2400-1496-7000-a001-000000001496",
+    "name": "Dubois Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 108",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4623,
+      "longitude": 4.8687
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 10.1,
+    "meters": {
+      "electricity_day_ean": "541449288732615258",
+      "electricity_night_ean": "541449403606930834",
+      "gas_ean": "374606286013079019",
+      "water_ean": "550778753477337346"
+    }
+  },
+  {
+    "id": "019a2400-1497-7000-a001-000000001497",
+    "name": "Mertens Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 96",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5961,
+      "longitude": 5.8715
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 11.0,
+    "meters": {
+      "electricity_day_ean": "541449063289921941",
+      "electricity_night_ean": "541449925292033841",
+      "water_ean": "550778890535539572"
+    }
+  },
+  {
+    "id": "019a2400-1498-7000-a001-000000001498",
+    "name": "Dupont Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 16",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6385,
+      "longitude": 5.5774
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "541449467187611241",
+      "electricity_night_ean": "541449204171036722",
+      "gas_ean": "374606132007331892"
+    }
+  },
+  {
+    "id": "019a2400-1499-7000-a001-000000001499",
+    "name": "Vandenberghe Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 49",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4737,
+      "longitude": 4.8758
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 10.9,
+    "meters": {
+      "electricity_day_ean": "541449118799641050",
+      "electricity_night_ean": "541449092533374072",
+      "gas_ean": "374606672538941346",
+      "water_ean": "550778019177267888"
+    }
+  },
+  {
+    "id": "019a2400-1500-7000-a001-000000001500",
+    "name": "Desmet Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 150",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6232,
+      "longitude": 5.5713
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 13.2,
+    "meters": {
+      "electricity_day_ean": "541449048165414360",
+      "electricity_night_ean": "541449151962858741",
+      "gas_ean": "374606417744781920",
+      "water_ean": "550778568825624273"
+    }
+  },
+  {
+    "id": "019a2400-1501-7000-a001-000000001501",
+    "name": "Goossens Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 172",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5925,
+      "longitude": 5.8599
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 10.4,
+    "meters": {
+      "electricity_day_ean": "541449751142189986",
+      "electricity_night_ean": "541449845372585666",
+      "gas_ean": "374606001379015412",
+      "water_ean": "550778257401165625"
+    }
+  },
+  {
+    "id": "019a2400-1502-7000-a001-000000001502",
+    "name": "Dubois Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 7",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4636,
+      "longitude": 4.8679
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 12.1,
+    "meters": {
+      "electricity_day_ean": "541449289023036262",
+      "electricity_night_ean": "541449210633698514",
+      "gas_ean": "374606533461448093",
+      "water_ean": "550778409712357460"
+    }
+  },
+  {
+    "id": "019a2400-1503-7000-a001-000000001503",
+    "name": "Devos Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 66",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5808,
+      "longitude": 5.8602
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 11.5,
+    "meters": {
+      "electricity_day_ean": "541449783111343654",
+      "electricity_night_ean": "541449439402281789",
+      "gas_ean": "374606229723964596"
+    }
+  },
+  {
+    "id": "019a2400-1504-7000-a001-000000001504",
+    "name": "Van den Berg Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 102",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4605,
+      "longitude": 4.8811
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 11.7,
+    "meters": {
+      "electricity_day_ean": "541449084903942976",
+      "electricity_night_ean": "541449994374857193",
+      "gas_ean": "374606109065189867"
+    }
+  },
+  {
+    "id": "019a2400-1505-7000-a001-000000001505",
+    "name": "Jacobs Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 16",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5851,
+      "longitude": 5.4923
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 9.0,
+    "meters": {
+      "electricity_day_ean": "541449803247292068",
+      "electricity_night_ean": "541449554903816876",
+      "water_ean": "550778667081334973"
+    }
+  },
+  {
+    "id": "019a2400-1506-7000-a001-000000001506",
+    "name": "Devos Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 45",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4753,
+      "longitude": 4.8684
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 11.6,
+    "meters": {
+      "electricity_day_ean": "541449058767598793",
+      "electricity_night_ean": "541449697097163779",
+      "gas_ean": "374606504316085793",
+      "water_ean": "550778981082006727"
+    }
+  },
+  {
+    "id": "019a2400-1507-7000-a001-000000001507",
+    "name": "Baert Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 129",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5887,
+      "longitude": 5.4935
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 8.9,
+    "meters": {
+      "electricity_day_ean": "541449690072749582",
+      "electricity_night_ean": "541449147189520695",
+      "gas_ean": "374606046579070292",
+      "water_ean": "550778958020969692"
+    }
+  },
+  {
+    "id": "019a2400-1508-7000-a001-000000001508",
+    "name": "Dubois Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 179",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5975,
+      "longitude": 5.8591
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 12.9,
+    "meters": {
+      "electricity_day_ean": "541449707657422858",
+      "electricity_night_ean": "541449603789019712",
+      "gas_ean": "374606403428618063",
+      "water_ean": "550778813491766912"
+    }
+  },
+  {
+    "id": "019a2400-1509-7000-a001-000000001509",
+    "name": "Martens Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 135",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5781,
+      "longitude": 5.5058
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "541449656259228654",
+      "electricity_night_ean": "541449247652111964"
+    }
+  },
+  {
+    "id": "019a2400-1510-7000-a001-000000001510",
+    "name": "Dewilde Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 117",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6286,
+      "longitude": 5.5723
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 12.3,
+    "meters": {
+      "electricity_day_ean": "541449105913551303",
+      "electricity_night_ean": "541449692977109522",
+      "gas_ean": "374606365696226953",
+      "water_ean": "550778844378085441"
+    }
+  },
+  {
+    "id": "019a2400-1511-7000-a001-000000001511",
+    "name": "Janssens Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 110",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4622,
+      "longitude": 4.8784
+    },
+    "solar_capacity_kw": 3.1,
+    "battery_capacity_kwh": 13.1,
+    "meters": {
+      "electricity_day_ean": "541449453162326718",
+      "electricity_night_ean": "541449735886796027"
+    }
+  },
+  {
+    "id": "019a2400-1512-7000-a001-000000001512",
+    "name": "Hermans Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 157",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4582,
+      "longitude": 4.8749
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 9.1,
+    "meters": {
+      "electricity_day_ean": "541449200763188621",
+      "electricity_night_ean": "541449144480589241",
+      "gas_ean": "374606388476652211",
+      "water_ean": "550778560454003297"
+    }
+  },
+  {
+    "id": "019a2400-1513-7000-a001-000000001513",
+    "name": "Vincent Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 129",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6808,
+      "longitude": 5.8084
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 8.4,
+    "meters": {
+      "electricity_day_ean": "541449391453295738",
+      "electricity_night_ean": "541449385183366913",
+      "gas_ean": "374606184268137376",
+      "water_ean": "550778100640439336"
+    }
+  },
+  {
+    "id": "019a2400-1514-7000-a001-000000001514",
+    "name": "Simon Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 19",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5876,
+      "longitude": 5.4954
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 13.3,
+    "meters": {
+      "electricity_day_ean": "541449487750180936",
+      "electricity_night_ean": "541449737822416911",
+      "gas_ean": "374606300139720479",
+      "water_ean": "550778802027674944"
+    }
+  },
+  {
+    "id": "019a2400-1515-7000-a001-000000001515",
+    "name": "Bogaert Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 107",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5834,
+      "longitude": 5.4998
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 10.0,
+    "meters": {
+      "electricity_day_ean": "541449085258369352",
+      "electricity_night_ean": "541449035503040154",
+      "gas_ean": "374606488689207832",
+      "water_ean": "550778354325748098"
+    }
+  },
+  {
+    "id": "019a2400-1516-7000-a001-000000001516",
+    "name": "Fontaine Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 176",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.589,
+      "longitude": 5.871
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "541449830032502137",
+      "electricity_night_ean": "541449957261662899",
+      "gas_ean": "374606254118285258",
+      "water_ean": "550778555393372773"
+    }
+  },
+  {
+    "id": "019a2400-1517-7000-a001-000000001517",
+    "name": "Fontaine Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 102",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4735,
+      "longitude": 4.867
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 13.4,
+    "meters": {
+      "electricity_day_ean": "541449391798734618",
+      "electricity_night_ean": "541449272332084052",
+      "gas_ean": "374606557798259703",
+      "water_ean": "550778635344369666"
+    }
+  },
+  {
+    "id": "019a2400-1518-7000-a001-000000001518",
+    "name": "Claessens Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 9",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6881,
+      "longitude": 5.8134
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 13.9,
+    "meters": {
+      "electricity_day_ean": "541449319600907238",
+      "electricity_night_ean": "541449406005732326",
+      "gas_ean": "374606880160693852"
+    }
+  },
+  {
+    "id": "019a2400-1519-7000-a001-000000001519",
+    "name": "Laurent Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 135",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6296,
+      "longitude": 5.5777
+    },
+    "solar_capacity_kw": 2.5,
+    "battery_capacity_kwh": 8.3,
+    "meters": {
+      "electricity_day_ean": "541449963414648170",
+      "electricity_night_ean": "541449999392335550"
+    }
+  },
+  {
+    "id": "019a2400-1520-7000-a001-000000001520",
+    "name": "Gerard Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 9",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6785,
+      "longitude": 5.8262
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "541449136484079679",
+      "electricity_night_ean": "541449387121360371",
+      "gas_ean": "374606087766623854",
+      "water_ean": "550778025762108055"
+    }
+  },
+  {
+    "id": "019a2400-1521-7000-a001-000000001521",
+    "name": "Dubois Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 129",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6896,
+      "longitude": 5.8183
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 10.4,
+    "meters": {
+      "electricity_day_ean": "541449629507000853",
+      "electricity_night_ean": "541449222064150774",
+      "gas_ean": "374606101955976275",
+      "water_ean": "550778320752916100"
+    }
+  },
+  {
+    "id": "019a2400-1522-7000-a001-000000001522",
+    "name": "Martens Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 81",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6813,
+      "longitude": 5.8206
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 12.6,
+    "meters": {
+      "electricity_day_ean": "541449909900394740",
+      "electricity_night_ean": "541449021619324983",
+      "gas_ean": "374606183214909750"
+    }
+  },
+  {
+    "id": "019a2400-1523-7000-a001-000000001523",
+    "name": "Hermans Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 45",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6848,
+      "longitude": 5.8187
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 9.9,
+    "meters": {
+      "electricity_day_ean": "541449179886767601",
+      "electricity_night_ean": "541449418865915593",
+      "gas_ean": "374606386132562159",
+      "water_ean": "550778693693005487"
+    }
+  },
+  {
+    "id": "019a2400-1524-7000-a001-000000001524",
+    "name": "Dewilde Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 72",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6788,
+      "longitude": 5.8252
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 12.4,
+    "meters": {
+      "electricity_day_ean": "541449923888305331",
+      "electricity_night_ean": "541449518664898930",
+      "water_ean": "550778716786432972"
+    }
+  },
+  {
+    "id": "019a2400-1525-7000-a001-000000001525",
+    "name": "Janssens Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 126",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6308,
+      "longitude": 5.5729
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 10.9,
+    "meters": {
+      "electricity_day_ean": "541449280008905965",
+      "electricity_night_ean": "541449067751980312",
+      "gas_ean": "374606159947559079"
+    }
+  },
+  {
+    "id": "019a2400-1526-7000-a001-000000001526",
+    "name": "Simon Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 42",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4672,
+      "longitude": 4.8718
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 12.6,
+    "meters": {
+      "electricity_day_ean": "541449271929042954",
+      "electricity_night_ean": "541449125522727964",
+      "water_ean": "550778000457154078"
+    }
+  },
+  {
+    "id": "019a2400-1527-7000-a001-000000001527",
+    "name": "Desmet Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 129",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.591,
+      "longitude": 5.8609
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 12.3,
+    "meters": {
+      "electricity_day_ean": "541449952691298228",
+      "electricity_night_ean": "541449983287484860",
+      "gas_ean": "374606527868873402",
+      "water_ean": "550778556584218570"
+    }
+  },
+  {
+    "id": "019a2400-1528-7000-a001-000000001528",
+    "name": "Dubois Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 57",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4599,
+      "longitude": 4.8793
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 8.8,
+    "meters": {
+      "electricity_day_ean": "541449176856670025",
+      "electricity_night_ean": "541449286416439810",
+      "gas_ean": "374606370666717622",
+      "water_ean": "550778634413208392"
+    }
+  },
+  {
+    "id": "019a2400-1529-7000-a001-000000001529",
+    "name": "Jacobs Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 113",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6762,
+      "longitude": 5.8082
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 9.6,
+    "meters": {
+      "electricity_day_ean": "541449257147464989",
+      "electricity_night_ean": "541449351621530226"
+    }
+  },
+  {
+    "id": "019a2400-1530-7000-a001-000000001530",
+    "name": "Maes Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 50",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6384,
+      "longitude": 5.5856
+    },
+    "solar_capacity_kw": 3.1,
+    "battery_capacity_kwh": 12.0,
+    "meters": {
+      "electricity_day_ean": "541449428302129280",
+      "electricity_night_ean": "541449399928220978",
+      "gas_ean": "374606666958241912",
+      "water_ean": "550778644342077618"
+    }
+  },
+  {
+    "id": "019a2400-1531-7000-a001-000000001531",
+    "name": "Bogaert Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 146",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4631,
+      "longitude": 4.8747
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "541449691257907954",
+      "electricity_night_ean": "541449806695562799",
+      "gas_ean": "374606968449179239",
+      "water_ean": "550778166191247673"
+    }
+  },
+  {
+    "id": "019a2400-1532-7000-a001-000000001532",
+    "name": "Bogaert Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 156",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6283,
+      "longitude": 5.574
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 9.3,
+    "meters": {
+      "electricity_day_ean": "541449155387568458",
+      "electricity_night_ean": "541449682472212144",
+      "gas_ean": "374606641867576641",
+      "water_ean": "550778868651913654"
+    }
+  },
+  {
+    "id": "019a2400-1533-7000-a001-000000001533",
+    "name": "Jacobs Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 59",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6262,
+      "longitude": 5.5825
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 13.7,
+    "meters": {
+      "electricity_day_ean": "541449527203300247",
+      "electricity_night_ean": "541449343562181564"
+    }
+  },
+  {
+    "id": "019a2400-1534-7000-a001-000000001534",
+    "name": "Wouters Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 38",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4755,
+      "longitude": 4.8777
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 12.5,
+    "meters": {
+      "electricity_day_ean": "541449097853237925",
+      "electricity_night_ean": "541449204180154086",
+      "water_ean": "550778756856200997"
+    }
+  },
+  {
+    "id": "019a2400-1535-7000-a001-000000001535",
+    "name": "Simon Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 69",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6333,
+      "longitude": 5.5829
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 10.4,
+    "meters": {
+      "electricity_day_ean": "541449289740721916",
+      "electricity_night_ean": "541449589486192950",
+      "gas_ean": "374606633450323576",
+      "water_ean": "550778036825009155"
+    }
+  },
+  {
+    "id": "019a2400-1536-7000-a001-000000001536",
+    "name": "Dubois Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 10",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6852,
+      "longitude": 5.8232
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 8.9,
+    "meters": {
+      "electricity_day_ean": "541449984116513677",
+      "electricity_night_ean": "541449145017234331",
+      "water_ean": "550778720778942040"
+    }
+  },
+  {
+    "id": "019a2400-1537-7000-a001-000000001537",
+    "name": "Verhoeven Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 110",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6303,
+      "longitude": 5.5725
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "541449998208493935",
+      "electricity_night_ean": "541449605687404646",
+      "water_ean": "550778203982206367"
+    }
+  },
+  {
+    "id": "019a2400-1538-7000-a001-000000001538",
+    "name": "Aerts Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 125",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.692,
+      "longitude": 5.8229
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "541449702626153183",
+      "electricity_night_ean": "541449555777535259",
+      "water_ean": "550778629967851697"
+    }
+  },
+  {
+    "id": "019a2400-1539-7000-a001-000000001539",
+    "name": "Willems Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 195",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6792,
+      "longitude": 5.81
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 13.2,
+    "meters": {
+      "electricity_day_ean": "541449302695576624",
+      "electricity_night_ean": "541449878468142631",
+      "water_ean": "550778103904456616"
+    }
+  },
+  {
+    "id": "019a2400-1540-7000-a001-000000001540",
+    "name": "Simon Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 191",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6916,
+      "longitude": 5.8119
+    },
+    "solar_capacity_kw": 2.5,
+    "battery_capacity_kwh": 8.2,
+    "meters": {
+      "electricity_day_ean": "541449180120356022",
+      "electricity_night_ean": "541449237983904338",
+      "water_ean": "550778592249991076"
+    }
+  },
+  {
+    "id": "019a2400-1541-7000-a001-000000001541",
+    "name": "Willems Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 5",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6267,
+      "longitude": 5.5804
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 12.9,
+    "meters": {
+      "electricity_day_ean": "541449677691698430",
+      "electricity_night_ean": "541449753381458005",
+      "gas_ean": "374606066034075625",
+      "water_ean": "550778566298275457"
+    }
+  },
+  {
+    "id": "019a2400-1542-7000-a001-000000001542",
+    "name": "Martens Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 66",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6279,
+      "longitude": 5.5868
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "541449618721320943",
+      "electricity_night_ean": "541449340202167848",
+      "gas_ean": "374606727957370213",
+      "water_ean": "550778310287435041"
+    }
+  },
+  {
+    "id": "019a2400-1543-7000-a001-000000001543",
+    "name": "Peeters Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 2",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.627,
+      "longitude": 5.5808
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 10.0,
+    "meters": {
+      "electricity_day_ean": "541449658615258218",
+      "electricity_night_ean": "541449245503249205",
+      "water_ean": "550778265828841431"
+    }
+  },
+  {
+    "id": "019a2400-1544-7000-a001-000000001544",
+    "name": "Fontaine Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 128",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5969,
+      "longitude": 5.856
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 12.1,
+    "meters": {
+      "electricity_day_ean": "541449695706112397",
+      "electricity_night_ean": "541449205043971428",
+      "water_ean": "550778798632106177"
+    }
+  },
+  {
+    "id": "019a2400-1545-7000-a001-000000001545",
+    "name": "Maes Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 191",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5762,
+      "longitude": 5.5029
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 12.6,
+    "meters": {
+      "electricity_day_ean": "541449342347985641",
+      "electricity_night_ean": "541449729459990915",
+      "gas_ean": "374606723491961650",
+      "water_ean": "550778622309984427"
+    }
+  },
+  {
+    "id": "019a2400-1546-7000-a001-000000001546",
+    "name": "Jacobs Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 158",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4575,
+      "longitude": 4.8725
+    },
+    "solar_capacity_kw": 5.5,
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "541449186907317188",
+      "electricity_night_ean": "541449483211983198",
+      "gas_ean": "374606758641596773"
+    }
+  },
+  {
+    "id": "019a2400-1547-7000-a001-000000001547",
+    "name": "Claes Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 158",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4691,
+      "longitude": 4.8739
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 10.9,
+    "meters": {
+      "electricity_day_ean": "541449155164860232",
+      "electricity_night_ean": "541449648592432933",
+      "gas_ean": "374606294724219470",
+      "water_ean": "550778901984383101"
+    }
+  },
+  {
+    "id": "019a2400-1548-7000-a001-000000001548",
+    "name": "Maes Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 142",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6912,
+      "longitude": 5.8257
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 11.6,
+    "meters": {
+      "electricity_day_ean": "541449678340167285",
+      "electricity_night_ean": "541449472661987270",
+      "gas_ean": "374606068680435916",
+      "water_ean": "550778172418735149"
+    }
+  },
+  {
+    "id": "019a2400-1549-7000-a001-000000001549",
+    "name": "Rousseau Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 90",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5906,
+      "longitude": 5.496
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 12.2,
+    "meters": {
+      "electricity_day_ean": "541449840571588295",
+      "electricity_night_ean": "541449854997271477",
+      "water_ean": "550778782527405784"
+    }
+  },
+  {
+    "id": "019a2400-1550-7000-a001-000000001550",
+    "name": "Laurent Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 173",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4651,
+      "longitude": 4.8737
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 10.2,
+    "meters": {
+      "electricity_day_ean": "541449537802274040",
+      "electricity_night_ean": "541449825885637517",
+      "gas_ean": "374606956296207585",
+      "water_ean": "550778409767830319"
+    }
+  },
+  {
+    "id": "019a2400-1551-7000-a001-000000001551",
+    "name": "Goossens Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 70",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6845,
+      "longitude": 5.8177
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 9.1,
+    "meters": {
+      "electricity_day_ean": "541449015995659287",
+      "electricity_night_ean": "541449094213892823",
+      "water_ean": "550778968265051433"
+    }
+  },
+  {
+    "id": "019a2400-1552-7000-a001-000000001552",
+    "name": "Vandenberghe Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 24",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4663,
+      "longitude": 4.881
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 13.7,
+    "meters": {
+      "electricity_day_ean": "541449225473075344",
+      "electricity_night_ean": "541449908834966321",
+      "water_ean": "550778526247552226"
+    }
+  },
+  {
+    "id": "019a2400-1553-7000-a001-000000001553",
+    "name": "Fontaine Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 163",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4606,
+      "longitude": 4.8782
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 9.0,
+    "meters": {
+      "electricity_day_ean": "541449470866599384",
+      "electricity_night_ean": "541449420193668706",
+      "water_ean": "550778555405953550"
+    }
+  },
+  {
+    "id": "019a2400-1554-7000-a001-000000001554",
+    "name": "Jacobs Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 124",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5934,
+      "longitude": 5.8681
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 9.3,
+    "meters": {
+      "electricity_day_ean": "541449096534936227",
+      "electricity_night_ean": "541449409100570961",
+      "gas_ean": "374606586042661791",
+      "water_ean": "550778716959489907"
+    }
+  },
+  {
+    "id": "019a2400-1555-7000-a001-000000001555",
+    "name": "Michiels Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 133",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4689,
+      "longitude": 4.8718
+    },
+    "solar_capacity_kw": 2.5,
+    "battery_capacity_kwh": 12.7,
+    "meters": {
+      "electricity_day_ean": "541449687335008016",
+      "electricity_night_ean": "541449682613903308",
+      "water_ean": "550778254084151676"
+    }
+  },
+  {
+    "id": "019a2400-1556-7000-a001-000000001556",
+    "name": "Bogaert Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 63",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6412,
+      "longitude": 5.5853
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 11.2,
+    "meters": {
+      "electricity_day_ean": "541449988264360149",
+      "electricity_night_ean": "541449640255857108",
+      "water_ean": "550778352670460477"
+    }
+  },
+  {
+    "id": "019a2400-1557-7000-a001-000000001557",
+    "name": "Laurent Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 130",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4586,
+      "longitude": 4.8714
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "541449337836267444",
+      "electricity_night_ean": "541449603933568978",
+      "gas_ean": "374606102778752795",
+      "water_ean": "550778550604837057"
+    }
+  },
+  {
+    "id": "019a2400-1558-7000-a001-000000001558",
+    "name": "Dupont Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 69",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5795,
+      "longitude": 5.501
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "541449698653455136",
+      "electricity_night_ean": "541449189277824504",
+      "gas_ean": "374606922987808594",
+      "water_ean": "550778242689376318"
+    }
+  },
+  {
+    "id": "019a2400-1559-7000-a001-000000001559",
+    "name": "Janssens Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 22",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5921,
+      "longitude": 5.4999
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 13.9,
+    "meters": {
+      "electricity_day_ean": "541449734413256419",
+      "electricity_night_ean": "541449598264850023"
+    }
+  },
+  {
+    "id": "019a2400-1560-7000-a001-000000001560",
+    "name": "Vermeulen Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 185",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4661,
+      "longitude": 4.8801
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 8.1,
+    "meters": {
+      "electricity_day_ean": "541449632353877241",
+      "electricity_night_ean": "541449163822068144",
+      "gas_ean": "374606486547540305",
+      "water_ean": "550778154752783467"
+    }
+  },
+  {
+    "id": "019a2400-1561-7000-a001-000000001561",
+    "name": "Mertens Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 53",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6877,
+      "longitude": 5.8232
+    },
+    "solar_capacity_kw": 5.4,
+    "battery_capacity_kwh": 8.4,
+    "meters": {
+      "electricity_day_ean": "541449220781003439",
+      "electricity_night_ean": "541449593550697803",
+      "gas_ean": "374606701243125885",
+      "water_ean": "550778674655670591"
+    }
+  },
+  {
+    "id": "019a2400-1562-7000-a001-000000001562",
+    "name": "Martens Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 129",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6795,
+      "longitude": 5.8241
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 11.8,
+    "meters": {
+      "electricity_day_ean": "541449182137569362",
+      "electricity_night_ean": "541449813967152368",
+      "water_ean": "550778318180620337"
+    }
+  },
+  {
+    "id": "019a2400-1563-7000-a001-000000001563",
+    "name": "Gerard Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 15",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6946,
+      "longitude": 5.821
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 11.0,
+    "meters": {
+      "electricity_day_ean": "541449564940738943",
+      "electricity_night_ean": "541449763568056070",
+      "gas_ean": "374606665696081168",
+      "water_ean": "550778953909957104"
+    }
+  },
+  {
+    "id": "019a2400-1564-7000-a001-000000001564",
+    "name": "Hermans Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 166",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5985,
+      "longitude": 5.8538
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 11.8,
+    "meters": {
+      "electricity_day_ean": "541449521578174903",
+      "electricity_night_ean": "541449362019809501",
+      "water_ean": "550778725611235917"
+    }
+  },
+  {
+    "id": "019a2400-1565-7000-a001-000000001565",
+    "name": "Bogaert Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 185",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.589,
+      "longitude": 5.5074
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 13.0,
+    "meters": {
+      "electricity_day_ean": "541449565708268275",
+      "electricity_night_ean": "541449364225760984",
+      "water_ean": "550778827758608494"
+    }
+  },
+  {
+    "id": "019a2400-1566-7000-a001-000000001566",
+    "name": "Claessens Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 56",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6347,
+      "longitude": 5.5742
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 13.2,
+    "meters": {
+      "electricity_day_ean": "541449152969275151",
+      "electricity_night_ean": "541449558600328921",
+      "gas_ean": "374606207648854674",
+      "water_ean": "550778041894198042"
+    }
+  },
+  {
+    "id": "019a2400-1567-7000-a001-000000001567",
+    "name": "Verhoeven Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 99",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6387,
+      "longitude": 5.5821
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 12.7,
+    "meters": {
+      "electricity_day_ean": "541449796731396236",
+      "electricity_night_ean": "541449387390854531",
+      "gas_ean": "374606511577370334"
+    }
+  },
+  {
+    "id": "019a2400-1568-7000-a001-000000001568",
+    "name": "Simon Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 71",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5951,
+      "longitude": 5.861
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 10.9,
+    "meters": {
+      "electricity_day_ean": "541449577309356543",
+      "electricity_night_ean": "541449971555576917"
+    }
+  },
+  {
+    "id": "019a2400-1569-7000-a001-000000001569",
+    "name": "Verhoeven Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 178",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5926,
+      "longitude": 5.8647
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 10.2,
+    "meters": {
+      "electricity_day_ean": "541449333635702792",
+      "electricity_night_ean": "541449384397924210",
+      "water_ean": "550778174950040258"
+    }
+  },
+  {
+    "id": "019a2400-1570-7000-a001-000000001570",
+    "name": "Smet Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 5",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4682,
+      "longitude": 4.8692
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 9.5,
+    "meters": {
+      "electricity_day_ean": "541449143789631091",
+      "electricity_night_ean": "541449842723668788",
+      "gas_ean": "374606633516682199",
+      "water_ean": "550778950093947794"
+    }
+  },
+  {
+    "id": "019a2400-1571-7000-a001-000000001571",
+    "name": "Desmet Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 127",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.68,
+      "longitude": 5.8242
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "541449447443890368",
+      "electricity_night_ean": "541449893281691883",
+      "gas_ean": "374606877945821328",
+      "water_ean": "550778699577093182"
+    }
+  },
+  {
+    "id": "019a2400-1572-7000-a001-000000001572",
+    "name": "Peeters Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 76",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6839,
+      "longitude": 5.8139
+    },
+    "solar_capacity_kw": 4.8,
+    "battery_capacity_kwh": 9.6,
+    "meters": {
+      "electricity_day_ean": "541449495267302854",
+      "electricity_night_ean": "541449102533918247",
+      "gas_ean": "374606414795822459",
+      "water_ean": "550778689914640046"
+    }
+  },
+  {
+    "id": "019a2400-1573-7000-a001-000000001573",
+    "name": "Vincent Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 35",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5961,
+      "longitude": 5.4991
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "541449280755934637",
+      "electricity_night_ean": "541449560760868599",
+      "gas_ean": "374606531295642537",
+      "water_ean": "550778940839767793"
+    }
+  },
+  {
+    "id": "019a2400-1574-7000-a001-000000001574",
+    "name": "Janssens Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 112",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5923,
+      "longitude": 5.5065
+    },
+    "solar_capacity_kw": 3.1,
+    "battery_capacity_kwh": 13.5,
+    "meters": {
+      "electricity_day_ean": "541449550292418702",
+      "electricity_night_ean": "541449649429110029",
+      "water_ean": "550778188994724460"
+    }
+  },
+  {
+    "id": "019a2400-1575-7000-a001-000000001575",
+    "name": "Vandenberghe Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 147",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6832,
+      "longitude": 5.8176
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "541449875814749308",
+      "electricity_night_ean": "541449162969533777",
+      "gas_ean": "374606206388803105",
+      "water_ean": "550778164883411680"
+    }
+  },
+  {
+    "id": "019a2400-1576-7000-a001-000000001576",
+    "name": "Wouters Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 111",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6896,
+      "longitude": 5.8266
+    },
+    "solar_capacity_kw": 3.1,
+    "battery_capacity_kwh": 11.0,
+    "meters": {
+      "electricity_day_ean": "541449902013729397",
+      "electricity_night_ean": "541449932800815055",
+      "water_ean": "550778960205298905"
+    }
+  },
+  {
+    "id": "019a2400-1577-7000-a001-000000001577",
+    "name": "Simon Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 107",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5882,
+      "longitude": 5.5049
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 8.5,
+    "meters": {
+      "electricity_day_ean": "541449377383220454",
+      "electricity_night_ean": "541449033284411194",
+      "water_ean": "550778312840662404"
+    }
+  },
+  {
+    "id": "019a2400-1578-7000-a001-000000001578",
+    "name": "Michiels Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 195",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6421,
+      "longitude": 5.5807
+    },
+    "solar_capacity_kw": 3.4,
+    "battery_capacity_kwh": 11.6,
+    "meters": {
+      "electricity_day_ean": "541449843830439165",
+      "electricity_night_ean": "541449007817660954",
+      "gas_ean": "374606027772626655",
+      "water_ean": "550778801130323225"
+    }
+  },
+  {
+    "id": "019a2400-1579-7000-a001-000000001579",
+    "name": "Mertens Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 142",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6265,
+      "longitude": 5.5874
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 10.4,
+    "meters": {
+      "electricity_day_ean": "541449875146667203",
+      "electricity_night_ean": "541449676362484927",
+      "gas_ean": "374606029742219876",
+      "water_ean": "550778113679873600"
+    }
+  },
+  {
+    "id": "019a2400-1580-7000-a001-000000001580",
+    "name": "Vermeulen Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 63",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4603,
+      "longitude": 4.8814
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 13.9,
+    "meters": {
+      "electricity_day_ean": "541449058035556376",
+      "electricity_night_ean": "541449355072231439",
+      "gas_ean": "374606064196642754",
+      "water_ean": "550778711582368411"
+    }
+  },
+  {
+    "id": "019a2400-1581-7000-a001-000000001581",
+    "name": "Hendrickx Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 107",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6227,
+      "longitude": 5.5853
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 14.0,
+    "meters": {
+      "electricity_day_ean": "541449109648330084",
+      "electricity_night_ean": "541449110051861423",
+      "gas_ean": "374606313788243707"
+    }
+  },
+  {
+    "id": "019a2400-1582-7000-a001-000000001582",
+    "name": "Coppens Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 174",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6857,
+      "longitude": 5.8174
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 10.2,
+    "meters": {
+      "electricity_day_ean": "541449291703192764",
+      "electricity_night_ean": "541449228425550305"
+    }
+  },
+  {
+    "id": "019a2400-1583-7000-a001-000000001583",
+    "name": "Claes Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 75",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5906,
+      "longitude": 5.5078
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 8.9,
+    "meters": {
+      "electricity_day_ean": "541449035755661650",
+      "electricity_night_ean": "541449573930701668"
+    }
+  },
+  {
+    "id": "019a2400-1584-7000-a001-000000001584",
+    "name": "Mertens Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 132",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5795,
+      "longitude": 5.8657
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 11.5,
+    "meters": {
+      "electricity_day_ean": "541449215971341589",
+      "electricity_night_ean": "541449222779742109",
+      "water_ean": "550778933789353220"
+    }
+  },
+  {
+    "id": "019a2400-1585-7000-a001-000000001585",
+    "name": "Janssens Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 32",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5955,
+      "longitude": 5.4934
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 13.3,
+    "meters": {
+      "electricity_day_ean": "541449542422052827",
+      "electricity_night_ean": "541449088511331343",
+      "water_ean": "550778110060116125"
+    }
+  },
+  {
+    "id": "019a2400-1586-7000-a001-000000001586",
+    "name": "Fontaine Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 107",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6307,
+      "longitude": 5.5773
+    },
+    "solar_capacity_kw": 5.5,
+    "battery_capacity_kwh": 11.8,
+    "meters": {
+      "electricity_day_ean": "541449198594236201",
+      "electricity_night_ean": "541449924140401790",
+      "gas_ean": "374606208809835499",
+      "water_ean": "550778147777930378"
+    }
+  },
+  {
+    "id": "019a2400-1587-7000-a001-000000001587",
+    "name": "Van den Berg Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 107",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4675,
+      "longitude": 4.8809
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 12.1,
+    "meters": {
+      "electricity_day_ean": "541449332764302895",
+      "electricity_night_ean": "541449291229634788",
+      "water_ean": "550778593465846326"
+    }
+  },
+  {
+    "id": "019a2400-1588-7000-a001-000000001588",
+    "name": "Janssens Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 194",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6848,
+      "longitude": 5.8228
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 13.6,
+    "meters": {
+      "electricity_day_ean": "541449434742196165",
+      "electricity_night_ean": "541449590436400486",
+      "water_ean": "550778776098829261"
+    }
+  },
+  {
+    "id": "019a2400-1589-7000-a001-000000001589",
+    "name": "Jacobs Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 5",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6323,
+      "longitude": 5.5759
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 10.2,
+    "meters": {
+      "electricity_day_ean": "541449883196562050",
+      "electricity_night_ean": "541449698587123045",
+      "water_ean": "550778217915954138"
+    }
+  },
+  {
+    "id": "019a2400-1590-7000-a001-000000001590",
+    "name": "Martens Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 71",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6783,
+      "longitude": 5.8137
+    },
+    "solar_capacity_kw": 3.9,
+    "battery_capacity_kwh": 10.3,
+    "meters": {
+      "electricity_day_ean": "541449865051807566",
+      "electricity_night_ean": "541449343023038558",
+      "gas_ean": "374606006005710242",
+      "water_ean": "550778340253683890"
+    }
+  },
+  {
+    "id": "019a2400-1591-7000-a001-000000001591",
+    "name": "Rousseau Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 98",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5899,
+      "longitude": 5.4946
+    },
+    "solar_capacity_kw": 3.3,
+    "battery_capacity_kwh": 12.0,
+    "meters": {
+      "electricity_day_ean": "541449850361267411",
+      "electricity_night_ean": "541449841064320015",
+      "gas_ean": "374606136174275717"
+    }
+  },
+  {
+    "id": "019a2400-1592-7000-a001-000000001592",
+    "name": "Willems Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 67",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5923,
+      "longitude": 5.8574
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 9.7,
+    "meters": {
+      "electricity_day_ean": "541449616344330824",
+      "electricity_night_ean": "541449512336149298",
+      "gas_ean": "374606214372838859",
+      "water_ean": "550778101153222255"
+    }
+  },
+  {
+    "id": "019a2400-1593-7000-a001-000000001593",
+    "name": "Hendrickx Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 47",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5804,
+      "longitude": 5.8529
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 11.2,
+    "meters": {
+      "electricity_day_ean": "541449520967007731",
+      "electricity_night_ean": "541449641535770414",
+      "water_ean": "550778423059617057"
+    }
+  },
+  {
+    "id": "019a2400-1594-7000-a001-000000001594",
+    "name": "Goossens Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 60",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5841,
+      "longitude": 5.8658
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 9.4,
+    "meters": {
+      "electricity_day_ean": "541449559537189669",
+      "electricity_night_ean": "541449035407149568"
+    }
+  },
+  {
+    "id": "019a2400-1595-7000-a001-000000001595",
+    "name": "Laurent Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 175",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6949,
+      "longitude": 5.8254
+    },
+    "solar_capacity_kw": 3.6,
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "541449507309340682",
+      "electricity_night_ean": "541449500459455162",
+      "gas_ean": "374606365106678061",
+      "water_ean": "550778542997137953"
+    }
+  },
+  {
+    "id": "019a2400-1596-7000-a001-000000001596",
+    "name": "Martens Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 191",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4655,
+      "longitude": 4.8798
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 13.9,
+    "meters": {
+      "electricity_day_ean": "541449896332545191",
+      "electricity_night_ean": "541449300799702623",
+      "gas_ean": "374606966662208824"
+    }
+  },
+  {
+    "id": "019a2400-1597-7000-a001-000000001597",
+    "name": "Willems Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 56",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5958,
+      "longitude": 5.4931
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 12.2,
+    "meters": {
+      "electricity_day_ean": "541449065997261211",
+      "electricity_night_ean": "541449567002759106",
+      "gas_ean": "374606987876753451"
+    }
+  },
+  {
+    "id": "019a2400-1598-7000-a001-000000001598",
+    "name": "Devos Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 9",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5858,
+      "longitude": 5.5048
+    },
+    "solar_capacity_kw": 5.3,
+    "battery_capacity_kwh": 8.3,
+    "meters": {
+      "electricity_day_ean": "541449211790167851",
+      "electricity_night_ean": "541449817140253167",
+      "gas_ean": "374606696656747835",
+      "water_ean": "550778163086012542"
+    }
+  },
+  {
+    "id": "019a2400-1599-7000-a001-000000001599",
+    "name": "Vincent Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 4",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5902,
+      "longitude": 5.855
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 11.4,
+    "meters": {
+      "electricity_day_ean": "541449490474265956",
+      "electricity_night_ean": "541449189408238940",
+      "gas_ean": "374606038179497607",
+      "water_ean": "550778737049734514"
+    }
+  },
+  {
+    "id": "019a2400-1600-7000-a001-000000001600",
+    "name": "Claes Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 195",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4767,
+      "longitude": 4.8706
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 13.1,
+    "meters": {
+      "electricity_day_ean": "541449875584342304",
+      "electricity_night_ean": "541449949926411476",
+      "gas_ean": "374606929071675081",
+      "water_ean": "550778302613923969"
+    }
+  },
+  {
+    "id": "019a2400-1601-7000-a001-000000001601",
+    "name": "Gerard Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 149",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6895,
+      "longitude": 5.8162
+    },
+    "solar_capacity_kw": 4.1,
+    "battery_capacity_kwh": 10.6,
+    "meters": {
+      "electricity_day_ean": "541449415227130170",
+      "electricity_night_ean": "541449510070422642",
+      "gas_ean": "374606212179899273",
+      "water_ean": "550778644633623870"
+    }
+  },
+  {
+    "id": "019a2400-1602-7000-a001-000000001602",
+    "name": "Claessens Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 129",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6323,
+      "longitude": 5.5794
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 8.4,
+    "meters": {
+      "electricity_day_ean": "541449304738739446",
+      "electricity_night_ean": "541449131767013303",
+      "gas_ean": "374606153774996068",
+      "water_ean": "550778741718389648"
+    }
+  },
+  {
+    "id": "019a2400-1603-7000-a001-000000001603",
+    "name": "Smet Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 162",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5871,
+      "longitude": 5.509
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 13.4,
+    "meters": {
+      "electricity_day_ean": "541449930863512281",
+      "electricity_night_ean": "541449664731445648",
+      "gas_ean": "374606725555529277"
+    }
+  },
+  {
+    "id": "019a2400-1604-7000-a001-000000001604",
+    "name": "Wouters Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 195",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6309,
+      "longitude": 5.5802
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 12.5,
+    "meters": {
+      "electricity_day_ean": "541449752236262937",
+      "electricity_night_ean": "541449443220951746",
+      "water_ean": "550778131146455246"
+    }
+  },
+  {
+    "id": "019a2400-1605-7000-a001-000000001605",
+    "name": "Baert Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 125",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4614,
+      "longitude": 4.8641
+    },
+    "solar_capacity_kw": 4.2,
+    "battery_capacity_kwh": 8.4,
+    "meters": {
+      "electricity_day_ean": "541449057729856709",
+      "electricity_night_ean": "541449464997313425",
+      "gas_ean": "374606403967756267"
+    }
+  },
+  {
+    "id": "019a2400-1606-7000-a001-000000001606",
+    "name": "Smet Family",
+    "iot_provider": "Enphase",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 177",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5826,
+      "longitude": 5.8552
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 10.2,
+    "meters": {
+      "electricity_day_ean": "541449326761518138",
+      "electricity_night_ean": "541449540678785408",
+      "water_ean": "550778811335124743"
+    }
+  },
+  {
+    "id": "019a2400-1607-7000-a001-000000001607",
+    "name": "Wouters Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 112",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5975,
+      "longitude": 5.8642
+    },
+    "solar_capacity_kw": 5.5,
+    "battery_capacity_kwh": 13.2,
+    "meters": {
+      "electricity_day_ean": "541449977014462079",
+      "electricity_night_ean": "541449996496850870",
+      "gas_ean": "374606399589954367",
+      "water_ean": "550778760399550916"
+    }
+  },
+  {
+    "id": "019a2400-1608-7000-a001-000000001608",
+    "name": "Aerts Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 13",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4645,
+      "longitude": 4.8792
+    },
+    "solar_capacity_kw": 4.3,
+    "battery_capacity_kwh": 10.8,
+    "meters": {
+      "electricity_day_ean": "541449758568712366",
+      "electricity_night_ean": "541449741455900791",
+      "water_ean": "550778808925343093"
+    }
+  },
+  {
+    "id": "019a2400-1609-7000-a001-000000001609",
+    "name": "Hendrickx Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 76",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5816,
+      "longitude": 5.5019
+    },
+    "solar_capacity_kw": 2.7,
+    "battery_capacity_kwh": 13.7,
+    "meters": {
+      "electricity_day_ean": "541449456502547303",
+      "electricity_night_ean": "541449749221553600",
+      "gas_ean": "374606108370052235"
+    }
+  },
+  {
+    "id": "019a2400-1610-7000-a001-000000001610",
+    "name": "Smet Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 115",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6775,
+      "longitude": 5.8196
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "541449072588158811",
+      "electricity_night_ean": "541449596005603546",
+      "gas_ean": "374606996152002894",
+      "water_ean": "550778614524728960"
+    }
+  },
+  {
+    "id": "019a2400-1611-7000-a001-000000001611",
+    "name": "Dewilde Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 61",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5774,
+      "longitude": 5.501
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 14.0,
+    "meters": {
+      "electricity_day_ean": "541449645935315899",
+      "electricity_night_ean": "541449088026632739",
+      "gas_ean": "374606971172786247"
+    }
+  },
+  {
+    "id": "019a2400-1612-7000-a001-000000001612",
+    "name": "Janssens Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 95",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6838,
+      "longitude": 5.8147
+    },
+    "solar_capacity_kw": 5.0,
+    "battery_capacity_kwh": 8.8,
+    "meters": {
+      "electricity_day_ean": "541449362112039787",
+      "electricity_night_ean": "541449938845856087",
+      "water_ean": "550778246490277112"
+    }
+  },
+  {
+    "id": "019a2400-1613-7000-a001-000000001613",
+    "name": "Baert Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 44",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5984,
+      "longitude": 5.8686
+    },
+    "solar_capacity_kw": 2.8,
+    "battery_capacity_kwh": 11.7,
+    "meters": {
+      "electricity_day_ean": "541449746836965177",
+      "electricity_night_ean": "541449845834186854",
+      "gas_ean": "374606394074316501",
+      "water_ean": "550778773080627567"
+    }
+  },
+  {
+    "id": "019a2400-1614-7000-a001-000000001614",
+    "name": "Maes Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 106",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5811,
+      "longitude": 5.8641
+    },
+    "solar_capacity_kw": 3.7,
+    "battery_capacity_kwh": 12.3,
+    "meters": {
+      "electricity_day_ean": "541449442935795656",
+      "electricity_night_ean": "541449583019319668",
+      "gas_ean": "374606826014636220",
+      "water_ean": "550778216149055886"
+    }
+  },
+  {
+    "id": "019a2400-1615-7000-a001-000000001615",
+    "name": "Wouters Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 195",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6247,
+      "longitude": 5.5814
+    },
+    "solar_capacity_kw": 4.6,
+    "battery_capacity_kwh": 13.4,
+    "meters": {
+      "electricity_day_ean": "541449678216894893",
+      "electricity_night_ean": "541449389445844732",
+      "gas_ean": "374606527395014761"
+    }
+  },
+  {
+    "id": "019a2400-1616-7000-a001-000000001616",
+    "name": "Hendrickx Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 71",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.4665,
+      "longitude": 4.8758
+    },
+    "solar_capacity_kw": 4.7,
+    "battery_capacity_kwh": 12.1,
+    "meters": {
+      "electricity_day_ean": "541449975047138294",
+      "electricity_night_ean": "541449720364578596",
+      "gas_ean": "374606127960812002"
+    }
+  },
+  {
+    "id": "019a2400-1617-7000-a001-000000001617",
+    "name": "Desmet Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 96",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6359,
+      "longitude": 5.58
+    },
+    "solar_capacity_kw": 3.5,
+    "battery_capacity_kwh": 9.2,
+    "meters": {
+      "electricity_day_ean": "541449603180785220",
+      "electricity_night_ean": "541449139495367709",
+      "gas_ean": "374606002101364790",
+      "water_ean": "550778011547669897"
+    }
+  },
+  {
+    "id": "019a2400-1618-7000-a001-000000001618",
+    "name": "Claessens Family",
+    "iot_provider": "SMA Sunny Portal",
+    "address": {
+      "city": "Namur",
+      "postal_code": "5000",
+      "street": "Straat 45",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.472,
+      "longitude": 4.8713
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 11.5,
+    "meters": {
+      "electricity_day_ean": "541449206092900772",
+      "electricity_night_ean": "541449609908967413",
+      "gas_ean": "374606868598358043",
+      "water_ean": "550778256700907333"
+    }
+  },
+  {
+    "id": "019a2400-1619-7000-a001-000000001619",
+    "name": "Goossens Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 73",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6366,
+      "longitude": 5.5805
+    },
+    "solar_capacity_kw": 2.9,
+    "battery_capacity_kwh": 9.0,
+    "meters": {
+      "electricity_day_ean": "541449044887725343",
+      "electricity_night_ean": "541449325170915210",
+      "gas_ean": "374606359887761808",
+      "water_ean": "550778731050494893"
+    }
+  },
+  {
+    "id": "019a2400-1620-7000-a001-000000001620",
+    "name": "Vermeulen Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 176",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5972,
+      "longitude": 5.8707
+    },
+    "solar_capacity_kw": 3.1,
+    "battery_capacity_kwh": 12.1,
+    "meters": {
+      "electricity_day_ean": "541449123499559886",
+      "electricity_night_ean": "541449821008573481",
+      "water_ean": "550778945755059436"
+    }
+  },
+  {
+    "id": "019a2400-1621-7000-a001-000000001621",
+    "name": "Goossens Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 166",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5811,
+      "longitude": 5.8564
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 9.9,
+    "meters": {
+      "electricity_day_ean": "541449716307127329",
+      "electricity_night_ean": "541449713590142746",
+      "gas_ean": "374606435463740173"
+    }
+  },
+  {
+    "id": "019a2400-1622-7000-a001-000000001622",
+    "name": "Devos Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 92",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5854,
+      "longitude": 5.495
+    },
+    "solar_capacity_kw": 4.4,
+    "battery_capacity_kwh": 10.9,
+    "meters": {
+      "electricity_day_ean": "541449736467074223",
+      "electricity_night_ean": "541449654179248184",
+      "water_ean": "550778034390283661"
+    }
+  },
+  {
+    "id": "019a2400-1623-7000-a001-000000001623",
+    "name": "Aerts Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 199",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5865,
+      "longitude": 5.5007
+    },
+    "solar_capacity_kw": 5.1,
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "541449111010194042",
+      "electricity_night_ean": "541449855070596509",
+      "water_ean": "550778607164830317"
+    }
+  },
+  {
+    "id": "019a2400-1624-7000-a001-000000001624",
+    "name": "Jacobs Family",
+    "iot_provider": "Tesla Powerwall",
+    "address": {
+      "city": "Arlon",
+      "postal_code": "6700",
+      "street": "Straat 150",
+      "region": "belgium_wallonia_south",
+      "latitude": 49.6804,
+      "longitude": 5.826
+    },
+    "solar_capacity_kw": 3.0,
+    "battery_capacity_kwh": 10.6,
+    "meters": {
+      "electricity_day_ean": "541449308780666589",
+      "electricity_night_ean": "541449885453605248",
+      "water_ean": "550778593018820803"
+    }
+  },
+  {
+    "id": "019a2400-1625-7000-a001-000000001625",
+    "name": "Fontaine Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 157",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6249,
+      "longitude": 5.5834
+    },
+    "solar_capacity_kw": 3.2,
+    "battery_capacity_kwh": 11.0,
+    "meters": {
+      "electricity_day_ean": "541449536998286449",
+      "electricity_night_ean": "541449937015009896",
+      "gas_ean": "374606801583554656",
+      "water_ean": "550778155122798968"
+    }
+  },
+  {
+    "id": "019a2400-1626-7000-a001-000000001626",
+    "name": "Willems Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 113",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5925,
+      "longitude": 5.8698
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 10.1,
+    "meters": {
+      "electricity_day_ean": "541449042209766931",
+      "electricity_night_ean": "541449781336919469",
+      "water_ean": "550778550270311110"
+    }
+  },
+  {
+    "id": "019a2400-1627-7000-a001-000000001627",
+    "name": "Aerts Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 104",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6422,
+      "longitude": 5.5729
+    },
+    "solar_capacity_kw": 5.2,
+    "battery_capacity_kwh": 13.9,
+    "meters": {
+      "electricity_day_ean": "541449038711243834",
+      "electricity_night_ean": "541449313256906935",
+      "water_ean": "550778748992388922"
+    }
+  },
+  {
+    "id": "019a2400-1628-7000-a001-000000001628",
+    "name": "Hendrickx Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 123",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.588,
+      "longitude": 5.8597
+    },
+    "solar_capacity_kw": 2.6,
+    "battery_capacity_kwh": 8.7,
+    "meters": {
+      "electricity_day_ean": "541449784705752394",
+      "electricity_night_ean": "541449579394975086",
+      "gas_ean": "374606596016528367"
+    }
+  },
+  {
+    "id": "019a2400-1629-7000-a001-000000001629",
+    "name": "Bogaert Family",
+    "iot_provider": "SolarEdge",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 101",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5783,
+      "longitude": 5.5006
+    },
+    "solar_capacity_kw": 3.8,
+    "battery_capacity_kwh": 12.0,
+    "meters": {
+      "electricity_day_ean": "541449752756405908",
+      "electricity_night_ean": "541449086275030367",
+      "gas_ean": "374606841039097106",
+      "water_ean": "550778597365484811"
+    }
+  },
+  {
+    "id": "019a2400-1630-7000-a001-000000001630",
+    "name": "Dubois Family",
+    "iot_provider": "HomeWizard",
+    "address": {
+      "city": "Li\u00e8ge",
+      "postal_code": "4000",
+      "street": "Straat 167",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.6415,
+      "longitude": 5.5744
+    },
+    "solar_capacity_kw": 4.5,
+    "battery_capacity_kwh": 8.3,
+    "meters": {
+      "electricity_day_ean": "541449406916903207",
+      "electricity_night_ean": "541449771107639721",
+      "gas_ean": "374606850376900521",
+      "water_ean": "550778236576989106"
+    }
+  },
+  {
+    "id": "019a2400-1631-7000-a001-000000001631",
+    "name": "Devos Family",
+    "iot_provider": "Huawei FusionSolar",
+    "address": {
+      "city": "Seraing",
+      "postal_code": "4100",
+      "street": "Straat 102",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5766,
+      "longitude": 5.4949
+    },
+    "solar_capacity_kw": 4.0,
+    "battery_capacity_kwh": 8.6,
+    "meters": {
+      "electricity_day_ean": "541449071508496127",
+      "electricity_night_ean": "541449649527375791",
+      "gas_ean": "374606535209931722",
+      "water_ean": "550778797958422787"
+    }
+  },
+  {
+    "id": "019a2400-1632-7000-a001-000000001632",
+    "name": "Goossens Family",
+    "iot_provider": "Smappee",
+    "address": {
+      "city": "Verviers",
+      "postal_code": "4800",
+      "street": "Straat 135",
+      "region": "belgium_wallonia_south",
+      "latitude": 50.5835,
+      "longitude": 5.8599
+    },
+    "solar_capacity_kw": 4.9,
+    "battery_capacity_kwh": 13.8,
+    "meters": {
+      "electricity_day_ean": "541449266190081972",
+      "electricity_night_ean": "541449923746655716",
+      "water_ean": "550778811736481666"
+    }
   }
 ]
