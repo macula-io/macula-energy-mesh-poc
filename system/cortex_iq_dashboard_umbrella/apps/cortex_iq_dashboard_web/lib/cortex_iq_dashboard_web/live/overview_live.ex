@@ -22,63 +22,183 @@ defmodule CortexIqDashboardWeb.OverviewLive do
     require Logger
     Logger.info("OverviewLive: mount() called, connected: #{connected?(socket)}")
 
-    # Subscribe to overview updates
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "view:overview")
-      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:control")
-      # Subscribe to simulation time broadcasts directly
-      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:time_advanced")
-      Logger.info("OverviewLive: Subscribed to overview updates and simulation time")
+      # Just-in-Time WAMP subscription model
+      bondy_url = System.get_env("BONDY_URL", "ws://bondy.macula-system.svc.cluster.local:18080/ws")
+      realm_uri = System.get_env("BONDY_REALM", "be.cortexiq.energy")
+
+      # Start WAMP client connection (async)
+      Logger.info("OverviewLive: Starting WAMP client for JIT subscription")
+      {:ok, wamp_client} = MaculaSdk.Wamp.Client.start_link(
+        url: bondy_url,
+        realm: realm_uri,
+        serializer: :json
+      )
+
+      # Schedule subscription after connection establishes (2 second delay)
+      Process.send_after(self(), :subscribe_to_events, 2_000)
+
+      Logger.info("OverviewLive: WAMP client started, subscriptions scheduled")
+
+      {:ok,
+       socket
+       |> assign(:current_path, "/")
+       |> assign(:wamp_client, wamp_client)
+       |> assign(:waiting_for_data, true)
+       |> assign(:overview, %{})
+       |> assign(:simulation_time, nil)
+       |> assign(:simulation_speed, 105_120)
+       |> assign(:simulation_paused, false)
+       |> assign(:stats, default_stats())
+       |> assign(:aggregate_history, [])
+       |> assign(:metrics, %{
+         events_per_second: 0.0,
+         measurements_per_second: 0.0,
+         meter_readings_per_second: 0.0,
+         homes_online: 0,
+         homes_total: 0
+       })}
+    else
+      # Initial render (not connected yet)
+      {:ok,
+       socket
+       |> assign(:current_path, "/")
+       |> assign(:wamp_client, nil)
+       |> assign(:waiting_for_data, true)
+       |> assign(:overview, %{})
+       |> assign(:simulation_time, nil)
+       |> assign(:simulation_speed, 105_120)
+       |> assign(:simulation_paused, false)
+       |> assign(:stats, default_stats())
+       |> assign(:aggregate_history, [])
+       |> assign(:metrics, %{
+         events_per_second: 0.0,
+         measurements_per_second: 0.0,
+         meter_readings_per_second: 0.0,
+         homes_online: 0,
+         homes_total: 0
+       })}
     end
+  end
 
-    # Load initial state from OverviewAggregator (in-memory, event-sourced)
-    overview = OverviewAggregator.get_state()
+  @impl true
+  def terminate(_reason, socket) do
+    # Cleanup: stop WAMP client when LiveView terminates
+    if socket.assigns[:wamp_client] do
+      Logger.info("OverviewLive: Terminating, stopping WAMP client")
+      MaculaSdk.Wamp.Client.stop(socket.assigns.wamp_client)
+    end
+    :ok
+  end
 
-    # Get additional overview data via WAMP RPC
-    # Get overview data with timeout - don't block mount if RPC is slow
-    task = Task.async(fn -> QueryClient.get_overview() end)
-    overview_data =
-      case Task.yield(task, 1000) || Task.shutdown(task) do
-        {:ok, {:ok, data}} -> data
-        {:ok, {:error, reason}} ->
-          Logger.warning("Failed to get overview data: #{inspect(reason)}")
-          %{}
-        nil ->
-          Logger.warning("Timeout getting overview data")
-          %{}
+  # Handle delayed subscription (after WAMP client connects)
+
+  @impl true
+  def handle_info(:subscribe_to_events, socket) do
+    wamp_client = socket.assigns[:wamp_client]
+
+    if wamp_client do
+      self_pid = self()
+
+      # Subscribe to metrics totals (performance metrics)
+      case MaculaSdk.Wamp.Client.subscribe(
+        wamp_client,
+        "macula.metrics.totals_calculated",
+        fn _topic, event_data ->
+          send(self_pid, {:wamp_event, :metrics_totals, event_data})
+        end,
+        %{}
+      ) do
+        :ok -> Logger.info("OverviewLive: ✅ Subscribed to macula.metrics.totals_calculated")
+        {:error, reason} ->
+          Logger.error("OverviewLive: Failed to subscribe to metrics_totals: #{inspect(reason)}")
+          # Retry in 5 seconds
+          Process.send_after(self(), :subscribe_to_events, 5_000)
+          {:noreply, socket}
       end
 
-    {:ok,
-     socket
-     |> assign(:current_path, "/")
-     |> assign(:overview, overview)
-     |> assign(:simulation_time, Map.get(overview_data, "simulation_time"))
-     |> assign(:simulation_speed, Map.get(overview_data, "simulation_speed", 105_120))
-     |> assign(:simulation_paused, Map.get(overview_data, "simulation_paused", false))
-     |> assign(:stats, parse_stats(overview))  # Use in-memory data, not stale DB data
-     |> assign(:aggregate_history, Map.get(overview_data, "aggregate_history", []))}
+      # Subscribe to history updates (for charts)
+      case MaculaSdk.Wamp.Client.subscribe(
+        wamp_client,
+        "be.cortexiq.projections.history_updated",
+        fn _topic, event_data ->
+          send(self_pid, {:wamp_event, :history_updated, event_data})
+        end,
+        %{}
+      ) do
+        :ok -> Logger.info("OverviewLive: ✅ Subscribed to be.cortexiq.projections.history_updated")
+        {:error, reason} -> Logger.error("OverviewLive: Failed to subscribe to history_updated: #{inspect(reason)}")
+      end
+
+      # Subscribe to simulation time
+      case MaculaSdk.Wamp.Client.subscribe(
+        wamp_client,
+        "be.cortexiq.simulation.time_advanced",
+        fn _topic, event_data ->
+          send(self_pid, {:wamp_event, :time_advanced, event_data})
+        end,
+        %{}
+      ) do
+        :ok -> Logger.info("OverviewLive: ✅ Subscribed to be.cortexiq.simulation.time_advanced")
+        {:error, reason} -> Logger.error("OverviewLive: Failed to subscribe to time_advanced: #{inspect(reason)}")
+      end
+
+      # Subscribe to totals calculated (main overview data)
+      case MaculaSdk.Wamp.Client.subscribe(
+        wamp_client,
+        "be.cortexiq.projections.totals_calculated",
+        fn _topic, event_data ->
+          send(self_pid, {:wamp_event, :totals_calculated, event_data})
+        end,
+        %{}
+      ) do
+        :ok -> Logger.info("OverviewLive: ✅ Subscribed to be.cortexiq.projections.totals_calculated")
+        {:error, reason} -> Logger.error("OverviewLive: Failed to subscribe to totals_calculated: #{inspect(reason)}")
+      end
+
+      Logger.info("OverviewLive: All WAMP subscriptions attempted")
+    else
+      Logger.error("OverviewLive: No WAMP client available for subscription")
+    end
+
+    {:noreply, socket}
   end
 
+  # Handle WAMP events (JIT subscription model)
+
   @impl true
-  def handle_info(:view_updated, socket) do
-    require Logger
-    Logger.info("OverviewLive: View updated, reloading from OverviewAggregator")
+  def handle_info({:wamp_event, :totals_calculated, event_data}, socket) do
+    # Main overview data from projections service
+    kwargs = Map.get(event_data, :kwargs, %{})
 
-    # Reload from in-memory aggregator
-    overview = OverviewAggregator.get_state()
-    Logger.info("OverviewLive: Overview state - total_homes=#{overview.total_homes}, total_production=#{overview.total_production_kw}, total_consumption=#{overview.total_consumption_kw}")
+    Logger.info("OverviewLive: Received totals_calculated event")
 
-    # Use in-memory aggregator data directly (NO database query!)
-    # parse_stats expects the same shape as the WAMP RPC response, so pass overview directly
+    stats = %{
+      homes: Map.get(kwargs, "total_homes", 0),
+      connected_homes: Map.get(kwargs, "connected_homes_count", 0),
+      total_production_kw: Map.get(kwargs, "total_production_kw", 0.0),
+      total_consumption_kw: Map.get(kwargs, "total_consumption_kw", 0.0),
+      total_energy_bought_kwh: Map.get(kwargs, "total_energy_bought_kwh", 0.0),
+      total_energy_sold_kwh: Map.get(kwargs, "total_energy_sold_kwh", 0.0),
+      total_cost_paid: Map.get(kwargs, "total_cost_paid", 0.0),
+      total_revenue_received: Map.get(kwargs, "total_revenue_received", 0.0),
+      avg_battery_percent: Map.get(kwargs, "avg_battery_percent", 0.0),
+      contract_switches: Map.get(kwargs, "contract_switches", 0),
+      cortexiq_total_savings: Map.get(kwargs, "cortexiq_total_savings", 0.0),
+      cortexiq_total_commission: Map.get(kwargs, "cortexiq_total_commission", 0.0),
+      cortexiq_net_savings: Map.get(kwargs, "cortexiq_net_savings", 0.0)
+    }
+
     {:noreply,
      socket
-     |> assign(:overview, overview)
-     |> assign(:stats, parse_stats(overview))}
+     |> assign(:waiting_for_data, false)
+     |> assign(:stats, stats)}
   end
 
   @impl true
-  def handle_info({:time_advanced, kwargs}, socket) do
-    # Update simulation time from direct broadcast
+  def handle_info({:wamp_event, :time_advanced, event_data}, socket) do
+    # Simulation time updates
+    kwargs = Map.get(event_data, :kwargs, %{})
     simulation_time = Map.get(kwargs, "simulation_time")
     simulation_speed = Map.get(kwargs, "speed", socket.assigns.simulation_speed)
     simulation_paused = Map.get(kwargs, "paused", socket.assigns.simulation_paused)
@@ -88,6 +208,47 @@ defmodule CortexIqDashboardWeb.OverviewLive do
      |> assign(:simulation_time, simulation_time)
      |> assign(:simulation_speed, simulation_speed)
      |> assign(:simulation_paused, simulation_paused)}
+  end
+
+  @impl true
+  def handle_info({:wamp_event, :metrics_totals, event_data}, socket) do
+    # Performance metrics
+    kwargs = Map.get(event_data, :kwargs, %{})
+
+    metrics = %{
+      events_per_second: Map.get(kwargs, "events_per_second", 0.0),
+      measurements_per_second: Map.get(kwargs, "measurements_per_second", 0.0),
+      meter_readings_per_second: Map.get(kwargs, "meter_readings_per_second", 0.0),
+      homes_online: Map.get(kwargs, "homes_online", 0),
+      homes_total: Map.get(kwargs, "homes_total", 0)
+    }
+
+    {:noreply, assign(socket, :metrics, metrics)}
+  end
+
+  @impl true
+  def handle_info({:wamp_event, :history_updated, event_data}, socket) do
+    # History updates for charts
+    kwargs = Map.get(event_data, :kwargs, %{})
+
+    history_point = %{
+      timestamp: Map.get(kwargs, "timestamp"),
+      total_production_w: Map.get(kwargs, "total_production_w", 0),
+      total_consumption_w: Map.get(kwargs, "total_consumption_w", 0),
+      avg_battery_percent: Map.get(kwargs, "avg_battery_percent", 0.0),
+      total_homes: Map.get(kwargs, "total_homes", 0)
+    }
+
+    # Add new point and keep last 100
+    new_history = (socket.assigns.aggregate_history ++ [history_point]) |> Enum.take(-100)
+
+    Logger.info("OverviewLive: History updated, buffer size: #{length(new_history)}, pushing to charts")
+
+    # Push updated history to chart hooks
+    {:noreply,
+     socket
+     |> assign(:aggregate_history, new_history)
+     |> push_event("history_updated", %{history: new_history})}
   end
 
   @impl true
@@ -102,6 +263,9 @@ defmodule CortexIqDashboardWeb.OverviewLive do
      |> assign(:aggregate_history, [])
      |> assign(:stats, %{
        homes: 0,
+       connected_homes: 0,
+       total_production_kw: 0.0,
+       total_consumption_kw: 0.0,
        total_energy_bought_kwh: 0.0,
        total_energy_sold_kwh: 0.0,
        total_cost_paid: 0.0,
@@ -276,6 +440,15 @@ defmodule CortexIqDashboardWeb.OverviewLive do
       <div class="flex-1 overflow-auto">
         <div class="p-6">
           <!-- Toast Notifications -->
+          <%= if @waiting_for_data do %>
+            <div
+              id="toast-waiting"
+              class="fixed top-4 right-4 z-50 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-pulse"
+            >
+              <span class="text-xl">⏳</span>
+              <span>Waiting for data...</span>
+            </div>
+          <% end %>
           <%= if @flash do %>
             <%= if Phoenix.Flash.get(@flash, :info) do %>
               <div
@@ -303,6 +476,52 @@ defmodule CortexIqDashboardWeb.OverviewLive do
           <div class="mb-6">
             <h1 class="text-3xl font-bold text-gray-100">Exchange Overview</h1>
             <p class="text-gray-400 text-sm mt-1">Real-time energy exchange metrics and performance</p>
+          </div>
+
+          <!-- Performance Metrics -->
+          <div class="mb-6">
+            <h2 class="text-xl font-semibold text-gray-200 mb-3">System Performance</h2>
+            <div class="grid grid-cols-5 gap-4">
+              <!-- Events Per Second -->
+              <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <div class="text-gray-400 text-xs uppercase tracking-wide mb-1">Events/sec</div>
+                <div class="text-2xl font-bold text-blue-400">
+                  <%= format_with_unit_prefix(@metrics.events_per_second) %>
+                </div>
+              </div>
+
+              <!-- Measurements Per Second -->
+              <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <div class="text-gray-400 text-xs uppercase tracking-wide mb-1">Measurements/sec</div>
+                <div class="text-2xl font-bold text-green-400">
+                  <%= format_with_unit_prefix(@metrics.measurements_per_second) %>
+                </div>
+              </div>
+
+              <!-- Meter Readings Per Second -->
+              <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <div class="text-gray-400 text-xs uppercase tracking-wide mb-1">Meter Readings/sec</div>
+                <div class="text-2xl font-bold text-purple-400">
+                  <%= format_with_unit_prefix(@metrics.meter_readings_per_second) %>
+                </div>
+              </div>
+
+              <!-- Homes Online -->
+              <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <div class="text-gray-400 text-xs uppercase tracking-wide mb-1">Homes Online</div>
+                <div class="text-2xl font-bold text-yellow-400">
+                  <%= format_with_unit_prefix(@metrics.homes_online) %>
+                </div>
+              </div>
+
+              <!-- Total Homes -->
+              <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <div class="text-gray-400 text-xs uppercase tracking-wide mb-1">Total Homes</div>
+                <div class="text-2xl font-bold text-gray-300">
+                  <%= format_with_unit_prefix(@metrics.homes_total) %>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Stats Cards -->
@@ -337,11 +556,10 @@ defmodule CortexIqDashboardWeb.OverviewLive do
           <% end %>
 
           <!-- Analytics Charts -->
-          <%= if length(@aggregate_history) > 5 do %>
-            <div class="mt-6">
-              <h2 class="text-2xl font-bold mb-4 text-gray-100">System Analytics</h2>
+          <div class="mt-6">
+            <h2 class="text-2xl font-bold mb-4 text-gray-100">System Analytics</h2>
 
-              <div class="grid grid-cols-2 gap-6">
+            <div class="grid grid-cols-2 gap-6">
                 <!-- Production vs Consumption Chart -->
                 <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
                   <h3 class="text-lg font-semibold text-gray-300 mb-4">Production vs Consumption</h3>
@@ -365,9 +583,8 @@ defmodule CortexIqDashboardWeb.OverviewLive do
                   >
                   </div>
                 </div>
-              </div>
             </div>
-          <% end %>
+          </div>
         </div>
       </div>
     </div>
@@ -414,4 +631,25 @@ defmodule CortexIqDashboardWeb.OverviewLive do
       cortexiq_net_savings: 0.0
     }
   end
+
+  defp format_with_unit_prefix(value) when is_number(value) do
+    abs_value = abs(value)
+    sign = if value < 0, do: "-", else: ""
+
+    cond do
+      abs_value >= 1.0e24 -> "#{sign}#{Float.round(abs_value / 1.0e24, 1)}Y"  # yotta
+      abs_value >= 1.0e21 -> "#{sign}#{Float.round(abs_value / 1.0e21, 1)}Z"  # zetta
+      abs_value >= 1.0e18 -> "#{sign}#{Float.round(abs_value / 1.0e18, 1)}E"  # exa
+      abs_value >= 1.0e15 -> "#{sign}#{Float.round(abs_value / 1.0e15, 1)}P"  # peta
+      abs_value >= 1.0e12 -> "#{sign}#{Float.round(abs_value / 1.0e12, 1)}T"  # tera
+      abs_value >= 1.0e9 -> "#{sign}#{Float.round(abs_value / 1.0e9, 1)}G"    # giga
+      abs_value >= 1.0e6 -> "#{sign}#{Float.round(abs_value / 1.0e6, 1)}M"    # mega
+      abs_value >= 1.0e3 -> "#{sign}#{Float.round(abs_value / 1.0e3, 1)}k"    # kilo
+      abs_value >= 10.0 -> "#{sign}#{trunc(abs_value)}"                       # No decimal for values >= 10 (use trunc for integers)
+      abs_value > 0 -> "#{sign}#{Float.round(abs_value * 1.0, 1)}"           # 1 decimal for small values (force float)
+      true -> "0"
+    end
+  end
+
+  defp format_with_unit_prefix(_), do: "0"
 end

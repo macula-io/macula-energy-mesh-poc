@@ -276,11 +276,23 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
   end
 
   defp publish_totals_calculated(wamp_client, totals) do
+    # Enhance totals with financial metrics (placeholders for now - will be calculated from trade events)
+    enhanced_totals = Map.merge(totals, %{
+      total_energy_bought_kwh: 0.0,  # TODO: Track from home trade events
+      total_energy_sold_kwh: 0.0,    # TODO: Track from home trade events
+      total_cost_paid: 0.0,          # TODO: Track from home trade events
+      total_revenue_received: 0.0,   # TODO: Track from home trade events
+      contract_switches: 0,          # TODO: Track from contract.switched events
+      cortexiq_total_savings: 0.0,   # TODO: Calculate savings vs baseline
+      cortexiq_total_commission: 0.0, # TODO: Calculate commission on savings
+      cortexiq_net_savings: 0.0      # TODO: savings - commission
+    })
+
     case MaculaSdk.Wamp.Client.publish(
       wamp_client,
       "be.cortexiq.projections.totals_calculated",
       [],
-      totals
+      enhanced_totals
     ) do
       :ok ->
         :ok
