@@ -25,10 +25,12 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
     subscribed: false,  # Track if we successfully subscribed
     homes: %{},  # %{home_id => %{production_kw, consumption_kw, battery_percent}}
     last_totals: nil,  # Last calculated totals
-    calc_timer: nil  # Timer for periodic calculation
+    calc_timer: nil,  # Timer for periodic calculation
+    history_timer: nil  # Timer for history event emission
   ]
 
   @calc_interval_ms 500  # Calculate totals every 500ms
+  @history_interval_ms 2_000  # Emit history events every 2 seconds
 
   ## Client API
 
@@ -45,14 +47,20 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
     # Subscribe to home events to track connection state and measurements
     Process.send_after(self(), :subscribe_home_events, 2000)
 
-    # Start periodic totals calculation
-    timer = Process.send_after(self(), :calculate_totals, @calc_interval_ms)
+    # Start periodic totals calculation (500ms for database updates)
+    calc_timer = Process.send_after(self(), :calculate_totals, @calc_interval_ms)
+
+    # Start periodic history emission (2 seconds for dashboard charts)
+    history_timer = Process.send_after(self(), :emit_history, @history_interval_ms)
 
     Logger.info("CalculateSystemTotals.Aggregator started")
+    Logger.info("  Calculation interval: #{@calc_interval_ms}ms")
+    Logger.info("  History emission interval: #{@history_interval_ms}ms")
 
     {:ok, %__MODULE__{
       wamp_client: wamp_client,
-      calc_timer: timer
+      calc_timer: calc_timer,
+      history_timer: history_timer
     }}
   end
 
@@ -185,20 +193,24 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
       Logger.info("#{__MODULE__}: Sample battery values: #{inspect(battery_values)}, avg=#{Float.round(totals.avg_battery_percent, 1)}%")
     end
 
-    # Query total homes from database for publishing
+    # Query currently connected homes from database (connected_at set, disconnected_at null)
+    # This matches the in-memory count and avoids showing stale historical data
     import Ecto.Query
     alias CortexIqProjections.Repo
     alias CortexIqDashboardSchemas.Projections.HomeState
-    total_homes_in_db = Repo.aggregate(HomeState, :count, :home_id)
+
+    connected_homes_query = from h in HomeState,
+      where: not is_nil(h.connected_at) and is_nil(h.disconnected_at)
+    total_homes_in_db = Repo.aggregate(connected_homes_query, :count, :home_id)
 
     # Log full totals for debugging
-    Logger.info("#{__MODULE__}: Calculated totals - connected=#{totals.total_homes}, total_in_db=#{total_homes_in_db}, prod=#{Float.round(totals.total_production_kw, 1)}kW, cons=#{Float.round(totals.total_consumption_kw, 1)}kW, battery=#{Float.round(totals.avg_battery_percent, 1)}%")
+    Logger.info("#{__MODULE__}: Calculated totals - connected_in_memory=#{totals.total_homes}, connected_in_db=#{total_homes_in_db}, prod=#{Float.round(totals.total_production_kw, 1)}kW, cons=#{Float.round(totals.total_consumption_kw, 1)}kW, battery=#{Float.round(totals.avg_battery_percent, 1)}%")
 
     # Publish to WAMP for real-time consumers (dashboard)
-    # Include BOTH total_homes (all initialized) and connected_homes_count (currently active)
+    # Use database count as authoritative (survives restarts), in-memory as fallback
     totals_with_db_count = Map.merge(totals, %{
-      total_homes: total_homes_in_db,
-      connected_homes_count: totals.total_homes
+      total_homes: max(total_homes_in_db, totals.total_homes),
+      connected_homes_count: max(total_homes_in_db, totals.total_homes)
     })
     publish_totals_calculated(state.wamp_client, totals_with_db_count)
 
@@ -209,6 +221,23 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
     timer = Process.send_after(self(), :calculate_totals, @calc_interval_ms)
 
     {:noreply, %{state | last_totals: totals, calc_timer: timer}}
+  end
+
+  @impl true
+  def handle_info(:emit_history, state) do
+    # Emit current totals as history event for dashboard charts
+    # Dashboard will accumulate these into a rolling history buffer
+    if state.last_totals do
+      publish_history_updated(state.wamp_client, state.last_totals)
+      Logger.debug("#{__MODULE__}: History event emitted")
+    else
+      Logger.debug("#{__MODULE__}: No totals calculated yet, skipping history emission")
+    end
+
+    # Schedule next history emission
+    history_timer = Process.send_after(self(), :emit_history, @history_interval_ms)
+
+    {:noreply, %{state | history_timer: history_timer}}
   end
 
   ## Private Functions
@@ -257,6 +286,30 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
         :ok
       {:error, reason} ->
         Logger.error("#{__MODULE__}: Failed to publish totals: #{inspect(reason)}")
+    end
+  end
+
+  defp publish_history_updated(wamp_client, totals) do
+    # Publish history event for dashboard charts
+    # Convert kW to W for consistency with dashboard expectations
+    history_point = %{
+      timestamp: DateTime.to_iso8601(totals.calculated_at),
+      total_production_w: trunc(totals.total_production_kw * 1000),
+      total_consumption_w: trunc(totals.total_consumption_kw * 1000),
+      avg_battery_percent: Float.round(totals.avg_battery_percent, 1),
+      total_homes: totals.total_homes
+    }
+
+    case MaculaSdk.Wamp.Client.publish(
+      wamp_client,
+      "be.cortexiq.projections.history_updated",
+      [],
+      history_point
+    ) do
+      :ok ->
+        :ok
+      {:error, reason} ->
+        Logger.error("#{__MODULE__}: Failed to publish history: #{inspect(reason)}")
     end
   end
 
