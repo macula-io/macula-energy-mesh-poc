@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - homes-1.yaml
   - ../../../base/secrets/cortex-iq-homes-macula-apikey.yaml
-  - ../../../base/bondy-client-config-cm.yaml
+  - ../../../base/bondy-client-config
 
 namespace: macula-edge
 
