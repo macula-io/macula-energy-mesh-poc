@@ -60,15 +60,15 @@ data:
     cluster.parallelism = 4
     cluster.automatic_leave = off
 
-    # Kubernetes DNS-based peer discovery
-    # Pods will autodiscover via headless service
+    # DNS-based peer discovery (cross-cluster via CoreDNS static hosts)
+    # Autodiscover all Bondy instances (hub + edges) via bondy.macula.local
     cluster.peer_discovery.enabled = on
     cluster.peer_discovery.type = dns
     cluster.peer_discovery.polling_interval = 10s
 
     # DNS discovery configuration
-    # This will resolve bondy-headless.macula-system.svc.cluster.local to all pod IPs
-    cluster.peer_discovery.config.query = bondy-headless.macula-system.svc.cluster.local
+    # Resolves to all 7 Bondy pods (3 hub + 4 edge) via CoreDNS static hosts
+    cluster.peer_discovery.config.query = bondy.macula.local
     cluster.peer_discovery.config.node_basename = bondy
     cluster.peer_discovery.config.record_type = a
 

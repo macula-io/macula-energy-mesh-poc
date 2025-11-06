@@ -36,13 +36,33 @@ data:
     log.console = console
     log.console.level = info
 
-    # Node name
-    nodename = bondy@127.0.0.1
-    distributed_cookie = bondy
+    # Clustering with Partisan
+    # Node name will be set via BONDY_ERL_NODENAME env var
+    # distributed_cookie will be set via BONDY_ERL_DISTRIBUTED_COOKIE env var
 
-    # AAE
+    # Cluster peer service
+    cluster.peer_port = 18086
+    cluster.parallelism = 4
+    cluster.automatic_leave = off
+
+    # DNS-based peer discovery (cross-cluster via CoreDNS static hosts)
+    # Autodiscover all Bondy instances (hub + edges) via bondy.macula.local
+    cluster.peer_discovery.enabled = on
+    cluster.peer_discovery.type = dns
+    cluster.peer_discovery.polling_interval = 10s
+
+    # DNS discovery configuration
+    # Resolves to all 7 Bondy pods (3 hub + 4 edge) via CoreDNS static hosts
+    cluster.peer_discovery.config.query = bondy.macula.local
+    cluster.peer_discovery.config.node_basename = bondy
+    cluster.peer_discovery.config.record_type = a
+
+    # AAE (Active Anti-Entropy) for data consistency across cluster
     aae.enabled = on
+    aae.exchange_timer = 60s
+    aae.hashtree_timer = 30s
 
     # Store
     store.partitions = 8
     startup.wait_for_store_partitions = on
+    startup.wait_for_store_hashtrees = on

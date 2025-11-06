@@ -35,11 +35,22 @@ spec:
         - name: admin-api
           containerPort: 18081
           protocol: TCP
+        - name: cluster
+          containerPort: 18086
+          protocol: TCP
         env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         - name: BONDY_ERL_NODENAME
-          value: "bondy@127.0.0.1"
+          value: "bondy@$(POD_IP)"
         - name: BONDY_ERL_DISTRIBUTED_COOKIE
-          value: "bondy"
+          value: "bondy-cluster-secret"
         - name: BONDY_LOG_CONSOLE
           value: "console"
         - name: BONDY_LOG_LEVEL
