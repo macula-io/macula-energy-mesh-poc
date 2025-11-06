@@ -9,12 +9,13 @@ metadata:
     app.kubernetes.io/component: wamp-router
 data:
   bondy.conf: |
-    # Bondy Configuration for Energy Mesh PoC
-    # Simple configuration enabling WebSocket WAMP
+    # Bondy Configuration for Energy Mesh PoC - 3-Node Cluster
+    # Clustered configuration with Partisan for horizontal scaling
 
     # Security - Allow anonymous for application realms (temporary)
     security.allow_anonymous_user = on
     security.automatically_create_realms = off
+    security.enabled = off  # Disable RBAC to allow all operations for PoC
 
     # WAMP over raw TCP
     wamp.tcp.enabled = on
@@ -50,13 +51,33 @@ data:
     log.console = console
     log.console.level = info
 
-    # Node name (using pod name for uniqueness in K8s)
-    nodename = bondy@127.0.0.1
-    distributed_cookie = bondy
+    # Clustering with Partisan
+    # Node name will be set via BONDY_ERL_NODENAME env var
+    # distributed_cookie will be set via BONDY_ERL_DISTRIBUTED_COOKIE env var
 
-    # AAE
+    # Cluster peer service
+    cluster.peer_port = 18086
+    cluster.parallelism = 4
+    cluster.automatic_leave = off
+
+    # Kubernetes DNS-based peer discovery
+    # Pods will autodiscover via headless service
+    cluster.peer_discovery.enabled = on
+    cluster.peer_discovery.type = dns
+    cluster.peer_discovery.polling_interval = 10s
+
+    # DNS discovery configuration
+    # This will resolve bondy-headless.macula-system.svc.cluster.local to all pod IPs
+    cluster.peer_discovery.config.query = bondy-headless.macula-system.svc.cluster.local
+    cluster.peer_discovery.config.node_basename = bondy
+    cluster.peer_discovery.config.record_type = a
+
+    # AAE (Active Anti-Entropy) for data consistency across cluster
     aae.enabled = on
+    aae.exchange_timer = 60s
+    aae.hashtree_timer = 30s
 
     # Store
     store.partitions = 16
     startup.wait_for_store_partitions = on
+    startup.wait_for_store_hashtrees = on
