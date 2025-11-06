@@ -8,13 +8,12 @@ metadata:
     app.kubernetes.io/part-of: macula-system
 data:
   # Bondy WAMP Router connection settings
-  # Use DNS name via ingress (proper solution, no hardcoded IPs)
-  # DNS resolution provided by /etc/hosts or PowerDNS
-  # Ingress forwards port 80 to Bondy service port 18080
-  BONDY_URL: "ws://hub.macula.local/ws"
+  # Connect to LOCAL bondy-mesh in same namespace (edge+beam distributed mesh)
+  # Each edge cluster has its own bondy-mesh-0 StatefulSet
+  BONDY_URL: "ws://bondy-mesh-0.bondy-headless.macula-edge.svc.cluster.local:18080/ws"
   BONDY_REALM: "be.cortexiq.energy"
 
   # Alternative URLs (for reference):
-  # - Via NodePort (not recommended): ws://172.20.0.7:30080/ws
-  # - Via LoadBalancer IP: ws://172.20.255.10/ws
-  # - Internal (hub cluster only): ws://bondy.macula-system.svc.cluster.local:18080/ws
+  # - Simplified (same namespace): ws://bondy-mesh-0.bondy-headless:18080/ws
+  # - Hub cluster (old): ws://hub.macula.local/ws
+  # - Via NodePort: ws://172.20.0.7:30080/ws
