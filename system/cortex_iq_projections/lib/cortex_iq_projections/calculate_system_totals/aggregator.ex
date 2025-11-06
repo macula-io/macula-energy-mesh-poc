@@ -288,6 +288,8 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
       cortexiq_net_savings: 0.0      # TODO: savings - commission
     })
 
+    Logger.info("#{__MODULE__}: Publishing totals to be.cortexiq.projections.totals_calculated, client=#{inspect(wamp_client)}, homes=#{totals.total_homes}")
+
     case MaculaSdk.Wamp.Client.publish(
       wamp_client,
       "be.cortexiq.projections.totals_calculated",
@@ -295,9 +297,10 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
       enhanced_totals
     ) do
       :ok ->
+        Logger.info("#{__MODULE__}: ✅ Publish successful")
         :ok
       {:error, reason} ->
-        Logger.error("#{__MODULE__}: Failed to publish totals: #{inspect(reason)}")
+        Logger.error("#{__MODULE__}: ❌ Failed to publish totals: #{inspect(reason)}")
     end
   end
 
@@ -312,6 +315,8 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
       total_homes: totals.total_homes
     }
 
+    Logger.debug("#{__MODULE__}: Publishing history to be.cortexiq.projections.history_updated")
+
     case MaculaSdk.Wamp.Client.publish(
       wamp_client,
       "be.cortexiq.projections.history_updated",
@@ -319,9 +324,10 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
       history_point
     ) do
       :ok ->
+        Logger.debug("#{__MODULE__}: ✅ History publish successful")
         :ok
       {:error, reason} ->
-        Logger.error("#{__MODULE__}: Failed to publish history: #{inspect(reason)}")
+        Logger.error("#{__MODULE__}: ❌ Failed to publish history: #{inspect(reason)}")
     end
   end
 

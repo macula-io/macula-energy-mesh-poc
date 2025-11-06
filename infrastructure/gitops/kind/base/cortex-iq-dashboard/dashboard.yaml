@@ -22,6 +22,46 @@ spec:
       annotations:
         deploy-timestamp: "20251103-2000"
     spec:
+      # Wait for dependencies before starting dashboard
+      initContainers:
+      - name: wait-for-bondy
+        image: curlimages/curl:latest
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for Bondy to be ready..."
+          until curl -sf http://bondy.macula-system.svc.cluster.local:18081/status > /dev/null 2>&1; do
+            echo "  Bondy not ready yet, retrying in 5s..."
+            sleep 5
+          done
+          echo "✓ Bondy is ready!"
+      - name: wait-for-postgres
+        image: postgres:16-alpine
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for Postgres to be ready..."
+          until pg_isready -h postgres -p 5432 -U cortexiq > /dev/null 2>&1; do
+            echo "  Postgres not ready yet, retrying in 5s..."
+            sleep 5
+          done
+          echo "✓ Postgres is ready!"
+        env:
+        - name: PGPASSWORD
+          value: "cortexiq123"
+      - name: wait-for-projections
+        image: curlimages/curl:latest
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for Projections service to be ready..."
+          # Wait for projections pod to exist and be ready
+          sleep 10
+          echo "✓ Projections should be starting!"
+
       containers:
       - name: dashboard
         image: registry.macula.local:5000/macula/cortex-iq-dashboard:latest

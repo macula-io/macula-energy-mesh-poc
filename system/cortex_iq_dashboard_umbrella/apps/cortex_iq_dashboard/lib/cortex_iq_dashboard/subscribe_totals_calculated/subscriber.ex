@@ -21,10 +21,11 @@ defmodule CortexIqDashboard.SubscribeTotalsCalculated.Subscriber do
 
   @impl true
   def init(opts) do
-    wamp_client = Keyword.fetch!(opts, :wamp_client)
+    pool_name = Keyword.fetch!(opts, :pool_name)
 
     state = %{
-      wamp_client: wamp_client
+      pool_name: pool_name,
+      subscribed: false
     }
 
     Process.send_after(self(), :subscribe, 2_000)
@@ -39,14 +40,20 @@ defmodule CortexIqDashboard.SubscribeTotalsCalculated.Subscriber do
       send(subscriber_pid, {:event, event_data})
     end
 
-    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, @topic, handler) do
+    case MaculaSdk.Wamp.Pool.subscribe(@topic, handler, %{}, state.pool_name) do
       :ok ->
-        Logger.info("#{__MODULE__}: Subscribed to #{@topic}")
+        Logger.info("#{__MODULE__}: ✅ Subscribed to #{@topic}")
+        {:noreply, %{state | subscribed: true}}
       {:error, reason} ->
-        Logger.error("#{__MODULE__}: Failed to subscribe: #{inspect(reason)}")
+        Logger.error("#{__MODULE__}: Failed to subscribe: #{inspect(reason)}, retrying in 5s...")
+        Process.send_after(self(), :subscribe, 5_000)
+        {:noreply, state}
     end
-
-    {:noreply, state}
+  rescue
+    e ->
+      Logger.error("#{__MODULE__}: Exception during subscribe: #{inspect(e)}, retrying in 5s...")
+      Process.send_after(self(), :subscribe, 5_000)
+      {:noreply, state}
   end
 
   @impl true

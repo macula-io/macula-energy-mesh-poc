@@ -3,14 +3,15 @@ defmodule CortexIqHomes.HomeSupervisor do
   Supervisor for a single home's complete vertical slice architecture.
 
   Supervises:
-  1. HomeBot (coordinator - no WAMP client)
-  2. Subscribe Systems (4 with dedicated WAMP + 1 with shared pool)
-  3. Publish Systems (10 outbound event slices with dedicated WAMP)
+  1. HomeState (domain logic)
+  2. HomeBot (coordinator - subscribes to PubSub for time ticks)
+  3. Subscribe Systems (4 pooled subscribers)
+  4. Publish Systems (10 pooled publishers)
 
-  Note: SubscribeSpotPriceUpdated uses shared WampPool (proof of concept).
-  Eventually all subscribers/publishers will migrate to shared pool.
+  Note: SubscribeSimulationTimeAdvanced is now application-wide and broadcasts
+  via PubSub instead of per-home subscriptions.
 
-  Total per home: 1 HomeBot + 14 vertical slice systems + 1 pooled subscriber.
+  Total per home: 1 HomeState + 1 HomeBot + 4 subscribers + 10 publishers = 16 processes
   """
   use Supervisor
   require Logger
@@ -38,10 +39,10 @@ defmodule CortexIqHomes.HomeSupervisor do
       # ========================================
       # Subscriber Systems (Inbound from WAMP)
       # ========================================
-      # All subscribers now use shared WampPool
-      {CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber,
-       [home_id: home_id, pool_name: CortexIqHomes.WampPool]},
+      # Note: SubscribeSimulationTimeAdvanced is now a system-wide subscriber
+      # that broadcasts to all homes via PubSub. See application.ex.
 
+      # All subscribers now use shared WampPool
       {CortexIqHomes.SubscribeContractProposed.Subscriber,
        [home_id: home_id, pool_name: CortexIqHomes.WampPool]},
 
@@ -89,7 +90,7 @@ defmodule CortexIqHomes.HomeSupervisor do
        [home_id: home_id, pool_name: CortexIqHomes.WampPool]}
     ]
 
-    Logger.debug("HomeSupervisor #{home_id}: Initialized #{length(children)} children (2 state/bot + 5 subscribers + 10 publishers)")
+    Logger.debug("HomeSupervisor #{home_id}: Initialized #{length(children)} children (2 state/bot + 4 subscribers + 10 publishers)")
 
     # Use :one_for_one strategy - if one system fails, only restart that system
     Supervisor.init(children, strategy: :one_for_one)

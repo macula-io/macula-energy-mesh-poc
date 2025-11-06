@@ -550,6 +550,25 @@ const AggregatePowerChart = {
     this.chart.render()
   },
 
+  handleEvent(event, payload) {
+    if (event === "history_updated") {
+      // Update chart with new history data from LiveView
+      const history = payload.history
+      const reversed = [...history].reverse()
+      const timestamps = reversed.map(h => new Date(h.timestamp).getTime())
+      const production = reversed.map(h => h.total_production_w)
+      const consumption = reversed.map(h => h.total_consumption_w)
+
+      this.chart.updateSeries([{
+        name: 'Production',
+        data: production.map((val, idx) => [timestamps[idx], val])
+      }, {
+        name: 'Consumption',
+        data: consumption.map((val, idx) => [timestamps[idx], val])
+      }])
+    }
+  },
+
   destroyed() {
     if (this.chart) {
       this.chart.destroy()
@@ -686,6 +705,43 @@ const RegionalBalanceChart = {
 
     this.chart = new ApexCharts(this.el, options)
     this.chart.render()
+  },
+
+  handleEvent(event, payload) {
+    if (event === "history_updated") {
+      // Update chart with new history data from LiveView
+      const history = payload.history
+      if (history.length === 0) return
+
+      const latest = history[0]
+      const regions = latest.regional_data || {}
+
+      if (Object.keys(regions).length === 0) return
+
+      const categories = []
+      const production = []
+      const consumption = []
+
+      Object.entries(regions).forEach(([region, data]) => {
+        categories.push(region.charAt(0).toUpperCase() + region.slice(1))
+        production.push(Math.round(data.production))
+        consumption.push(Math.round(data.consumption))
+      })
+
+      this.chart.updateOptions({
+        xaxis: {
+          categories: categories
+        }
+      })
+
+      this.chart.updateSeries([{
+        name: 'Production',
+        data: production
+      }, {
+        name: 'Consumption',
+        data: consumption
+      }])
+    }
   },
 
   destroyed() {
@@ -881,6 +937,7 @@ const AutoDismissToast = {
 const HomesMap = {
   mounted() {
     const homes = JSON.parse(this.el.dataset.homes || '[]')
+    const cities = JSON.parse(this.el.dataset.cities || '[]')
 
     // Initialize map centered on Benelux
     this.map = L.map(this.el).setView([51.0, 4.5], 7)
@@ -894,6 +951,7 @@ const HomesMap = {
 
     // Store markers and data
     this.homes = homes
+    this.cities = cities    // City totals from aggregator
     this.markers = {}        // Individual home markers
     this.cityMarkers = {}    // City cluster markers
     this.homesByCity = {}    // Homes grouped by city
@@ -902,8 +960,8 @@ const HomesMap = {
 
     // Group homes by location (city)
     homes.forEach(home => {
-      if (home.latitude && home.longitude && home.location) {
-        const city = home.location
+      if (home.latitude && home.longitude && home.city) {
+        const city = home.city
 
         if (!this.homesByCity[city]) {
           this.homesByCity[city] = []
@@ -916,10 +974,8 @@ const HomesMap = {
       }
     })
 
-    // Create city cluster markers
-    Object.entries(this.homesByCity).forEach(([city, cityHomes]) => {
-      this.createCityCluster(city, cityHomes)
-    })
+    // Create initial city cluster markers
+    this.updateCityClusters()
 
     // Update marker visibility based on zoom level
     this.updateMarkerVisibility()
@@ -943,18 +999,155 @@ const HomesMap = {
         marker.openPopup()
       }
     })
+
+    // Handle real-time city updates
+    this.handleEvent("update_city", (cityData) => {
+      // Update or add city data in the array
+      const existingIndex = this.cities.findIndex(c => c.city_name === cityData.city_name)
+      if (existingIndex >= 0) {
+        this.cities[existingIndex] = cityData
+      } else {
+        this.cities.push(cityData)
+      }
+
+      // Refresh city cluster markers with updated data
+      this.updateCityClusters()
+
+      // Update visibility after cluster refresh
+      this.updateMarkerVisibility()
+    })
+
+    // Handle new homes (sent via push_event since map has phx-update="ignore")
+    this.handleEvent("add_home", (home) => {
+      // Check if home has required geolocation data
+      if (!home.latitude || !home.longitude || !home.city) {
+        console.warn('[HomesMap] Skipping home without geolocation:', home.home_id)
+        return
+      }
+
+      // Check if marker already exists
+      if (this.markers[home.home_id]) {
+        console.log('[HomesMap] Home already has marker:', home.home_id)
+        return
+      }
+
+      console.log('[HomesMap] Adding new home:', home.home_id, 'in', home.city)
+
+      // Add to homes array
+      this.homes.push(home)
+
+      // Add to homesByCity grouping
+      if (!this.homesByCity[home.city]) {
+        this.homesByCity[home.city] = []
+      }
+      this.homesByCity[home.city].push(home)
+
+      // Create marker (initially not added to map - visibility handled by updateMarkerVisibility)
+      const marker = this.createHomeMarker(home, false)
+      this.markers[home.home_id] = marker
+
+      // Update city clusters first (recreates city markers)
+      this.updateCityClusters()
+
+      // Then update marker visibility (adds city/home markers to map based on zoom)
+      this.updateMarkerVisibility()
+    })
   },
 
-  createCityCluster(city, cityHomes) {
+  updateCityClusters() {
+    // Remove existing city markers
+    Object.values(this.cityMarkers).forEach(marker => {
+      if (this.map.hasLayer(marker)) {
+        this.map.removeLayer(marker)
+      }
+    })
+    this.cityMarkers = {}
+
+    // Create city markers based on real-time city data OR fallback to home aggregation
+    Object.entries(this.homesByCity).forEach(([city, cityHomes]) => {
+      // Try to find real-time city data first
+      const cityData = this.cities.find(c => c.city_name === city)
+
+      if (cityData) {
+        // Use real-time aggregated data
+        this.createCityClusterFromAggregateData(city, cityHomes, cityData)
+      } else {
+        // Fallback: calculate from individual homes
+        this.createCityClusterFromHomes(city, cityHomes)
+      }
+    })
+  },
+
+  createCityClusterFromAggregateData(city, cityHomes, cityData) {
     // Calculate average position for city
     const avgLat = cityHomes.reduce((sum, h) => sum + h.latitude, 0) / cityHomes.length
     const avgLon = cityHomes.reduce((sum, h) => sum + h.longitude, 0) / cityHomes.length
 
-    // Calculate aggregate stats
+    // Use real-time aggregated data
+    const totalHomes = cityData.total_homes || cityHomes.length
+    const totalProduction = cityData.total_production_kw || 0
+    const totalConsumption = cityData.total_consumption_kw || 0
+    const netKw = cityData.net_balance_kw || 0
+
+    // Determine cluster color based on net energy
+    let color
+    if (netKw > 0.5) {
+      color = '#10b981' // green - net producing
+    } else if (netKw < -0.5) {
+      color = '#ef4444' // red - net consuming
+    } else {
+      color = '#eab308' // yellow - balanced
+    }
+
+    // Create circle marker for city
+    const radius = Math.min(8 + (totalHomes / 2), 20)  // Scale with home count
+    const marker = L.circleMarker([avgLat, avgLon], {
+      radius: radius,
+      fillColor: color,
+      color: '#fff',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.7
+    })
+
+    // Popup content with real-time data
+    const netStatus = netKw > 0.5 ? 'producing' : netKw < -0.5 ? 'consuming' : 'balanced'
+    const avgBattery = cityData.average_battery_percent ? ` | Battery: ${cityData.average_battery_percent.toFixed(0)}%` : ''
+    const popupContent = `
+      <div class="text-sm">
+        <div class="font-bold text-white text-base">${city}</div>
+        <div class="text-gray-300 text-xs mt-1"><strong>${totalHomes} home(s) online</strong></div>
+        <div class="text-gray-400 text-xs">Net: ${netKw.toFixed(1)} kW (${netStatus})${avgBattery}</div>
+        <div class="text-gray-400 text-xs mt-1">Production: ${totalProduction.toFixed(2)} kW</div>
+        <div class="text-gray-400 text-xs">Consumption: ${totalConsumption.toFixed(2)} kW</div>
+        <div class="text-green-400 text-xs mt-1">🟢 Real-time data (5s refresh)</div>
+        <div class="text-gray-500 text-xs mt-2 italic">Zoom in to see individual homes</div>
+      </div>
+    `
+
+    marker.bindPopup(popupContent)
+
+    // Handle marker click - zoom to this city
+    marker.on('click', () => {
+      this.map.setView([avgLat, avgLon], 12)  // Zoom to show individual homes
+    })
+
+    this.cityMarkers[city] = marker
+  },
+
+  createCityClusterFromHomes(city, cityHomes) {
+    // Calculate average position for city
+    const avgLat = cityHomes.reduce((sum, h) => sum + h.latitude, 0) / cityHomes.length
+    const avgLon = cityHomes.reduce((sum, h) => sum + h.longitude, 0) / cityHomes.length
+
+    // Calculate aggregate stats from individual homes
     const totalHomes = cityHomes.length
-    const totalProduction = cityHomes.reduce((sum, h) => sum + (h.production_kw || 0), 0)
-    const totalConsumption = cityHomes.reduce((sum, h) => sum + (h.consumption_kw || 0), 0)
-    const netEnergy = (totalProduction - totalConsumption) * 1000  // Convert to watts
+    // Use correct field names: _production_w and _consumption_w (in watts)
+    const totalProductionW = cityHomes.reduce((sum, h) => sum + (h._production_w || 0), 0)
+    const totalConsumptionW = cityHomes.reduce((sum, h) => sum + (h._consumption_w || 0), 0)
+    const totalProduction = totalProductionW / 1000  // Convert to kW for display
+    const totalConsumption = totalConsumptionW / 1000  // Convert to kW for display
+    const netEnergy = totalProductionW - totalConsumptionW  // Already in watts
 
     // Determine cluster color based on net energy
     let color
@@ -1037,15 +1230,18 @@ const HomesMap = {
   },
 
   createHomeMarker(home, addToMap = false) {
-    const batteryPercent = home.battery_percent || 0
-    const production = home.production_kw || 0
-    const consumption = home.consumption_kw || 0
+    // Extract data from home object (field names from LiveView)
+    const batteryPercent = home.state_of_charge_pct || 0
+    const productionW = home._production_w || 0
+    const consumptionW = home._consumption_w || 0
+    const productionKw = productionW / 1000
+    const consumptionKw = consumptionW / 1000
 
     // Determine marker color based on status
     let color = '#6b7280' // gray default
-    if (production > consumption) {
+    if (productionW > consumptionW) {
       color = '#10b981' // green - producing
-    } else if (consumption > production) {
+    } else if (consumptionW > productionW) {
       color = '#ef4444' // red - consuming
     } else {
       color = '#eab308' // yellow - balanced
@@ -1065,26 +1261,59 @@ const HomesMap = {
       marker.addTo(this.map)
     }
 
-    // Popup content
-    const popupContent = `
-      <div class="text-sm">
-        <div class="font-bold text-white">${home.name || home.location || 'Home'}</div>
-        <div class="text-gray-300 text-xs">${home.location || ''}</div>
-        <div class="text-gray-400 text-xs mt-1">Battery: ${batteryPercent.toFixed(1)}%</div>
-        <div class="text-gray-400 text-xs">Production: ${production.toFixed(2)} kW</div>
-        <div class="text-gray-400 text-xs">Consumption: ${consumption.toFixed(2)} kW</div>
-        <button class="mt-2 px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white text-xs rounded">
-          View Details
-        </button>
-      </div>
-    `
+    // Create popup content as DOM element (not HTML string) so event listeners work
+    const popupDiv = document.createElement('div')
+    popupDiv.className = 'text-sm'
 
-    marker.bindPopup(popupContent)
+    const nameDiv = document.createElement('div')
+    nameDiv.className = 'font-bold text-white'
+    nameDiv.textContent = home.name || 'Home'
 
-    // Handle marker click
-    marker.on('click', () => {
-      this.pushEvent("select_home", { home_id: home.home_id })
+    const cityDiv = document.createElement('div')
+    cityDiv.className = 'text-gray-300 text-xs'
+    cityDiv.textContent = home.city || ''
+
+    const batteryDiv = document.createElement('div')
+    batteryDiv.className = 'text-gray-400 text-xs mt-1'
+    batteryDiv.textContent = `Battery: ${batteryPercent.toFixed(1)}%`
+
+    const productionDiv = document.createElement('div')
+    productionDiv.className = 'text-gray-400 text-xs'
+    productionDiv.textContent = `Production: ${productionKw.toFixed(2)} kW`
+
+    const consumptionDiv = document.createElement('div')
+    consumptionDiv.className = 'text-gray-400 text-xs'
+    consumptionDiv.textContent = `Consumption: ${consumptionKw.toFixed(2)} kW`
+
+    const detailsBtn = document.createElement('button')
+    detailsBtn.className = 'mt-2 px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white text-xs rounded'
+    detailsBtn.textContent = 'View Details'
+
+    // Store reference to hook for use in event listener
+    const hook = this
+
+    // Attach click handler using explicit hook reference
+    detailsBtn.addEventListener('click', (event) => {
+      console.log('View Details button clicked for home:', home.home_id)
+      event.preventDefault()
+      event.stopPropagation()
+      console.log('Hook reference:', hook)
+      console.log('pushEvent function:', typeof hook.pushEvent)
+      console.log('Pushing select_home event with home_id:', home.home_id)
+      hook.pushEvent("select_home", { home_id: home.home_id })
+      console.log('pushEvent called successfully')
     })
+
+    // Assemble popup content
+    popupDiv.appendChild(nameDiv)
+    popupDiv.appendChild(cityDiv)
+    popupDiv.appendChild(batteryDiv)
+    popupDiv.appendChild(productionDiv)
+    popupDiv.appendChild(consumptionDiv)
+    popupDiv.appendChild(detailsBtn)
+
+    // Bind popup with DOM element (not HTML string)
+    marker.bindPopup(popupDiv)
 
     return marker
   },
@@ -1118,6 +1347,11 @@ const HomesMap = {
   updated() {
     // Don't recreate map on LiveView updates - map should persist
     // This prevents the map from disappearing when LiveView patches the DOM
+
+    // NOTE: Because the map wrapper has phx-update="ignore", data attributes
+    // are NOT updated by LiveView. New homes are sent via push_event("add_home")
+    // and handled by the handleEvent callback above.
+
     /* no-op */ void 0
   },
 

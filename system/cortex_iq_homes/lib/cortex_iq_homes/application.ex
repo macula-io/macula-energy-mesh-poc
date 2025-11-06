@@ -125,38 +125,58 @@ defmodule CortexIqHomes.Application do
   end
 
   defp start_home_bots_staggered(homes, bondy_url, realm) do
-    # Stagger startup to avoid overwhelming Bondy with connections
-    # For large home counts (e.g., 1360 homes), we need significant delays
-    # Target: ~15-20 connections/second to Bondy (manageable load)
-    # Formula: base_delay + random jitter
-    base_delay_ms = 50
-    jitter_ms = 50  # Random 0-50ms added to each delay
+    # Batch-based staggering to avoid overwhelming Bondy
+    # Strategy: Start homes in small batches with long pauses between batches
+    # This prevents connection storms and gives Bondy time to process HELLO handshakes
 
-    total_time_estimate = length(homes) * (base_delay_ms + (jitter_ms / 2)) / 1000
-    Logger.info("Starting #{length(homes)} home systems with #{base_delay_ms}ms + 0-#{jitter_ms}ms jitter stagger (est. #{Float.round(total_time_estimate, 1)}s total)...")
+    batch_size = 25              # Small batch size to limit concurrent connections
+    base_delay_ms = 200          # Conservative delay within batch
+    jitter_ms = 100              # Random variation to avoid synchronized waves
+    batch_pause_ms = 8000        # Long pause between batches (8 seconds)
 
-    Enum.each(homes, fn home ->
-      spec = {CortexIqHomes.HomeSupervisor, [
-        home: home,
-        home_id: home.id,
-        bondy_url: bondy_url,
-        realm: realm
-      ]}
+    total_batches = div(length(homes) + batch_size - 1, batch_size)
+    total_time_estimate = (total_batches * batch_pause_ms + length(homes) * (base_delay_ms + jitter_ms / 2)) / 1000
 
-      case DynamicSupervisor.start_child(CortexIqHomes.BotSupervisor, spec) do
-        {:ok, _pid} ->
-          :ok
+    Logger.info("Starting #{length(homes)} homes in #{total_batches} batches of #{batch_size}")
+    Logger.info("Strategy: #{base_delay_ms}ms + 0-#{jitter_ms}ms per home, #{batch_pause_ms}ms between batches")
+    Logger.info("Estimated total time: #{Float.round(total_time_estimate, 1)}s")
 
-        {:error, reason} ->
-          Logger.error("Failed to start HomeSupervisor for #{home.id}: #{inspect(reason)}")
+    homes
+    |> Enum.chunk_every(batch_size)
+    |> Enum.with_index()
+    |> Enum.each(fn {batch, batch_num} ->
+      Logger.info("Starting batch #{batch_num + 1}/#{total_batches} (#{length(batch)} homes)...")
+
+      # Start homes in this batch with individual delays
+      Enum.each(batch, fn home ->
+        spec = {CortexIqHomes.HomeSupervisor, [
+          home: home,
+          home_id: home.id,
+          bondy_url: bondy_url,
+          realm: realm
+        ]}
+
+        case DynamicSupervisor.start_child(CortexIqHomes.BotSupervisor, spec) do
+          {:ok, _pid} ->
+            :ok
+
+          {:error, reason} ->
+            Logger.error("Failed to start HomeSupervisor for #{home.id}: #{inspect(reason)}")
+        end
+
+        # Staggered delay with random jitter
+        delay = base_delay_ms + :rand.uniform(jitter_ms)
+        Process.sleep(delay)
+      end)
+
+      # Long pause between batches (except after last batch)
+      if batch_num < total_batches - 1 do
+        Logger.info("Batch #{batch_num + 1} complete. Waiting #{batch_pause_ms}ms before next batch...")
+        Process.sleep(batch_pause_ms)
       end
-
-      # Staggered delay with random jitter to avoid synchronized connection waves
-      delay = base_delay_ms + :rand.uniform(jitter_ms)
-      Process.sleep(delay)
     end)
 
-    Logger.info("Finished starting all #{length(homes)} home systems (#{length(homes) * 16} processes total)!")
+    Logger.info("Finished starting all #{length(homes)} home systems!")
   end
 
   defp get_env(key, default) do

@@ -1,0 +1,24 @@
+# Build artifacts that should not be copied into Docker
+_build/
+deps/
+*.ez
+*.beam
+.elixir_ls/
+
+# Phoenix/LiveView built assets - these will be rebuilt during Docker build
+/system/**/priv/static/assets/
+/system/**/priv/static/cache_manifest.json
+/system/**/node_modules/
+
+# Development files
+.git/
+.gitignore
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation and test files
+/docs/
+/test/
+README.md

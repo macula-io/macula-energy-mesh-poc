@@ -56,7 +56,8 @@ defmodule CortexIqQueries.RpcServer do
           {"be.cortexiq.energy.queries.home_exists", &handle_home_exists/3},
           {"be.cortexiq.energy.queries.provider_exists", &handle_provider_exists/3},
           {"be.cortexiq.energy.queries.reserve_home_id", &handle_reserve_home_id/3},
-          {"be.cortexiq.energy.projections.register_home", &handle_register_home/3},
+          # NOTE: register_home is owned by cortex-iq-projections, not queries
+          # {"be.cortexiq.energy.projections.register_home", &handle_register_home/3},
           # New search and browse procedures
           {"be.cortexiq.energy.queries.search_homes", &handle_search_homes/3},
           {"be.cortexiq.energy.queries.get_locations", &handle_get_locations/3},

@@ -17,6 +17,11 @@ defmodule CortexIqCore.Home do
           name: String.t() | nil,
           iot_provider: String.t() | nil,
           meter_ean: String.t() | nil,
+          # Multi-meter EANs (18-digit European Article Numbers)
+          electricity_day_meter_ean: String.t() | nil,
+          electricity_night_meter_ean: String.t() | nil,
+          gas_meter_ean: String.t() | nil,
+          water_meter_ean: String.t() | nil,
           location: Geography.location(),
           solar_capacity_kw: float(),
           battery_capacity_kwh: float(),
@@ -29,7 +34,12 @@ defmodule CortexIqCore.Home do
     :id,
     :name,
     :iot_provider,
-    :meter_ean,
+    :meter_ean,  # Legacy field - kept for backward compatibility
+    # Multi-meter EANs (18-digit European Article Numbers)
+    :electricity_day_meter_ean,
+    :electricity_night_meter_ean,
+    :gas_meter_ean,
+    :water_meter_ean,
     :location,
     :current_contract_id,
     solar_capacity_kw: 5.0,
@@ -60,6 +70,11 @@ defmodule CortexIqCore.Home do
       name: Map.get(opts, :name),
       iot_provider: Map.get(opts, :iot_provider),
       meter_ean: Map.get(opts, :meter_ean),
+      # Multi-meter EANs
+      electricity_day_meter_ean: Map.get(opts, :electricity_day_meter_ean),
+      electricity_night_meter_ean: Map.get(opts, :electricity_night_meter_ean),
+      gas_meter_ean: Map.get(opts, :gas_meter_ean),
+      water_meter_ean: Map.get(opts, :water_meter_ean),
       location: Map.get(opts, :location, Geography.location_for_home(home_id)),
       solar_capacity_kw: Map.get(opts, :solar_capacity_kw, random_solar_capacity()),
       battery_capacity_kwh: Map.get(opts, :battery_capacity_kwh, random_battery_capacity()),

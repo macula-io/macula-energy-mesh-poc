@@ -3,30 +3,45 @@ defmodule CortexIqHomes.ConfigLoader do
   Loads persistent home configurations from JSON files.
 
   JSON files are stored in priv/homes/ and contain pre-generated home
-  configurations with UUID7 identifiers, Flanders addresses, and varied
-  solar/battery capacities.
+  configurations with UUID7 identifiers, realistic addresses across Belgium
+  and Netherlands, and varied solar/battery capacities.
 
   Example JSON structure:
   ```json
   [
     {
-      "id": "019a23e0-8254-75aa-aa44-b30b6d08b76c",
-      "name": "Segers Residence",
+      "id": "019a2400-0005-7000-a001-000000000001",
+      "name": "Peeters Family",
       "iot_provider": "HomeWizard",
-      "meter_ean": "541234567890123456",
       "address": {
-        "street": "Stationsstraat 245",
-        "city": "Leuven",
-        "postal_code": "3000",
-        "region": "flanders",
-        "latitude": 50.875,
-        "longitude": 4.698
+        "street": "Veldstraat 145",
+        "city": "Gent",
+        "postal_code": "9000",
+        "region": "belgium_flanders",
+        "latitude": 51.0543,
+        "longitude": 3.7174
       },
-      "solar_capacity_kw": 3.14,
-      "battery_capacity_kwh": 14.14
+      "solar_capacity_kw": 4.5,
+      "battery_capacity_kwh": 11.5,
+      "meters": {
+        "electricity_day_ean": "541449123456789012",
+        "electricity_night_ean": "541449987654321098",
+        "gas_ean": "374606234567890123",
+        "water_ean": "550778345678901234"
+      }
     }
   ]
   ```
+
+  Multi-meter support:
+  - `electricity_day_ean`: Day tariff meter (6am-10pm)
+  - `electricity_night_ean`: Night tariff meter (10pm-6am)
+  - `gas_ean`: Gas meter (optional - ~70% of homes)
+  - `water_ean`: Water meter (optional - ~80% of homes)
+
+  All meter EANs use 18-digit European Article Number format with
+  country-specific prefixes (Belgium: 541449/374606/550778,
+  Netherlands: 871686/871687/871688).
   """
 
   require Logger
@@ -86,11 +101,19 @@ defmodule CortexIqHomes.ConfigLoader do
   end
 
   defp parse_home(data) do
+    # Extract meters from data
+    meters = Map.get(data, "meters", %{})
+
     %Home{
       id: data["id"],
       name: data["name"],
       iot_provider: data["iot_provider"],
-      meter_ean: data["meter_ean"],
+      meter_ean: data["meter_ean"],  # Legacy field - kept for backward compatibility
+      # Multi-meter EANs (18-digit European Article Numbers)
+      electricity_day_meter_ean: Map.get(meters, "electricity_day_ean"),
+      electricity_night_meter_ean: Map.get(meters, "electricity_night_ean"),
+      gas_meter_ean: Map.get(meters, "gas_ean"),
+      water_meter_ean: Map.get(meters, "water_ean"),
       location: %{
         street: data["address"]["street"],
         city: data["address"]["city"],

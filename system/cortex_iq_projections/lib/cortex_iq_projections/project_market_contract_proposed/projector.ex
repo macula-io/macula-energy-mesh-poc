@@ -37,16 +37,58 @@ defmodule CortexIqProjections.ProjectMarketContractProposed.Projector do
 
   # Projection Logic
 
-  defp project_market_contract_proposed(_event_data) do
-    # Contract proposals are transient offers that don't need to be persisted.
-    # The contract_events table is for actual contract lifecycle events:
-    # - signed: when a home accepts an offer
-    # - switched: when a home switches providers
-    # - expired: when a contract reaches end date
-    #
-    # Proposals are just offers published by providers via WAMP.
-    # They don't have a contract_id yet (no contract exists until accepted).
+  defp project_market_contract_proposed(event_data) do
+    kwargs = Map.get(event_data, :kwargs, %{})
+
+    provider_id = kwargs["provider_id"]
+    provider_name = kwargs["provider_name"]
+    strategy = kwargs["strategy"]
+    simulation_time = parse_datetime(kwargs["simulation_time"])
+
+    # Update provider state with latest contract offer pricing
+    # This allows dashboard to show current pricing without querying individual offers
+    updates = %{
+      provider_name: provider_name,
+      strategy: strategy,
+      last_event_at: simulation_time,
+      updated_at: DateTime.utc_now()
+    }
+
+    # Add pricing fields based on contract type
+    updates = case kwargs["contract_type"] do
+      "static" ->
+        Map.merge(updates, %{
+          day_buy_price: kwargs["day_buy_price"],
+          night_buy_price: kwargs["night_buy_price"],
+          day_sell_price: kwargs["day_sell_price"],
+          night_sell_price: kwargs["night_sell_price"],
+          switching_discount: kwargs["switching_discount"],
+          minimum_monthly_kwh: kwargs["minimum_monthly_kwh"]
+        })
+
+      "dynamic" ->
+        # For dynamic contracts, we store the markup/markdown
+        # Dashboard can show this differently
+        Map.merge(updates, %{
+          switching_discount: kwargs["switching_discount"],
+          minimum_monthly_kwh: kwargs["minimum_monthly_kwh"]
+        })
+
+      _ ->
+        updates
+    end
+
+    Repo.insert!(
+      %ProviderState{provider_id: provider_id},
+      on_conflict: [set: Enum.to_list(updates)],
+      conflict_target: :provider_id
+    )
+
     :ok
+  rescue
+    error ->
+      Logger.error("ProjectMarketContractProposed: Error: #{inspect(error)}")
+      :ok
   end
 
 

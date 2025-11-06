@@ -361,6 +361,10 @@ defmodule CortexIqHomes.HomeState do
     # Solar production follows sine wave, peak at noon
     # Production hours: roughly 6am to 6pm
     cond do
+      # No solar capacity means no production
+      is_nil(home.solar_capacity_kw) ->
+        0.0
+
       hour < 6 or hour >= 18 ->
         0.0
 
@@ -584,8 +588,9 @@ defmodule CortexIqHomes.HomeState do
         0.0
       end
 
-    # Determine tariff
+    # Determine tariff (day = 1, night = 2)
     tariff = if SimulationTime.is_day?(simulation_time), do: 1, else: 2
+    is_day = tariff == 1
 
     # Split cumulative by tariff
     {import_t1, import_t2} = split_cumulative_by_tariff(cumulative_import_kwh, tariff)
@@ -600,16 +605,61 @@ defmodule CortexIqHomes.HomeState do
     frequency_hz = 50.0 + (:rand.uniform() * 0.1 - 0.05)
     power_factor = 0.98 + (:rand.uniform() * 0.02)
     apparent_power_va = abs(grid_power_w) / power_factor
-    reactive_power_var = :math.sqrt(abs(apparent_power_va * apparent_power_va - grid_power_w * grid_power_w))
+    # Ensure we never pass negative value to sqrt (floating point precision issues)
+    reactive_power_squared = max(0.0, apparent_power_va * apparent_power_va - grid_power_w * grid_power_w)
+    reactive_power_var = :math.sqrt(reactive_power_squared)
 
     production_w = Float.round(production_kw * 1000, 1)
     consumption_w = Float.round(consumption_kw * 1000, 1)
 
+    # Build multi-meter data
+    electricity_day_meter = build_electricity_meter(
+      state.home.electricity_day_meter_ean,
+      if(is_day, do: production_w, else: 0.0),
+      if(is_day, do: consumption_w, else: 0.0),
+      import_t1
+    )
+
+    electricity_night_meter = build_electricity_meter(
+      state.home.electricity_night_meter_ean,
+      if(!is_day, do: production_w, else: 0.0),
+      if(!is_day, do: consumption_w, else: 0.0),
+      import_t2
+    )
+
+    # Gas and water meters (no production, only consumption)
+    gas_meter = build_utility_meter(state.home.gas_meter_ean, 0.0)  # Gas consumption tracked separately
+    water_meter = build_utility_meter(state.home.water_meter_ean, 0.0)  # Water consumption tracked separately
+
+    # Build complete payload with home metadata
     %{
+      # Home identification and metadata
       home_id: state.home_id,
-      meter_ean: state.home.meter_ean,
+      name: state.home.name,
+      iot_provider: state.home.iot_provider,
+
+      # Location metadata
       city: state.home.location.city,
+      postal_code: state.home.location.postal_code,
+      region: Atom.to_string(state.home.location.region),
+      latitude: state.home.location.latitude,
+      longitude: state.home.location.longitude,
+
+      # Home capacities
+      solar_capacity_kw: state.home.solar_capacity_kw,
+      battery_capacity_kwh: state.home.battery_capacity_kwh,
+
+      # Timestamp
       timestamp: DateTimeHelpers.to_iso8601(simulation_time),
+
+      # Multi-meter readings
+      electricity_day_meter: electricity_day_meter,
+      electricity_night_meter: electricity_night_meter,
+      gas_meter: gas_meter,
+      water_meter: water_meter,
+
+      # Legacy fields (for backward compatibility)
+      meter_ean: state.home.meter_ean,
       meter_model: "HWE-P1",
       unique_id: state.home_id,
       protocol_version: 50,
@@ -620,6 +670,8 @@ defmodule CortexIqHomes.HomeState do
       energy_export_t2_kwh: Float.round(export_t2, 3),
       energy_import_kwh: Float.round(cumulative_import_kwh, 3),
       energy_export_kwh: Float.round(cumulative_export_kwh, 3),
+
+      # Grid measurements
       power_w: grid_power_w,
       voltage_v: Float.round(voltage_v, 1),
       current_a: Float.round(current_a, 2),
@@ -627,12 +679,36 @@ defmodule CortexIqHomes.HomeState do
       power_factor: Float.round(power_factor, 3),
       apparent_power_va: Float.round(apparent_power_va, 1),
       reactive_power_var: Float.round(reactive_power_var, 1),
+
+      # Battery state
       state_of_charge_pct: state_of_charge_pct,
       cycles: Float.round(battery_cycles, 1),
+
+      # Internal tracking fields
       _production_w: production_w,
       _consumption_w: consumption_w,
       _battery_kwh: Float.round(battery_kwh, 2),
       _battery_capacity_kwh: state.home.battery_capacity_kwh
+    }
+  end
+
+  defp build_electricity_meter(nil, _production_w, _consumption_w, _cumulative_kwh), do: nil
+
+  defp build_electricity_meter(ean, production_w, consumption_w, cumulative_kwh) do
+    %{
+      ean: ean,
+      production_w: production_w,
+      consumption_w: consumption_w,
+      cumulative_kwh: Float.round(cumulative_kwh, 3)
+    }
+  end
+
+  defp build_utility_meter(nil, _cumulative_m3), do: nil
+
+  defp build_utility_meter(ean, cumulative_m3) do
+    %{
+      ean: ean,
+      cumulative_m3: Float.round(cumulative_m3, 3)
     }
   end
 

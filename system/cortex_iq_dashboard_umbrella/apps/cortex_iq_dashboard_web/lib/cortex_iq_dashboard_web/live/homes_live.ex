@@ -20,31 +20,25 @@ defmodule CortexIqDashboardWeb.HomesLive do
     require Logger
     Logger.info("HomesLive: mount() called, connected: #{connected?(socket)}")
 
-    # Subscribe to simulation time and control events only
+    # Subscribe to simulation time, control, city, and energy events
     if connected?(socket) do
       Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:time_advanced")
       Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:control")
-      Logger.info("HomesLive: Subscribed to simulation time and control events")
+      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:city_measured")
+      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:energy_event")
+      Logger.info("HomesLive: Subscribed to simulation time, control, city, and energy events")
     end
 
-    # Load ALL homes for the map (request large page size)
-    Logger.info("HomesLive: Loading all homes via WAMP RPC...")
-    homes = case QueryClient.get_homes(page: 1, per_page: 1000) do
-      {:ok, result} ->
-        Logger.info("HomesLive: get_homes() returned #{inspect(length(Map.get(result, "homes", [])))} homes")
-        Map.get(result, "homes", [])
-      {:error, reason} ->
-        Logger.warning("HomesLive: Failed to load homes: #{inspect(reason)}")
-        []
-    end
-
-    Logger.info("HomesLive: Loaded #{length(homes)} homes for map")
+    # Pure event-driven architecture: build home list from incoming events
+    # No RPC calls! Each home.measured event contains complete home metadata.
+    Logger.info("HomesLive: Starting with empty homes map - will populate from energy events")
 
     {:ok,
      socket
      |> assign(:current_path, "/homes")
      |> assign(:view_mode, :map)  # :map | :detail
-     |> assign(:homes, homes)
+     |> assign(:homes_map, %{})  # Map of home_id => home_data (built from events)
+     |> assign(:city_totals, %{})  # Map of city_name => city_data
      |> assign(:search_query, "")
      |> assign(:selected_home, nil)
      |> assign(:selected_home_data, nil)
@@ -52,7 +46,9 @@ defmodule CortexIqDashboardWeb.HomesLive do
      |> assign(:home_trades, [])
      |> assign(:simulation_time, nil)
      |> assign(:simulation_speed, 105_120)
-     |> assign(:simulation_paused, false)}
+     |> assign(:simulation_paused, false)
+     |> assign(:events_received, 0)  # Performance metric
+     |> assign(:measurements_per_sec, 0)}  # Performance metric
   end
 
   # Real-time updates for simulation time
@@ -67,6 +63,75 @@ defmodule CortexIqDashboardWeb.HomesLive do
      |> assign(:simulation_time, simulation_time)
      |> assign(:simulation_speed, simulation_speed)
      |> assign(:simulation_paused, simulation_paused)}
+  end
+
+  # Real-time updates for energy events (home.measured)
+  # Pure event-driven architecture: build homes map from incoming events
+  @impl true
+  def handle_info({:energy_event, event_data}, socket) do
+    home_id = Map.get(event_data, "home_id")
+
+    # Extract complete home metadata from event (included in every home.measured event)
+    home_entry = %{
+      "home_id" => home_id,
+      "name" => Map.get(event_data, "name"),
+      "city" => Map.get(event_data, "city"),
+      "postal_code" => Map.get(event_data, "postal_code"),
+      "region" => Map.get(event_data, "region"),
+      "latitude" => Map.get(event_data, "latitude"),
+      "longitude" => Map.get(event_data, "longitude"),
+      "solar_capacity_kw" => Map.get(event_data, "solar_capacity_kw"),
+      "battery_capacity_kwh" => Map.get(event_data, "battery_capacity_kwh"),
+      "iot_provider" => Map.get(event_data, "iot_provider"),
+      # Latest measurements
+      "power_w" => Map.get(event_data, "power_w"),
+      "state_of_charge_pct" => Map.get(event_data, "state_of_charge_pct"),
+      "_production_w" => Map.get(event_data, "_production_w"),
+      "_consumption_w" => Map.get(event_data, "_consumption_w"),
+      # Multi-meter data
+      "electricity_day_meter" => Map.get(event_data, "electricity_day_meter"),
+      "electricity_night_meter" => Map.get(event_data, "electricity_night_meter"),
+      "gas_meter" => Map.get(event_data, "gas_meter"),
+      "water_meter" => Map.get(event_data, "water_meter"),
+      "timestamp" => Map.get(event_data, "timestamp")
+    }
+
+    # Check if this is a new home
+    is_new_home = not Map.has_key?(socket.assigns.homes_map, home_id)
+
+    # Update homes map (creates or updates entry)
+    updated_homes_map = Map.put(socket.assigns.homes_map, home_id, home_entry)
+
+    # Update performance metrics
+    events_received = socket.assigns.events_received + 1
+
+    # Push event to JavaScript hook if new home (since map div has phx-update="ignore")
+    socket =
+      if is_new_home do
+        socket |> push_event("add_home", home_entry)
+      else
+        socket
+      end
+
+    {:noreply,
+     socket
+     |> assign(:homes_map, updated_homes_map)
+     |> assign(:events_received, events_received)}
+  end
+
+  # Real-time updates for city measurements
+  @impl true
+  def handle_info({:city_measured, city_data}, socket) do
+    city_name = Map.get(city_data, "city_name")
+
+    # Update city totals map with latest measurements
+    updated_city_totals = Map.put(socket.assigns.city_totals, city_name, city_data)
+
+    # Push update to JavaScript hook (since map div has phx-update="ignore")
+    {:noreply,
+     socket
+     |> assign(:city_totals, updated_city_totals)
+     |> push_event("update_city", city_data)}
   end
 
   @impl true
@@ -84,23 +149,20 @@ defmodule CortexIqDashboardWeb.HomesLive do
   @impl true
   def handle_info({:reset_simulation}, socket) do
     require Logger
-    Logger.info("HomesLive: Received reset_simulation, reloading homes")
+    Logger.info("HomesLive: Received reset_simulation, clearing homes map")
 
-    # Reload all homes after reset
-    homes = case QueryClient.get_homes(page: 1, per_page: 1000) do
-      {:ok, result} -> Map.get(result, "homes", [])
-      {:error, _} -> []
-    end
-
+    # Pure event-driven: clear homes map, will rebuild from incoming events
+    # No RPC call needed!
     {:noreply,
      socket
      |> assign(:view_mode, :map)
-     |> assign(:homes, homes)
+     |> assign(:homes_map, %{})
      |> assign(:search_query, "")
      |> assign(:selected_home, nil)
      |> assign(:selected_home_data, nil)
      |> assign(:home_history, [])
-     |> assign(:home_trades, [])}
+     |> assign(:home_trades, [])
+     |> assign(:events_received, 0)}
   end
 
   @impl true
@@ -108,16 +170,10 @@ defmodule CortexIqDashboardWeb.HomesLive do
     require Logger
     Logger.info("HomesLive: Selecting home #{home_id}")
 
-    # Load full home data, history, and trades via WAMP RPC
-    home_data = case QueryClient.get_home(home_id) do
-      {:ok, result} ->
-        Logger.info("HomesLive: get_home() succeeded")
-        Map.get(result, "home")
-      {:error, reason} ->
-        Logger.warning("HomesLive: Failed to load home data: #{inspect(reason)}")
-        nil
-    end
+    # Get home data from our event-driven in-memory map (no RPC call!)
+    home_data = Map.get(socket.assigns.homes_map, home_id)
 
+    # Load history and trades via WAMP RPC (these aren't in measurement events)
     history = case QueryClient.get_home_history(home_id, 24) do
       {:ok, result} ->
         Logger.info("HomesLive: get_home_history() returned #{inspect(length(Map.get(result, "events", [])))} events")
@@ -224,23 +280,30 @@ defmodule CortexIqDashboardWeb.HomesLive do
 
   # Render map view with search overlay
   defp render_map_view(assigns) do
-    # Serialize homes to JSON for the JavaScript hook
-    homes_json = Jason.encode!(assigns.homes)
+    # Convert homes_map to list for JavaScript hook
+    homes_list = Map.values(assigns.homes_map)
 
-    assigns = assign(assigns, :homes_json, homes_json)
+    # Serialize homes and cities to JSON for the JavaScript hook
+    homes_json = Jason.encode!(homes_list)
+    cities_json = Jason.encode!(Map.values(assigns.city_totals))
+
+    assigns = assigns
+      |> assign(:homes_list, homes_list)
+      |> assign(:homes_json, homes_json)
+      |> assign(:cities_json, cities_json)
 
     ~H"""
     <div class="relative w-full h-full">
       <!-- Map Container -->
-      <div id="homes-map-wrapper" phx-update="ignore">
-        <div
-          id="homes-map"
-          class="w-full h-full"
-          style="min-height: 600px;"
-          phx-hook="HomesMap"
-          data-homes={@homes_json}
-        >
-        </div>
+      <div
+        id="homes-map"
+        class="w-full h-full"
+        style="min-height: 600px;"
+        phx-update="ignore"
+        phx-hook="HomesMap"
+        data-homes={@homes_json}
+        data-cities={@cities_json}
+      >
       </div>
 
       <!-- Search Overlay (top-left corner) -->
@@ -258,7 +321,7 @@ defmodule CortexIqDashboardWeb.HomesLive do
             autocomplete="off"
           />
           <div class="mt-2 text-xs text-gray-400">
-            <%= length(@homes) %> homes online
+            <%= map_size(@homes_map) %> homes online | <%= @events_received %> events received
           </div>
         </div>
       </div>
@@ -318,7 +381,7 @@ defmodule CortexIqDashboardWeb.HomesLive do
                 </div>
                 <div class="flex justify-between items-start">
                   <span class="text-gray-400 text-sm">Location</span>
-                  <span class="text-gray-100 text-sm text-right"><%= get_in(@selected_home_data, ["location"]) || "Unknown" %></span>
+                  <span class="text-gray-100 text-sm text-right"><%= get_in(@selected_home_data, ["city"]) || "Unknown" %></span>
                 </div>
                 <%= if get_in(@selected_home_data, ["latitude"]) && get_in(@selected_home_data, ["longitude"]) do %>
                   <div class="flex justify-between items-start">
@@ -377,7 +440,7 @@ defmodule CortexIqDashboardWeb.HomesLive do
                   </svg>
                 </div>
                 <div class="text-2xl font-bold text-yellow-400">
-                  <%= format_power(get_in(@selected_home_data, ["production_kw"]) || 0.0) %>
+                  <%= format_power((get_in(@selected_home_data, ["_production_w"]) || 0.0) / 1000.0) %>
                 </div>
               </div>
 
@@ -390,7 +453,7 @@ defmodule CortexIqDashboardWeb.HomesLive do
                   </svg>
                 </div>
                 <div class="text-2xl font-bold text-red-400">
-                  <%= format_power(get_in(@selected_home_data, ["consumption_kw"]) || 0.0) %>
+                  <%= format_power((get_in(@selected_home_data, ["_consumption_w"]) || 0.0) / 1000.0) %>
                 </div>
               </div>
 
@@ -403,10 +466,10 @@ defmodule CortexIqDashboardWeb.HomesLive do
                   </svg>
                 </div>
                 <div class="text-2xl font-bold text-green-400">
-                  <%= Float.round(get_in(@selected_home_data, ["battery_percent"]) || 0.0, 1) %>%
+                  <%= Float.round(get_in(@selected_home_data, ["state_of_charge_pct"]) || 0.0, 1) %>%
                 </div>
                 <div class="mt-2 w-full bg-gray-700 rounded-full h-2">
-                  <div class={"rounded-full h-2 transition-all duration-300 #{battery_color(get_in(@selected_home_data, ["battery_percent"]) || 0.0)}"} style={"width: #{get_in(@selected_home_data, ["battery_percent"]) || 0}%"}></div>
+                  <div class={"rounded-full h-2 transition-all duration-300 #{battery_color(get_in(@selected_home_data, ["state_of_charge_pct"]) || 0.0)}"} style={"width: #{get_in(@selected_home_data, ["state_of_charge_pct"]) || 0}%"}></div>
                 </div>
               </div>
             </div>

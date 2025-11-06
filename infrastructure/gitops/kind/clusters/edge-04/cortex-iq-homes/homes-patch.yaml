@@ -4,6 +4,7 @@ metadata:
   name: cortex-iq-homes
   namespace: macula-edge
 spec:
+  replicas: 2
   template:
     spec:
       containers:

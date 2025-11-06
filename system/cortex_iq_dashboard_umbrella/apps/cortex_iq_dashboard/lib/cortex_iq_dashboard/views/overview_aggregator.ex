@@ -12,10 +12,8 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
   """
   use GenServer
   require Logger
-  alias MaculaSdk.Wamp.Client
 
   defstruct [
-    wamp_client: nil,  # WAMP client for RPC calls
     providers: %{},  # %{provider_id => provider_state} for aggregation
     total_contract_switches: 0,
     total_savings: 0.0,
@@ -40,7 +38,8 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
     total_energy_sold_kwh: 0.0,
     total_cost_paid: 0.0,
     total_revenue_received: 0.0,
-    last_updated_at: nil
+    last_updated_at: nil,
+    has_data: false  # Track if we've received provider metrics events
   ]
 
   # Client API
@@ -64,19 +63,15 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
     # Subscribe to pre-calculated totals from projections service
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:totals_calculated")
 
+    # Subscribe to provider metrics from projections service (event-driven)
+    Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:provider_metrics")
+
     # Subscribe to simulation events
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:time_advanced")
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:contract_event")
     Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:control")
 
-    Logger.info("OverviewAggregator: Started and subscribed to PubSub channels")
-
-    # Start WAMP client for RPC calls (if needed)
-    bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
-    realm = System.get_env("BONDY_REALM", "be.cortexiq.energy")
-
-    # Send message to connect and load data after connection established
-    send(self(), {:connect_wamp, bondy_url, realm})
+    Logger.info("OverviewAggregator: Started and subscribed to PubSub channels (event-driven, no RPC)")
 
     {:ok, %__MODULE__{}}
   end
@@ -112,23 +107,24 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
       simulation_time: state.simulation_time,
       simulation_speed: state.simulation_speed,
       simulation_paused: state.simulation_paused,
-      last_updated_at: state.last_updated_at
+      last_updated_at: state.last_updated_at,
+      has_data: state.has_data  # Track if we've received provider metrics
     }
 
     {:reply, overview, state}
   end
 
   @impl true
-  def handle_info({:reset_simulation}, _state) do
+  def handle_info({:reset_simulation}, state) do
     Logger.info("OverviewAggregator: Resetting - clearing all state")
 
-    # Reset to initial state
+    # Reset to initial state (event-driven, no RPC calls)
     new_state = %__MODULE__{}
 
-    # Broadcast empty state to UI
+    # Broadcast empty state to UI immediately
     broadcast_view_updated()
 
-    Logger.info("OverviewAggregator: Reset complete")
+    Logger.info("OverviewAggregator: Reset complete, waiting for events...")
     {:noreply, new_state}
   end
 
@@ -232,78 +228,38 @@ defmodule CortexIqDashboard.Views.OverviewAggregator do
   end
 
   @impl true
-  def handle_info({:connect_wamp, bondy_url, realm}, state) do
-    Logger.info("OverviewAggregator: Connecting to WAMP realm #{realm} at #{bondy_url}")
+  def handle_info({:provider_metrics, kwargs}, state) do
+    # Receive provider metrics from projections service (event-driven)
+    market_summary = Map.get(kwargs, "market_summary", %{})
+    providers = Map.get(kwargs, "providers", [])
+    total_contracts = Map.get(market_summary, "total_active_contracts", 0)
+    total_providers = Map.get(market_summary, "total_providers", 0)
 
-    case Client.start_link(url: bondy_url, realm: realm) do
-      {:ok, client} ->
-        Logger.info("OverviewAggregator: WAMP client started, waiting for connection...")
-        # Wait a bit for connection to establish, then call RPC
-        Process.send_after(self(), :load_overview_data, 2000)
-        {:noreply, %{state | wamp_client: client}}
+    Logger.info(
+      "OverviewAggregator: Received provider metrics - " <>
+      "#{total_providers} providers, #{total_contracts} active contracts"
+    )
 
-      {:error, reason} ->
-        Logger.error("OverviewAggregator: Failed to start WAMP client: #{inspect(reason)}, retrying in 5s")
-        Process.send_after(self(), {:connect_wamp, bondy_url, realm}, 5000)
-        {:noreply, state}
-    end
-  end
-
-  @impl true
-  def handle_info(:load_overview_data, state) do
-    if state.wamp_client do
-      Logger.info("OverviewAggregator: Calling get_overview RPC to initialize state from database...")
-
-      case Client.call(state.wamp_client, "be.cortexiq.energy.queries.get_overview", [], %{}) do
-        {:ok, %{args: [result | _]}} ->
-          # Extract all overview data from query service
-          total_homes = Map.get(result, "total_homes", 0)
-          connected_homes_count = Map.get(result, "connected_homes_count", 0)
-          total_production_kw = Map.get(result, "total_production_kw", 0.0)
-          total_consumption_kw = Map.get(result, "total_consumption_kw", 0.0)
-          avg_battery_percent = Map.get(result, "avg_battery_percent", 0.0)
-          total_energy_bought_kwh = Map.get(result, "total_energy_bought_kwh", 0.0)
-          total_energy_sold_kwh = Map.get(result, "total_energy_sold_kwh", 0.0)
-          total_cost_paid = Map.get(result, "total_cost_paid", 0.0)
-          total_revenue_received = Map.get(result, "total_revenue_received", 0.0)
-          cortexiq_total_commission = Map.get(result, "cortexiq_total_commission", 0.0)
-          cortexiq_total_savings = Map.get(result, "cortexiq_total_savings", 0.0)
-          cortexiq_net_savings = Map.get(result, "cortexiq_net_savings", 0.0)
-          total_contract_switches = Map.get(result, "total_contract_switches", 0)
-
-          Logger.info("OverviewAggregator: Initialized from database - #{total_homes} homes (#{connected_homes_count} connected), #{Float.round(total_production_kw, 1)}kW prod, #{Float.round(total_consumption_kw, 1)}kW cons")
-
-          new_state = %{state |
-            total_homes: total_homes,
-            connected_homes_count: connected_homes_count,
-            total_production_kw: total_production_kw,
-            total_consumption_kw: total_consumption_kw,
-            avg_battery_percent: avg_battery_percent,
-            total_energy_bought_kwh: total_energy_bought_kwh,
-            total_energy_sold_kwh: total_energy_sold_kwh,
-            total_cost_paid: total_cost_paid,
-            total_revenue_received: total_revenue_received,
-            cortexiq_total_commission: cortexiq_total_commission,
-            cortexiq_total_savings: cortexiq_total_savings,
-            cortexiq_net_savings: cortexiq_net_savings,
-            total_contract_switches: total_contract_switches,
-            last_updated_at: DateTime.utc_now()
-          }
-
-          # Broadcast initial state to UI
-          broadcast_view_updated()
-
-          {:noreply, new_state}
-
-        {:error, reason} ->
-          Logger.error("OverviewAggregator: get_overview RPC failed: #{inspect(reason)}, retrying in 5s")
-          Process.send_after(self(), :load_overview_data, 5000)
-          {:noreply, state}
+    # Convert provider list to map for easier lookup
+    providers_map = Enum.reduce(providers, %{}, fn provider, acc ->
+      provider_id = Map.get(provider, "provider_id")
+      if provider_id do
+        Map.put(acc, provider_id, provider)
+      else
+        acc
       end
-    else
-      Logger.warning("OverviewAggregator: No WAMP client available, cannot load overview data")
-      {:noreply, state}
-    end
+    end)
+
+    new_state = %{state |
+      providers: providers_map,
+      has_data: true,
+      last_updated_at: DateTime.utc_now()
+    }
+
+    # Broadcast to UI
+    broadcast_view_updated()
+
+    {:noreply, new_state}
   end
 
   # NOTE: Removed home_connected/disconnected handlers

@@ -24,12 +24,14 @@ defmodule CortexIqDashboard.SubscribeHistoryUpdated.Subscriber do
 
   @impl true
   def init(opts) do
-    wamp_client = Keyword.fetch!(opts, :wamp_client)
+    pool_name = Keyword.fetch!(opts, :pool_name)
 
     state = %{
-      wamp_client: wamp_client
+      pool_name: pool_name,
+      subscribed: false
     }
 
+    Logger.info("#{__MODULE__}: INIT - Scheduling subscription in 2 seconds, pool_name=#{inspect(pool_name)}")
     Process.send_after(self(), :subscribe, 2_000)
 
     {:ok, state}
@@ -42,22 +44,27 @@ defmodule CortexIqDashboard.SubscribeHistoryUpdated.Subscriber do
       send(subscriber_pid, {:event, event_data})
     end
 
-    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, @topic, handler) do
+    case MaculaSdk.Wamp.Pool.subscribe(@topic, handler, %{}, state.pool_name) do
       :ok ->
-        Logger.info("#{__MODULE__}: Subscribed to #{@topic}")
+        Logger.info("#{__MODULE__}: ✅ Subscribed to #{@topic}")
+        {:noreply, %{state | subscribed: true}}
       {:error, reason} ->
         Logger.error("#{__MODULE__}: Failed to subscribe: #{inspect(reason)}, retrying in 5s...")
         Process.send_after(self(), :subscribe, 5_000)
+        {:noreply, state}
     end
-
-    {:noreply, state}
+  rescue
+    e ->
+      Logger.error("#{__MODULE__}: Exception during subscribe: #{inspect(e)}, retrying in 5s...")
+      Process.send_after(self(), :subscribe, 5_000)
+      {:noreply, state}
   end
 
   @impl true
   def handle_info({:event, event_data}, state) do
     kwargs = Map.get(event_data, :kwargs, %{})
 
-    Logger.debug("#{__MODULE__}: Received history point - timestamp=#{Map.get(kwargs, "timestamp")}, prod=#{Map.get(kwargs, "total_production_w")}W, cons=#{Map.get(kwargs, "total_consumption_w")}W")
+    Logger.info("#{__MODULE__}: Received history point - timestamp=#{Map.get(kwargs, "timestamp")}, prod=#{Map.get(kwargs, "total_production_w")}W, cons=#{Map.get(kwargs, "total_consumption_w")}W")
 
     # Broadcast to internal PubSub for OverviewLive
     Phoenix.PubSub.broadcast(
@@ -65,6 +72,8 @@ defmodule CortexIqDashboard.SubscribeHistoryUpdated.Subscriber do
       @pubsub_channel,
       {:history_updated, kwargs}
     )
+
+    Logger.info("#{__MODULE__}: Broadcasted to PubSub channel #{@pubsub_channel}")
 
     {:noreply, state}
   end

@@ -4,6 +4,7 @@ metadata:
   name: cortex-iq-homes
   namespace: macula-edge
 spec:
+  replicas: 2
   template:
     spec:
       containers:
@@ -20,7 +21,7 @@ spec:
               name: bondy-client-config
               key: BONDY_REALM
         - name: HOMES_SOURCES
-          value: "netherlands_west_homes.json,netherlands_central_homes.json,netherlands_north_homes.json,netherlands_south_homes.json"
+          value: "netherlands_west_homes.json,netherlands_north_homes.json,netherlands_central_homes.json,netherlands_south_homes.json,netherlands_east_homes.json"
         resources:
           requests:
             memory: "2Gi"

@@ -27,7 +27,7 @@ services:
       - "18080:18080"  # WebSocket
       - "18081:18081"  # HTTP API
     volumes:
-      - ./dev-env/bondy_config:/bondy/etc
+      # - ./dev-env/bondy_config:/bondy/etc  # Commented out due to permission issues
       - bondy_data:/bondy/data
     networks:
       - macula_network

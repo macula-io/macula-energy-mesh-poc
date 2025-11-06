@@ -51,7 +51,9 @@ defmodule CortexIqQueries.Queries do
   """
   def get_homes(opts \\ %{}) do
     page = max(Map.get(opts, :page, 1), 1)
-    page_size = min(max(Map.get(opts, :page_size, 20), 1), 100)
+    # Increased page_size limit from 100 to 1000 to support map visualization
+    # (map needs all homes with location data, currently ~58 out of 500 homes)
+    page_size = min(max(Map.get(opts, :page_size, 20), 1), 1000)
     region = Map.get(opts, :region)
     search = Map.get(opts, :search)
     sort_by = Map.get(opts, :sort_by, "home_id") |> validate_sort_field()
@@ -535,13 +537,33 @@ defmodule CortexIqQueries.Queries do
       provider_id: provider.provider_id,
       provider_name: provider.provider_name,
       strategy: provider.strategy,
+      # Market position
       active_contracts: provider.active_contracts,
       market_share_percent: provider.market_share_percent,
+      rank: provider.rank,
+      market_share_trend: provider.market_share_trend,
+      # Contract pricing
       day_buy_price: provider.day_buy_price,
       night_buy_price: provider.night_buy_price,
       day_sell_price: provider.day_sell_price,
       night_sell_price: provider.night_sell_price,
-      switching_discount: provider.switching_discount
+      switching_discount: provider.switching_discount,
+      minimum_monthly_kwh: provider.minimum_monthly_kwh,
+      # Spot pricing
+      spot_buy_price: provider.spot_buy_price,
+      spot_sell_price: provider.spot_sell_price,
+      # Financial metrics
+      total_revenue: provider.total_revenue,
+      total_cost: provider.total_cost,
+      net_profit: provider.net_profit,
+      avg_contract_value: provider.avg_contract_value,
+      # Activity metrics
+      contracts_gained_last_minute: provider.contracts_gained_last_minute,
+      contracts_lost_last_minute: provider.contracts_lost_last_minute,
+      net_contract_change: provider.net_contract_change,
+      # Competitive metrics
+      avg_spread: provider.avg_spread,
+      price_competitiveness: provider.price_competitiveness
     }
   end
 

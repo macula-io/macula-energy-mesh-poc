@@ -77,9 +77,40 @@ defmodule CortexIqProjections.ProjectHomeTraded.Projector do
       on_conflict: :nothing,
       conflict_target: [:home_id, :simulation_time]
     )
+
+    # Accumulate revenue and cost in provider_states
+    # From provider perspective:
+    #  - When home buys (imports), provider earns revenue (import_cost)
+    #  - When home sells (exports), provider pays cost (export_revenue)
+    if provider_id do
+      # Get current provider state
+      case Repo.get(ProviderState, provider_id) do
+        nil ->
+          # Provider doesn't exist yet, skip update
+          # (It will be created when contract_proposed event arrives)
+          :ok
+
+        provider ->
+          # Accumulate financials
+          new_revenue = (provider.total_revenue || 0.0) + import_cost
+          new_cost = (provider.total_cost || 0.0) + export_revenue
+          new_profit = new_revenue - new_cost
+
+          # Update provider state
+          Repo.update!(
+            ProviderState.changeset(provider, %{
+              total_revenue: new_revenue,
+              total_cost: new_cost,
+              net_profit: new_profit,
+              last_event_at: simulation_time,
+              updated_at: DateTime.utc_now()
+            })
+          )
+      end
+    end
   rescue
     error ->
-      Logger.error("VerticalSliceGenerator: Error: #{inspect(error)}")
+      Logger.error("ProjectHomeTraded: Error: #{inspect(error)}")
   end
 
 

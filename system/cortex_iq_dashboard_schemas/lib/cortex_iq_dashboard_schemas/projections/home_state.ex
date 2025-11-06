@@ -6,7 +6,20 @@ defmodule CortexIqDashboardSchemas.Projections.HomeState do
   schema "home_states" do
     field :name, :string
     field :iot_provider, :string
-    field :meter_ean, :string
+
+    # Multiple meter EAN numbers (18-digit format)
+    field :electricity_day_meter_ean, :string    # Day tariff meter (6am-10pm)
+    field :electricity_night_meter_ean, :string  # Night tariff meter (10pm-6am)
+    field :electricity_single_meter_ean, :string # Single-rate meter (alternative)
+    field :gas_meter_ean, :string                # Gas meter (optional, ~70% homes)
+    field :water_meter_ean, :string              # Water meter (optional, ~80% homes)
+
+    # Cumulative meter readings
+    field :electricity_day_cumulative_kwh, :float, default: 0.0
+    field :electricity_night_cumulative_kwh, :float, default: 0.0
+    field :gas_cumulative_m3, :float, default: 0.0
+    field :water_cumulative_m3, :float, default: 0.0
+
     field :location, :string
     field :postal_code, :string
     field :region, :string
@@ -56,7 +69,17 @@ defmodule CortexIqDashboardSchemas.Projections.HomeState do
       :home_id,
       :name,
       :iot_provider,
-      :meter_ean,
+      # Multiple meter EANs
+      :electricity_day_meter_ean,
+      :electricity_night_meter_ean,
+      :electricity_single_meter_ean,
+      :gas_meter_ean,
+      :water_meter_ean,
+      # Cumulative readings
+      :electricity_day_cumulative_kwh,
+      :electricity_night_cumulative_kwh,
+      :gas_cumulative_m3,
+      :water_cumulative_m3,
       :location,
       :postal_code,
       :region,

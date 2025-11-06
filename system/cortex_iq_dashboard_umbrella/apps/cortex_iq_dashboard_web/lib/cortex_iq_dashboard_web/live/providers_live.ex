@@ -19,13 +19,14 @@ defmodule CortexIqDashboardWeb.ProvidersLive do
     require Logger
     Logger.info("ProvidersLive: mount() called, connected: #{connected?(socket)}")
 
-    # Subscribe to providers view updates, simulation time, control events, and provider initialization
+    # Subscribe to providers view updates, simulation time, control events, provider initialization, and provider metrics
     if connected?(socket) do
       Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "view:providers")
       Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:time_advanced")
       Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:control")
       Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:provider_initialized")
-      Logger.info("ProvidersLive: Subscribed to providers updates, simulation time, control events, and provider initialization")
+      Phoenix.PubSub.subscribe(CortexIqDashboard.PubSub, "dashboard:provider_metrics_calculated")
+      Logger.info("ProvidersLive: Subscribed to providers updates, simulation time, control events, provider initialization, and provider metrics")
     end
 
     # Load initial data via WAMP RPC (NO database access!)
@@ -145,6 +146,24 @@ defmodule CortexIqDashboardWeb.ProvidersLive do
       end
     else
       # Provider already exists, nothing to do
+      {:noreply, socket}
+    end
+  end
+
+  @impl true
+  def handle_info({:provider_metrics_calculated, kwargs}, socket) do
+    require Logger
+    Logger.debug("ProvidersLive: Received provider metrics calculated event")
+
+    # Extract providers list from the calculated metrics
+    # Following "tell, don't ask" principle - comprehensive payload from projections
+    providers = Map.get(kwargs, "providers", [])
+
+    if length(providers) > 0 do
+      Logger.debug("ProvidersLive: Updating #{length(providers)} providers with calculated metrics")
+      {:noreply, assign(socket, :providers, providers)}
+    else
+      Logger.debug("ProvidersLive: No providers in metrics payload, keeping current state")
       {:noreply, socket}
     end
   end

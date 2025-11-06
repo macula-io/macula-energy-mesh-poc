@@ -73,12 +73,17 @@ This project uses **Flux GitOps** to manage all Kubernetes deployments. The clus
 - Manual `kubectl` changes are ephemeral and will be overwritten by Flux
 - GitOps ensures reproducibility and proper versioning
 
-**Registry URLs:**
-- Hub: `registry.macula.local:5000/cortex-iq-dashboard:latest`
-- Homes: `registry.macula.local:5000/cortex-iq-homes:latest`
-- Utilities: `registry.macula.local:5000/cortex-iq-utilities:latest`
-- Projections: `registry.macula.local:5000/cortex-iq-projections:latest`
-- Queries: `registry.macula.local:5000/cortex-iq-queries:latest`
+**Registry URLs (as expected by GitOps manifests):**
+- Dashboard: `registry.macula.local:5000/macula/cortex-iq-dashboard:latest`
+- Homes: `registry.macula.local:5000/macula/cortex-iq-homes:latest`
+- Utilities: `registry.macula.local:5000/macula/cortex-iq-utilities:latest`
+- Projections: `registry.macula.local:5000/macula/cortex-iq-projections:latest`
+- Queries: `registry.macula.local:5000/macula/cortex-iq-queries:latest`
+- Simulation: `registry.macula.local:5000/macula/cortex-iq-simulation:latest`
+- Prezio: `registry.macula.local:5000/macula/cortex-iq-prezio:latest`
+- OpenWeatherMap: `registry.macula.local:5000/macula/cortex-iq-open-weather-map:latest`
+
+**IMPORTANT**: All images MUST include the `macula/` prefix to match GitOps deployment configurations!
 
 **Deployment Shorthand:**
 When the user says "deploy", they mean:
@@ -238,6 +243,93 @@ test/cortex_iq_homes/subscribe_simulation_time_advanced/
 **Key Principle:** If it doesn't have tests, it's not done.
 
 **See:** `system/cortex_iq_homes/ARCHITECTURE_GUIDELINES.md` - Testing Requirements section for examples.
+
+### WAMP TOPIC DESIGN - Critical Scalability Principle
+
+**🚨 NEVER include entity IDs in WAMP topic names! IDs belong in the payload! 🚨**
+
+This is a fundamental principle for scalable pub/sub architecture.
+
+❌ **WRONG - IDs in Topics (Breaks Scalability):**
+```
+# BAD: Creates thousands of topics
+be.cortexiq.home.{home_id}.measured           # 1000 homes = 1000 topics!
+be.cortexiq.home.home_001.electricity.measured
+be.cortexiq.home.home_002.electricity.measured
+be.cortexiq.home.home_003.electricity.measured
+...
+```
+
+**Why This Breaks:**
+1. **Topic Explosion**: With 1000 homes, you create 1000+ topics to manage
+2. **WAMP Router Overhead**: Routers have topic limits and performance degrades
+3. **Subscription Complexity**: Subscribers must know all IDs upfront or use wildcards
+4. **Inflexibility**: Can't easily subscribe to "all homes" without wildcards
+5. **Registration Overhead**: Each topic needs separate registration
+
+✅ **CORRECT - IDs in Payload (Scalable):**
+```
+# GOOD: Single topic, ID in payload
+Topic: be.cortexiq.home.measured
+
+Payload:
+{
+  "home_id": "home_001",          # ← ID goes HERE
+  "production_w": 3500,
+  "consumption_w": 1200,
+  "simulation_time": "2025-11-04T12:00:00Z"
+}
+```
+
+**Topic Design Rules:**
+- **Topics** describe EVENT TYPES (semantic categories)
+- **Payloads** contain ENTITY IDs and data
+- Topics should be **hierarchical by domain**, not by entity
+- Use topic hierarchy for **filtering by category**, not by ID
+
+**Examples:**
+
+```elixir
+# Energy measurements (all homes publish to same topic)
+be.cortexiq.home.measured                    # All home measurements
+be.cortexiq.home.electricity.measured        # If splitting by meter type
+be.cortexiq.home.gas.measured
+be.cortexiq.home.water.measured
+
+# Provider events
+be.cortexiq.provider.contract.offered        # All contract offers
+be.cortexiq.provider.price.updated           # All price updates
+
+# City aggregations
+be.cortexiq.city.measured                    # All city totals
+
+# System events
+be.cortexiq.simulation.time.advanced         # Simulation clock ticks
+be.cortexiq.simulation.control               # Control commands
+```
+
+**Subscription Patterns:**
+```elixir
+# Subscribe to specific event types
+subscribe("be.cortexiq.home.measured")           # All home measurements
+subscribe("be.cortexiq.provider.contract.offered") # All contract offers
+
+# Filter by ID in event handler, not topic
+def handle_event(event_data) do
+  home_id = Map.get(event_data, "home_id")
+
+  if interested_in_home?(home_id) do
+    process_event(event_data)
+  end
+end
+```
+
+**Benefits:**
+- **Scalable**: Same number of topics regardless of entity count
+- **Simple**: Easy to subscribe to all events of a type
+- **Flexible**: Add/remove entities without changing topics
+- **Performant**: WAMP routers optimized for fewer topics with high volume
+- **Maintainable**: Clear semantic meaning in topic names
 
 ## Strategic Decisions Made
 

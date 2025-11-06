@@ -69,6 +69,42 @@ create_clusters() {
   fi
 }
 
+# Step 1.5: Configure registry access
+configure_registry() {
+  log_section "Step 1.5: Configuring Local Registry Access"
+
+  REGISTRY_NAME="registry.macula.local"
+  REGISTRY_PORT="5000"
+
+  log_step "Configuring containerd for HTTP registry access..."
+
+  for cluster in macula-hub macula-edge-01 macula-edge-02 macula-edge-03 macula-edge-04; do
+    log_step "Configuring $cluster..."
+
+    # Create registry directory
+    docker exec ${cluster}-control-plane mkdir -p "/etc/containerd/certs.d/${REGISTRY_NAME}:${REGISTRY_PORT}"
+
+    # Create hosts.toml for registry
+    docker exec ${cluster}-control-plane bash -c "cat > /etc/containerd/certs.d/${REGISTRY_NAME}:${REGISTRY_PORT}/hosts.toml << 'EOF'
+server = \"http://${REGISTRY_NAME}:${REGISTRY_PORT}\"
+
+[host.\"http://${REGISTRY_NAME}:${REGISTRY_PORT}\"]
+  capabilities = [\"pull\", \"resolve\"]
+  skip_verify = true
+EOF"
+
+    # Add config_path to containerd config
+    docker exec ${cluster}-control-plane bash -c "grep -q 'config_path' /etc/containerd/config.toml || sed -i '/\[plugins.\"io.containerd.grpc.v1.cri\".registry\]/a\      config_path = \"/etc/containerd/certs.d\"' /etc/containerd/config.toml"
+
+    # Restart containerd
+    docker exec ${cluster}-control-plane systemctl restart containerd
+
+    log_info "✓ $cluster configured for registry access"
+  done
+
+  log_info "All clusters configured for local registry!"
+}
+
 # Step 2: Setup networking and ingress
 setup_networking() {
   log_section "Step 2: Setting Up Networking & Ingress"
@@ -236,6 +272,7 @@ main() {
 
   check_prereqs
   create_clusters
+  configure_registry
   setup_networking
   build_images
   install_flux

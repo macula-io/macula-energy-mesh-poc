@@ -25,23 +25,11 @@ defmodule CortexIqDashboard.System do
     # Set up signal handlers for graceful shutdown
     setup_signal_handlers()
 
-    children = [
-      # Realm manager creates/destroys the WAMP realm dynamically
-      # DISABLED: Realm already exists, no need for dynamic creation
-      # {CortexIqDashboard.RealmManager,
-      #  [
-      #    realm_uri: realm_uri,
-      #    bondy_admin_url: bondy_admin_url
-      #  ]},
-      # WAMP subscriber for RPC calls (used by QueryClient)
-      # Note: Individual event subscribers are managed by SubscriberSystem supervisors in application.ex
-      {CortexIqDashboard.WampSubscriber, [
-        realm_uri: realm_uri,
-        bondy_url: bondy_url
-      ]}
-    ]
+    # JIT Subscription Model: NO persistent WAMP connections
+    # LiveViews manage their own WAMP clients (connect on mount, disconnect on unmount)
+    children = []
 
-    Supervisor.init(children, strategy: :rest_for_one)
+    Supervisor.init(children, strategy: :one_for_one)
   end
 
   ## Private Functions

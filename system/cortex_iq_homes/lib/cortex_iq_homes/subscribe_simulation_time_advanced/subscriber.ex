@@ -27,7 +27,8 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber do
     wamp_client = Keyword.fetch!(opts, :wamp_client)
 
     state = %{
-      wamp_client: wamp_client
+      wamp_client: wamp_client,
+      subscription_status: :not_subscribed
     }
 
     Logger.info("✅ #{__MODULE__}: INIT complete - Scheduling subscription in 2 seconds")
@@ -39,34 +40,36 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber do
   end
 
   @impl true
-  def handle_info(:subscribe, state) do
+  def handle_info(:subscribe, %{wamp_client: wamp_client} = state) do
     Logger.info("🔔 #{__MODULE__}: Received :subscribe message")
-    Logger.info("  wamp_client: #{inspect(state.wamp_client)}")
+    Logger.info("  wamp_client: #{inspect(wamp_client)}")
     Logger.info("  topic: #{@topic}")
-
-    subscriber_pid = self()
-
-    handler = fn _topic, event_data ->
-      send(subscriber_pid, {:event, event_data})
-    end
-
     Logger.info("🔌 #{__MODULE__}: Attempting to subscribe to #{@topic}...")
 
-    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, @topic, handler) do
+    case MaculaSdk.Wamp.Client.subscribe(wamp_client, @topic, &handle_event/2, %{}) do
       :ok ->
         Logger.info("✅ #{__MODULE__}: Successfully subscribed to #{@topic}")
         Logger.info("  Will broadcast to PubSub channel: #{@pubsub_channel}")
+        {:noreply, %{state | subscription_status: :subscribed}}
+
       {:error, reason} ->
         Logger.error("❌ #{__MODULE__}: Failed to subscribe: #{inspect(reason)}, retrying in 5s...")
         Process.send_after(self(), :subscribe, 5_000)
+        {:noreply, state}
     end
-
-    {:noreply, state}
   end
 
   @impl true
-  def handle_info({:event, event_data}, state) do
-    Logger.debug("📥 #{__MODULE__}: Received WAMP event")
+  def handle_info(msg, state) do
+    Logger.debug("#{__MODULE__}: Unexpected message: #{inspect(msg)}")
+    {:noreply, state}
+  end
+
+  # Event Handler - Forward to PubSub
+
+  defp handle_event(topic, event_data) do
+    Logger.info("📥 #{__MODULE__}: handle_event called for topic=#{topic}")
+    Logger.info("📥 #{__MODULE__}: event_data keys: #{inspect(Map.keys(event_data))}")
 
     kwargs = Map.get(event_data, :kwargs, %{})
 
@@ -74,7 +77,7 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber do
       kwargs["simulation_time"]
       |> parse_simulation_time()
 
-    Logger.debug("  simulation_time: #{inspect(simulation_time)}")
+    Logger.info("  simulation_time: #{inspect(simulation_time)}")
 
     # Broadcast to all homes via PubSub
     result = Phoenix.PubSub.broadcast(
@@ -83,11 +86,11 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber do
       {:simulation_time_tick, simulation_time}
     )
 
-    Logger.debug("📡 #{__MODULE__}: PubSub.broadcast result: #{inspect(result)}")
-    Logger.debug("  channel: #{@pubsub_channel}")
-    Logger.debug("  message: {:simulation_time_tick, #{inspect(simulation_time)}}")
+    Logger.info("📡 #{__MODULE__}: PubSub.broadcast result: #{inspect(result)}")
+    Logger.info("  channel: #{@pubsub_channel}")
+    Logger.info("  message: {:simulation_time_tick, #{inspect(simulation_time)}}")
 
-    {:noreply, state}
+    result
   end
 
   ## Private Functions

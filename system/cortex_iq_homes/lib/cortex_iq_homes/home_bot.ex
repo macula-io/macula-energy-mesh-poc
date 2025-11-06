@@ -102,10 +102,11 @@ defmodule CortexIqHomes.HomeBot do
 
   @impl true
   def handle_info(:publish_initialized, state) do
-    Logger.info("Home #{state.home_id}: Received :publish_initialized message, registering home...")
+    Logger.info("Home #{state.home_id}: Received :publish_initialized message, emitting initialized event...")
 
-    # Register complete home data in database before emitting initialized event
-    home_data = %{
+    # Build complete home metadata for event
+    # Note: We no longer register in projections database - all metadata is included in events
+    event_data = %{
       home_id: state.home_id,
       name: state.home.name,
       iot_provider: state.home.iot_provider,
@@ -117,43 +118,16 @@ defmodule CortexIqHomes.HomeBot do
       latitude: state.home.location.latitude,
       longitude: state.home.location.longitude,
       solar_capacity_kw: state.home.solar_capacity_kw,
-      battery_capacity_kwh: state.home.battery_capacity_kwh
+      battery_capacity_kwh: state.home.battery_capacity_kwh,
+      simulation_time: nil
     }
 
-    case register_home(home_data) do
-      {:ok, true} ->
-        # Registration successful, emit initialized event
-        Logger.info("Home #{state.home_id}: Home registered successfully, emitting initialized event")
+    Logger.debug("Home #{state.home_id}: Triggering publisher with data: #{inspect(event_data)}")
+    trigger_publisher(PublishHomeInitialized.Publisher, state.home_id, event_data)
+    Logger.info("Home #{state.home_id}: ✓ Initialized event triggered")
 
-        event_data = %{
-          home_id: state.home_id,
-          name: state.home.name,
-          iot_provider: state.home.iot_provider,
-          meter_ean: state.home.meter_ean,
-          location: state.home.location.city,
-          postal_code: state.home.location.postal_code,
-          region: state.home.location.region,
-          solar_capacity_kw: state.home.solar_capacity_kw,
-          battery_capacity_kwh: state.home.battery_capacity_kwh,
-          simulation_time: nil
-        }
-
-        Logger.debug("Home #{state.home_id}: Triggering publisher with data: #{inspect(event_data)}")
-        trigger_publisher(PublishHomeInitialized.Publisher, state.home_id, event_data)
-        Logger.info("Home #{state.home_id}: ✓ Initialized event triggered")
-
-        # Schedule home.connected event shortly after initialization
-        Process.send_after(self(), :publish_connected, 500)
-
-      {:error, :already_exists} ->
-        # Home already exists, skip initialization but emit connected event
-        Logger.info("Home #{state.home_id}: Home already registered, skipping initialized event")
-        Process.send_after(self(), :publish_connected, 500)
-
-      {:error, reason} ->
-        # Error during registration, DO NOT emit event to avoid race conditions
-        Logger.error("Home #{state.home_id}: Failed to register home (#{inspect(reason)}), SKIPPING initialized event to prevent data corruption")
-    end
+    # Schedule home.connected event shortly after initialization
+    Process.send_after(self(), :publish_connected, 500)
 
     {:noreply, state}
   end
@@ -183,8 +157,9 @@ defmodule CortexIqHomes.HomeBot do
 
     trigger_publisher(PublishHomeDisconnected.Publisher, state.home_id, event_data)
 
-    # Schedule reconnection after 10-30 seconds
-    reconnect_delay = :rand.uniform(20_000) + 10_000
+    # Schedule reconnection after 1-5 minutes - INCREASED from 10-30 sec to spread reconnections more
+    # Prevents thundering herd when many homes reconnect simultaneously
+    reconnect_delay = :rand.uniform(240_000) + 60_000
     Process.send_after(self(), :reconnect, reconnect_delay)
 
     {:noreply, state}
@@ -210,42 +185,17 @@ defmodule CortexIqHomes.HomeBot do
   # From SubscribeSimulationTimeAdvanced.Subscriber
   @impl true
   def handle_info({:simulation_time_tick, simulation_time}, state) do
-    Logger.debug("⏰ Home #{state.home_id}: Received :simulation_time_tick from PubSub")
-    Logger.debug("  simulation_time: #{inspect(simulation_time)}")
-
-    # Check if enough time has elapsed since last measurement
-    now_ms = System.monotonic_time(:millisecond)
-    elapsed_ms = now_ms - state.last_measurement_ms
-    should_publish_measurement = elapsed_ms >= state.measurement_frequency_ms
-
-    Logger.debug("  elapsed=#{elapsed_ms}ms, freq=#{state.measurement_frequency_ms}ms, should_publish=#{should_publish_measurement}")
-
     # Delegate to HomeState for all business logic
     result = HomeState.process_time_tick(state.home_id, simulation_time)
 
-    Logger.debug("  result - measurements=#{if result.measurements, do: "present", else: "nil"}")
-
-    # Trigger publishers based on result
-    # Only publish measurements if enough time has elapsed (throttling)
-    if should_publish_measurement do
-      Logger.info("Home #{state.home_id}: ✅ Publishing measurement (elapsed #{elapsed_ms}ms >= #{state.measurement_frequency_ms}ms)")
-      trigger_measurement_publisher(state, result.measurements)
-    else
-      Logger.debug("Home #{state.home_id}: ⏸ Skipping measurement (elapsed #{elapsed_ms}ms < #{state.measurement_frequency_ms}ms)")
-    end
-
-    # Always publish trades, arbitrage, and balance (not throttled)
+    # Trigger all publishers (throttling happens at simulation time level, not real-time)
+    trigger_measurement_publisher(state, result.measurements)
     trigger_trade_publishers(state, result.trades)
     trigger_arbitrage_publisher(state, result.arbitrage)
     trigger_balance_publisher(state, result.balance)
 
-    # Update last measurement timestamp if we published
-    new_state =
-      if should_publish_measurement do
-        %{state | last_measurement_ms: now_ms}
-      else
-        state
-      end
+    # No state changes needed
+    new_state = state
 
     {:noreply, new_state}
   end
@@ -293,41 +243,6 @@ defmodule CortexIqHomes.HomeBot do
   def handle_info(message, state) do
     Logger.warning("HomeCoordinator #{state.home_id}: Unexpected message: #{inspect(message)}")
     {:noreply, state}
-  end
-
-  ## Helper Functions
-
-  defp register_home(home_data) do
-    try do
-      case MaculaSdk.Wamp.Pool.call(
-             "be.cortexiq.energy.projections.register_home",
-             [],
-             home_data,
-             %{},
-             CortexIqHomes.WampPool
-           ) do
-        # Success: home registered
-        {:ok, %{args: [%{"registered" => true}]}} ->
-          {:ok, true}
-
-        # Error: home already exists
-        {:error, "wamp.error.already_exists"} ->
-          {:error, :already_exists}
-
-        # Generic error
-        {:error, reason} ->
-          {:error, reason}
-
-        # Unexpected response format
-        {:ok, response} ->
-          Logger.warning("Unexpected register_home response: #{inspect(response)}")
-          {:error, :unexpected_response}
-      end
-    catch
-      :exit, reason ->
-        Logger.warning("WAMP pool unavailable: #{inspect(reason)}")
-        {:error, :pool_unavailable}
-    end
   end
 
   ## Publisher Triggering
@@ -384,10 +299,11 @@ defmodule CortexIqHomes.HomeBot do
     {:via, Registry, {CortexIqHomes.Registry, {__MODULE__, home_id}}}
   end
 
-  # Schedule a random disconnect "now and then" (every 5-15 minutes)
+  # Schedule a random disconnect "now and then" (every 1-2 hours) - REDUCED from 5-15 min to prevent Bondy overload
   defp schedule_random_disconnect do
-    # Random delay between 5-15 minutes (300_000 - 900_000 ms)
-    disconnect_delay = :rand.uniform(600_000) + 300_000
+    # Random delay between 1-2 hours (3_600_000 - 7_200_000 ms)
+    # With ~1100 homes: ~0.3 disconnects/sec (was ~2/sec) - 85% reduction in churn
+    disconnect_delay = :rand.uniform(3_600_000) + 3_600_000
     Process.send_after(self(), :random_disconnect, disconnect_delay)
   end
 end

@@ -24,7 +24,8 @@ defmodule CortexIqHomes.MixProject do
   defp deps do
     [
       {:cortex_iq_core, path: "../cortex_iq_core"},
-      {:macula_sdk, path: "../macula_sdk"}
+      {:macula_sdk, path: "../macula_sdk"},
+      {:phoenix_pubsub, "~> 2.1"}
     ]
   end
 

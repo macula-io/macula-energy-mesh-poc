@@ -17,6 +17,10 @@ defmodule CortexIqDashboard.WampSubscriber do
     "be.cortexiq.simulation.reset"            # Simulation reset events
   ]
 
+  @provider_topics [
+    "be.cortexiq.provider.metrics_calculated"  # Provider metrics calculated by projections
+  ]
+
   ## Client API
 
   def start_link(opts) do
@@ -84,8 +88,18 @@ defmodule CortexIqDashboard.WampSubscriber do
       send(subscriber_pid, {:wamp, {:event, received_topic, event_data}})
     end
 
-    # Subscribe to simulation time (exact topic)
+    # Subscribe to simulation topics (exact)
     Enum.each(@simulation_topics, fn topic ->
+      case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, topic, handler) do
+        :ok ->
+          Logger.info("Subscribed to WAMP topic: #{topic}")
+        {:error, reason} ->
+          Logger.error("Failed to subscribe to #{topic}: #{inspect(reason)}")
+      end
+    end)
+
+    # Subscribe to provider topics (exact)
+    Enum.each(@provider_topics, fn topic ->
       case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, topic, handler) do
         :ok ->
           Logger.info("Subscribed to WAMP topic: #{topic}")
@@ -272,6 +286,13 @@ defmodule CortexIqDashboard.WampSubscriber do
           {:home_disconnected, kwargs}
         )
 
+      {:provider_metrics_calculated, _} ->
+        Phoenix.PubSub.broadcast(
+          CortexIqDashboard.PubSub,
+          "dashboard:provider_metrics_calculated",
+          {:provider_metrics_calculated, kwargs}
+        )
+
       :ignore ->
         :ok
     end
@@ -289,6 +310,7 @@ defmodule CortexIqDashboard.WampSubscriber do
       String.ends_with?(topic, ".provider.initialized") -> {:provider_initialized, :provider}
       String.ends_with?(topic, ".home.connected") -> {:home_connected, :home}
       String.ends_with?(topic, ".home.disconnected") -> {:home_disconnected, :home}
+      String.ends_with?(topic, ".provider.metrics_calculated") -> {:provider_metrics_calculated, :provider}
       true -> :ignore
     end
   end
