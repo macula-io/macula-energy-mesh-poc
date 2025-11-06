@@ -22,7 +22,10 @@ defmodule MaculaSdk.Wamp.Client do
       :event_handlers,
       :rpc_handlers,     # %{registration_id => handler_fun}
       :pending_calls,    # %{request_id => from}
-      :retry_count
+      :retry_count,
+      :consecutive_failures,  # Track failures for circuit breaker
+      :max_retries,           # Max retry attempts before giving up
+      :last_abort_reason      # Last ABORT reason for retry decision
     ]
   end
 
@@ -37,6 +40,7 @@ defmodule MaculaSdk.Wamp.Client do
   - `:api_key` - API key for MaculaOs authentication (optional)
   - `:username` - Username for WAMP-CRA authentication (optional)
   - `:password` - Password for WAMP-CRA authentication (optional)
+  - `:max_retries` - Maximum retry attempts before giving up (default: 20)
   - `:name` - GenServer name (optional)
   """
   def start_link(opts \\ []) do
@@ -107,6 +111,7 @@ defmodule MaculaSdk.Wamp.Client do
     api_key = Keyword.get(opts, :api_key)
     username = Keyword.get(opts, :username)
     password = Keyword.get(opts, :password)
+    max_retries = Keyword.get(opts, :max_retries, 20)
 
     state = %State{
       url: url,
@@ -118,7 +123,10 @@ defmodule MaculaSdk.Wamp.Client do
       event_handlers: %{},
       rpc_handlers: %{},
       pending_calls: %{},
-      retry_count: 0
+      retry_count: 0,
+      consecutive_failures: 0,
+      max_retries: max_retries,
+      last_abort_reason: nil
     }
 
     {:ok, state, {:continue, :connect}}
@@ -126,28 +134,71 @@ defmodule MaculaSdk.Wamp.Client do
 
   @impl true
   def handle_continue(:connect, state) do
-    case Connection.start_link(
-           url: state.url,
-           realm: state.realm,
-           api_key: state.api_key,
-           username: state.username,
-           password: state.password,
-           client_pid: self()
-         ) do
-      {:ok, pid} ->
-        Process.monitor(pid)
-        {:noreply, %{state | connection_pid: pid, retry_count: 0}}
+    # Check if we've exceeded max retries
+    if state.retry_count >= state.max_retries do
+      Logger.error(
+        "MaculaSdk.Wamp.Client: Max retries (#{state.max_retries}) exceeded. Giving up."
+      )
+      {:stop, :max_retries_exceeded, state}
+    else
+      case Connection.start_link(
+             url: state.url,
+             realm: state.realm,
+             api_key: state.api_key,
+             username: state.username,
+             password: state.password,
+             client_pid: self()
+           ) do
+        {:ok, pid} ->
+          Process.monitor(pid)
+          Logger.info("MaculaSdk.Wamp.Client: Connection established successfully")
 
-      {:error, reason} ->
-        retry_delay = min(1000 * :math.pow(2, state.retry_count), 30_000) |> round()
-        Logger.warning(
-          "MaculaSdk.Wamp.Client: Failed to connect: #{inspect(reason)}. " <>
-          "Retrying in #{retry_delay}ms (attempt #{state.retry_count + 1})"
-        )
+          # Reset failure counters on successful connection
+          {:noreply, %{state |
+            connection_pid: pid,
+            retry_count: 0,
+            consecutive_failures: 0,
+            last_abort_reason: nil
+          }}
 
-        Process.send_after(self(), :retry_connect, retry_delay)
-        {:noreply, %{state | status: :disconnected, retry_count: state.retry_count + 1}}
+        {:error, reason} ->
+          schedule_retry(state, reason)
+      end
     end
+  end
+
+  # Calculate retry delay with exponential backoff + jitter + circuit breaker
+  defp schedule_retry(state, reason) do
+    # Base exponential backoff: 1s, 2s, 4s, 8s, 16s, 30s (capped)
+    base_delay = min(1000 * :math.pow(2, state.retry_count), 30_000) |> round()
+
+    # Circuit breaker: If many consecutive failures, add extra delay
+    circuit_breaker_penalty =
+      if state.consecutive_failures > 5 do
+        # After 5 consecutive failures, add extra 10-30 seconds
+        :rand.uniform(20_000) + 10_000
+      else
+        0
+      end
+
+    # Add jitter: ±25% randomization to prevent thundering herd
+    jitter = :rand.uniform(round(base_delay * 0.5)) - round(base_delay * 0.25)
+
+    retry_delay = base_delay + jitter + circuit_breaker_penalty
+
+    Logger.warning(
+      "MaculaSdk.Wamp.Client: Failed to connect: #{inspect(reason)}. " <>
+      "Retrying in #{retry_delay}ms (attempt #{state.retry_count + 1}/#{state.max_retries}, " <>
+      "consecutive failures: #{state.consecutive_failures + 1})"
+    )
+
+    Process.send_after(self(), :retry_connect, retry_delay)
+
+    {:noreply, %{state |
+      status: :disconnected,
+      retry_count: state.retry_count + 1,
+      consecutive_failures: state.consecutive_failures + 1
+    }}
   end
 
   @impl true
@@ -212,7 +263,15 @@ defmodule MaculaSdk.Wamp.Client do
   @impl true
   def handle_info({:wamp, {:connected, session_id}}, state) do
     Logger.info("WAMP client connected, session: #{session_id}")
-    {:noreply, %{state | status: :connected, session_id: session_id}}
+
+    # Reset retry counters on successful session establishment
+    {:noreply, %{state |
+      status: :connected,
+      session_id: session_id,
+      retry_count: 0,
+      consecutive_failures: 0,
+      last_abort_reason: nil
+    }}
   end
 
   def handle_info({:wamp, {:published, topic, publication_id}}, state) do
@@ -332,18 +391,31 @@ defmodule MaculaSdk.Wamp.Client do
     end
   end
 
-  def handle_info({:wamp, {:error, request_type, request_id, error_uri, _args, _kwargs}}, state) do
+  def handle_info({:wamp, {:error, request_type, request_id, error_uri, _args, kwargs}}, state) do
     Logger.error("WAMP ERROR (#{request_type}): #{error_uri} for request_id: #{request_id}")
 
+    # Store ABORT reason for retry decision making
+    new_state = case request_type do
+      :session -> %{state | last_abort_reason: error_uri}
+      _ -> state
+    end
+
     # If this was a CALL, reply to the caller with error
-    case Map.pop(state.pending_calls, request_id) do
+    case Map.pop(new_state.pending_calls, request_id) do
       {nil, _} ->
         # Not a pending call, might be a REGISTER or SUBSCRIBE error
-        {:noreply, state}
+        # Check if it's an ABORT during session establishment
+        if request_type == :session do
+          # Log human-readable message from ABORT if available
+          abort_message = Map.get(kwargs, "message", error_uri)
+          Logger.error("WAMP ABORT during session: #{abort_message}")
+        end
+
+        {:noreply, new_state}
 
       {from, pending} ->
         GenServer.reply(from, {:error, error_uri})
-        {:noreply, %{state | pending_calls: pending}}
+        {:noreply, %{new_state | pending_calls: pending}}
     end
   end
 
@@ -354,7 +426,52 @@ defmodule MaculaSdk.Wamp.Client do
 
   def handle_info({:DOWN, _ref, :process, pid, reason}, %{connection_pid: pid} = state) do
     Logger.error("Connection process down: #{inspect(reason)}")
-    {:stop, :connection_lost, %{state | status: :disconnected}}
+
+    # Don't give up immediately - attempt reconnection
+    # This handles unexpected disconnections (Bondy restart, network issues, etc.)
+    new_state = %{state |
+      status: :disconnected,
+      connection_pid: nil,
+      session_id: nil,
+      consecutive_failures: state.consecutive_failures + 1
+    }
+
+    # Check if we should retry based on the reason
+    should_retry = case reason do
+      # Normal shutdowns - retry
+      :normal -> true
+      :shutdown -> true
+      {:shutdown, _} -> true
+
+      # Connection errors - retry
+      :connection_lost -> true
+      :websocket_closed -> true
+
+      # WAMP ABORT errors - check last_abort_reason
+      _ ->
+        case state.last_abort_reason do
+          # Temporary errors - retry
+          "wamp.close.system_shutdown" -> true
+          "wamp.error.timeout" -> true
+          "wamp.error.network_failure" -> true
+
+          # Permanent errors - don't retry
+          "wamp.error.not_authorized" -> false
+          "wamp.error.no_such_realm" -> false
+
+          # Unknown - retry with caution
+          _ -> state.consecutive_failures < 10
+        end
+    end
+
+    if should_retry and state.retry_count < state.max_retries do
+      Logger.info("MaculaSdk.Wamp.Client: Attempting automatic reconnection...")
+      schedule_retry(new_state, reason)
+    else
+      Logger.error("MaculaSdk.Wamp.Client: Not retrying - reason: #{inspect(reason)}, " <>
+                   "retries: #{state.retry_count}/#{state.max_retries}")
+      {:stop, :connection_lost, new_state}
+    end
   end
 
   def handle_info(msg, state) do
