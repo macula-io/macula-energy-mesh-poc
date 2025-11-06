@@ -1,0 +1,922 @@
+[
+  {
+    "address": {
+      "city": "Uccle",
+      "latitude": 50.8055,
+      "longitude": 4.3249,
+      "postal_code": "1180",
+      "region": "belgium_brussels",
+      "street": "Plein 141"
+    },
+    "battery_capacity_kwh": 8.3,
+    "id": "019a2400-4501-7000-a001-000000004501",
+    "iot_provider": "SolarEdge",
+    "meters": {
+      "electricity_day_ean": "541449334407593354",
+      "electricity_night_ean": "541449946733703477",
+      "water_ean": "550778367500486945"
+    },
+    "name": "Jacobs Family",
+    "solar_capacity_kw": 4.3
+  },
+  {
+    "address": {
+      "city": "Ixelles",
+      "latitude": 50.8411,
+      "longitude": 4.3753,
+      "postal_code": "1050",
+      "region": "belgium_brussels",
+      "street": "Weg 36"
+    },
+    "battery_capacity_kwh": 13.0,
+    "id": "019a2400-4502-7000-a001-000000004502",
+    "iot_provider": "Tesla_Powerwall",
+    "meters": {
+      "electricity_day_ean": "541449502471750877",
+      "electricity_night_ean": "541449106655795030",
+      "water_ean": "550778142388953407"
+    },
+    "name": "Thomas Family",
+    "solar_capacity_kw": 3.6
+  },
+  {
+    "address": {
+      "city": "Bruxelles",
+      "latitude": 50.8498,
+      "longitude": 4.3534,
+      "postal_code": "1000",
+      "region": "belgium_brussels",
+      "street": "Straat 47"
+    },
+    "battery_capacity_kwh": 10.6,
+    "id": "019a2400-4503-7000-a001-000000004503",
+    "iot_provider": "Smappee",
+    "meters": {
+      "electricity_day_ean": "541449633419134656",
+      "electricity_night_ean": "541449714242007831",
+      "gas_ean": "374606823937870765",
+      "water_ean": "550778999373103971"
+    },
+    "name": "Martens Family",
+    "solar_capacity_kw": 2.9
+  },
+  {
+    "address": {
+      "city": "Uccle",
+      "latitude": 50.7899,
+      "longitude": 4.3203,
+      "postal_code": "1180",
+      "region": "belgium_brussels",
+      "street": "Laan 67"
+    },
+    "battery_capacity_kwh": 12.2,
+    "id": "019a2400-4504-7000-a001-000000004504",
+    "iot_provider": "SMA_Sunny_Portal",
+    "meters": {
+      "electricity_day_ean": "541449895546074412",
+      "electricity_night_ean": "541449820385694361",
+      "gas_ean": "374606334241819495",
+      "water_ean": "550778169729294745"
+    },
+    "name": "Thomas Family",
+    "solar_capacity_kw": 4.8
+  },
+  {
+    "address": {
+      "city": "Ixelles",
+      "latitude": 50.8299,
+      "longitude": 4.3708,
+      "postal_code": "1050",
+      "region": "belgium_brussels",
+      "street": "Straat 111"
+    },
+    "battery_capacity_kwh": 12.3,
+    "id": "019a2400-4505-7000-a001-000000004505",
+    "iot_provider": "Smappee",
+    "meters": {
+      "electricity_day_ean": "541449832588599947",
+      "electricity_night_ean": "541449905858833363",
+      "gas_ean": "374606772973638588",
+      "water_ean": "550778978205793766"
+    },
+    "name": "Aerts Family",
+    "solar_capacity_kw": 5.5
+  },
+  {
+    "address": {
+      "city": "Ixelles",
+      "latitude": 50.8372,
+      "longitude": 4.3578,
+      "postal_code": "1050",
+      "region": "belgium_brussels",
+      "street": "Plein 130"
+    },
+    "battery_capacity_kwh": 13.7,
+    "id": "019a2400-4506-7000-a001-000000004506",
+    "iot_provider": "Tesla_Powerwall",
+    "meters": {
+      "electricity_day_ean": "541449216497906456",
+      "electricity_night_ean": "541449639800872918",
+      "water_ean": "550778363054622442"
+    },
+    "name": "Vanderhaeghen Family",
+    "solar_capacity_kw": 2.7
+  },
+  {
+    "address": {
+      "city": "Schaerbeek",
+      "latitude": 50.8729,
+      "longitude": 4.379,
+      "postal_code": "1030",
+      "region": "belgium_brussels",
+      "street": "Straat 62"
+    },
+    "battery_capacity_kwh": 8.6,
+    "id": "019a2400-4507-7000-a001-000000004507",
+    "iot_provider": "SMA_Sunny_Portal",
+    "meters": {
+      "electricity_day_ean": "541449492920370992",
+      "electricity_night_ean": "541449852649517885",
+      "gas_ean": "374606213211094664",
+      "water_ean": "550778430200180553"
+    },
+    "name": "Vincent Family",
+    "solar_capacity_kw": 3.5
+  },
+  {
+    "address": {
+      "city": "Bruxelles",
+      "latitude": 50.8583,
+      "longitude": 4.3443,
+      "postal_code": "1000",
+      "region": "belgium_brussels",
+      "street": "Weg 141"
+    },
+    "battery_capacity_kwh": 12.7,
+    "id": "019a2400-4508-7000-a001-000000004508",
+    "iot_provider": "HomeWizard",
+    "meters": {
+      "electricity_day_ean": "541449767548698393",
+      "electricity_night_ean": "541449729514937412",
+      "water_ean": "550778294351404349"
+    },
+    "name": "Gerard Family",
+    "solar_capacity_kw": 4.5
+  },
+  {
+    "address": {
+      "city": "Bruxelles",
+      "latitude": 50.8526,
+      "longitude": 4.347,
+      "postal_code": "1000",
+      "region": "belgium_brussels",
+      "street": "Weg 79"
+    },
+    "battery_capacity_kwh": 8.6,
+    "id": "019a2400-4509-7000-a001-000000004509",
+    "iot_provider": "Smappee",
+    "meters": {
+      "electricity_day_ean": "541449168139121333",
+      "electricity_night_ean": "541449358682548900",
+      "water_ean": "550778779271317849"
+    },
+    "name": "Desmet Family",
+    "solar_capacity_kw": 2.5
+  },
+  {
+    "address": {
+      "city": "Schaerbeek",
+      "latitude": 50.8714,
+      "longitude": 4.3818,
+      "postal_code": "1030",
+      "region": "belgium_brussels",
+      "street": "Weg 142"
+    },
+    "battery_capacity_kwh": 9.4,
+    "id": "019a2400-4510-7000-a001-000000004510",
+    "iot_provider": "Tesla_Powerwall",
+    "meters": {
+      "electricity_day_ean": "541449793456882277",
+      "electricity_night_ean": "541449692158963406",
+      "water_ean": "550778227263464680"
+    },
+    "name": "Dubois Family",
+    "solar_capacity_kw": 3.7
+  },
+  {
+    "address": {
+      "city": "Jette",
+      "latitude": 50.8792,
+      "longitude": 4.3312,
+      "postal_code": "1090",
+      "region": "belgium_brussels",
+      "street": "Plein 82"
+    },
+    "battery_capacity_kwh": 9.5,
+    "id": "019a2400-4511-7000-a001-000000004511",
+    "iot_provider": "SolarEdge",
+    "meters": {
+      "electricity_day_ean": "541449507669442906",
+      "electricity_night_ean": "541449500337690158",
+      "gas_ean": "374606906009134812",
+      "water_ean": "550778340271833797"
+    },
+    "name": "Evers Family",
+    "solar_capacity_kw": 5.5
+  },
+  {
+    "address": {
+      "city": "Ixelles",
+      "latitude": 50.8297,
+      "longitude": 4.3609,
+      "postal_code": "1050",
+      "region": "belgium_brussels",
+      "street": "Straat 182"
+    },
+    "battery_capacity_kwh": 10.8,
+    "id": "019a2400-4512-7000-a001-000000004512",
+    "iot_provider": "HomeWizard",
+    "meters": {
+      "electricity_day_ean": "541449896642224751",
+      "electricity_night_ean": "541449871309724331",
+      "gas_ean": "374606306628183186"
+    },
+    "name": "Claes Family",
+    "solar_capacity_kw": 2.6
+  },
+  {
+    "address": {
+      "city": "Bruxelles",
+      "latitude": 50.8595,
+      "longitude": 4.3566,
+      "postal_code": "1000",
+      "region": "belgium_brussels",
+      "street": "Laan 68"
+    },
+    "battery_capacity_kwh": 11.7,
+    "id": "019a2400-4513-7000-a001-000000004513",
+    "iot_provider": "Smappee",
+    "meters": {
+      "electricity_day_ean": "541449535471895057",
+      "electricity_night_ean": "541449648794937163",
+      "water_ean": "550778490136468058"
+    },
+    "name": "Fontaine Family",
+    "solar_capacity_kw": 3.0
+  },
+  {
+    "address": {
+      "city": "Etterbeek",
+      "latitude": 50.833,
+      "longitude": 4.3793,
+      "postal_code": "1040",
+      "region": "belgium_brussels",
+      "street": "Weg 162"
+    },
+    "battery_capacity_kwh": 11.9,
+    "id": "019a2400-4514-7000-a001-000000004514",
+    "iot_provider": "Huawei_FusionSolar",
+    "meters": {
+      "electricity_day_ean": "541449192231339653",
+      "electricity_night_ean": "541449525139076433",
+      "water_ean": "550778433488356231"
+    },
+    "name": "Lejeune Family",
+    "solar_capacity_kw": 3.9
+  },
+  {
+    "address": {
+      "city": "Etterbeek",
+      "latitude": 50.8419,
+      "longitude": 4.3835,
+      "postal_code": "1040",
+      "region": "belgium_brussels",
+      "street": "Laan 16"
+    },
+    "battery_capacity_kwh": 11.2,
+    "id": "019a2400-4515-7000-a001-000000004515",
+    "iot_provider": "Tesla_Powerwall",
+    "meters": {
+      "electricity_day_ean": "541449932312215793",
+      "electricity_night_ean": "541449101432088684",
+      "gas_ean": "374606366768029324",
+      "water_ean": "550778639933929147"
+    },
+    "name": "Mertens Family",
+    "solar_capacity_kw": 3.7
+  },
+  {
+    "address": {
+      "city": "Uccle",
+      "latitude": 50.7973,
+      "longitude": 4.3187,
+      "postal_code": "1180",
+      "region": "belgium_brussels",
+      "street": "Straat 189"
+    },
+    "battery_capacity_kwh": 12.2,
+    "id": "019a2400-4516-7000-a001-000000004516",
+    "iot_provider": "SolarEdge",
+    "meters": {
+      "electricity_day_ean": "541449225888957549",
+      "electricity_night_ean": "541449740330003675",
+      "water_ean": "550778532878025491"
+    },
+    "name": "Desmet Family",
+    "solar_capacity_kw": 4.2
+  },
+  {
+    "address": {
+      "city": "Jette",
+      "latitude": 50.8767,
+      "longitude": 4.3346,
+      "postal_code": "1090",
+      "region": "belgium_brussels",
+      "street": "Laan 48"
+    },
+    "battery_capacity_kwh": 9.6,
+    "id": "019a2400-4517-7000-a001-000000004517",
+    "iot_provider": "Smappee",
+    "meters": {
+      "electricity_day_ean": "541449280894640175",
+      "electricity_night_ean": "541449935329754038",
+      "gas_ean": "374606349212067295",
+      "water_ean": "550778607562747164"
+    },
+    "name": "Hermans Family",
+    "solar_capacity_kw": 4.8
+  },
+  {
+    "address": {
+      "city": "Etterbeek",
+      "latitude": 50.8375,
+      "longitude": 4.3913,
+      "postal_code": "1040",
+      "region": "belgium_brussels",
+      "street": "Plein 100"
+    },
+    "battery_capacity_kwh": 12.0,
+    "id": "019a2400-4518-7000-a001-000000004518",
+    "iot_provider": "Huawei_FusionSolar",
+    "meters": {
+      "electricity_day_ean": "541449105140125270",
+      "electricity_night_ean": "541449054096143310",
+      "water_ean": "550778718188744701"
+    },
+    "name": "Vandamme Family",
+    "solar_capacity_kw": 4.2
+  },
+  {
+    "address": {
+      "city": "Etterbeek",
+      "latitude": 50.8289,
+      "longitude": 4.3803,
+      "postal_code": "1040",
+      "region": "belgium_brussels",
+      "street": "Weg 158"
+    },
+    "battery_capacity_kwh": 8.4,
+    "id": "019a2400-4519-7000-a001-000000004519",
+    "iot_provider": "Tesla_Powerwall",
+    "meters": {
+      "electricity_day_ean": "541449548294908979",
+      "electricity_night_ean": "541449601975027038",
+      "water_ean": "550778865468487072"
+    },
+    "name": "Peeters Family",
+    "solar_capacity_kw": 3.7
+  },
+  {
+    "address": {
+      "city": "Ixelles",
+      "latitude": 50.8376,
+      "longitude": 4.3712,
+      "postal_code": "1050",
+      "region": "belgium_brussels",
+      "street": "Laan 14"
+    },
+    "battery_capacity_kwh": 9.2,
+    "id": "019a2400-4520-7000-a001-000000004520",
+    "iot_provider": "Enphase",
+    "meters": {
+      "electricity_day_ean": "541449499041455503",
+      "electricity_night_ean": "541449748367196611",
+      "water_ean": "550778649841559631"
+    },
+    "name": "Fontaine Family",
+    "solar_capacity_kw": 3.7
+  },
+  {
+    "address": {
+      "city": "Etterbeek",
+      "latitude": 50.825,
+      "longitude": 4.3889,
+      "postal_code": "1040",
+      "region": "belgium_brussels",
+      "street": "Straat 85"
+    },
+    "battery_capacity_kwh": 10.5,
+    "id": "019a2400-4521-7000-a001-000000004521",
+    "iot_provider": "SMA_Sunny_Portal",
+    "meters": {
+      "electricity_day_ean": "541449555188377324",
+      "electricity_night_ean": "541449145580535867",
+      "gas_ean": "374606322692795686"
+    },
+    "name": "Gerard Family",
+    "solar_capacity_kw": 3.5
+  },
+  {
+    "address": {
+      "city": "Bruxelles",
+      "latitude": 50.8484,
+      "longitude": 4.3464,
+      "postal_code": "1000",
+      "region": "belgium_brussels",
+      "street": "Weg 176"
+    },
+    "battery_capacity_kwh": 9.7,
+    "id": "019a2400-4522-7000-a001-000000004522",
+    "iot_provider": "Enphase",
+    "meters": {
+      "electricity_day_ean": "541449139284649880",
+      "electricity_night_ean": "541449665695725231",
+      "water_ean": "550778415787464438"
+    },
+    "name": "Wouters Family",
+    "solar_capacity_kw": 5.3
+  },
+  {
+    "address": {
+      "city": "Ixelles",
+      "latitude": 50.8295,
+      "longitude": 4.3618,
+      "postal_code": "1050",
+      "region": "belgium_brussels",
+      "street": "Weg 175"
+    },
+    "battery_capacity_kwh": 13.5,
+    "id": "019a2400-4523-7000-a001-000000004523",
+    "iot_provider": "SMA_Sunny_Portal",
+    "meters": {
+      "electricity_day_ean": "541449519274293982",
+      "electricity_night_ean": "541449562997552925",
+      "gas_ean": "374606881673241315",
+      "water_ean": "550778164021779140"
+    },
+    "name": "Hermans Family",
+    "solar_capacity_kw": 3.8
+  },
+  {
+    "address": {
+      "city": "Bruxelles",
+      "latitude": 50.8574,
+      "longitude": 4.344,
+      "postal_code": "1000",
+      "region": "belgium_brussels",
+      "street": "Straat 158"
+    },
+    "battery_capacity_kwh": 13.8,
+    "id": "019a2400-4524-7000-a001-000000004524",
+    "iot_provider": "SMA_Sunny_Portal",
+    "meters": {
+      "electricity_day_ean": "541449422160256800",
+      "electricity_night_ean": "541449323554586477",
+      "water_ean": "550778528436260885"
+    },
+    "name": "Fontaine Family",
+    "solar_capacity_kw": 4.3
+  },
+  {
+    "address": {
+      "city": "Schaerbeek",
+      "latitude": 50.8741,
+      "longitude": 4.3766,
+      "postal_code": "1030",
+      "region": "belgium_brussels",
+      "street": "Weg 129"
+    },
+    "battery_capacity_kwh": 10.5,
+    "id": "019a2400-4525-7000-a001-000000004525",
+    "iot_provider": "Huawei_FusionSolar",
+    "meters": {
+      "electricity_day_ean": "541449394447883278",
+      "electricity_night_ean": "541449534133660301",
+      "gas_ean": "374606263372076852",
+      "water_ean": "550778620602700171"
+    },
+    "name": "Renard Family",
+    "solar_capacity_kw": 4.6
+  },
+  {
+    "address": {
+      "city": "Ixelles",
+      "latitude": 50.8379,
+      "longitude": 4.365,
+      "postal_code": "1050",
+      "region": "belgium_brussels",
+      "street": "Laan 198"
+    },
+    "battery_capacity_kwh": 10.9,
+    "id": "019a2400-4526-7000-a001-000000004526",
+    "iot_provider": "HomeWizard",
+    "meters": {
+      "electricity_day_ean": "541449192335537965",
+      "electricity_night_ean": "541449652618797342",
+      "gas_ean": "374606234969548632"
+    },
+    "name": "Moens Family",
+    "solar_capacity_kw": 4.5
+  },
+  {
+    "address": {
+      "city": "Ixelles",
+      "latitude": 50.8372,
+      "longitude": 4.3639,
+      "postal_code": "1050",
+      "region": "belgium_brussels",
+      "street": "Plein 101"
+    },
+    "battery_capacity_kwh": 8.1,
+    "id": "019a2400-4527-7000-a001-000000004527",
+    "iot_provider": "SMA_Sunny_Portal",
+    "meters": {
+      "electricity_day_ean": "541449218591555779",
+      "electricity_night_ean": "541449910057688917",
+      "gas_ean": "374606341344492898",
+      "water_ean": "550778366287274683"
+    },
+    "name": "Van den Berg Family",
+    "solar_capacity_kw": 4.5
+  },
+  {
+    "address": {
+      "city": "Schaerbeek",
+      "latitude": 50.8707,
+      "longitude": 4.3743,
+      "postal_code": "1030",
+      "region": "belgium_brussels",
+      "street": "Plein 73"
+    },
+    "battery_capacity_kwh": 10.5,
+    "id": "019a2400-4528-7000-a001-000000004528",
+    "iot_provider": "SMA_Sunny_Portal",
+    "meters": {
+      "electricity_day_ean": "541449242398565781",
+      "electricity_night_ean": "541449284831340752",
+      "gas_ean": "374606972975715342",
+      "water_ean": "550778465652874451"
+    },
+    "name": "Evers Family",
+    "solar_capacity_kw": 5.3
+  },
+  {
+    "address": {
+      "city": "Ixelles",
+      "latitude": 50.8296,
+      "longitude": 4.3741,
+      "postal_code": "1050",
+      "region": "belgium_brussels",
+      "street": "Weg 68"
+    },
+    "battery_capacity_kwh": 12.7,
+    "id": "019a2400-4529-7000-a001-000000004529",
+    "iot_provider": "Tesla_Powerwall",
+    "meters": {
+      "electricity_day_ean": "541449304436274288",
+      "electricity_night_ean": "541449953136730650",
+      "gas_ean": "374606118999324513"
+    },
+    "name": "Aerts Family",
+    "solar_capacity_kw": 5.2
+  },
+  {
+    "address": {
+      "city": "Jette",
+      "latitude": 50.8721,
+      "longitude": 4.3253,
+      "postal_code": "1090",
+      "region": "belgium_brussels",
+      "street": "Straat 36"
+    },
+    "battery_capacity_kwh": 11.0,
+    "id": "019a2400-4530-7000-a001-000000004530",
+    "iot_provider": "Enphase",
+    "meters": {
+      "electricity_day_ean": "541449464099268924",
+      "electricity_night_ean": "541449720696374458",
+      "gas_ean": "374606111533185964"
+    },
+    "name": "Thomas Family",
+    "solar_capacity_kw": 4.0
+  },
+  {
+    "address": {
+      "city": "Uccle",
+      "latitude": 50.7948,
+      "longitude": 4.323,
+      "postal_code": "1180",
+      "region": "belgium_brussels",
+      "street": "Laan 106"
+    },
+    "battery_capacity_kwh": 8.3,
+    "id": "019a2400-4531-7000-a001-000000004531",
+    "iot_provider": "Huawei_FusionSolar",
+    "meters": {
+      "electricity_day_ean": "541449105757168587",
+      "electricity_night_ean": "541449993388343556"
+    },
+    "name": "Goossens Family",
+    "solar_capacity_kw": 3.3
+  },
+  {
+    "address": {
+      "city": "Jette",
+      "latitude": 50.8868,
+      "longitude": 4.3374,
+      "postal_code": "1090",
+      "region": "belgium_brussels",
+      "street": "Laan 104"
+    },
+    "battery_capacity_kwh": 9.1,
+    "id": "019a2400-4532-7000-a001-000000004532",
+    "iot_provider": "Enphase",
+    "meters": {
+      "electricity_day_ean": "541449607992862876",
+      "electricity_night_ean": "541449332355909218",
+      "gas_ean": "374606802793895515",
+      "water_ean": "550778373386288716"
+    },
+    "name": "Govaerts Family",
+    "solar_capacity_kw": 4.8
+  },
+  {
+    "address": {
+      "city": "Jette",
+      "latitude": 50.8695,
+      "longitude": 4.3342,
+      "postal_code": "1090",
+      "region": "belgium_brussels",
+      "street": "Laan 65"
+    },
+    "battery_capacity_kwh": 8.2,
+    "id": "019a2400-4533-7000-a001-000000004533",
+    "iot_provider": "SMA_Sunny_Portal",
+    "meters": {
+      "electricity_day_ean": "541449026958898076",
+      "electricity_night_ean": "541449771159209566",
+      "gas_ean": "374606247761136254",
+      "water_ean": "550778618683132982"
+    },
+    "name": "Vandamme Family",
+    "solar_capacity_kw": 4.0
+  },
+  {
+    "address": {
+      "city": "Etterbeek",
+      "latitude": 50.8342,
+      "longitude": 4.3861,
+      "postal_code": "1040",
+      "region": "belgium_brussels",
+      "street": "Weg 84"
+    },
+    "battery_capacity_kwh": 8.4,
+    "id": "019a2400-4534-7000-a001-000000004534",
+    "iot_provider": "SMA_Sunny_Portal",
+    "meters": {
+      "electricity_day_ean": "541449647547464578",
+      "electricity_night_ean": "541449815831789779",
+      "gas_ean": "374606823309788108",
+      "water_ean": "550778777300324424"
+    },
+    "name": "Goossens Family",
+    "solar_capacity_kw": 2.5
+  },
+  {
+    "address": {
+      "city": "Etterbeek",
+      "latitude": 50.8232,
+      "longitude": 4.3799,
+      "postal_code": "1040",
+      "region": "belgium_brussels",
+      "street": "Laan 76"
+    },
+    "battery_capacity_kwh": 11.1,
+    "id": "019a2400-4535-7000-a001-000000004535",
+    "iot_provider": "HomeWizard",
+    "meters": {
+      "electricity_day_ean": "541449868089943582",
+      "electricity_night_ean": "541449507493464133",
+      "gas_ean": "374606663940504468",
+      "water_ean": "550778251114773509"
+    },
+    "name": "Willems Family",
+    "solar_capacity_kw": 5.2
+  },
+  {
+    "address": {
+      "city": "Schaerbeek",
+      "latitude": 50.8664,
+      "longitude": 4.3815,
+      "postal_code": "1030",
+      "region": "belgium_brussels",
+      "street": "Plein 45"
+    },
+    "battery_capacity_kwh": 10.3,
+    "id": "019a2400-4536-7000-a001-000000004536",
+    "iot_provider": "SMA_Sunny_Portal",
+    "meters": {
+      "electricity_day_ean": "541449262310401619",
+      "electricity_night_ean": "541449908082473606",
+      "gas_ean": "374606710051495334",
+      "water_ean": "550778639091501565"
+    },
+    "name": "Stevens Family",
+    "solar_capacity_kw": 4.0
+  },
+  {
+    "address": {
+      "city": "Schaerbeek",
+      "latitude": 50.8586,
+      "longitude": 4.3734,
+      "postal_code": "1030",
+      "region": "belgium_brussels",
+      "street": "Laan 179"
+    },
+    "battery_capacity_kwh": 8.2,
+    "id": "019a2400-4537-7000-a001-000000004537",
+    "iot_provider": "Enphase",
+    "meters": {
+      "electricity_day_ean": "541449879028684607",
+      "electricity_night_ean": "541449251418584624",
+      "gas_ean": "374606403477589155",
+      "water_ean": "550778465398448935"
+    },
+    "name": "Michel Family",
+    "solar_capacity_kw": 3.0
+  },
+  {
+    "address": {
+      "city": "Uccle",
+      "latitude": 50.8023,
+      "longitude": 4.335,
+      "postal_code": "1180",
+      "region": "belgium_brussels",
+      "street": "Laan 174"
+    },
+    "battery_capacity_kwh": 10.7,
+    "id": "019a2400-4538-7000-a001-000000004538",
+    "iot_provider": "Huawei_FusionSolar",
+    "meters": {
+      "electricity_day_ean": "541449463722474577",
+      "electricity_night_ean": "541449948683390965",
+      "gas_ean": "374606340091581173",
+      "water_ean": "550778254128315249"
+    },
+    "name": "De Pauw Family",
+    "solar_capacity_kw": 4.4
+  },
+  {
+    "address": {
+      "city": "Schaerbeek",
+      "latitude": 50.8584,
+      "longitude": 4.3771,
+      "postal_code": "1030",
+      "region": "belgium_brussels",
+      "street": "Plein 25"
+    },
+    "battery_capacity_kwh": 10.1,
+    "id": "019a2400-4539-7000-a001-000000004539",
+    "iot_provider": "Enphase",
+    "meters": {
+      "electricity_day_ean": "541449517088830168",
+      "electricity_night_ean": "541449909249993311",
+      "gas_ean": "374606133429665695",
+      "water_ean": "550778800561816643"
+    },
+    "name": "Vandenberghe Family",
+    "solar_capacity_kw": 2.8
+  },
+  {
+    "address": {
+      "city": "Ixelles",
+      "latitude": 50.8431,
+      "longitude": 4.363,
+      "postal_code": "1050",
+      "region": "belgium_brussels",
+      "street": "Plein 118"
+    },
+    "battery_capacity_kwh": 8.8,
+    "id": "019a2400-4540-7000-a001-000000004540",
+    "iot_provider": "Huawei_FusionSolar",
+    "meters": {
+      "electricity_day_ean": "541449201388901699",
+      "electricity_night_ean": "541449081233854324",
+      "gas_ean": "374606514948136836",
+      "water_ean": "550778998251560795"
+    },
+    "name": "Govaerts Family",
+    "solar_capacity_kw": 3.0
+  },
+  {
+    "address": {
+      "city": "Ixelles",
+      "latitude": 50.8323,
+      "longitude": 4.3757,
+      "postal_code": "1050",
+      "region": "belgium_brussels",
+      "street": "Laan 185"
+    },
+    "battery_capacity_kwh": 11.3,
+    "id": "019a2400-4541-7000-a001-000000004541",
+    "iot_provider": "SolarEdge",
+    "meters": {
+      "electricity_day_ean": "541449134776830723",
+      "electricity_night_ean": "541449013646912179",
+      "gas_ean": "374606397598147390",
+      "water_ean": "550778341504523032"
+    },
+    "name": "Vincent Family",
+    "solar_capacity_kw": 3.8
+  },
+  {
+    "address": {
+      "city": "Uccle",
+      "latitude": 50.8033,
+      "longitude": 4.3228,
+      "postal_code": "1180",
+      "region": "belgium_brussels",
+      "street": "Weg 199"
+    },
+    "battery_capacity_kwh": 8.6,
+    "id": "019a2400-4542-7000-a001-000000004542",
+    "iot_provider": "HomeWizard",
+    "meters": {
+      "electricity_day_ean": "541449461222681224",
+      "electricity_night_ean": "541449521466710609",
+      "gas_ean": "374606397356330826",
+      "water_ean": "550778469769755459"
+    },
+    "name": "Verhoeven Family",
+    "solar_capacity_kw": 4.1
+  },
+  {
+    "address": {
+      "city": "Bruxelles",
+      "latitude": 50.8496,
+      "longitude": 4.3518,
+      "postal_code": "1000",
+      "region": "belgium_brussels",
+      "street": "Straat 23"
+    },
+    "battery_capacity_kwh": 11.5,
+    "id": "019a2400-4543-7000-a001-000000004543",
+    "iot_provider": "Smappee",
+    "meters": {
+      "electricity_day_ean": "541449398078785441",
+      "electricity_night_ean": "541449437650548649"
+    },
+    "name": "Michel Family",
+    "solar_capacity_kw": 4.3
+  },
+  {
+    "address": {
+      "city": "Ixelles",
+      "latitude": 50.8366,
+      "longitude": 4.372,
+      "postal_code": "1050",
+      "region": "belgium_brussels",
+      "street": "Weg 6"
+    },
+    "battery_capacity_kwh": 14.0,
+    "id": "019a2400-4544-7000-a001-000000004544",
+    "iot_provider": "Tesla_Powerwall",
+    "meters": {
+      "electricity_day_ean": "541449763943064370",
+      "electricity_night_ean": "541449577351911389"
+    },
+    "name": "Stevens Family",
+    "solar_capacity_kw": 4.3
+  },
+  {
+    "address": {
+      "city": "Etterbeek",
+      "latitude": 50.8307,
+      "longitude": 4.3838,
+      "postal_code": "1040",
+      "region": "belgium_brussels",
+      "street": "Weg 79"
+    },
+    "battery_capacity_kwh": 12.0,
+    "id": "019a2400-4545-7000-a001-000000004545",
+    "iot_provider": "Tesla_Powerwall",
+    "meters": {
+      "electricity_day_ean": "541449047586736277",
+      "electricity_night_ean": "541449936010669436",
+      "gas_ean": "374606442346531478",
+      "water_ean": "550778211179047666"
+    },
+    "name": "Michiels Family",
+    "solar_capacity_kw": 4.2
+  }
+]

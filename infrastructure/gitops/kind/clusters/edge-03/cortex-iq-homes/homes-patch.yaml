@@ -1,0 +1,32 @@
+     STDIN
+   1 apiVersion: apps/v1
+   2 kind: Deployment
+   3 metadata:
+   4   name: cortex-iq-homes
+   5   namespace: macula-edge
+   6 spec:
+   7   replicas: 2
+   8   template:
+   9     spec:
+  10       containers:
+  11       - name: homes
+  12         env:
+  13         - name: BONDY_URL
+  14           valueFrom:
+  15             configMapKeyRef:
+  16               name: bondy-client-config
+  17               key: BONDY_URL
+  18         - name: BONDY_REALM
+  19           valueFrom:
+  20             configMapKeyRef:
+  21               name: bondy-client-config
+  22               key: BONDY_REALM
+  23         - name: HOMES_SOURCES
+  24           value: "brussels_homes_chunk_07.json,brussels_homes_chunk_08.json,brussels_homes_chunk_09.json,flanders_central_homes_chunk_07.json,flanders_central_homes_chunk_08.json,flanders_central_homes_chunk_09.json,flanders_east_homes_chunk_07.json,flanders_east_homes_chunk_08.json,flanders_east_homes_chunk_09.json,flanders_west_homes_chunk_07.json,flanders_west_homes_chunk_08.json,flanders_west_homes_chunk_09.json,wallonia_north_homes_chunk_07.json,wallonia_north_homes_chunk_08.json,wallonia_north_homes_chunk_09.json,wallonia_south_homes_chunk_07.json,wallonia_south_homes_chunk_08.json,wallonia_south_homes_chunk_09.json,netherlands_central_homes_chunk_07.json,netherlands_central_homes_chunk_08.json,netherlands_central_homes_chunk_09.json,netherlands_east_homes_chunk_07.json,netherlands_east_homes_chunk_08.json,netherlands_east_homes_chunk_09.json,netherlands_north_homes_chunk_07.json,netherlands_north_homes_chunk_08.json,netherlands_north_homes_chunk_09.json,netherlands_south_homes_chunk_07.json,netherlands_south_homes_chunk_08.json,netherlands_south_homes_chunk_09.json,netherlands_west_homes_chunk_07.json,netherlands_west_homes_chunk_08.json,netherlands_west_homes_chunk_09.json"
+  25         resources:
+  26           requests:
+  27             memory: "2Gi"
+  28             cpu: "500m"
+  29           limits:
+  30             memory: "8Gi"
+  31             cpu: "2000m"

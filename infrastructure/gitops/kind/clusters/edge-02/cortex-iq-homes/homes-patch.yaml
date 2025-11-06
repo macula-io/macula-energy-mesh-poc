@@ -21,7 +21,7 @@ spec:
               name: bondy-client-config
               key: BONDY_REALM
         - name: HOMES_SOURCES
-          value: "flanders_west_homes.json,flanders_central_homes.json,flanders_east_homes.json"
+          value: "brussels_homes_chunk_04.json,brussels_homes_chunk_05.json,brussels_homes_chunk_06.json,flanders_central_homes_chunk_04.json,flanders_central_homes_chunk_05.json,flanders_central_homes_chunk_06.json,flanders_east_homes_chunk_04.json,flanders_east_homes_chunk_05.json,flanders_east_homes_chunk_06.json,flanders_west_homes_chunk_04.json,flanders_west_homes_chunk_05.json,flanders_west_homes_chunk_06.json,wallonia_north_homes_chunk_04.json,wallonia_north_homes_chunk_05.json,wallonia_north_homes_chunk_06.json,wallonia_south_homes_chunk_04.json,wallonia_south_homes_chunk_05.json,wallonia_south_homes_chunk_06.json,netherlands_central_homes_chunk_04.json,netherlands_central_homes_chunk_05.json,netherlands_central_homes_chunk_06.json,netherlands_east_homes_chunk_04.json,netherlands_east_homes_chunk_05.json,netherlands_east_homes_chunk_06.json,netherlands_north_homes_chunk_04.json,netherlands_north_homes_chunk_05.json,netherlands_north_homes_chunk_06.json,netherlands_south_homes_chunk_04.json,netherlands_south_homes_chunk_05.json,netherlands_south_homes_chunk_06.json,netherlands_west_homes_chunk_04.json,netherlands_west_homes_chunk_05.json,netherlands_west_homes_chunk_06.json"
         resources:
           requests:
             memory: "1.5Gi"
