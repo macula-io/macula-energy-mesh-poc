@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bondy-client-config
+  namespace: macula-hub
+  labels:
+    app.kubernetes.io/name: bondy-client-config
+    app.kubernetes.io/part-of: macula-system
+data:
+  # Bondy WAMP Router connection settings
+  # Connect to Bondy in macula-system namespace via DNS
+  BONDY_URL: "ws://bondy.macula-system.svc.cluster.local:18080/ws"
+  BONDY_REALM: "be.cortexiq.energy"

@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cortex-iq-homes
+  namespace: macula-hub
+  labels:
+    app: cortex-iq-homes
+    app.kubernetes.io/name: cortex-iq-homes
+    app.kubernetes.io/component: payload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cortex-iq-homes
+  template:
+    metadata:
+      labels:
+        app: cortex-iq-homes
+        app.kubernetes.io/name: cortex-iq-homes
+        app.kubernetes.io/component: payload
+    spec:
+      # Wait for Bondy before starting homes
+      initContainers:
+      - name: wait-for-bondy
+        image: curlimages/curl:latest
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for Bondy to be ready..."
+          # Extract host from BONDY_URL (ws://host:port/ws -> host:port)
+          BONDY_HOST=$(echo "$BONDY_URL" | sed 's|ws://||' | sed 's|/ws||')
+          echo "  Checking Bondy at: $BONDY_HOST"
+          until curl -sf "http://$BONDY_HOST/status" > /dev/null 2>&1; do
+            echo "  Bondy not ready yet, retrying in 5s..."
+            sleep 5
+          done
+          echo "✓ Bondy is ready!"
+        env:
+        - name: BONDY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_URL
+
+      containers:
+      - name: homes
+        image: registry.macula.local:5000/macula/cortex-iq-homes:latest
+        imagePullPolicy: Always
+        env:
+        - name: BONDY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_URL
+        - name: BONDY_REALM
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_REALM
+        - name: HOMES_SOURCES
+          value: "netherlands_west_homes.json,netherlands_north_homes.json,netherlands_central_homes.json"  # All ~400 homes
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+          limits:
+            memory: "8Gi"
+            cpu: "2000m"

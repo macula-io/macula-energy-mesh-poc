@@ -12,10 +12,13 @@ resources:
 
   # macula-hub namespace: Hub applications and storage
   - macula-hub-secrets.yaml  # Shared secrets for macula-hub namespace
+  - bondy-client-config-hub.yaml  # Bondy client config for macula-hub namespace (DNS-based)
   - cortex-iq-simulation  # Simulation clock infrastructure
   - cortex-iq-dashboard   # CortexIQ Dashboard (Phoenix LiveView UI)
   - cortex-iq-projections # CQRS write-side projections (WAMP events → PostgreSQL)
   - cortex-iq-queries     # CQRS read-side queries (PostgreSQL/TimescaleDB → WAMP RPC)
+  - cortex-iq-homes       # Home simulation bots (all ~400 homes in one pod)
+  - cortex-iq-utilities   # Energy provider bots (12 Benelux providers)
   - pgadmin               # pgAdmin 4 - PostgreSQL database administration tool
   - excalidraw            # Excalidraw - Collaborative whiteboard tool
 

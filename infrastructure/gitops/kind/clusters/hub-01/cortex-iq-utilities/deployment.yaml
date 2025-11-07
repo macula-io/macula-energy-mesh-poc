@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cortex-iq-utilities
+  namespace: macula-hub
+  labels:
+    app: cortex-iq-utilities
+    component: simulation
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cortex-iq-utilities
+  template:
+    metadata:
+      labels:
+        app: cortex-iq-utilities
+        component: simulation
+        tier: backend
+    spec:
+      containers:
+      - name: utilities
+        image: registry.macula.local:5000/macula/cortex-iq-utilities:latest
+        imagePullPolicy: Always
+        env:
+        - name: ERL_FLAGS
+          value: "+MBas aobf +MHas aobf +sbwt none +sbwtdcpu none +sbwtdio none +MIscs 5120"
+        - name: RELEASE_TMP
+          value: "/tmp"
+        - name: BONDY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_URL
+        - name: BONDY_REALM
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_REALM
+        - name: PROVIDERS_SOURCES
+          value: "benelux_energy_providers.json"  # All 12 Benelux providers
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "200m"
+          limits:
+            memory: "6Gi"
+            cpu: "1000m"
+        livenessProbe:
+          exec:
+            command:
+            - /app/bin/cortex_iq_utilities
+            - rpc
+            - "1 + 1"
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - /app/bin/cortex_iq_utilities
+            - rpc
+            - "1 + 1"
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+      restartPolicy: Always
