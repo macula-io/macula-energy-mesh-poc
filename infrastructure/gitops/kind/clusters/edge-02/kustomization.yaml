@@ -8,9 +8,6 @@ resources:
   - macula-edge-namespace.yaml
 
   # Edge applications (macula-edge namespace)
-  - bondy-mesh                       # Partisan mesh node with DNS discovery
-
-  # Edge applications (macula-edge namespace)
   - cortex-iq-homes                  # Belgium Flanders homes (145 homes)
   - cortex-iq-utilities              # All Benelux providers (12 providers)
 

@@ -7,11 +7,8 @@ resources:
   # Namespace definition
   - macula-edge-namespace.yaml
 
-  # WAMP Router (macula-edge namespace)
-  - bondy-mesh                       # Partisan mesh node with DNS discovery
-
   # Edge applications (macula-edge namespace)
-  - cortex-iq-homes                  # Connects to local bondy-mesh
+  - cortex-iq-homes                  # Connects to hub Bondy
 
   # Infrastructure
   - metallb
