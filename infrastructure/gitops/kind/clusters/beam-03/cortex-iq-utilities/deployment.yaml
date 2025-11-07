@@ -1,0 +1,42 @@
+     STDIN
+   1 apiVersion: apps/v1
+   2 kind: Deployment
+   3 metadata:
+   4   name: cortex-iq-utilities
+   5   namespace: macula-apps
+   6   labels:
+   7     app: cortex-iq-utilities
+   8 spec:
+   9   replicas: 1
+  10   selector:
+  11     matchLabels:
+  12       app: cortex-iq-utilities
+  13   template:
+  14     metadata:
+  15       labels:
+  16         app: cortex-iq-utilities
+  17     spec:
+  18       containers:
+  19       - name: utilities
+  20         image: registry.macula.local:5000/macula/cortex-iq-utilities:latest
+  21         imagePullPolicy: Always
+  22         env:
+  23         - name: BONDY_URL
+  24           valueFrom:
+  25             configMapKeyRef:
+  26               name: bondy-client-config
+  27               key: BONDY_URL
+  28         - name: BONDY_REALM
+  29           valueFrom:
+  30             configMapKeyRef:
+  31               name: bondy-client-config
+  32               key: BONDY_REALM
+  33         - name: PROVIDERS_SOURCE
+  34           value: "benelux_providers.json"
+  35         resources:
+  36           requests:
+  37             memory: "512Mi"
+  38             cpu: "200m"
+  39           limits:
+  40             memory: "2Gi"
+  41             cpu: "1000m"

@@ -1,0 +1,9 @@
+     STDIN
+   1 apiVersion: kustomize.config.k8s.io/v1beta1
+   2 kind: Kustomization
+   3 
+   4 # BEAM Cluster 03 - Benelux Utilities
+   5 
+   6 resources:
+   7 - namespace.yaml
+   8 - cortex-iq-utilities

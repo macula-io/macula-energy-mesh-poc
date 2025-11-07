@@ -1,0 +1,9 @@
+     STDIN
+   1 apiVersion: v1
+   2 kind: ConfigMap
+   3 metadata:
+   4   name: bondy-client-config
+   5   namespace: macula-apps
+   6 data:
+   7   BONDY_URL: "ws://192.168.129.9:30080/ws"
+   8   BONDY_REALM: "be.cortexiq.energy"
