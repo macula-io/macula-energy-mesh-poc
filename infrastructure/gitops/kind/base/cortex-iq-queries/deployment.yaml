@@ -32,9 +32,15 @@ spec:
 
         # WAMP Connection
         - name: BONDY_URL
-          value: "ws://192.168.129.9:30080/ws"
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_URL
         - name: BONDY_REALM
-          value: "be.cortexiq.energy"
+          valueFrom:
+            configMapKeyRef:
+              name: bondy-client-config
+              key: BONDY_REALM
 
         # Database Connection
         - name: DATABASE_URL
