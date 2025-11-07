@@ -159,21 +159,26 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
     consumption_w = Map.get(kwargs, "_consumption_w", 0.0)
     battery_percent = Map.get(kwargs, "state_of_charge_pct", 0.0)
 
-    # Only update if home is already in map (connected)
-    # This ensures measurements don't add homes - only home.connected does that
-    if home_id && Map.has_key?(state.homes, home_id) do
-      # Update in-memory home state
+    # Auto-register home on first measurement if not already tracked
+    # This handles cases where home.connected events may be missed or not published
+    if home_id do
+      # Update in-memory home state (creates if doesn't exist)
       home_state = %{
         production_kw: production_w / 1000.0,
         consumption_kw: consumption_w / 1000.0,
         battery_percent: battery_percent
       }
 
+      was_new = !Map.has_key?(state.homes, home_id)
       new_homes = Map.put(state.homes, home_id, home_state)
+
+      if was_new do
+        Logger.info("#{__MODULE__}: Home #{home_id} auto-registered from measurement - in-memory count now #{map_size(new_homes)}")
+      end
+
       {:noreply, %{state | homes: new_homes}}
     else
-      # Home not in map (either disconnected or never connected)
-      # Silently ignore the measurement
+      # No home_id - skip
       {:noreply, state}
     end
   end

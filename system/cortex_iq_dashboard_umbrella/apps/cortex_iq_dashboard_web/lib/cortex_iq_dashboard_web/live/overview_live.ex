@@ -50,14 +50,7 @@ defmodule CortexIqDashboardWeb.OverviewLive do
        |> assign(:simulation_speed, 105_120)
        |> assign(:simulation_paused, false)
        |> assign(:stats, default_stats())
-       |> assign(:aggregate_history, [])
-       |> assign(:metrics, %{
-         events_per_second: 0.0,
-         measurements_per_second: 0.0,
-         meter_readings_per_second: 0.0,
-         homes_online: 0,
-         homes_total: 0
-       })}
+       |> assign(:aggregate_history, [])}
     else
       # Initial render (not connected yet)
       {:ok,
@@ -70,14 +63,7 @@ defmodule CortexIqDashboardWeb.OverviewLive do
        |> assign(:simulation_speed, 105_120)
        |> assign(:simulation_paused, false)
        |> assign(:stats, default_stats())
-       |> assign(:aggregate_history, [])
-       |> assign(:metrics, %{
-         events_per_second: 0.0,
-         measurements_per_second: 0.0,
-         meter_readings_per_second: 0.0,
-         homes_online: 0,
-         homes_total: 0
-       })}
+       |> assign(:aggregate_history, [])}
     end
   end
 
@@ -99,23 +85,6 @@ defmodule CortexIqDashboardWeb.OverviewLive do
 
     if wamp_client do
       self_pid = self()
-
-      # Subscribe to metrics totals (performance metrics)
-      case MaculaSdk.Wamp.Client.subscribe(
-        wamp_client,
-        "macula.metrics.totals_calculated",
-        fn _topic, event_data ->
-          send(self_pid, {:wamp_event, :metrics_totals, event_data})
-        end,
-        %{}
-      ) do
-        :ok -> Logger.info("OverviewLive: ✅ Subscribed to macula.metrics.totals_calculated")
-        {:error, reason} ->
-          Logger.error("OverviewLive: Failed to subscribe to metrics_totals: #{inspect(reason)}")
-          # Retry in 5 seconds
-          Process.send_after(self(), :subscribe_to_events, 5_000)
-          {:noreply, socket}
-      end
 
       # Subscribe to history updates (for charts)
       case MaculaSdk.Wamp.Client.subscribe(
@@ -208,22 +177,6 @@ defmodule CortexIqDashboardWeb.OverviewLive do
      |> assign(:simulation_time, simulation_time)
      |> assign(:simulation_speed, simulation_speed)
      |> assign(:simulation_paused, simulation_paused)}
-  end
-
-  @impl true
-  def handle_info({:wamp_event, :metrics_totals, event_data}, socket) do
-    # Performance metrics
-    kwargs = Map.get(event_data, :kwargs, %{})
-
-    metrics = %{
-      events_per_second: Map.get(kwargs, "events_per_second", 0.0),
-      measurements_per_second: Map.get(kwargs, "measurements_per_second", 0.0),
-      meter_readings_per_second: Map.get(kwargs, "meter_readings_per_second", 0.0),
-      homes_online: Map.get(kwargs, "homes_online", 0),
-      homes_total: Map.get(kwargs, "homes_total", 0)
-    }
-
-    {:noreply, assign(socket, :metrics, metrics)}
   end
 
   @impl true
@@ -476,52 +429,6 @@ defmodule CortexIqDashboardWeb.OverviewLive do
           <div class="mb-6">
             <h1 class="text-3xl font-bold text-gray-100">Exchange Overview</h1>
             <p class="text-gray-400 text-sm mt-1">Real-time energy exchange metrics and performance</p>
-          </div>
-
-          <!-- Performance Metrics -->
-          <div class="mb-6">
-            <h2 class="text-xl font-semibold text-gray-200 mb-3">System Performance</h2>
-            <div class="grid grid-cols-5 gap-4">
-              <!-- Events Per Second -->
-              <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <div class="text-gray-400 text-xs uppercase tracking-wide mb-1">Events/sec</div>
-                <div class="text-2xl font-bold text-blue-400">
-                  <%= format_with_unit_prefix(@metrics.events_per_second) %>
-                </div>
-              </div>
-
-              <!-- Measurements Per Second -->
-              <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <div class="text-gray-400 text-xs uppercase tracking-wide mb-1">Measurements/sec</div>
-                <div class="text-2xl font-bold text-green-400">
-                  <%= format_with_unit_prefix(@metrics.measurements_per_second) %>
-                </div>
-              </div>
-
-              <!-- Meter Readings Per Second -->
-              <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <div class="text-gray-400 text-xs uppercase tracking-wide mb-1">Meter Readings/sec</div>
-                <div class="text-2xl font-bold text-purple-400">
-                  <%= format_with_unit_prefix(@metrics.meter_readings_per_second) %>
-                </div>
-              </div>
-
-              <!-- Homes Online -->
-              <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <div class="text-gray-400 text-xs uppercase tracking-wide mb-1">Homes Online</div>
-                <div class="text-2xl font-bold text-yellow-400">
-                  <%= format_with_unit_prefix(@metrics.homes_online) %>
-                </div>
-              </div>
-
-              <!-- Total Homes -->
-              <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <div class="text-gray-400 text-xs uppercase tracking-wide mb-1">Total Homes</div>
-                <div class="text-2xl font-bold text-gray-300">
-                  <%= format_with_unit_prefix(@metrics.homes_total) %>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- Stats Cards -->

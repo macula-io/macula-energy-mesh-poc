@@ -64,7 +64,7 @@ defmodule CortexIqHomes.Application do
       # Simulation time subscription (broadcasts to all homes via PubSub)
       {CortexIqHomes.SubscribeSimulationTimeAdvanced.System, [
         bondy_url: bondy_url,
-        realm_uri: realm
+        realm: realm
       ]},
 
       # Singleton subscriber for simulation reset events

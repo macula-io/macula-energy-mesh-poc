@@ -46,7 +46,10 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber do
     Logger.info("  topic: #{@topic}")
     Logger.info("🔌 #{__MODULE__}: Attempting to subscribe to #{@topic}...")
 
-    case MaculaSdk.Wamp.Client.subscribe(wamp_client, @topic, &handle_event/2, %{}) do
+    subscriber_pid = self()
+    handler = fn _topic, event_data -> send(subscriber_pid, {:event, event_data}) end
+
+    case MaculaSdk.Wamp.Client.subscribe(wamp_client, @topic, handler, %{}) do
       :ok ->
         Logger.info("✅ #{__MODULE__}: Successfully subscribed to #{@topic}")
         Logger.info("  Will broadcast to PubSub channel: #{@pubsub_channel}")
@@ -57,6 +60,12 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber do
         Process.send_after(self(), :subscribe, 5_000)
         {:noreply, state}
     end
+  end
+
+  @impl true
+  def handle_info({:event, event_data}, state) do
+    handle_event(@topic, event_data)
+    {:noreply, state}
   end
 
   @impl true

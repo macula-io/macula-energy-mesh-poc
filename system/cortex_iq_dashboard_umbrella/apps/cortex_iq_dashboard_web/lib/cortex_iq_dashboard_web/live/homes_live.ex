@@ -29,15 +29,28 @@ defmodule CortexIqDashboardWeb.HomesLive do
       Logger.info("HomesLive: Subscribed to simulation time, control, city, and energy events")
     end
 
-    # Pure event-driven architecture: build home list from incoming events
-    # No RPC calls! Each home.measured event contains complete home metadata.
-    Logger.info("HomesLive: Starting with empty homes map - will populate from energy events")
+    # Load all homes from database to populate map
+    # RPC call to get homes with location data for map visualization
+    homes_response = if connected?(socket) do
+      Logger.info("HomesLive: Loading homes from database via RPC")
+      QueryClient.get_homes(page_size: 1000)
+    else
+      %{homes: []}
+    end
+
+    # Convert homes list to map keyed by home_id
+    homes_map = homes_response
+    |> Map.get(:homes, [])
+    |> Enum.filter(fn home -> not is_nil(home[:latitude]) and not is_nil(home[:longitude]) end)
+    |> Enum.into(%{}, fn home -> {home[:home_id], home} end)
+
+    Logger.info("HomesLive: Loaded #{map_size(homes_map)} homes with location data")
 
     {:ok,
      socket
      |> assign(:current_path, "/homes")
      |> assign(:view_mode, :map)  # :map | :detail
-     |> assign(:homes_map, %{})  # Map of home_id => home_data (built from events)
+     |> assign(:homes_map, homes_map)  # Map of home_id => home_data (loaded from database)
      |> assign(:city_totals, %{})  # Map of city_name => city_data
      |> assign(:search_query, "")
      |> assign(:selected_home, nil)

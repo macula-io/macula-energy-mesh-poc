@@ -48,7 +48,7 @@ defmodule CortexIqProjections.CalculateSystemTotals.System do
       # 1. WAMP Client - dedicated connection
       %{
         id: wamp_client_name,
-        start: {MaculaSdk.Wamp, :start_link, [[
+        start: {MaculaSdk.Wamp.Client, :start_link, [[
           url: bondy_url,
           realm: realm_uri,
           name: wamp_client_name
