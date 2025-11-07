@@ -8,11 +8,14 @@ resources:
   - macula-edge-namespace.yaml
 
   # Edge applications (macula-edge namespace)
-  - cortex-iq-homes                  # Connects to hub Bondy
+  - bondy-mesh                       # Partisan mesh node with DNS discovery
+
+  # Edge applications (macula-edge namespace)
+  - cortex-iq-homes                  # Connects to local bondy-mesh
 
   # Infrastructure
   - metallb
   - external-dns
 
 # Namespace Structure:
-# - macula-edge: Edge applications (homes)
+# - macula-edge: Bondy mesh + Edge applications (homes)

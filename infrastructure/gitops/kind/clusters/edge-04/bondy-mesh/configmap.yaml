@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bondy-mesh-config
+  namespace: macula-edge
+  labels:
+    app: bondy-mesh
+    app.kubernetes.io/name: bondy-mesh
+    app.kubernetes.io/component: wamp-router
+data:
+  bondy.conf: |
+    # Bondy Mesh Configuration - Cross-cluster DNS-based peer discovery
+    # Connects all 7 Bondy instances (3 hub + 4 edge) via Partisan mesh
+
+    # Security - Allow anonymous for application realms (PoC)
+    security.allow_anonymous_user = on
+    security.automatically_create_realms = off
+    security.enabled = off
+
+    # WAMP over WebSocket
+    api_gateway.http.enabled = on
+    api_gateway.http.port = 18080
+    api_gateway.http.acceptors_pool_size = 100
+    api_gateway.http.max_connections = 50000
+
+    # WebSocket ping/pong
+    wamp.websocket.ping.enabled = on
+    wamp.websocket.ping.idle_timeout = 30s
+    wamp.websocket.ping.timeout = 10s
+    wamp.websocket.ping.max_attempts = 3
+
+    # Admin API
+    admin_api.http.enabled = on
+    admin_api.http.port = 18081
+
+    # Logging
+    log.console = console
+    log.console.level = info
+
+    # Clustering with Partisan
+    # Node name set via BONDY_ERL_NODENAME env var (bondy@$(POD_IP))
+    # Cookie set via BONDY_ERL_DISTRIBUTED_COOKIE env var
+
+    # Cluster peer service
+    cluster.peer_port = 18086
+    cluster.parallelism = 4
+    cluster.automatic_leave = off
+
+    # DNS-based peer discovery (cross-cluster via CoreDNS static hosts)
+    # Autodiscover all Bondy instances (hub + edges) via bondy.macula.local
+    cluster.peer_discovery.enabled = on
+    cluster.peer_discovery.type = dns
+    cluster.peer_discovery.polling_interval = 10s
+
+    # DNS discovery configuration
+    # Resolves to all 7 Bondy pods (3 hub + 4 edge) via CoreDNS static hosts
+    cluster.peer_discovery.config.query = bondy.macula.local
+    cluster.peer_discovery.config.node_basename = bondy
+    cluster.peer_discovery.config.record_type = a
+
+    # AAE (Active Anti-Entropy) for data consistency across cluster
+    aae.enabled = on
+    aae.exchange_timer = 60s
+    aae.hashtree_timer = 30s
+
+    # Store
+    store.partitions = 16
+    startup.wait_for_store_partitions = on
+    startup.wait_for_store_hashtrees = on
