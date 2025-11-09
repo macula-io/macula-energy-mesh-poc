@@ -10,7 +10,7 @@ defmodule CortexIqSimulation.ResumeSimulation.System do
   use GenServer
   require Logger
 
-  alias MaculaSdk.Wamp.Client
+  alias MaculaSdk.Client
 
   @reconnect_interval 5_000
   @rpc_procedure "be.cortexiq.simulation.resume"
@@ -25,15 +25,15 @@ defmodule CortexIqSimulation.ResumeSimulation.System do
 
   @impl true
   def init(opts) do
-    bondy_url = Keyword.fetch!(opts, :bondy_url)
+    macula_url = Keyword.fetch!(opts, :macula_url)
     realm = Keyword.fetch!(opts, :realm)
     simulation_clock = Keyword.fetch!(opts, :simulation_clock)
 
     state = %{
-      bondy_url: bondy_url,
+      macula_url: macula_url,
       realm: realm,
       simulation_clock: simulation_clock,
-      wamp_client: nil
+      client: nil
     }
 
     send(self(), :connect)
@@ -42,13 +42,13 @@ defmodule CortexIqSimulation.ResumeSimulation.System do
 
   @impl true
   def handle_info(:connect, state) do
-    Logger.info("ResumeSimulation: Connecting to WAMP realm #{state.realm} at #{state.bondy_url}")
+    Logger.info("ResumeSimulation: Connecting to Macula realm #{state.realm} at #{state.macula_url}")
 
-    case Client.start_link(url: state.bondy_url, realm: state.realm) do
+    case Client.start_link(url: state.macula_url, realm: state.realm) do
       {:ok, client} ->
-        Logger.info("ResumeSimulation: WAMP client started, waiting for session...")
+        Logger.info("ResumeSimulation: Client started, waiting for session...")
         Process.send_after(self(), :register_procedure, 2000)
-        {:noreply, %{state | wamp_client: client}}
+        {:noreply, %{state | client: client}}
 
       {:error, reason} ->
         Logger.error("ResumeSimulation: Connection failed: #{inspect(reason)}, retrying in #{@reconnect_interval}ms")
@@ -59,7 +59,7 @@ defmodule CortexIqSimulation.ResumeSimulation.System do
 
   @impl true
   def handle_info(:register_procedure, state) do
-    with {:ok, client} <- get_wamp_client(state),
+    with {:ok, client} <- get_client(state),
          :connected <- get_client_status(client) do
       handler = fn _args, _kwargs, _details ->
         handle_resume_rpc(state)
@@ -88,8 +88,8 @@ defmodule CortexIqSimulation.ResumeSimulation.System do
 
   # Private functions
 
-  defp get_wamp_client(%{wamp_client: nil}), do: {:error, :no_client}
-  defp get_wamp_client(%{wamp_client: client}), do: {:ok, client}
+  defp get_client(%{client: nil}), do: {:error, :no_client}
+  defp get_client(%{client: client}), do: {:ok, client}
 
   defp get_client_status(client) do
     case Client.status(client) do

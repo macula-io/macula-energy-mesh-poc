@@ -8,8 +8,9 @@ defmodule CortexIqSimulation.Application do
   @impl true
   def start(_type, _args) do
     # Get configuration
-    bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
-    realm = System.get_env("BONDY_REALM", "be.cortexiq.energy")
+    # MIGRATION: Changed from BONDY_URL (ws://) to MACULA_URL (https://)
+    macula_url = System.get_env("MACULA_URL", "https://localhost:9443")
+    realm = System.get_env("MACULA_REALM", "be.cortexiq.energy")
 
     children = [
       # Simulation clock - broadcasts time to all WAMP subscribers
@@ -17,22 +18,22 @@ defmodule CortexIqSimulation.Application do
 
       # RPC Systems - each handles one simulation control procedure
       {CortexIqSimulation.ResetSimulation.System,
-       bondy_url: bondy_url,
+       macula_url: macula_url,
        realm: realm,
        simulation_clock: CortexIqSimulation.SimulationClock},
 
       {CortexIqSimulation.PauseSimulation.System,
-       bondy_url: bondy_url,
+       macula_url: macula_url,
        realm: realm,
        simulation_clock: CortexIqSimulation.SimulationClock},
 
       {CortexIqSimulation.ResumeSimulation.System,
-       bondy_url: bondy_url,
+       macula_url: macula_url,
        realm: realm,
        simulation_clock: CortexIqSimulation.SimulationClock},
 
       {CortexIqSimulation.SetSimulationSpeed.System,
-       bondy_url: bondy_url,
+       macula_url: macula_url,
        realm: realm,
        simulation_clock: CortexIqSimulation.SimulationClock}
     ]

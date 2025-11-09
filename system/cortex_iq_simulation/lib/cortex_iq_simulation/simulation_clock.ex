@@ -7,19 +7,19 @@ defmodule CortexIqSimulation.SimulationClock do
 
   Provides:
   - Current simulation time calculation
-  - Time broadcast via WAMP (every 1 second)
+  - Time broadcast via Macula (every 1 second)
   - Time queries for bots
 
   Configuration via ENV:
   - SIMULATION_SPEED (default: 105120)
   - SIMULATION_START_DATE (default: 2025-01-01T00:00:00Z)
-  - BONDY_URL (default: ws://172.20.0.2:30080/ws)
-  - BONDY_REALM (default: be.cortexiq.energy)
+  - MACULA_URL (default: ws://172.20.0.2:30080/ws)
+  - MACULA_REALM (default: be.cortexiq.energy)
   """
 
   use GenServer
   require Logger
-  alias MaculaSdk.Wamp.Client
+  alias MaculaSdk.Client
 
   # Default configuration
   @default_speed 105_120
@@ -30,9 +30,9 @@ defmodule CortexIqSimulation.SimulationClock do
     :speed,
     :start_simulation_time,
     :start_real_time,
-    :wamp_client,
+    :client,
     :realm,
-    :bondy_url,
+    :macula_url,
     :connection_status,
     :retry_count,
     paused: false,
@@ -102,8 +102,8 @@ defmodule CortexIqSimulation.SimulationClock do
           dt
       end
 
-    bondy_url = Keyword.get(opts, :bondy_url) || System.get_env("BONDY_URL", "ws://172.20.0.2:30080/ws")
-    realm = Keyword.get(opts, :realm) || System.get_env("BONDY_REALM", "be.cortexiq.energy")
+    bondy_url = Keyword.get(opts, :macula_url) || System.get_env("MACULA_URL", "ws://172.20.0.2:30080/ws")
+    realm = Keyword.get(opts, :realm) || System.get_env("MACULA_REALM", "be.cortexiq.energy")
 
     Logger.info("""
     SimulationClock starting:
@@ -118,11 +118,11 @@ defmodule CortexIqSimulation.SimulationClock do
       speed: speed,
       start_simulation_time: start_simulation_time,
       start_real_time: System.monotonic_time(:millisecond),
-      bondy_url: bondy_url,
+      macula_url: bondy_url,
       realm: realm,
       connection_status: :connecting,
       retry_count: 0,
-      wamp_client: nil
+      client: nil
     }
 
     # Connect asynchronously (don't crash if Bondy isn't ready)
@@ -152,7 +152,7 @@ defmodule CortexIqSimulation.SimulationClock do
         Process.send_after(self(), :subscribe_to_control, 2000)
         Process.send_after(self(), :broadcast_time, @broadcast_interval_ms)
 
-        {:noreply, %{state | wamp_client: wamp_client, connection_status: :connected, retry_count: 0}}
+        {:noreply, %{state | client: wamp_client, connection_status: :connected, retry_count: 0}}
 
       {:error, reason} ->
         retry_delay = min(1000 * :math.pow(2, state.retry_count), 30_000) |> round()
@@ -243,7 +243,7 @@ defmodule CortexIqSimulation.SimulationClock do
             # Connection might be lost, trigger reconnect
             Logger.warning("SimulationClock: Connection lost, will retry...")
             Process.send_after(self(), :retry_connect, 1000)
-            %{state | connection_status: :disconnected, wamp_client: nil}
+            %{state | connection_status: :disconnected, client: nil}
         end
       else
         # Not connected yet, skip this broadcast

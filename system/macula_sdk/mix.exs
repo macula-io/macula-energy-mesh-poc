@@ -23,7 +23,8 @@ defmodule MaculaSdk.MixProject do
     [
       # Erlang macula_sdk - the actual HTTP/3 SDK implementation
       # Fetched from GitHub macula repository
-      {:macula_sdk,
+      # Using different atom name to avoid circular dependency
+      {:macula_sdk_erl,
         git: "git@github.com:macula-io/macula.git",
         branch: "main",
         sparse: "apps/macula_sdk",

@@ -32,7 +32,12 @@ defmodule CortexIqSimulation.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:macula_sdk, path: "../macula_sdk"}
+      # Elixir wrapper for macula_sdk (fetches Erlang SDK from GitHub)
+      {:macula_sdk,
+        git: "git@github.com:macula-io/macula-energy-mesh-poc.git",
+        branch: "feature/competition",
+        sparse: "system/macula_sdk",
+        override: true}
     ]
   end
 end
