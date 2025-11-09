@@ -25,7 +25,7 @@ defmodule CortexIqDashboard.Umbrella.MixProject do
   #
   # Or git/path repositories:
   #
-  #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
+  #   {:mydep, git: "https://github.com/elixir-lang/mydep", tag: "0.1.0"}
   #
   # Type "mix help deps" for more examples and options.
   #

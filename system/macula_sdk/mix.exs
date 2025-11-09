@@ -25,7 +25,7 @@ defmodule MaculaSdk.MixProject do
       # Fetched from GitHub macula repository
       # Using different atom name to avoid circular dependency
       {:macula_sdk_erl,
-        git: "git@github.com:macula-io/macula.git",
+        git: "https://github.com/macula-io/macula",
         branch: "main",
         sparse: "apps/macula_sdk",
         app: false,

@@ -26,7 +26,7 @@ defmodule CortexIqQueries.MixProject do
     [
       {:cortex_iq_dashboard_schemas, path: "../cortex_iq_dashboard_schemas"},  # Shared schemas
       {:macula_sdk,
-        git: "git@github.com:macula-io/macula-energy-mesh-poc.git",
+        git: "https://github.com/macula-io/macula-energy-mesh-poc",
         branch: "feature/competition",
         sparse: "system/macula_sdk",
         override: true},   # For RPC server (HTTP/3)

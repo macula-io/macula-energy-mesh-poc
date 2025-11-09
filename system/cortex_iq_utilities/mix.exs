@@ -25,7 +25,7 @@ defmodule CortexIqUtilities.MixProject do
     [
       {:cortex_iq_core, path: "../cortex_iq_core"},
       {:macula_sdk,
-        git: "git@github.com:macula-io/macula-energy-mesh-poc.git",
+        git: "https://github.com/macula-io/macula-energy-mesh-poc",
         branch: "feature/competition",
         sparse: "system/macula_sdk",
         override: true},
