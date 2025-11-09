@@ -10,7 +10,7 @@ defmodule CortexIqSimulation.SetSimulationSpeed.System do
   use GenServer
   require Logger
 
-  alias MaculaSdk.Client
+  alias MaculaClientEx.Client
 
   @reconnect_interval 5_000
   @rpc_procedure "be.cortexiq.simulation.set_speed"

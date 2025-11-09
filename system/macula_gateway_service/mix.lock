@@ -1,0 +1,9 @@
+%{
+  "macula_membership": {:hex, :macula_membership, "0.2.0", "ba37a85167a7b5f3d52cb0a3903ccacbf42e22eeaa1567d378b7d8307a6de88e", [:rebar3], [], "hexpm", "c6d03c46b060378d12b6ae31a88ededa3cbb8d812a065c9c9fa851607a83f582"},
+  "macula_protocol": {:hex, :macula_protocol, "0.2.0", "5630f599b430315a1b6a4ab00fa3a62126d10c12b752eb0210836699a3d6a710", [:rebar3], [{:msgpack, "0.8.1", [hex: :msgpack, repo: "hexpm", optional: false]}], "hexpm", "8384311c4e7cdef10a9a2c5d9ef8e6aba28c50630dd26387fb0057bf60283568"},
+  "macula_quic": {:hex, :macula_quic, "0.2.0", "3d696b772241fcfdd608e1d7912dad21ffba93041e53defe44fb3a572145cda3", [:rebar3], [{:quicer, "0.2.15", [hex: :quicer, repo: "hexpm", optional: false]}], "hexpm", "289f8c4666d2fb1cfa6e48df3ff9e58657878437afa3312d3a8b57c07cdf96ab"},
+  "macula_routing": {:hex, :macula_routing, "0.2.0", "0367077aaf0a65299a6452b22ee3364db2bd626deb273e336f5c941518cd1639", [:rebar3], [], "hexpm", "1c3322629a08e4e0860f217e5a1e70d7b1a86ed5b4490a7c58c2d61800e461e7"},
+  "msgpack": {:hex, :msgpack, "0.8.1", "deb35c13291eafe56ad9870374c2eaa92323dc5503d50432ebcaf47052e6d343", [:rebar3], [], "hexpm", "04d9a75bc6f4bed8627ee1e7aa9df37601f510fdc786a84fe932bb21d765565f"},
+  "quicer": {:hex, :quicer, "0.2.15", "775fcfa09c9ce5a4a00d23c1c8b1e81cd361ebc847e43bb766efac4373cdb1b8", [:rebar3], [{:snabbkaffe, "1.0.10", [hex: :snabbkaffe, repo: "hexpm", optional: false]}], "hexpm", "52236d9384a541341706bcae438e81b209fa21d2045d3df317f8ba5beda6a8e5"},
+  "snabbkaffe": {:hex, :snabbkaffe, "1.0.10", "9be2f54f61fc6862391b666b2b5b76c3fa53598e2989a17cef1b48cf347a8a63", [:rebar3], [], "hexpm", "70a98df36ae756908d55b5770891d443d63c903833e3e87d544036e13d4fac26"},
+}

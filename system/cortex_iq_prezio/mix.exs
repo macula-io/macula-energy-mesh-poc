@@ -23,20 +23,3 @@ defmodule CortexIqPrezio.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:macula_sdk, path: "../macula_sdk"},   # For WAMP publishing
-      {:cortex_iq_core, path: "../cortex_iq_core"},  # For domain models
-      {:req, "~> 0.5"}  # HTTP client for API calls
-    ]
-  end
-
-  defp releases do
-    [
-      cortex_iq_prezio: [
-        version: "0.1.0",
-        applications: [cortex_iq_prezio: :permanent],
-        include_executables_for: [:unix],
-        steps: [:assemble, :tar]
-      ]
-    ]
-  end
-end

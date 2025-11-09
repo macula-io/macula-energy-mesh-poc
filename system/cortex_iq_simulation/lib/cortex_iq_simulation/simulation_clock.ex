@@ -19,7 +19,7 @@ defmodule CortexIqSimulation.SimulationClock do
 
   use GenServer
   require Logger
-  alias MaculaSdk.Client
+  alias MaculaClientEx.Client
 
   # Default configuration
   @default_speed 105_120

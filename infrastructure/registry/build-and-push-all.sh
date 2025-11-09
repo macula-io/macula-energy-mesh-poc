@@ -10,6 +10,13 @@ REGISTRY="registry.macula.local:5000"
 # Enable Docker BuildKit for SSH secrets support
 export DOCKER_BUILDKIT=1
 
+# Start SSH agent if not already running
+if [ -z "${SSH_AUTH_SOCK:-}" ]; then
+  eval "$(ssh-agent -s)"
+  ssh-add ~/.ssh/id_rsa
+  STARTED_SSH_AGENT=true
+fi
+
 # Colors
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'

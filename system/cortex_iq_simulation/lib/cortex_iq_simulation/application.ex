@@ -8,15 +8,15 @@ defmodule CortexIqSimulation.Application do
   @impl true
   def start(_type, _args) do
     # Get configuration
-    # MIGRATION: Changed from BONDY_URL (ws://) to MACULA_URL (https://)
+    # CLIENT MODE: Connect to standalone city gateway
     macula_url = System.get_env("MACULA_URL", "https://localhost:9443")
     realm = System.get_env("MACULA_REALM", "be.cortexiq.energy")
 
     children = [
-      # Simulation clock - broadcasts time to all WAMP subscribers
+      # 1. Simulation clock - broadcasts time to all subscribers
       CortexIqSimulation.SimulationClock,
 
-      # RPC Systems - each handles one simulation control procedure
+      # 2. RPC Systems - connect to city gateway
       {CortexIqSimulation.ResetSimulation.System,
        macula_url: macula_url,
        realm: realm,

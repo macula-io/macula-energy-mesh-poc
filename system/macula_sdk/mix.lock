@@ -1,3 +1,0 @@
-%{
-  "macula_sdk": {:git, "git@github.com:macula-io/macula.git", "789f9bfae80f7a83c8117b5780ffe518cb3d2d42", [branch: "main", sparse: "apps/macula_sdk"]},
-}

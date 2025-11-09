@@ -1,14 +1,13 @@
-defmodule CortexIqOpenWeatherMap.MixProject do
+defmodule MaculaGatewayService.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :cortex_iq_open_weather_map,
+      app: :macula_gateway_service,
       version: "0.1.0",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
-      deps: deps(),
-      releases: releases()
+      deps: deps()
     ]
   end
 
@@ -16,10 +15,15 @@ defmodule CortexIqOpenWeatherMap.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {CortexIqOpenWeatherMap.Application, []}
+      mod: {MaculaGatewayService.Application, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      # Embedded Gateway (Proprietary) - enables P2P mesh networking
+      {:macula_gateway_ex, path: "../macula_gateway_ex", override: true}
+    ]
+  end
+end

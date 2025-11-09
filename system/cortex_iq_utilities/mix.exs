@@ -24,11 +24,8 @@ defmodule CortexIqUtilities.MixProject do
   defp deps do
     [
       {:cortex_iq_core, path: "../cortex_iq_core"},
-      {:macula_sdk,
-        git: "https://github.com/macula-io/macula-energy-mesh-poc",
-        branch: "feature/competition",
-        sparse: "system/macula_sdk",
-        override: true},
+      # Client library (Free, Open Source) - connects to standalone gateway
+      {:macula_client_ex, path: "../macula_client_ex", override: true},
       {:jason, "~> 1.4"}
     ]
   end

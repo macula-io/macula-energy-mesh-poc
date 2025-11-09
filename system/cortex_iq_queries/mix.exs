@@ -25,11 +25,8 @@ defmodule CortexIqQueries.MixProject do
   defp deps do
     [
       {:cortex_iq_dashboard_schemas, path: "../cortex_iq_dashboard_schemas"},  # Shared schemas
-      {:macula_sdk,
-        git: "https://github.com/macula-io/macula-energy-mesh-poc",
-        branch: "feature/competition",
-        sparse: "system/macula_sdk",
-        override: true},   # For RPC server (HTTP/3)
+      # Client library (Free, Open Source) - connects to standalone gateway
+      {:macula_client_ex, path: "../macula_client_ex", override: true},
       {:cortex_iq_core, path: "../cortex_iq_core"},  # For domain models
       {:ecto_sql, "~> 3.12"},  # Database toolkit
       {:postgrex, ">= 0.0.0"}  # PostgreSQL driver
