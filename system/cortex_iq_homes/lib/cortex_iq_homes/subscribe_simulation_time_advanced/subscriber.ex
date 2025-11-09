@@ -24,15 +24,15 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber do
   def init(opts) do
     Logger.info("🟢 #{__MODULE__}.init called with opts: #{inspect(opts)}")
 
-    wamp_client = Keyword.fetch!(opts, :wamp_client)
+    client = Keyword.fetch!(opts, :client)
 
     state = %{
-      wamp_client: wamp_client,
+      client: client,
       subscription_status: :not_subscribed
     }
 
     Logger.info("✅ #{__MODULE__}: INIT complete - Scheduling subscription in 2 seconds")
-    Logger.info("  wamp_client: #{inspect(wamp_client)}")
+    Logger.info("  client: #{inspect(client)}")
     Logger.info("  self: #{inspect(self())}")
     Process.send_after(self(), :subscribe, 2_000)
 
@@ -40,16 +40,16 @@ defmodule CortexIqHomes.SubscribeSimulationTimeAdvanced.Subscriber do
   end
 
   @impl true
-  def handle_info(:subscribe, %{wamp_client: wamp_client} = state) do
+  def handle_info(:subscribe, %{client: client} = state) do
     Logger.info("🔔 #{__MODULE__}: Received :subscribe message")
-    Logger.info("  wamp_client: #{inspect(wamp_client)}")
+    Logger.info("  client: #{inspect(client)}")
     Logger.info("  topic: #{@topic}")
     Logger.info("🔌 #{__MODULE__}: Attempting to subscribe to #{@topic}...")
 
     subscriber_pid = self()
     handler = fn _topic, event_data -> send(subscriber_pid, {:event, event_data}) end
 
-    case MaculaSdk.Wamp.Client.subscribe(wamp_client, @topic, handler, %{}) do
+    case MaculaSdk.Client.subscribe(client, @topic, handler, %{}) do
       :ok ->
         Logger.info("✅ #{__MODULE__}: Successfully subscribed to #{@topic}")
         Logger.info("  Will broadcast to PubSub channel: #{@pubsub_channel}")

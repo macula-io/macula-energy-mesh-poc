@@ -14,10 +14,10 @@ defmodule CortexIqHomes.Application do
     # Get configuration from environment variables or config files
     # Priority: ENV > config > defaults
     homes_sources = get_env("HOMES_SOURCES", "flanders_test_homes.json")
-    bondy_url = get_env("BONDY_URL", get_config(:bondy_url, "ws://localhost:18080/ws"))
-    realm = get_env("BONDY_REALM", get_config(:bondy_realm, "be.cortexiq.energy"))
+    macula_url = get_env("MACULA_URL", get_config(:macula_url, "https://localhost:9443"))
+    realm = get_env("MACULA_REALM", get_config(:macula_realm, "be.cortexiq.energy"))
 
-    Logger.info("Configuration loaded: homes_sources=#{homes_sources}, bondy_url=#{bondy_url}, realm=#{realm}")
+    Logger.info("Configuration loaded: homes_sources=#{homes_sources}, macula_url=#{macula_url}, realm=#{realm}")
 
     # Load homes from JSON configuration (supports comma-separated list)
     Logger.info("About to load homes from #{homes_sources}...")
@@ -36,13 +36,12 @@ defmodule CortexIqHomes.Application do
 
     Logger.info("Starting #{length(homes)} home bots from #{homes_sources}")
 
-    Logger.info("🔧 Building supervision tree with 6 children...")
+    Logger.info("🔧 Building supervision tree with 5 children...")
     Logger.info("  1. Registry")
     Logger.info("  2. Phoenix.PubSub")
-    Logger.info("  3. MaculaSdk.Wamp.Pool")
-    Logger.info("  4. SubscribeSimulationTimeAdvanced.System")
-    Logger.info("  5. SubscribeSimulationReset.Subscriber")
-    Logger.info("  6. DynamicSupervisor (BotSupervisor)")
+    Logger.info("  3. SubscribeSimulationTimeAdvanced.System")
+    Logger.info("  4. SubscribeSimulationReset.Subscriber")
+    Logger.info("  5. DynamicSupervisor (BotSupervisor)")
 
     children = [
       # Registry for home bots
@@ -51,24 +50,17 @@ defmodule CortexIqHomes.Application do
       # PubSub for internal event broadcasting
       {Phoenix.PubSub, name: CortexIqHomes.PubSub},
 
-      # Shared WAMP connection pool (150 connections for all homes)
-      # Each pod runs ~145 homes, all publishing measurements simultaneously
-      {MaculaSdk.Wamp.Pool, [
-        url: bondy_url,
-        realm: realm,
-        pool_size: 150,
-        max_overflow: 50,
-        name: CortexIqHomes.WampPool
-      ]},
-
       # Simulation time subscription (broadcasts to all homes via PubSub)
       {CortexIqHomes.SubscribeSimulationTimeAdvanced.System, [
-        bondy_url: bondy_url,
+        macula_url: macula_url,
         realm: realm
       ]},
 
       # Singleton subscriber for simulation reset events
-      {CortexIqHomes.SubscribeSimulationReset.Subscriber, [pool_name: CortexIqHomes.WampPool]},
+      {CortexIqHomes.SubscribeSimulationReset.Subscriber, [
+        macula_url: macula_url,
+        realm: realm
+      ]},
 
       # Dynamic supervisor for home bots
       {DynamicSupervisor, name: CortexIqHomes.BotSupervisor, strategy: :one_for_one}
@@ -87,7 +79,6 @@ defmodule CortexIqHomes.Application do
         children_status = [
           {"Registry", Process.whereis(CortexIqHomes.Registry)},
           {"PubSub", Process.whereis(CortexIqHomes.PubSub)},
-          {"WampPool", Process.whereis(CortexIqHomes.WampPool)},
           {"SubscribeSimulationTimeAdvanced.System", Process.whereis(CortexIqHomes.SubscribeSimulationTimeAdvanced.System)},
           {"BotSupervisor", Process.whereis(CortexIqHomes.BotSupervisor)}
         ]
@@ -100,23 +91,11 @@ defmodule CortexIqHomes.Application do
           end
         end)
 
-        # Wait for WAMP pool to be ready before starting homes
-        # This prevents :not_connected errors during subscriber initialization
-        Logger.info("⏳ Waiting for WAMP pool to be ready...")
-
-        case MaculaSdk.Wamp.Pool.wait_for_ready(CortexIqHomes.WampPool, min_ready: 50, timeout: 30_000) do
-          :ok ->
-            Logger.info("✓ WAMP pool ready, starting home bots...")
-            # Start home bots asynchronously to avoid blocking
-            # Use Task to start them in the background with staggered delays
-            Task.start(fn -> start_home_bots_staggered(homes, bondy_url, realm) end)
-            {:ok, pid}
-
-          {:error, :timeout} ->
-            Logger.error("⚠️  Timeout waiting for WAMP pool to be ready. Starting homes anyway (they will retry)...")
-            Task.start(fn -> start_home_bots_staggered(homes, bondy_url, realm) end)
-            {:ok, pid}
-        end
+        # Start home bots asynchronously to avoid blocking
+        # Use Task to start them in the background with staggered delays
+        Logger.info("Starting home bots...")
+        Task.start(fn -> start_home_bots_staggered(homes, macula_url, realm) end)
+        {:ok, pid}
 
       error ->
         Logger.error("❌ Failed to start Supervisor: #{inspect(error)}")
@@ -124,10 +103,10 @@ defmodule CortexIqHomes.Application do
     end
   end
 
-  defp start_home_bots_staggered(homes, bondy_url, realm) do
-    # Batch-based staggering to avoid overwhelming Bondy
+  defp start_home_bots_staggered(homes, macula_url, realm) do
+    # Batch-based staggering to avoid overwhelming Macula
     # Strategy: Start homes in small batches with long pauses between batches
-    # This prevents connection storms and gives Bondy time to process HELLO handshakes
+    # This prevents connection storms and gives Macula time to process HELLO handshakes
 
     batch_size = 25              # Small batch size to limit concurrent connections
     base_delay_ms = 200          # Conservative delay within batch
@@ -152,7 +131,7 @@ defmodule CortexIqHomes.Application do
         spec = {CortexIqHomes.HomeSupervisor, [
           home: home,
           home_id: home.id,
-          bondy_url: bondy_url,
+          macula_url: macula_url,
           realm: realm
         ]}
 

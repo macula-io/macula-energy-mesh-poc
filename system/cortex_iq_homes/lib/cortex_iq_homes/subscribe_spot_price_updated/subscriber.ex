@@ -17,12 +17,12 @@ defmodule CortexIqHomes.SubscribeSpotPriceUpdated.Subscriber do
 
   @impl true
   def init(opts) do
-    pool_name = Keyword.get(opts, :pool_name, CortexIqHomes.WampPool)
+    client = Keyword.get(opts, :client, CortexIqHomes.WampPool)
     home_id = Keyword.fetch!(opts, :home_id)
 
     Process.send_after(self(), :subscribe, 2_000)
 
-    {:ok, %{pool_name: pool_name, home_id: home_id}}
+    {:ok, %{client: client, home_id: home_id}}
   end
 
   @impl true
@@ -30,7 +30,7 @@ defmodule CortexIqHomes.SubscribeSpotPriceUpdated.Subscriber do
     subscriber_pid = self()
     handler = fn _topic, event_data -> send(subscriber_pid, {:event, event_data}) end
 
-    MaculaSdk.Wamp.Pool.subscribe(@topic, handler, %{}, state.pool_name)
+    MaculaSdk.Client.subscribe(@topic, handler, %{}, state.client)
     |> log_subscription_result(state.home_id, @topic)
 
     {:noreply, state}
