@@ -26,12 +26,12 @@ defmodule CortexIqUtilities.ProviderBot do
   require Logger
 
   alias CortexIqCore.{Provider, ContractOffer, SpotPrice, Contract, DateTimeHelpers}
-  alias MaculaSdk.Wamp.Client
+  alias MaculaSdk.Client
 
   defstruct [
     :provider_id,
     :provider,
-    :wamp_client,
+    :client,
     :realm,
     :current_simulation_time,
     :current_market_spot_price,  # Spot price from SpotMarketBroadcaster
@@ -65,7 +65,7 @@ defmodule CortexIqUtilities.ProviderBot do
     provider_id = Keyword.fetch!(opts, :provider_id)
     provider = Keyword.fetch!(opts, :provider)  # Get provider struct from opts
     realm = Keyword.get(opts, :realm, "energy.hub")
-    bondy_url = Keyword.get(opts, :bondy_url, "ws://localhost:18080/ws")
+    macula_url = Keyword.get(opts, :macula_url, "ws://localhost:18080/ws")
 
     Logger.info("Starting ProviderBot for #{provider.name} (#{provider_id})")
     Logger.info("  Strategy: #{provider.strategy}")
@@ -73,16 +73,16 @@ defmodule CortexIqUtilities.ProviderBot do
     Logger.info("  Switching discount: $#{provider.switching_discount}")
 
     # Connect to WAMP
-    {:ok, wamp_client} =
-      MaculaSdk.Wamp.Client.start_link(
-        url: bondy_url,
+    {:ok, client} =
+      MaculaSdk.Client.start_link(
+        url: macula_url,
         realm: realm
       )
 
     state = %__MODULE__{
       provider_id: provider_id,
       provider: provider,
-      wamp_client: wamp_client,
+      client: client,
       realm: realm,
       current_simulation_time: nil,
       current_offer: nil,
@@ -111,10 +111,10 @@ defmodule CortexIqUtilities.ProviderBot do
     # Now that connection should be ready, subscribe to topics and register RPC endpoints
     Logger.info("Provider #{state.provider_id}: Subscribing to WAMP topics and registering RPC endpoints")
 
-    with :ok <- subscribe_to_simulation_time(state.wamp_client),
-         :ok <- subscribe_to_market_spot_price(state.wamp_client),
-         :ok <- subscribe_to_home_trades(state.wamp_client),
-         :ok <- register_accept_offer_rpc(state.wamp_client, state.provider_id) do
+    with :ok <- subscribe_to_simulation_time(state.client),
+         :ok <- subscribe_to_market_spot_price(state.client),
+         :ok <- subscribe_to_home_trades(state.client),
+         :ok <- register_accept_offer_rpc(state.client, state.provider_id) do
       Logger.info("Provider #{state.provider_id}: Subscribed to all topics and registered RPC endpoints")
       {:noreply, state}
     else
@@ -248,7 +248,7 @@ defmodule CortexIqUtilities.ProviderBot do
     {:via, Registry, {CortexIqUtilities.Registry, provider_id}}
   end
 
-  defp subscribe_to_simulation_time(wamp_client) do
+  defp subscribe_to_simulation_time(client) do
     topic = "be.cortexiq.simulation.time_advanced"
     Logger.info("Subscribing to #{topic}")
 
@@ -261,13 +261,13 @@ defmodule CortexIqUtilities.ProviderBot do
       send(provider_bot_pid, {:wamp_event, topic, args, kwargs, details})
     end
 
-    case Client.subscribe(wamp_client, topic, handler) do
+    case Client.subscribe(client, topic, handler) do
       {:ok, _sub_id} -> :ok
       error -> error
     end
   end
 
-  defp subscribe_to_market_spot_price(wamp_client) do
+  defp subscribe_to_market_spot_price(client) do
     topic = "be.cortexiq.market.spot_price_updated"
     Logger.info("Subscribing to #{topic}")
 
@@ -280,13 +280,13 @@ defmodule CortexIqUtilities.ProviderBot do
       send(provider_bot_pid, {:wamp_event, topic, args, kwargs, details})
     end
 
-    case Client.subscribe(wamp_client, topic, handler) do
+    case Client.subscribe(client, topic, handler) do
       {:ok, _sub_id} -> :ok
       error -> error
     end
   end
 
-  defp subscribe_to_home_trades(wamp_client) do
+  defp subscribe_to_home_trades(client) do
     topic = "be.cortexiq.home.traded"
     Logger.info("Subscribing to #{topic}")
 
@@ -299,7 +299,7 @@ defmodule CortexIqUtilities.ProviderBot do
       send(provider_bot_pid, {:wamp_event, topic, args, kwargs, details})
     end
 
-    case Client.subscribe(wamp_client, topic, handler) do
+    case Client.subscribe(client, topic, handler) do
       {:ok, _sub_id} -> :ok
       error -> error
     end
@@ -433,7 +433,7 @@ defmodule CortexIqUtilities.ProviderBot do
       |> Map.put(:strategy, Atom.to_string(state.provider.strategy))
 
     Logger.info("Provider #{state.provider_id}: Publishing contract offer to #{topic}")
-    Client.publish(state.wamp_client, topic, [], event, %{})
+    Client.publish(state.client, topic, [], event, %{})
     Logger.info("Provider #{state.provider_id}: Contract offer published successfully")
   end
 
@@ -445,10 +445,10 @@ defmodule CortexIqUtilities.ProviderBot do
       |> Map.put(:provider_name, state.provider.name)
       |> Map.put(:strategy, Atom.to_string(state.provider.strategy))
 
-    Client.publish(state.wamp_client, topic, [], event, %{})
+    Client.publish(state.client, topic, [], event, %{})
   end
 
-  defp register_accept_offer_rpc(wamp_client, provider_id) do
+  defp register_accept_offer_rpc(client, provider_id) do
     procedure = "be.cortexiq.provider.#{provider_id}.accept_offer"
     Logger.info("Registering RPC procedure: #{procedure}")
 
@@ -461,7 +461,7 @@ defmodule CortexIqUtilities.ProviderBot do
       :deferred
     end
 
-    case Client.register(wamp_client, procedure, handler) do
+    case Client.register(client, procedure, handler) do
       {:ok, _registration_id} -> :ok
       error -> error
     end
@@ -490,7 +490,7 @@ defmodule CortexIqUtilities.ProviderBot do
         start_date: DateTimeHelpers.to_iso8601(contract.start_date),
         end_date: DateTimeHelpers.to_iso8601(contract.end_date)
       }
-      Client.yield(state.wamp_client, invocation_id, [result], %{})
+      Client.yield(state.client, invocation_id, [result], %{})
 
       # Publish contract_confirmed event for dashboard
       publish_contract_confirmed(state, contract, home_id, reason, simulation_time)
@@ -507,7 +507,7 @@ defmodule CortexIqUtilities.ProviderBot do
         success: false,
         reason: response.reason
       }
-      Client.yield(state.wamp_client, invocation_id, [result], %{})
+      Client.yield(state.client, invocation_id, [result], %{})
 
       # Also publish rejection event for dashboard/logging
       publish_contract_rejected(state, home_id, offer_id, response.reason)
@@ -593,7 +593,7 @@ defmodule CortexIqUtilities.ProviderBot do
       simulation_time: DateTimeHelpers.to_iso8601(simulation_time)
     }
 
-    Client.publish(state.wamp_client, topic, [], event, %{})
+    Client.publish(state.client, topic, [], event, %{})
 
     Logger.info("Provider #{state.provider_id}: Published contract_confirmed for home #{home_id}")
   end
@@ -611,7 +611,7 @@ defmodule CortexIqUtilities.ProviderBot do
       simulation_time: DateTimeHelpers.to_iso8601(simulation_time)
     }
 
-    Client.publish(state.wamp_client, topic, [], event, %{})
+    Client.publish(state.client, topic, [], event, %{})
 
     Logger.warning("Provider #{state.provider_id}: Rejected contract request from home #{home_id}: #{reason}")
   end

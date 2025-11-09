@@ -22,16 +22,16 @@ defmodule CortexIqUtilities.SubscribeSimulationReset.Subscriber do
 
   @impl true
   def init(opts) do
-    bondy_url = Keyword.get(opts, :bondy_url)
+    macula_url = Keyword.get(opts, :macula_url)
     realm = Keyword.get(opts, :realm)
 
     state = %{
-      bondy_url: bondy_url,
+      macula_url: macula_url,
       realm: realm,
-      wamp_client: nil
+      client: nil
     }
 
-    # Connect to WAMP and subscribe
+    # Connect to Macula and subscribe
     send(self(), :connect)
 
     {:ok, state}
@@ -39,11 +39,11 @@ defmodule CortexIqUtilities.SubscribeSimulationReset.Subscriber do
 
   @impl true
   def handle_info(:connect, state) do
-    case MaculaSdk.Wamp.Client.start_link(url: state.bondy_url, realm: state.realm) do
-      {:ok, wamp_client} ->
-        Logger.info("#{__MODULE__}: Connected to WAMP, subscribing to #{@topic}...")
+    case MaculaSdk.Client.start_link(url: state.macula_url, realm: state.realm) do
+      {:ok, client} ->
+        Logger.info("#{__MODULE__}: Connected to Macula, subscribing to #{@topic}...")
         Process.send_after(self(), :subscribe, 2_000)
-        {:noreply, %{state | wamp_client: wamp_client}}
+        {:noreply, %{state | client: client}}
 
       {:error, reason} ->
         Logger.error("#{__MODULE__}: Failed to connect: #{inspect(reason)}, retrying...")
@@ -54,14 +54,14 @@ defmodule CortexIqUtilities.SubscribeSimulationReset.Subscriber do
 
   @impl true
   def handle_info(:subscribe, state) do
-    if state.wamp_client do
+    if state.client do
       subscriber_pid = self()
 
       handler = fn _topic, event_data ->
         send(subscriber_pid, {:event, event_data})
       end
 
-      case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, @topic, handler) do
+      case MaculaSdk.Client.subscribe(state.client, @topic, handler) do
         :ok ->
           Logger.info("#{__MODULE__}: Successfully subscribed to #{@topic}")
         {:error, reason} ->
@@ -112,7 +112,7 @@ defmodule CortexIqUtilities.SubscribeSimulationReset.Subscriber do
   defp restart_all_providers_staggered do
     # Load providers from config (same sources as initial startup)
     providers_sources = System.get_env("PROVIDERS_SOURCES", "benelux_energy_providers.json")
-    bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
+    macula_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
     realm = System.get_env("BONDY_REALM", "be.cortexiq.energy")
 
     providers = CortexIqUtilities.ConfigLoader.load_providers_from_sources(providers_sources)
@@ -126,7 +126,7 @@ defmodule CortexIqUtilities.SubscribeSimulationReset.Subscriber do
       spec = {CortexIqUtilities.ProviderBot, [
         provider_id: provider.id,
         provider: provider,
-        bondy_url: bondy_url,
+        macula_url: macula_url,
         realm: realm
       ]}
 
@@ -139,7 +139,7 @@ defmodule CortexIqUtilities.SubscribeSimulationReset.Subscriber do
           Logger.error("#{__MODULE__}: Failed to restart provider #{provider.id}: #{inspect(reason)}")
       end
 
-      # Small delay to stagger WAMP connections
+      # Small delay to stagger Macula connections
       Process.sleep(delay_ms)
     end)
 
