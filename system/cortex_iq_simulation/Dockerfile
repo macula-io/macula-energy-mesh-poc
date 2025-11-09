@@ -1,13 +1,15 @@
 # Multi-stage Dockerfile for CortexIQ Simulation Service
 # This service provides simulation infrastructure (clock) for the CortexIQ platform
 
+# syntax=docker/dockerfile:1.4
 # Build stage
 FROM hexpm/elixir:1.18.1-erlang-26.2.5.6-alpine-3.20.3 AS builder
 
 # Install build dependencies
 RUN apk add --no-cache \
     git \
-    build-base
+    build-base \
+    openssh-client
 
 # Prepare build directory
 WORKDIR /app
@@ -19,14 +21,17 @@ RUN mix local.hex --force && \
 # Copy dependency specs
 COPY cortex_iq_simulation/mix.exs cortex_iq_simulation/mix.lock ./
 
-# Copy dependency source (MaculaOs)
+# Copy dependency source (MaculaSDK Elixir wrapper)
 COPY macula_sdk ../macula_sdk
 
 # Set production environment
 ENV MIX_ENV=prod
 
-# Get dependencies
-RUN mix deps.get --only prod
+# Configure git to use SSH
+RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+# Get dependencies (uses SSH secret for private GitHub repos)
+RUN --mount=type=ssh mix deps.get --only prod
 
 # Copy application source
 COPY cortex_iq_simulation/config ./config

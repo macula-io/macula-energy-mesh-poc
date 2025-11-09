@@ -7,6 +7,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 REGISTRY="registry.macula.local:5000"
 
+# Enable Docker BuildKit for SSH secrets support
+export DOCKER_BUILDKIT=1
+
 # Colors
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -36,6 +39,7 @@ echo ""
 # Build and push MaculaOs sidecar
 log_step "Building macula-os..."
 docker build \
+  --ssh default \
   -f "$PROJECT_ROOT/system/macula_os/Dockerfile" \
   -t macula/macula-os:latest \
   -t "$REGISTRY/macula/macula-os:latest" \
@@ -49,6 +53,7 @@ log_info "Pushed macula-os"
 # Build and push homes
 log_step "Building cortex-iq-homes..."
 docker build \
+  --ssh default \
   -f "$PROJECT_ROOT/system/cortex_iq_homes/Dockerfile" \
   -t macula/cortex-iq-homes:latest \
   -t "$REGISTRY/macula/cortex-iq-homes:latest" \
@@ -62,6 +67,7 @@ log_info "Pushed cortex-iq-homes"
 # Build and push utilities
 log_step "Building cortex-iq-utilities..."
 docker build \
+  --ssh default \
   -f "$PROJECT_ROOT/system/cortex_iq_utilities/Dockerfile" \
   -t macula/cortex-iq-utilities:latest \
   -t "$REGISTRY/macula/cortex-iq-utilities:latest" \
@@ -75,6 +81,7 @@ log_info "Pushed cortex-iq-utilities"
 # Build and push simulation
 log_step "Building cortex-iq-simulation..."
 docker build \
+  --ssh default \
   -f "$PROJECT_ROOT/system/cortex_iq_simulation/Dockerfile" \
   -t macula/cortex-iq-simulation:latest \
   -t "$REGISTRY/macula/cortex-iq-simulation:latest" \
@@ -88,6 +95,7 @@ log_info "Pushed cortex-iq-simulation"
 # Build and push dashboard
 log_step "Building cortex-iq-dashboard..."
 docker build \
+  --ssh default \
   -f "$PROJECT_ROOT/Dockerfile.hub" \
   -t macula/cortex-iq-dashboard:latest \
   -t "$REGISTRY/macula/cortex-iq-dashboard:latest" \
@@ -101,6 +109,7 @@ log_info "Pushed cortex-iq-dashboard"
 # Build and push projections
 log_step "Building cortex-iq-projections..."
 docker build \
+  --ssh default \
   -f "$PROJECT_ROOT/system/cortex_iq_projections/Dockerfile" \
   -t macula/cortex-iq-projections:latest \
   -t "$REGISTRY/macula/cortex-iq-projections:latest" \
@@ -114,6 +123,7 @@ log_info "Pushed cortex-iq-projections"
 # Build and push queries
 log_step "Building cortex-iq-queries..."
 docker build \
+  --ssh default \
   -f "$PROJECT_ROOT/system/cortex_iq_queries/Dockerfile" \
   -t macula/cortex-iq-queries:latest \
   -t "$REGISTRY/macula/cortex-iq-queries:latest" \

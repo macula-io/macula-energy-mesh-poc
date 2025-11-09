@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 ####################################################################################################
 # CortexIQ Dashboard Hub
 # Includes: Bondy WAMP Router + Dashboard (with MaculaOs in hub mode)
@@ -52,7 +53,11 @@ COPY system/cortex_iq_dashboard_umbrella/apps/cortex_iq_dashboard/mix.exs ./apps
 COPY system/cortex_iq_dashboard_umbrella/apps/cortex_iq_dashboard_web/mix.exs ./apps/cortex_iq_dashboard_web/
 
 # Get dependencies
-RUN mix deps.get --only prod
+# Configure git to use SSH
+RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+# Get dependencies (uses SSH secret for private GitHub repos)
+RUN --mount=type=ssh mix deps.get --only prod
 RUN mix deps.compile
 
 # Copy application source code (with cache busting)

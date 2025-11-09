@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 ####################################################################################################
 # MaculaOs - WAMP Gateway Sidecar
 # Secure proxy between application containers and Bondy WAMP router
@@ -21,7 +22,8 @@ FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-alpine-${ALPINE_VERSIO
 # Install build dependencies
 RUN apk add --no-cache \
     git \
-    build-base
+    build-base \
+    openssh-client
 
 WORKDIR /app
 
@@ -40,7 +42,11 @@ COPY macula_os/config ./config
 COPY macula_sdk ../macula_sdk
 
 # Get dependencies
-RUN mix deps.get --only prod
+# Configure git to use SSH
+RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+# Get dependencies (uses SSH secret for private GitHub repos)
+RUN --mount=type=ssh mix deps.get --only prod
 
 # Copy application source
 COPY macula_os/lib ./lib

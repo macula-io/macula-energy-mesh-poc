@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 ####################################################################################################
 # CortexIQ Utilities Payload
 # Energy provider bots with different pricing strategies
@@ -17,7 +18,8 @@ FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-alpine-${ALPINE_VERSIO
 # Install build dependencies
 RUN apk add --no-cache \
     git \
-    build-base
+    build-base \
+    openssh-client
 
 WORKDIR /app
 
@@ -37,7 +39,11 @@ COPY cortex_iq_core ../cortex_iq_core
 COPY macula_sdk ../macula_sdk
 
 # Get dependencies
-RUN mix deps.get --only prod
+# Configure git to use SSH
+RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+# Get dependencies (uses SSH secret for private GitHub repos)
+RUN --mount=type=ssh mix deps.get --only prod
 
 # Copy application source
 COPY cortex_iq_utilities/lib ./lib

@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 ####################################################################################################
 # CortexIQ Projections Service
 # Event-driven CQRS write-side projections from WAMP events to PostgreSQL/TimescaleDB
@@ -18,6 +19,7 @@ FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-alpine-${ALPINE_VERSIO
 RUN apk add --no-cache \
     git \
     build-base \
+    openssh-client \
     postgresql-dev
 
 WORKDIR /app
@@ -40,7 +42,11 @@ COPY cortex_iq_core ../cortex_iq_core
 COPY macula_sdk ../macula_sdk
 
 # Get dependencies
-RUN mix deps.get --only prod
+# Configure git to use SSH
+RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+# Get dependencies (uses SSH secret for private GitHub repos)
+RUN --mount=type=ssh mix deps.get --only prod
 
 # Copy application source
 COPY cortex_iq_projections/lib ./lib
