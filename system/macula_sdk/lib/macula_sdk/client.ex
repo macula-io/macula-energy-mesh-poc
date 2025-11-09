@@ -104,6 +104,23 @@ defmodule MaculaSdk.Client do
   end
 
   @doc """
+  Register a procedure (RPC endpoint).
+
+  The handler function receives `(args, kwargs, details)` and should return
+  `{:ok, result}` or `{:error, reason}`.
+
+  ## Examples
+
+      MaculaSdk.Client.register(client, "my.app.get_user", fn _args, kwargs, _details ->
+        user_id = Map.get(kwargs, "user_id")
+        {:ok, %{name: "Alice", id: user_id}}
+      end)
+  """
+  def register(client, procedure, handler_fun, options \\ %{}) do
+    GenServer.call(client, {:register, procedure, handler_fun, options}, 30_000)
+  end
+
+  @doc """
   Call a remote procedure (RPC).
 
   Returns `{:ok, result}` or `{:error, reason}`.
@@ -211,6 +228,31 @@ defmodule MaculaSdk.Client do
 
       {:error, reason} ->
         Logger.error("Subscribe failed: #{inspect(reason)}")
+        {:reply, {:error, reason}, state}
+    end
+  end
+
+  @impl true
+  def handle_call({:register, procedure, handler_fun, _options}, _from, state) do
+    # Convert procedure to binary
+    erl_procedure = String.to_charlist(to_string(procedure))
+
+    # Create wrapper callback that adapts Erlang callback to Elixir
+    callback = fn args, kwargs, details ->
+      # Call the handler
+      handler_fun.(args, kwargs, details)
+    end
+
+    # Register using Erlang SDK
+    case :macula_sdk.register(state.client_pid, erl_procedure, callback) do
+      :ok ->
+        {:reply, :ok, state}
+
+      {:ok, registration_id} ->
+        {:reply, {:ok, registration_id}, state}
+
+      {:error, reason} ->
+        Logger.error("Register failed: #{inspect(reason)}")
         {:reply, {:error, reason}, state}
     end
   end

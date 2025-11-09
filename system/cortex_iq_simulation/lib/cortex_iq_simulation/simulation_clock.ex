@@ -102,7 +102,7 @@ defmodule CortexIqSimulation.SimulationClock do
           dt
       end
 
-    bondy_url = Keyword.get(opts, :macula_url) || System.get_env("MACULA_URL", "ws://172.20.0.2:30080/ws")
+    macula_url = Keyword.get(opts, :macula_url) || System.get_env("MACULA_URL", "ws://172.20.0.2:30080/ws")
     realm = Keyword.get(opts, :realm) || System.get_env("MACULA_REALM", "be.cortexiq.energy")
 
     Logger.info("""
@@ -110,7 +110,7 @@ defmodule CortexIqSimulation.SimulationClock do
       Speed: #{speed}x
       Start time: #{DateTime.to_iso8601(start_simulation_time)}
       1 year = #{Float.round(525_600 / speed, 2)} minutes real-time
-      Bondy URL: #{bondy_url}
+      Macula URL: #{macula_url}
       Realm: #{realm}
     """)
 
@@ -118,20 +118,20 @@ defmodule CortexIqSimulation.SimulationClock do
       speed: speed,
       start_simulation_time: start_simulation_time,
       start_real_time: System.monotonic_time(:millisecond),
-      macula_url: bondy_url,
+      macula_url: macula_url,
       realm: realm,
       connection_status: :connecting,
       retry_count: 0,
       client: nil
     }
 
-    # Connect asynchronously (don't crash if Bondy isn't ready)
+    # Connect asynchronously (don't crash if Macula isn't ready)
     {:ok, state, {:continue, :connect_wamp}}
   end
 
   @impl true
   def handle_continue(:connect_wamp, state) do
-    Logger.info("SimulationClock: Attempting to connect to WAMP (#{state.bondy_url})...")
+    Logger.info("SimulationClock: Attempting to connect to Macula (#{state.macula_url})...")
 
     # Get authentication credentials from environment
     # username = System.get_env("BONDY_USERNAME")
@@ -139,25 +139,25 @@ defmodule CortexIqSimulation.SimulationClock do
 
     # Build connection options (anonymous for now)
     connect_opts = [
-      url: state.bondy_url,
+      url: state.macula_url,
       realm: state.realm
       # username: username,
       # password: password
     ]
 
-    case MaculaSdk.Wamp.Client.start_link(connect_opts) do
-      {:ok, wamp_client} ->
-        Logger.info("SimulationClock: Connected to WAMP, waiting for connection to stabilize...")
+    case Client.start_link(connect_opts) do
+      {:ok, client} ->
+        Logger.info("SimulationClock: Connected to Macula, waiting for connection to stabilize...")
         # Wait a bit for connection to fully establish before subscribing
         Process.send_after(self(), :subscribe_to_control, 2000)
         Process.send_after(self(), :broadcast_time, @broadcast_interval_ms)
 
-        {:noreply, %{state | client: wamp_client, connection_status: :connected, retry_count: 0}}
+        {:noreply, %{state | client: client, connection_status: :connected, retry_count: 0}}
 
       {:error, reason} ->
         retry_delay = min(1000 * :math.pow(2, state.retry_count), 30_000) |> round()
         Logger.warning(
-          "SimulationClock: Failed to connect to WAMP: #{inspect(reason)}. " <>
+          "SimulationClock: Failed to connect to Macula: #{inspect(reason)}. " <>
           "Retrying in #{retry_delay}ms (attempt #{state.retry_count + 1})"
         )
 
@@ -195,17 +195,17 @@ defmodule CortexIqSimulation.SimulationClock do
 
   @impl true
   def handle_info(:retry_connect, state) do
-    Logger.info("SimulationClock: Retrying WAMP connection...")
+    Logger.info("SimulationClock: Retrying Macula connection...")
     {:noreply, state, {:continue, :connect_wamp}}
   end
 
   def handle_info(:subscribe_to_control, state) do
-    if state.wamp_client do
+    if state.client do
       Logger.info("SimulationClock: Subscribing to control topics...")
-      subscribe_to_control_topics(state.wamp_client)
+      subscribe_to_control_topics(state.client)
       # Note: RPC procedures are now registered by separate vertical slice systems
     else
-      Logger.warning("SimulationClock: Cannot subscribe, WAMP client not available")
+      Logger.warning("SimulationClock: Cannot subscribe, Macula client not available")
     end
     {:noreply, state}
   end
@@ -213,11 +213,11 @@ defmodule CortexIqSimulation.SimulationClock do
   def handle_info(:broadcast_time, state) do
     # Only broadcast if connected
     state =
-      if state.connection_status == :connected && state.wamp_client do
+      if state.connection_status == :connected && state.client do
         sim_time = calculate_simulation_time(state)
         real_elapsed = get_real_elapsed_ms(state)
 
-        # Publish directly to WAMP
+        # Publish directly to Macula
         topic = "be.cortexiq.simulation.time_advanced"
 
         event = %{
@@ -228,18 +228,18 @@ defmodule CortexIqSimulation.SimulationClock do
         }
 
         try do
-          Client.publish(state.wamp_client, topic, [], event, %{})
+          Client.publish(state.client, topic, [], event, %{})
 
           # Log occasionally (every 10 seconds) and when state changes
           if rem(real_elapsed, 10000) < 1000 do
             status = if state.paused, do: "PAUSED", else: "#{state.speed}x"
-            Logger.info("SimulationClock: Broadcasting time to WAMP: #{event["simulation_time"]} (#{status})")
+            Logger.info("SimulationClock: Broadcasting time to Macula: #{event["simulation_time"]} (#{status})")
           end
 
           state
         rescue
           e ->
-            Logger.error("SimulationClock: Failed to publish time to WAMP: #{inspect(e)}")
+            Logger.error("SimulationClock: Failed to publish time to Macula: #{inspect(e)}")
             # Connection might be lost, trigger reconnect
             Logger.warning("SimulationClock: Connection lost, will retry...")
             Process.send_after(self(), :retry_connect, 1000)
@@ -348,7 +348,7 @@ defmodule CortexIqSimulation.SimulationClock do
 
   # Private Helpers
 
-  defp subscribe_to_control_topics(wamp_client) do
+  defp subscribe_to_control_topics(client) do
     control_topics = [
       "be.cortexiq.simulation.control.pause",
       "be.cortexiq.simulation.control.resume",
@@ -365,7 +365,7 @@ defmodule CortexIqSimulation.SimulationClock do
     end
 
     Enum.each(control_topics, fn topic ->
-      case Client.subscribe(wamp_client, topic, handler) do
+      case Client.subscribe(client, topic, handler) do
         :ok ->
           Logger.info("SimulationClock: Subscribed to #{topic}")
         {:error, reason} ->
@@ -472,7 +472,7 @@ defmodule CortexIqSimulation.SimulationClock do
       new_start_time: DateTime.to_iso8601(state.start_simulation_time)
     }
 
-    Client.publish(state.wamp_client, topic, [], event, %{})
+    Client.publish(state.client, topic, [], event, %{})
     Logger.info("SimulationClock: Published reset event to #{topic}")
   end
 
@@ -488,7 +488,7 @@ defmodule CortexIqSimulation.SimulationClock do
       simulation_paused: state.paused
     }
 
-    Client.publish(state.wamp_client, topic, [], event, %{})
+    Client.publish(state.client, topic, [], event, %{})
     Logger.info("SimulationClock: Published state_changed event (#{change_type}) to #{topic}")
   end
 end
