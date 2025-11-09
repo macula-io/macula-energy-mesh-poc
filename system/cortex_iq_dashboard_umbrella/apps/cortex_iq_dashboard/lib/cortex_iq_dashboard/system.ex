@@ -19,8 +19,8 @@ defmodule CortexIqDashboard.System do
   @impl true
   def init(opts) do
     realm_uri = Keyword.fetch!(opts, :realm_uri)
-    bondy_admin_url = Keyword.fetch!(opts, :bondy_admin_url)
-    bondy_url = Keyword.fetch!(opts, :bondy_url)
+    macula_admin_url = Keyword.fetch!(opts, :macula_admin_url)
+    macula_url = Keyword.fetch!(opts, :macula_url)
 
     # Set up signal handlers for graceful shutdown
     setup_signal_handlers()

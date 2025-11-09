@@ -9,14 +9,14 @@ defmodule CortexIqDashboard.Application do
   @impl true
   def start(_type, _args) do
     # Get configuration from environment
-    realm_uri = System.get_env("BONDY_REALM", "be.cortexiq.energy")
-    bondy_admin_url = System.get_env("BONDY_ADMIN_URL", "http://localhost:18081")
-    bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
+    realm_uri = System.get_env("MACULA_REALM", "be.cortexiq.energy")
+    macula_admin_url = System.get_env("MACULA_ADMIN_URL", "http://localhost:18081")
+    macula_url = System.get_env("MACULA_URL", "https://localhost:9443")
 
     # Just-in-Time (JIT) Subscription Model:
-    # - NO persistent WAMP subscribers at application startup
+    # - NO persistent subscribers at application startup
     # - LiveViews subscribe on mount, unsubscribe on unmount
-    # - This avoids overwhelming Bondy with simultaneous connections
+    # - This avoids overwhelming the system with simultaneous connections
     # - Events contain complete data needed by views (no aggregation needed)
 
     children = [
@@ -26,8 +26,8 @@ defmodule CortexIqDashboard.Application do
       # System supervisor manages realm initialization only
       {CortexIqDashboard.System, [
         realm_uri: realm_uri,
-        bondy_admin_url: bondy_admin_url,
-        bondy_url: bondy_url
+        macula_admin_url: macula_admin_url,
+        macula_url: macula_url
       ]}
     ]
 

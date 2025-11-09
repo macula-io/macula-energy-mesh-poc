@@ -8,7 +8,7 @@ defmodule CortexIqDashboard.RealmManager do
   use GenServer
   require Logger
 
-  defstruct [:realm_uri, :bondy_admin_url, :created]
+  defstruct [:realm_uri, :macula_admin_url, :created]
 
   @realm_config %{
     "description" => "Energy Mesh PoC realm - real-time energy trading simulation",
@@ -58,7 +58,7 @@ defmodule CortexIqDashboard.RealmManager do
 
   @doc """
   Get the current state of the realm manager (for debugging).
-  Returns: %{realm_uri: String.t(), created: boolean(), bondy_admin_url: String.t()}
+  Returns: %{realm_uri: String.t(), created: boolean(), macula_admin_url: String.t()}
   """
   def get_state do
     GenServer.call(__MODULE__, :get_state)
@@ -69,14 +69,14 @@ defmodule CortexIqDashboard.RealmManager do
   @impl true
   def init(opts) do
     realm_uri = Keyword.get(opts, :realm_uri, "com.test.realm")
-    bondy_admin_url = Keyword.get(opts, :bondy_admin_url, "http://localhost:18081")
+    macula_admin_url = Keyword.get(opts, :macula_admin_url, "http://localhost:18081")
 
     # Trap exits to ensure terminate/2 is called on shutdown
     Process.flag(:trap_exit, true)
 
     state = %__MODULE__{
       realm_uri: realm_uri,
-      bondy_admin_url: bondy_admin_url,
+      macula_admin_url: macula_admin_url,
       created: false
     }
 
@@ -96,13 +96,13 @@ defmodule CortexIqDashboard.RealmManager do
      %{
        realm_uri: state.realm_uri,
        created: state.created,
-       bondy_admin_url: state.bondy_admin_url
+       macula_admin_url: state.macula_admin_url
      }, state}
   end
 
   @impl true
   def handle_info(:create_realm, state) do
-    case create_realm(state.realm_uri, state.bondy_admin_url) do
+    case create_realm(state.realm_uri, state.macula_admin_url) do
       :ok ->
         Logger.info("✅ Created realm: #{state.realm_uri}")
         {:noreply, %{state | created: true}}
@@ -132,7 +132,7 @@ defmodule CortexIqDashboard.RealmManager do
     if state.created do
       Logger.warning("🗑️  Deleting realm: #{state.realm_uri} (we created it)")
 
-      case delete_realm(state.realm_uri, state.bondy_admin_url) do
+      case delete_realm(state.realm_uri, state.macula_admin_url) do
         :ok ->
           Logger.warning("✅ Successfully deleted realm: #{state.realm_uri}")
 
@@ -149,8 +149,8 @@ defmodule CortexIqDashboard.RealmManager do
 
   ## Private Functions
 
-  defp create_realm(realm_uri, bondy_admin_url) do
-    url = "#{bondy_admin_url}/realms"
+  defp create_realm(realm_uri, macula_admin_url) do
+    url = "#{macula_admin_url}/realms"
     body = Map.put(@realm_config, "uri", realm_uri)
 
     case Req.post(url, json: body) do
@@ -175,8 +175,8 @@ defmodule CortexIqDashboard.RealmManager do
     end
   end
 
-  defp delete_realm(realm_uri, bondy_admin_url) do
-    url = "#{bondy_admin_url}/realms/#{realm_uri}"
+  defp delete_realm(realm_uri, macula_admin_url) do
+    url = "#{macula_admin_url}/realms/#{realm_uri}"
 
     case Req.delete(url) do
       {:ok, %{status: status}} when status in 200..299 ->

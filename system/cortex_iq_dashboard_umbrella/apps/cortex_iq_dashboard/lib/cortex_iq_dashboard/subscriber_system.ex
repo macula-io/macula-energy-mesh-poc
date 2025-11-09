@@ -24,7 +24,7 @@ defmodule CortexIqDashboard.SubscriberSystem do
       {CortexIqDashboard.SubscriberSystem, [
         event_type: :home_initialized,
         subscriber_module: CortexIqDashboard.EventSubscribers.HomeInitializedSubscriber,
-        bondy_url: "ws://bondy:18080/ws",
+        macula_url: "ws://bondy:18080/ws",
         realm_uri: "be.cortexiq.energy"
       ]}
   """
@@ -42,7 +42,7 @@ defmodule CortexIqDashboard.SubscriberSystem do
   def init(opts) do
     event_type = Keyword.fetch!(opts, :event_type)
     subscriber_module = Keyword.fetch!(opts, :subscriber_module)
-    bondy_url = Keyword.fetch!(opts, :bondy_url)
+    macula_url = Keyword.fetch!(opts, :macula_url)
     realm_uri = Keyword.fetch!(opts, :realm_uri)
 
     # Generate unique WAMP client name based on event type
@@ -58,7 +58,7 @@ defmodule CortexIqDashboard.SubscriberSystem do
       %{
         id: wamp_client_name,
         start: {MaculaSdk.Wamp, :start_link, [[
-          url: bondy_url,
+          url: macula_url,
           realm: realm_uri,
           name: wamp_client_name
         ]]},

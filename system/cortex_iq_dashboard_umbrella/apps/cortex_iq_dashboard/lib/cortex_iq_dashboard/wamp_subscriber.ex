@@ -38,7 +38,7 @@ defmodule CortexIqDashboard.WampSubscriber do
 
   @impl true
   def init(opts) do
-    bondy_url = Keyword.get(opts, :bondy_url, "ws://localhost:18080/ws")
+    macula_url = Keyword.get(opts, :macula_url, "https://localhost:9443")
     realm_uri = Keyword.get(opts, :realm_uri, "com.test.realm")
 
     state = %__MODULE__{
@@ -48,14 +48,14 @@ defmodule CortexIqDashboard.WampSubscriber do
     }
 
     # Connect asynchronously after Bondy is fully started (5 second delay)
-    Process.send_after(self(), {:connect, bondy_url, realm_uri}, 5_000)
+    Process.send_after(self(), {:connect, macula_url, realm_uri}, 5_000)
 
     {:ok, state}
   end
 
   @impl true
-  def handle_info({:connect, bondy_url, realm_uri}, state) do
-    case MaculaSdk.Wamp.start_link(url: bondy_url, realm: realm_uri, name: :wamp_subscriber) do
+  def handle_info({:connect, macula_url, realm_uri}, state) do
+    case MaculaSdk.Wamp.start_link(url: macula_url, realm: realm_uri, name: :wamp_subscriber) do
       {:ok, wamp_client} ->
         Logger.info("WAMP subscriber connected to #{realm_uri}")
 
@@ -67,7 +67,7 @@ defmodule CortexIqDashboard.WampSubscriber do
       {:error, reason} ->
         Logger.error("Failed to connect to WAMP: #{inspect(reason)}")
         # Retry after 5 seconds
-        Process.send_after(self(), {:connect, bondy_url, realm_uri}, 5_000)
+        Process.send_after(self(), {:connect, macula_url, realm_uri}, 5_000)
         {:noreply, state}
     end
   end
@@ -90,7 +90,7 @@ defmodule CortexIqDashboard.WampSubscriber do
 
     # Subscribe to simulation topics (exact)
     Enum.each(@simulation_topics, fn topic ->
-      case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, topic, handler) do
+      case MaculaSdk.Client.subscribe(state.wamp_client, topic, handler) do
         :ok ->
           Logger.info("Subscribed to WAMP topic: #{topic}")
         {:error, reason} ->
@@ -100,7 +100,7 @@ defmodule CortexIqDashboard.WampSubscriber do
 
     # Subscribe to provider topics (exact)
     Enum.each(@provider_topics, fn topic ->
-      case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, topic, handler) do
+      case MaculaSdk.Client.subscribe(state.wamp_client, topic, handler) do
         :ok ->
           Logger.info("Subscribed to WAMP topic: #{topic}")
         {:error, reason} ->
@@ -111,7 +111,7 @@ defmodule CortexIqDashboard.WampSubscriber do
     # Subscribe to home measurement topics using prefix matching (HomeWizard-compatible)
     home_prefix = "be.cortexiq.home."
     options = %{match: "prefix"}
-    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, home_prefix, handler, options) do
+    case MaculaSdk.Client.subscribe(state.wamp_client, home_prefix, handler, options) do
       :ok ->
         Logger.info("Subscribed to WAMP topic: #{home_prefix} (prefix)")
       {:error, reason} ->
@@ -120,7 +120,7 @@ defmodule CortexIqDashboard.WampSubscriber do
 
     # Subscribe to market topics using prefix matching
     market_prefix = "be.cortexiq.market."
-    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, market_prefix, handler, options) do
+    case MaculaSdk.Client.subscribe(state.wamp_client, market_prefix, handler, options) do
       :ok ->
         Logger.info("Subscribed to WAMP topic: #{market_prefix} (prefix)")
       {:error, reason} ->
@@ -129,7 +129,7 @@ defmodule CortexIqDashboard.WampSubscriber do
 
     # Subscribe to balance topics using prefix matching
     balance_prefix = "be.cortexiq.balance."
-    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, balance_prefix, handler, options) do
+    case MaculaSdk.Client.subscribe(state.wamp_client, balance_prefix, handler, options) do
       :ok ->
         Logger.info("Subscribed to WAMP topic: #{balance_prefix} (prefix)")
       {:error, reason} ->
@@ -138,7 +138,7 @@ defmodule CortexIqDashboard.WampSubscriber do
 
     # Subscribe to arbitrage topics using prefix matching
     arbitrage_prefix = "be.cortexiq.arbitrage."
-    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, arbitrage_prefix, handler, options) do
+    case MaculaSdk.Client.subscribe(state.wamp_client, arbitrage_prefix, handler, options) do
       :ok ->
         Logger.info("Subscribed to WAMP topic: #{arbitrage_prefix} (prefix)")
       {:error, reason} ->
@@ -197,7 +197,7 @@ defmodule CortexIqDashboard.WampSubscriber do
   def handle_call({:publish_control, command, kwargs}, _from, state) do
     topic = "be.cortexiq.simulation.control.#{command}"
 
-    case MaculaSdk.Wamp.Client.publish(state.wamp_client, topic, [], kwargs, %{}) do
+    case MaculaSdk.Client.publish(state.wamp_client, topic, [], kwargs, %{}) do
       :ok ->
         Logger.info("Published control command to #{topic}")
         {:reply, :ok, state}

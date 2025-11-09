@@ -88,7 +88,7 @@ defmodule CortexIqDashboard.SimulationClient do
       {:ok, wamp_client} ->
         Logger.debug("SimulationClient: Calling RPC #{uri}")
 
-        case MaculaSdk.Wamp.Client.call(wamp_client, uri, args, kwargs, %{}) do
+        case MaculaSdk.Client.call(wamp_client, uri, args, kwargs, %{}) do
           {:ok, result} ->
             Logger.debug("SimulationClient: RPC #{uri} succeeded")
             {:ok, result}

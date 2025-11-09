@@ -311,7 +311,7 @@ defmodule CortexIqDashboard.QueryClient do
       {:ok, wamp_client} ->
         Logger.debug("QueryClient: Calling RPC #{uri}")
 
-        case MaculaSdk.Wamp.Client.call(wamp_client, uri, args, kwargs, %{}) do
+        case MaculaSdk.Client.call(wamp_client, uri, args, kwargs, %{}) do
           {:ok, result} ->
             Logger.debug("QueryClient: RPC #{uri} succeeded")
 

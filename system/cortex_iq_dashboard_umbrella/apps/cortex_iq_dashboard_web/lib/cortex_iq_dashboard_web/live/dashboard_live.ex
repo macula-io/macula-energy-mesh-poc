@@ -1295,7 +1295,7 @@ defmodule CortexIqDashboardWeb.DashboardLive do
         
     <!-- System Status -->
         <div class="mt-6 text-gray-500 text-sm">
-          <p>Realm: <%= System.get_env("BONDY_REALM", "be.cortexiq.energy") %> | WAMP Router: Bondy @ <%= System.get_env("BONDY_URL", "ws://localhost:18080/ws") %></p>
+          <p>Realm: <%= System.get_env("MACULA_REALM", "be.cortexiq.energy") %> | WAMP Router: Bondy @ <%= System.get_env("MACULA_URL", "https://localhost:9443") %></p>
         </div>
         <% end %>
 

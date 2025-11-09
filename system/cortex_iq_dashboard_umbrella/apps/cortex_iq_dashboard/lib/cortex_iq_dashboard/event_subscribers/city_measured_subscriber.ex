@@ -40,7 +40,7 @@ defmodule CortexIqDashboard.EventSubscribers.CityMeasuredSubscriber do
       send(subscriber_pid, {:event, event_data})
     end
 
-    case MaculaSdk.Wamp.Client.subscribe(state.wamp_client, @topic, handler) do
+    case MaculaSdk.Client.subscribe(state.wamp_client, @topic, handler) do
       :ok ->
         Logger.info("#{__MODULE__}: Subscribed to #{@topic}")
       {:error, reason} ->

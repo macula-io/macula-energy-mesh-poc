@@ -24,13 +24,13 @@ defmodule CortexIqDashboardWeb.OverviewLive do
 
     if connected?(socket) do
       # Just-in-Time WAMP subscription model
-      bondy_url = System.get_env("BONDY_URL", "ws://bondy.macula-system.svc.cluster.local:18080/ws")
-      realm_uri = System.get_env("BONDY_REALM", "be.cortexiq.energy")
+      macula_url = System.get_env("MACULA_URL", "ws://bondy.macula-system.svc.cluster.local:18080/ws")
+      realm_uri = System.get_env("MACULA_REALM", "be.cortexiq.energy")
 
       # Start WAMP client connection (async)
       Logger.info("OverviewLive: Starting WAMP client for JIT subscription")
-      {:ok, wamp_client} = MaculaSdk.Wamp.Client.start_link(
-        url: bondy_url,
+      {:ok, wamp_client} = MaculaSdk.Client.start_link(
+        url: macula_url,
         realm: realm_uri,
         serializer: :json
       )
@@ -72,7 +72,7 @@ defmodule CortexIqDashboardWeb.OverviewLive do
     # Cleanup: stop WAMP client when LiveView terminates
     if socket.assigns[:wamp_client] do
       Logger.info("OverviewLive: Terminating, stopping WAMP client")
-      MaculaSdk.Wamp.Client.stop(socket.assigns.wamp_client)
+      MaculaSdk.Client.stop(socket.assigns.wamp_client)
     end
     :ok
   end
@@ -87,7 +87,7 @@ defmodule CortexIqDashboardWeb.OverviewLive do
       self_pid = self()
 
       # Subscribe to history updates (for charts)
-      case MaculaSdk.Wamp.Client.subscribe(
+      case MaculaSdk.Client.subscribe(
         wamp_client,
         "be.cortexiq.projections.history_updated",
         fn _topic, event_data ->
@@ -100,7 +100,7 @@ defmodule CortexIqDashboardWeb.OverviewLive do
       end
 
       # Subscribe to simulation time
-      case MaculaSdk.Wamp.Client.subscribe(
+      case MaculaSdk.Client.subscribe(
         wamp_client,
         "be.cortexiq.simulation.time_advanced",
         fn _topic, event_data ->
@@ -113,7 +113,7 @@ defmodule CortexIqDashboardWeb.OverviewLive do
       end
 
       # Subscribe to totals calculated (main overview data)
-      case MaculaSdk.Wamp.Client.subscribe(
+      case MaculaSdk.Client.subscribe(
         wamp_client,
         "be.cortexiq.projections.totals_calculated",
         fn _topic, event_data ->
