@@ -3,22 +3,22 @@ defmodule CortexIqProjections.CalculateProviderMetrics.System do
   Supervises the provider metrics calculation system.
 
   This system manages:
-  - One aggregator (subscribes to events via shared pool, calculates metrics, stores and publishes)
+  - One aggregator (subscribes to events via shared client, calculates metrics, stores and publishes)
 
   ## Architecture
 
-  Shared WAMP Pool → Aggregator (subscribes to contract.switched, home.traded, time_advanced)
-                      ↓
-                 Calculate provider metrics every 2000ms
-                      ↓
-                 Store in provider_states table
-                      ↓
-                 Publish be.cortexiq.provider.metrics_calculated
+  Shared Macula Client → Aggregator (subscribes to contract.switched, home.traded, time_advanced)
+                          ↓
+                     Calculate provider metrics every 2000ms
+                          ↓
+                     Store in provider_states table
+                          ↓
+                     Publish be.cortexiq.provider.metrics_calculated
 
   ## Strategy
 
   Uses `:one_for_one` strategy:
-  - Aggregator uses shared pool (no dedicated client needed)
+  - Aggregator uses shared client (QUIC multiplexing handles all subscriptions)
   - If aggregator crashes, only aggregator restarts
 
   ## Metrics Calculated
@@ -54,20 +54,20 @@ defmodule CortexIqProjections.CalculateProviderMetrics.System do
 
   @impl true
   def init(opts) do
-    # Use shared WAMP pool instead of dedicated client
-    pool_name = Keyword.get(opts, :pool_name, CortexIqProjections.WampPool)
+    # Use shared Macula client (QUIC multiplexing replaces pool)
+    client = Keyword.get(opts, :client, CortexIqProjections.MaculaClient)
 
     Logger.info("CalculateProviderMetrics.System starting")
-    Logger.info("  Using shared WAMP pool: #{inspect(pool_name)}")
+    Logger.info("  Using shared Macula client: #{inspect(client)}")
 
     children = [
-      # Aggregator - subscribes to events via pool, calculates metrics, stores and publishes
+      # Aggregator - subscribes to events via shared client, calculates metrics, stores and publishes
       {CortexIqProjections.CalculateProviderMetrics.Aggregator, [
-        pool_name: pool_name
+        client: client
       ]}
     ]
 
-    # one_for_one: aggregator crashes don't affect pool
+    # one_for_one: aggregator crashes don't affect client
     Supervisor.init(children, strategy: :one_for_one)
   end
 end

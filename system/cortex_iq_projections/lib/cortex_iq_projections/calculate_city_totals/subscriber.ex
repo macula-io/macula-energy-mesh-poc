@@ -13,11 +13,11 @@ defmodule CortexIqProjections.CalculateCityTotals.Subscriber do
   """
   use GenServer
   require Logger
-  alias MaculaSdk.Wamp.Client
+  alias MaculaSdk.Client
 
   defmodule State do
     @moduledoc false
-    defstruct [:wamp_client, :subscription_status]
+    defstruct [:client, :subscription_status]
   end
 
   # Client API
@@ -30,10 +30,10 @@ defmodule CortexIqProjections.CalculateCityTotals.Subscriber do
 
   @impl true
   def init(opts) do
-    wamp_client = Keyword.fetch!(opts, :wamp_client)
+    client = Keyword.fetch!(opts, :client)
 
     state = %State{
-      wamp_client: wamp_client,
+      client: client,
       subscription_status: :not_subscribed
     }
 
@@ -44,12 +44,12 @@ defmodule CortexIqProjections.CalculateCityTotals.Subscriber do
   end
 
   @impl true
-  def handle_info(:subscribe, %{wamp_client: wamp_client} = state) do
+  def handle_info(:subscribe, %{client: client} = state) do
     topic = "be.cortexiq.home.measured"
 
     Logger.info("CalculateCityTotals.Subscriber: Subscribing to #{topic}")
 
-    case Client.subscribe(wamp_client, topic, &handle_event/2, %{}) do
+    case Client.subscribe(client, topic, &handle_event/2, %{}) do
       :ok ->
         Logger.info("CalculateCityTotals.Subscriber: ✓ Subscribed to #{topic}")
         {:noreply, %{state | subscription_status: :subscribed}}

@@ -21,23 +21,23 @@ defmodule CortexIqProjections.ProjectMarketContractConfirmed.System do
 
   @impl true
   def init(opts) do
-    bondy_url = Keyword.get(opts, :bondy_url, System.get_env("BONDY_URL", "ws://localhost:18080/ws"))
-    realm_uri = Keyword.get(opts, :realm_uri, System.get_env("BONDY_REALM", "be.cortexiq.energy"))
+    macula_url = Keyword.get(opts, :macula_url, System.get_env("MACULA_URL", "https://localhost:9443"))
+    realm_uri = Keyword.get(opts, :realm_uri, System.get_env("MACULA_REALM", "be.cortexiq.energy"))
 
     # Unique WAMP client name for this event type
-    wamp_client_name = :wamp_project_market_contract_confirmed
+    client_name = :wamp_project_market_contract_confirmed
 
     Logger.info("ProjectMarketContractConfirmed.System starting")
-    Logger.info("  WAMP client: #{inspect(wamp_client_name)}")
+    Logger.info("  WAMP client: #{inspect(client_name)}")
 
     children = [
       # 1. WAMP Client
       %{
-        id: wamp_client_name,
+        id: client_name,
         start: {MaculaSdk.Wamp, :start_link, [[
-          url: bondy_url,
+          url: macula_url,
           realm: realm_uri,
-          name: wamp_client_name
+          name: client_name
         ]]},
         type: :worker,
         restart: :permanent,
@@ -46,7 +46,7 @@ defmodule CortexIqProjections.ProjectMarketContractConfirmed.System do
 
       # 2. Subscriber
       {CortexIqProjections.ProjectMarketContractConfirmed.Subscriber, [
-        wamp_client: wamp_client_name
+        client: client_name
       ]},
 
       # 3. GenServer Projector

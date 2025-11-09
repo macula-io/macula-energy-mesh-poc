@@ -5,7 +5,7 @@ defmodule CortexIqProjections.CalculateCityTotals.Aggregator do
   ## State Structure
 
   %{
-    wamp_client: :wamp_calculate_city_totals,
+    client: :wamp_calculate_city_totals,
     cities: %{
       "Breda" => %{
         total_production_kw: 45.3,
@@ -29,14 +29,14 @@ defmodule CortexIqProjections.CalculateCityTotals.Aggregator do
   """
   use GenServer
   require Logger
-  alias MaculaSdk.Wamp.Client
+  alias MaculaSdk.Client
 
   @publish_interval_ms 5_000  # 5 seconds
   @stale_threshold_ms 60_000  # 60 seconds
 
   defmodule State do
     @moduledoc false
-    defstruct [:wamp_client, :cities]
+    defstruct [:client, :cities]
   end
 
   # Client API
@@ -56,10 +56,10 @@ defmodule CortexIqProjections.CalculateCityTotals.Aggregator do
 
   @impl true
   def init(opts) do
-    wamp_client = Keyword.fetch!(opts, :wamp_client)
+    client = Keyword.fetch!(opts, :client)
 
     state = %State{
-      wamp_client: wamp_client,
+      client: client,
       cities: %{}
     }
 
@@ -151,7 +151,7 @@ defmodule CortexIqProjections.CalculateCityTotals.Aggregator do
     %{state | cities: updated_cities}
   end
 
-  defp publish_all_cities(%{wamp_client: wamp_client, cities: cities} = state) do
+  defp publish_all_cities(%{client: client, cities: cities} = state) do
     if Enum.empty?(cities) do
       Logger.debug("CalculateCityTotals.Aggregator: No cities to publish")
       state
@@ -159,7 +159,7 @@ defmodule CortexIqProjections.CalculateCityTotals.Aggregator do
       now = DateTime.utc_now()
 
       Enum.each(cities, fn {city_name, city_data} ->
-        publish_city_measured(wamp_client, city_name, city_data, now)
+        publish_city_measured(client, city_name, city_data, now)
       end)
 
       Logger.info("CalculateCityTotals.Aggregator: Published city.measured for #{map_size(cities)} cities")
@@ -169,7 +169,7 @@ defmodule CortexIqProjections.CalculateCityTotals.Aggregator do
     end
   end
 
-  defp publish_city_measured(wamp_client, city_name, city_data, timestamp) do
+  defp publish_city_measured(client, city_name, city_data, timestamp) do
     average_battery_percent =
       if Enum.empty?(city_data.battery_percents) do
         nil
@@ -191,7 +191,7 @@ defmodule CortexIqProjections.CalculateCityTotals.Aggregator do
 
     topic = "be.cortexiq.city.measured"
 
-    case Client.publish(wamp_client, topic, [payload], %{}) do
+    case Client.publish(client, topic, [payload], %{}) do
       :ok ->
         Logger.debug("CalculateCityTotals.Aggregator: Published city.measured for #{city_name}")
 

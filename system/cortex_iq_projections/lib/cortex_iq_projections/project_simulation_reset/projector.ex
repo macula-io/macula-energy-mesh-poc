@@ -101,7 +101,7 @@ defmodule CortexIqProjections.ProjectSimulationReset.Projector do
 
     topic = "be.cortexiq.projections.totals_calculated"
 
-    case MaculaSdk.Wamp.Client.publish(:wamp_calculate_system_totals, topic, [zero_totals], %{}) do
+    case MaculaSdk.Client.publish(:wamp_calculate_system_totals, topic, [zero_totals], %{}) do
       :ok ->
         Logger.info("ProjectSimulationReset: Published zero totals")
       {:error, reason} ->

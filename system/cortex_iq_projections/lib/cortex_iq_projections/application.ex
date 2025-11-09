@@ -12,41 +12,44 @@ defmodule CortexIqProjections.Application do
       CortexIqProjections.Release.migrate()
     end
 
-    # Get WAMP configuration from environment
-    bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
-    realm_uri = System.get_env("BONDY_REALM", "be.cortexiq.energy")
+    # Get Macula configuration from environment
+    macula_url = System.get_env("MACULA_URL", "https://localhost:9443")
+    realm_uri = System.get_env("MACULA_REALM", "be.cortexiq.energy")
 
     children = [
       # Database repository (write side of CQRS)
       CortexIqProjections.Repo,
 
-      # Shared WAMP connection pool (replaces 22 individual connections)
-      # All projection systems share this pool to avoid overwhelming Bondy
-      {MaculaSdk.Wamp.Pool, [
-        url: bondy_url,
-        realm: realm_uri,
-        pool_size: 5,
-        max_overflow: 2,
-        name: CortexIqProjections.WampPool
-      ]},
+      # Shared Macula client (HTTP/3 QUIC multiplexes all projection subscriptions)
+      # All projection systems share this client via QUIC stream multiplexing
+      %{
+        id: :macula_client,
+        start: {MaculaSdk.Client, :start_link, [
+          [
+            name: CortexIqProjections.MaculaClient,
+            url: macula_url,
+            realm: realm_uri
+          ]
+        ]}
+      },
 
       # VERTICAL SLICE ARCHITECTURE
       # Each event type has its own dedicated system:
-      # - Subscriber (subscribes to specific topic via shared pool)
+      # - Subscriber (subscribes to specific topic via shared client)
       # - Projector (Broadway for high-volume, GenServer for low-volume)
 
       # CRITICAL SYSTEMS ONLY (to reduce connection load while pool refactoring is in progress)
-      # TODO: Gradually re-enable other systems after refactoring them to use the pool
+      # TODO: Gradually re-enable other systems after migrating them to use shared client
 
-      # Provider metrics calculation system (REFACTORED to use pool)
+      # Provider metrics calculation system
       # Tracks provider financial metrics, market share, activity, and competitive positioning
       # Stores in provider_states table and publishes to be.cortexiq.provider.metrics_calculated
-      {CortexIqProjections.CalculateProviderMetrics.System, []},
+      {CortexIqProjections.CalculateProviderMetrics.System, [client: CortexIqProjections.MaculaClient]},
 
       # System totals calculation (ENABLED for dashboard data)
       # This system subscribes to home events and publishes aggregated totals
       # to be.cortexiq.projections.totals_calculated topic
-      {CortexIqProjections.CalculateSystemTotals.System, []}
+      {CortexIqProjections.CalculateSystemTotals.System, [client: CortexIqProjections.MaculaClient]}
 
       # TEMPORARILY DISABLED (need pool refactoring):
       # {CortexIqProjections.RegisterHome.System, []},

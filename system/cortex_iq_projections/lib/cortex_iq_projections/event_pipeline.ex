@@ -17,12 +17,12 @@ defmodule CortexIqProjections.EventPipeline do
 
   def start_link(_opts) do
     # Fetch WAMP client from EventProjector (retries if not ready yet)
-    wamp_client = get_wamp_client_with_retry()
+    client = get_client_with_retry()
 
     Broadway.start_link(__MODULE__,
       name: __MODULE__,
       producer: [
-        module: {CortexIqProjections.WampProducer, wamp_client: wamp_client},
+        module: {CortexIqProjections.WampProducer, client: client},
         concurrency: 1
       ],
       processors: [
@@ -567,26 +567,26 @@ defmodule CortexIqProjections.EventPipeline do
 
   # Helper Functions
 
-  defp get_wamp_client_with_retry(retries \\ 10) do
-    case GenServer.call(CortexIqProjections.EventProjector, :get_wamp_client, 5000) do
+  defp get_client_with_retry(retries \\ 10) do
+    case GenServer.call(CortexIqProjections.EventProjector, :get_client, 5000) do
       nil when retries > 0 ->
         Logger.warning("EventPipeline: WAMP client not ready, retrying... (#{retries} left)")
         Process.sleep(500)
-        get_wamp_client_with_retry(retries - 1)
+        get_client_with_retry(retries - 1)
 
       nil ->
         raise "EventPipeline: Failed to get WAMP client after retries"
 
-      wamp_client ->
-        Logger.info("EventPipeline: Got WAMP client: #{inspect(wamp_client)}")
-        wamp_client
+      client ->
+        Logger.info("EventPipeline: Got WAMP client: #{inspect(client)}")
+        client
     end
   rescue
     error ->
       if retries > 0 do
         Logger.warning("EventPipeline: Error getting WAMP client (#{inspect(error)}), retrying... (#{retries} left)")
         Process.sleep(500)
-        get_wamp_client_with_retry(retries - 1)
+        get_client_with_retry(retries - 1)
       else
         reraise error, __STACKTRACE__
       end

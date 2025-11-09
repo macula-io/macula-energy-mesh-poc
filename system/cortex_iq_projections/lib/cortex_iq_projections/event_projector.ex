@@ -9,12 +9,12 @@ defmodule CortexIqProjections.EventProjector do
   """
   use GenServer
   require Logger
-  alias MaculaSdk.Wamp.Client
+  alias MaculaSdk.Client
   alias CortexIqProjections.WampProducer
 
   defmodule State do
     @moduledoc false
-    defstruct [:wamp_client, :connection_status]
+    defstruct [:client, :connection_status]
   end
 
   # Client API
@@ -27,8 +27,8 @@ defmodule CortexIqProjections.EventProjector do
 
   @impl true
   def init(_opts) do
-    bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
-    bondy_realm = System.get_env("BONDY_REALM", "be.cortexiq.energy")
+    macula_url = System.get_env("MACULA_URL", "https://localhost:9443")
+    bondy_realm = System.get_env("MACULA_REALM", "be.cortexiq.energy")
     # username = System.get_env("BONDY_USERNAME")
     # password = System.get_env("BONDY_PASSWORD")
 
@@ -38,19 +38,19 @@ defmodule CortexIqProjections.EventProjector do
 
     # Start WAMP client connection (anonymous until we fix Bondy auth)
     case Client.start_link(
-           url: bondy_url,
+           url: macula_url,
            realm: bondy_realm,
            # username: username,
            # password: password,
-           name: :event_projector_wamp_client
+           name: :event_projector_client
          ) do
-      {:ok, wamp_client} ->
-        Logger.info("EventProjector: WAMP client started, connecting to #{bondy_url}")
+      {:ok, client} ->
+        Logger.info("EventProjector: WAMP client started, connecting to #{macula_url}")
 
         # Wait for connection before subscribing
         Process.send_after(self(), :subscribe_to_events, 5000)
 
-        {:ok, %{state | wamp_client: wamp_client}}
+        {:ok, %{state | client: client}}
 
       {:error, reason} ->
         Logger.error("EventProjector: Failed to start WAMP client: #{inspect(reason)}")
@@ -61,8 +61,8 @@ defmodule CortexIqProjections.EventProjector do
   end
 
   @impl true
-  def handle_call(:get_wamp_client, _from, state) do
-    {:reply, state.wamp_client, state}
+  def handle_call(:get_client, _from, state) do
+    {:reply, state.client, state}
   end
 
   @impl true
@@ -70,7 +70,7 @@ defmodule CortexIqProjections.EventProjector do
     {:stop, :retry_connection, state}
   end
 
-  def handle_info(:subscribe_to_events, %{wamp_client: wamp_client} = state) do
+  def handle_info(:subscribe_to_events, %{client: client} = state) do
     Logger.info("EventProjector: Subscribing to individual WAMP event topics")
 
     # Log initial memory
@@ -107,7 +107,7 @@ defmodule CortexIqProjections.EventProjector do
     ]
 
     Enum.each(topics, fn {topic, handler} ->
-      case Client.subscribe(wamp_client, topic, handler, %{}) do
+      case Client.subscribe(client, topic, handler, %{}) do
         :ok ->
           Logger.info("EventProjector: ✓ Subscribed to #{topic}")
         {:error, reason} ->

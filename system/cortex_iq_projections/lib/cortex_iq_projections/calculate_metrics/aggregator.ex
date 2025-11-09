@@ -40,7 +40,7 @@ defmodule CortexIqProjections.CalculateMetrics.Aggregator do
   alias CortexIqDashboardSchemas.MetricsTimeseries
 
   defstruct [
-    :wamp_client,
+    :client,
     :subscribed,
     # Event counters (reset every second)
     :events_this_second,
@@ -71,7 +71,7 @@ defmodule CortexIqProjections.CalculateMetrics.Aggregator do
 
   @impl true
   def init(opts) do
-    wamp_client = Keyword.fetch!(opts, :wamp_client)
+    client = Keyword.fetch!(opts, :client)
 
     # Subscribe to home events
     Process.send_after(self(), :subscribe_home_events, 2000)
@@ -82,7 +82,7 @@ defmodule CortexIqProjections.CalculateMetrics.Aggregator do
     Logger.info("CalculateMetrics.Aggregator started - will calculate metrics every #{@calc_interval_ms}ms")
 
     {:ok, %__MODULE__{
-      wamp_client: wamp_client,
+      client: client,
       subscribed: false,
       events_this_second: 0,
       measurements_this_second: 0,
@@ -127,11 +127,11 @@ defmodule CortexIqProjections.CalculateMetrics.Aggregator do
 
     # Attempt all subscriptions
     results = [
-      {:connected, MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.home.connected", connected_handler)},
-      {:disconnected, MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.home.disconnected", disconnected_handler)},
-      {:measured, MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.home.measured", measured_handler)},
-      {:time_advanced, MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.simulation.time_advanced", time_advanced_handler)},
-      {:contract_switched, MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.market.contract.switched", contract_switched_handler)}
+      {:connected, MaculaSdk.Client.subscribe(state.client, "be.cortexiq.home.connected", connected_handler)},
+      {:disconnected, MaculaSdk.Client.subscribe(state.client, "be.cortexiq.home.disconnected", disconnected_handler)},
+      {:measured, MaculaSdk.Client.subscribe(state.client, "be.cortexiq.home.measured", measured_handler)},
+      {:time_advanced, MaculaSdk.Client.subscribe(state.client, "be.cortexiq.simulation.time_advanced", time_advanced_handler)},
+      {:contract_switched, MaculaSdk.Client.subscribe(state.client, "be.cortexiq.market.contract.switched", contract_switched_handler)}
     ]
 
     # Check if all succeeded
@@ -306,7 +306,7 @@ defmodule CortexIqProjections.CalculateMetrics.Aggregator do
     Task.start(fn -> store_metrics(metrics) end)
 
     # Publish via WAMP (async)
-    Task.start(fn -> publish_metrics(state.wamp_client, metrics) end)
+    Task.start(fn -> publish_metrics(state.client, metrics) end)
 
     # Clean up old contract switches (older than 60 seconds)
     now_ms = System.monotonic_time(:millisecond)
@@ -399,13 +399,13 @@ defmodule CortexIqProjections.CalculateMetrics.Aggregator do
     end
   end
 
-  defp publish_metrics(wamp_client, metrics) do
+  defp publish_metrics(client, metrics) do
     # Convert DateTime to ISO8601 for WAMP
     payload = metrics
       |> Map.put(:timestamp, DateTime.to_iso8601(metrics.timestamp))
       |> Map.put(:simulation_time, if(metrics.simulation_time, do: DateTime.to_iso8601(metrics.simulation_time), else: nil))
 
-    case MaculaSdk.Wamp.Client.publish(wamp_client, "macula.metrics.totals_calculated", [], payload) do
+    case MaculaSdk.Client.publish(client, "macula.metrics.totals_calculated", [], payload) do
       :ok ->
         Logger.debug("#{__MODULE__}: Published metrics to macula.metrics.totals_calculated")
       {:error, reason} ->

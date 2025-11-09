@@ -44,7 +44,7 @@ defmodule CortexIqProjections.CalculateProviderMetrics.Aggregator do
   alias CortexIqDashboardSchemas.Projections.ProviderState
 
   defstruct [
-    :pool_name,
+    :client,
     :subscribed,
     # Provider tracking: %{provider_id => provider_data}
     :providers,
@@ -70,7 +70,7 @@ defmodule CortexIqProjections.CalculateProviderMetrics.Aggregator do
 
   @impl true
   def init(opts) do
-    pool_name = Keyword.fetch!(opts, :pool_name)
+    client = Keyword.fetch!(opts, :client)
 
     # Subscribe to provider/home events
     Process.send_after(self(), :subscribe_events, 2000)
@@ -81,7 +81,7 @@ defmodule CortexIqProjections.CalculateProviderMetrics.Aggregator do
     Logger.info("CalculateProviderMetrics.Aggregator started - will calculate metrics every #{@calc_interval_ms}ms")
 
     {:ok, %__MODULE__{
-      pool_name: pool_name,
+      client: client,
       subscribed: false,
       providers: %{},
       previous_market_shares: %{},
@@ -113,9 +113,9 @@ defmodule CortexIqProjections.CalculateProviderMetrics.Aggregator do
 
     # Attempt all subscriptions using shared pool
     results = [
-      {:contract_switched, MaculaSdk.Wamp.Pool.subscribe("be.cortexiq.market.contract.switched", contract_switched_handler, %{}, state.pool_name)},
-      {:home_traded, MaculaSdk.Wamp.Pool.subscribe("be.cortexiq.home.traded", home_traded_handler, %{}, state.pool_name)},
-      {:time_advanced, MaculaSdk.Wamp.Pool.subscribe("be.cortexiq.simulation.time_advanced", time_advanced_handler, %{}, state.pool_name)}
+      {:contract_switched, MaculaSdk.Client.subscribe("be.cortexiq.market.contract.switched", contract_switched_handler, %{}, state.client)},
+      {:home_traded, MaculaSdk.Client.subscribe("be.cortexiq.home.traded", home_traded_handler, %{}, state.client)},
+      {:time_advanced, MaculaSdk.Client.subscribe("be.cortexiq.simulation.time_advanced", time_advanced_handler, %{}, state.client)}
     ]
 
     # Check if all succeeded
@@ -203,7 +203,7 @@ defmodule CortexIqProjections.CalculateProviderMetrics.Aggregator do
     Task.start(fn -> store_provider_metrics(metrics) end)
 
     # Publish via WAMP (async)
-    Task.start(fn -> publish_provider_metrics(state.pool_name, metrics) end)
+    Task.start(fn -> publish_provider_metrics(state.client, metrics) end)
 
     # Clean up old contract activity (older than 60 seconds)
     now_ms = System.monotonic_time(:millisecond)
@@ -391,7 +391,7 @@ defmodule CortexIqProjections.CalculateProviderMetrics.Aggregator do
       Logger.error("#{__MODULE__}: Failed to store provider metrics: #{inspect(error)}")
   end
 
-  defp publish_provider_metrics(pool_name, metrics) do
+  defp publish_provider_metrics(client, metrics) do
     # Convert DateTime to ISO8601 for WAMP
     payload = %{
       timestamp: DateTime.to_iso8601(metrics.timestamp),
@@ -400,7 +400,7 @@ defmodule CortexIqProjections.CalculateProviderMetrics.Aggregator do
       market_summary: metrics.market_summary
     }
 
-    case MaculaSdk.Wamp.Pool.publish("be.cortexiq.provider.metrics_calculated", [], payload, %{}, pool_name) do
+    case MaculaSdk.Client.publish("be.cortexiq.provider.metrics_calculated", [], payload, %{}, client) do
       :ok ->
         Logger.debug("#{__MODULE__}: Published provider metrics to be.cortexiq.provider.metrics_calculated")
       {:error, reason} ->

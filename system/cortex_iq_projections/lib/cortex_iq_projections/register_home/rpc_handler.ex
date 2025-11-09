@@ -29,13 +29,13 @@ defmodule CortexIqProjections.RegisterHome.RpcHandler do
   def init(_opts) do
     Logger.info("RegisterHome.RpcHandler: Starting RPC handler")
 
-    bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
+    macula_url = System.get_env("MACULA_URL", "https://localhost:9443")
 
-    Logger.info("RegisterHome.RpcHandler: Connecting to WAMP realm #{@realm} at #{bondy_url}")
+    Logger.info("RegisterHome.RpcHandler: Connecting to WAMP realm #{@realm} at #{macula_url}")
 
-    case MaculaSdk.Wamp.Pool.start_link(
+    case MaculaSdk.Client.start_link(
            realm: @realm,
-           url: bondy_url,
+           url: macula_url,
            name: CortexIqProjections.RegisterHome.WampPool,
            pool_size: 2
          ) do
@@ -61,7 +61,7 @@ defmodule CortexIqProjections.RegisterHome.RpcHandler do
   defp register_procedure do
     Logger.info("RegisterHome.RpcHandler: Registering procedure #{@procedure_uri}")
 
-    case MaculaSdk.Wamp.Pool.register(
+    case MaculaSdk.Client.register(
            @procedure_uri,
            &handle_call/3,
            %{},

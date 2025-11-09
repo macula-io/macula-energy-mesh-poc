@@ -16,7 +16,7 @@ defmodule CortexIqProjections.WampProducer do
   defmodule State do
     @moduledoc false
     defstruct [
-      :wamp_client,
+      :client,
       :demand,
       :queue,
       :queue_size,
@@ -41,10 +41,10 @@ defmodule CortexIqProjections.WampProducer do
 
   @impl true
   def init(opts) do
-    wamp_client = Keyword.fetch!(opts, :wamp_client)
+    client = Keyword.fetch!(opts, :client)
 
     state = %State{
-      wamp_client: wamp_client,
+      client: client,
       demand: 0,
       queue: :queue.new(),
       queue_size: 0,

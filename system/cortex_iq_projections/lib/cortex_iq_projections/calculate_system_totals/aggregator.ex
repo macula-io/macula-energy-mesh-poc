@@ -21,7 +21,7 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
   require Logger
 
   defstruct [
-    wamp_client: nil,
+    client: nil,
     subscribed: false,  # Track if we successfully subscribed
     homes: %{},  # %{home_id => %{production_kw, consumption_kw, battery_percent}}
     last_totals: nil,  # Last calculated totals
@@ -42,7 +42,7 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
 
   @impl true
   def init(opts) do
-    wamp_client = Keyword.fetch!(opts, :wamp_client)
+    client = Keyword.fetch!(opts, :client)
 
     # Subscribe to home events to track connection state and measurements
     Process.send_after(self(), :subscribe_home_events, 2000)
@@ -58,7 +58,7 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
     Logger.info("  History emission interval: #{@history_interval_ms}ms")
 
     {:ok, %__MODULE__{
-      wamp_client: wamp_client,
+      client: client,
       calc_timer: calc_timer,
       history_timer: history_timer
     }}
@@ -87,9 +87,9 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
 
     # Attempt all three subscriptions
     results = [
-      {:connected, MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.home.connected", connected_handler)},
-      {:disconnected, MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.home.disconnected", disconnected_handler)},
-      {:measured, MaculaSdk.Wamp.Client.subscribe(state.wamp_client, "be.cortexiq.home.measured", measured_handler)}
+      {:connected, MaculaSdk.Client.subscribe(state.client, "be.cortexiq.home.connected", connected_handler)},
+      {:disconnected, MaculaSdk.Client.subscribe(state.client, "be.cortexiq.home.disconnected", disconnected_handler)},
+      {:measured, MaculaSdk.Client.subscribe(state.client, "be.cortexiq.home.measured", measured_handler)}
     ]
 
     # Check if all succeeded
@@ -217,7 +217,7 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
       total_homes: max(total_homes_in_db, totals.total_homes),
       connected_homes_count: max(total_homes_in_db, totals.total_homes)
     })
-    publish_totals_calculated(state.wamp_client, totals_with_db_count)
+    publish_totals_calculated(state.client, totals_with_db_count)
 
     # Store in database for history/charts
     store_totals(totals)
@@ -233,7 +233,7 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
     # Emit current totals as history event for dashboard charts
     # Dashboard will accumulate these into a rolling history buffer
     if state.last_totals do
-      publish_history_updated(state.wamp_client, state.last_totals)
+      publish_history_updated(state.client, state.last_totals)
       Logger.debug("#{__MODULE__}: History event emitted")
     else
       Logger.debug("#{__MODULE__}: No totals calculated yet, skipping history emission")
@@ -280,7 +280,7 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
     }
   end
 
-  defp publish_totals_calculated(wamp_client, totals) do
+  defp publish_totals_calculated(client, totals) do
     # Enhance totals with financial metrics (placeholders for now - will be calculated from trade events)
     enhanced_totals = Map.merge(totals, %{
       total_energy_bought_kwh: 0.0,  # TODO: Track from home trade events
@@ -293,10 +293,10 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
       cortexiq_net_savings: 0.0      # TODO: savings - commission
     })
 
-    Logger.info("#{__MODULE__}: Publishing totals to be.cortexiq.projections.totals_calculated, client=#{inspect(wamp_client)}, homes=#{totals.total_homes}")
+    Logger.info("#{__MODULE__}: Publishing totals to be.cortexiq.projections.totals_calculated, client=#{inspect(client)}, homes=#{totals.total_homes}")
 
-    case MaculaSdk.Wamp.Client.publish(
-      wamp_client,
+    case MaculaSdk.Client.publish(
+      client,
       "be.cortexiq.projections.totals_calculated",
       [],
       enhanced_totals
@@ -309,7 +309,7 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
     end
   end
 
-  defp publish_history_updated(wamp_client, totals) do
+  defp publish_history_updated(client, totals) do
     # Publish history event for dashboard charts
     # Convert kW to W for consistency with dashboard expectations
     history_point = %{
@@ -322,8 +322,8 @@ defmodule CortexIqProjections.CalculateSystemTotals.Aggregator do
 
     Logger.debug("#{__MODULE__}: Publishing history to be.cortexiq.projections.history_updated")
 
-    case MaculaSdk.Wamp.Client.publish(
-      wamp_client,
+    case MaculaSdk.Client.publish(
+      client,
       "be.cortexiq.projections.history_updated",
       [],
       history_point
