@@ -10,7 +10,7 @@ defmodule CortexIqQueries.RpcServer do
   use GenServer
   require Logger
 
-  alias MaculaSdk.Wamp.Client
+  alias MaculaSdk.Client
   alias CortexIqQueries.Queries
 
   @reconnect_interval 5_000
@@ -25,11 +25,11 @@ defmodule CortexIqQueries.RpcServer do
 
   @impl true
   def init(opts) do
-    bondy_url = Keyword.fetch!(opts, :bondy_url)
+    macula_url = Keyword.fetch!(opts, :macula_url)
     realm = Keyword.fetch!(opts, :realm)
 
     state = %{
-      bondy_url: bondy_url,
+      macula_url: macula_url,
       realm: realm,
       wamp_client: nil,
       procedures: []
@@ -41,9 +41,9 @@ defmodule CortexIqQueries.RpcServer do
 
   @impl true
   def handle_info(:connect, state) do
-    Logger.info("RpcServer: Connecting to WAMP realm #{state.realm} at #{state.bondy_url}")
+    Logger.info("RpcServer: Connecting to WAMP realm #{state.realm} at #{state.macula_url}")
 
-    case Client.start_link(url: state.bondy_url, realm: state.realm) do
+    case Client.start_link(url: state.macula_url, realm: state.realm) do
       {:ok, client} ->
         Logger.info("RpcServer: WAMP client process started, waiting for session establishment...")
 

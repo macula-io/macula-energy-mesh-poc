@@ -25,7 +25,11 @@ defmodule CortexIqQueries.MixProject do
   defp deps do
     [
       {:cortex_iq_dashboard_schemas, path: "../cortex_iq_dashboard_schemas"},  # Shared schemas
-      {:macula_sdk, path: "../macula_sdk"},   # For WAMP RPC server
+      {:macula_sdk,
+        git: "git@github.com:macula-io/macula-energy-mesh-poc.git",
+        branch: "feature/competition",
+        sparse: "system/macula_sdk",
+        override: true},   # For RPC server (HTTP/3)
       {:cortex_iq_core, path: "../cortex_iq_core"},  # For domain models
       {:ecto_sql, "~> 3.12"},  # Database toolkit
       {:postgrex, ">= 0.0.0"}  # PostgreSQL driver

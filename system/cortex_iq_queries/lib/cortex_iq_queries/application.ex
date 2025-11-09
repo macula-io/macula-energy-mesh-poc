@@ -8,14 +8,14 @@ defmodule CortexIqQueries.Application do
   @impl true
   def start(_type, _args) do
     # Get configuration from environment
-    bondy_url = System.get_env("BONDY_URL", "ws://localhost:18080/ws")
-    realm = System.get_env("BONDY_REALM", "be.cortexiq.energy")
+    macula_url = System.get_env("MACULA_URL", "https://localhost:9443")
+    realm = System.get_env("MACULA_REALM", "be.cortexiq.energy")
 
     children = [
       # Database connection pool
       CortexIqQueries.Repo,
-      # WAMP RPC server (registers query procedures)
-      {CortexIqQueries.RpcServer, [bondy_url: bondy_url, realm: realm]}
+      # RPC server (registers query procedures via HTTP/3)
+      {CortexIqQueries.RpcServer, [macula_url: macula_url, realm: realm]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
