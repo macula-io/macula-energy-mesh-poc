@@ -4,32 +4,44 @@ defmodule MaculaSdk.MixProject do
   def project do
     [
       app: :macula_sdk,
-      version: "0.1.0",
-      elixir: "~> 1.18",
+      version: "0.2.0",
+      elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      description: "Elixir SDK for Macula Platform - HTTP/3 Transport",
+      package: package()
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # WAMP client dependencies
-      {:jason, "~> 1.2"},
-      {:websockex, "~> 0.4"},
+      # Erlang macula_sdk - the actual HTTP/3 SDK implementation
+      # Fetched from GitHub macula repository
+      {:macula_sdk,
+        git: "git@github.com:macula-io/macula.git",
+        branch: "main",
+        sparse: "apps/macula_sdk",
+        app: false,
+        compile: "rebar3 compile",
+        manager: :rebar3,
+        override: true}
+    ]
+  end
 
-      # Connection pooling
-      {:poolboy, "~> 1.5"},
-
-      # Metrics and telemetry
-      {:telemetry, "~> 1.0"}
+  defp package do
+    [
+      name: "macula_sdk",
+      licenses: ["MIT"],
+      links: %{
+        "GitHub" => "https://github.com/macula-io/macula",
+        "Docs" => "https://docs.macula.io"
+      }
     ]
   end
 end
