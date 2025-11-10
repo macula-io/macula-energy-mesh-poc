@@ -25,7 +25,7 @@ defmodule CortexIqUtilities.MixProject do
     [
       {:cortex_iq_core, path: "../cortex_iq_core"},
       # Client library (Free, Open Source) - connects to standalone gateway
-      {:macula_client_ex, path: "../macula_client_ex"},
+      {:macula, "~> 0.3.4"},
       {:jason, "~> 1.4"}
     ]
   end

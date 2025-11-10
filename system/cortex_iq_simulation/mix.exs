@@ -33,7 +33,7 @@ defmodule CortexIqSimulation.MixProject do
   defp deps do
     [
       # Macula Client (Elixir wrapper) - uses local path dependency
-      {:macula_client_ex, path: "../macula_client_ex"}
+      {:macula, "~> 0.3.4"}
     ]
   end
 end
