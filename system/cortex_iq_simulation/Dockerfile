@@ -3,13 +3,15 @@
 
 # syntax=docker/dockerfile:1.4
 # Build stage
-FROM hexpm/elixir:1.18.1-erlang-26.2.5.6-alpine-3.20.3 AS builder
+FROM elixir:1.18-otp-26 AS builder
 
-# Install build dependencies
-RUN apk add --no-cache \
+# Install build dependencies (including cmake for quicer NIF)
+RUN apt-get update && apt-get install -y \
     git \
-    build-base \
-    openssh-client
+    build-essential \
+    cmake \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Prepare build directory
 WORKDIR /app
@@ -18,20 +20,17 @@ WORKDIR /app
 RUN mix local.hex --force && \
     mix local.rebar --force
 
+# Cache bust argument (forces fresh dependency fetch)
+ARG CACHE_BUST
+
 # Copy dependency specs
 COPY cortex_iq_simulation/mix.exs cortex_iq_simulation/mix.lock ./
-
-# Copy dependency source (MaculaSDK Elixir wrapper)
-COPY macula_sdk ../macula_sdk
 
 # Set production environment
 ENV MIX_ENV=prod
 
-# Configure git to use SSH
-RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-# Get dependencies (uses SSH secret for private GitHub repos)
-RUN --mount=type=ssh mix deps.get --only prod
+# Get dependencies (macula_client_ex fetched from Hex.pm)
+RUN mix deps.get --only prod
 
 # Copy application source
 COPY cortex_iq_simulation/config ./config
@@ -44,18 +43,19 @@ RUN mix compile
 RUN mix release cortex_iq_simulation
 
 # Runtime stage
-FROM alpine:3.20.3
+FROM debian:bookworm-slim
 
 # Install runtime dependencies
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     openssl \
-    ncurses-libs \
-    libstdc++ \
-    libgcc
+    libssl3 \
+    libncurses6 \
+    libstdc++6 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
-RUN addgroup -g 1000 cortexiq && \
-    adduser -D -u 1000 -G cortexiq cortexiq
+RUN groupadd -g 1000 cortexiq && \
+    useradd -u 1000 -g cortexiq -m -s /bin/bash cortexiq
 
 # Set working directory
 WORKDIR /app
@@ -66,11 +66,11 @@ COPY --from=builder --chown=cortexiq:cortexiq /app/_build/prod/rel/cortex_iq_sim
 # Switch to non-root user
 USER cortexiq
 
-# Expose no ports (WAMP client only)
+# Expose no ports (HTTP/3 client only)
 
 # Environment variables with defaults
-ENV BONDY_URL=ws://172.20.0.2:30080/ws \
-    BONDY_REALM=be.cortexiq.energy \
+ENV MACULA_URL=https://macula-gateway:9443 \
+    MACULA_REALM=be.cortexiq.energy \
     SIMULATION_SPEED=105120 \
     SIMULATION_START_DATE=2025-01-01T00:00:00Z
 

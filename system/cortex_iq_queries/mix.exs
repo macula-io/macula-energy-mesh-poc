@@ -26,7 +26,7 @@ defmodule CortexIqQueries.MixProject do
     [
       {:cortex_iq_dashboard_schemas, path: "../cortex_iq_dashboard_schemas"},  # Shared schemas
       # Client library (Free, Open Source) - connects to standalone gateway
-      {:macula_client_ex, path: "../macula_client_ex", override: true},
+      {:macula_client_ex, path: "../macula_client_ex"},
       {:cortex_iq_core, path: "../cortex_iq_core"},  # For domain models
       {:ecto_sql, "~> 3.12"},  # Database toolkit
       {:postgrex, ">= 0.0.0"}  # PostgreSQL driver

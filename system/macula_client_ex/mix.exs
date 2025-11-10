@@ -4,7 +4,7 @@ defmodule MaculaClientEx.MixProject do
   def project do
     [
       app: :macula_client_ex,
-      version: "0.2.0",
+      version: "0.3.4",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -15,15 +15,18 @@ defmodule MaculaClientEx.MixProject do
 
   def application do
     [
-      extra_applications: [:logger, :macula_sdk]
+      extra_applications: [:logger]
     ]
   end
 
   defp deps do
     [
-      # Erlang macula_sdk - the actual HTTP/3 SDK implementation
+      # Consolidated Macula platform package - includes all modules
       # Published on Hex.pm - free, open source
-      {:macula_sdk, "~> 0.2.0", manager: :rebar3, override: true}
+      {:macula, "~> 0.3.4"},
+
+      # Documentation
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 

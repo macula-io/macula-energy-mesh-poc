@@ -39,7 +39,7 @@ defmodule CortexIqDashboard.MixProject do
       {:cortex_iq_core, path: "../../../cortex_iq_core"},
       {:cortex_iq_dashboard_schemas, path: "../../../cortex_iq_dashboard_schemas"},
       # Client library (Free, Open Source) - connects to standalone gateway
-      {:macula_client_ex, path: "../../../macula_client_ex", override: true},
+      {:macula_client_ex, path: "../macula_client_ex"},
       {:dns_cluster, "~> 0.2.0"},
       {:phoenix_pubsub, "~> 2.1"},
       {:jason, "~> 1.2"},

@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1.4
 ####################################################################################################
 # CortexIQ Dashboard Hub
-# Includes: Bondy WAMP Router + Dashboard (with MaculaOs in hub mode)
+# Phoenix LiveView dashboard with HTTP/3 (QUIC) connectivity
 #
 # This container runs:
-# - Bondy WAMP router (realm hub)
 # - CortexIQ Dashboard (analytics + web UI)
+# - HTTP/3 client connecting to Macula Gateway
 # - PostgreSQL client (connects to external PostgreSQL)
 ####################################################################################################
 
@@ -46,18 +46,14 @@ COPY system/cortex_iq_dashboard_umbrella/config ./config
 #   - path: "../../../macula_sdk" → /app/apps/cortex_iq_dashboard/../../../macula_sdk → needs /macula_sdk
 COPY system/cortex_iq_core /cortex_iq_core
 COPY system/cortex_iq_dashboard_schemas /cortex_iq_dashboard_schemas
-COPY system/macula_sdk /macula_sdk
 
 # Copy umbrella apps mix files
 COPY system/cortex_iq_dashboard_umbrella/apps/cortex_iq_dashboard/mix.exs ./apps/cortex_iq_dashboard/
 COPY system/cortex_iq_dashboard_umbrella/apps/cortex_iq_dashboard_web/mix.exs ./apps/cortex_iq_dashboard_web/
 
 # Get dependencies
-# Configure git to use SSH
-RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-# Get dependencies (uses SSH secret for private GitHub repos)
-RUN --mount=type=ssh mix deps.get --only prod
+RUN mix deps.get --only prod
 RUN mix deps.compile
 
 # Copy application source code (with cache busting)
@@ -111,9 +107,8 @@ ENV MIX_ENV=prod
 
 # Default environment variables (overrideable)
 ENV PORT=4000
-ENV MACULA_MODE=realm_hub
+ENV MACULA_URL=https://macula-gateway:9443
 ENV MACULA_REALM=be.cortexiq.energy
-ENV BONDY_URL=http://bondy:18080
 
 # Database configuration
 ENV DATABASE_URL=postgresql://postgres:postgres@db:5432/cortex_iq_dashboard_prod

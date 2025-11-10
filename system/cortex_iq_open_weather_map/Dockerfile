@@ -13,9 +13,9 @@ ARG ALPINE_VERSION=3.20.3
 FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-alpine-${ALPINE_VERSION} AS builder
 
 # Install build dependencies
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     git \
-    build-base
+    build-essential
 
 WORKDIR /app
 
@@ -27,6 +27,9 @@ RUN mix local.hex --force && \
     mix local.rebar --force
 
 # Copy this application's mix files
+# Cache bust argument (forces fresh dependency fetch)
+ARG CACHE_BUST
+
 COPY cortex_iq_open_weather_map/mix.exs ./
 COPY cortex_iq_open_weather_map/config ./config
 
@@ -52,16 +55,16 @@ RUN mix release cortex_iq_open_weather_map
 FROM alpine:${ALPINE_VERSION} AS runtime
 
 # Install runtime dependencies
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     openssl \
-    ncurses-libs \
-    libstdc++ \
-    libgcc \
+    libncurses6 \
+    libstdc++6 \
+    libssl3 && rm -rf /var/lib/apt/lists/* \
     ca-certificates
 
 # Create non-root user
-RUN addgroup -g 1000 cortexiq && \
-    adduser -D -u 1000 -G cortexiq cortexiq
+RUN groupadd -g 1000 cortexiq && \
+    useradd -u 1000 -g cortexiq -m -s /bin/bash cortexiq
 
 WORKDIR /app
 

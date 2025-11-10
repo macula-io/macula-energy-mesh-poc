@@ -16,10 +16,12 @@ ARG ALPINE_VERSION=3.20.3
 FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-alpine-${ALPINE_VERSION} AS builder
 
 # Install build dependencies
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     git \
-    build-base \
+    build-essential \
     openssh-client \
+    cmake \
+    libssl-dev && rm -rf /var/lib/apt/lists/* \
     postgresql-dev
 
 WORKDIR /app
@@ -32,20 +34,19 @@ RUN mix local.hex --force && \
     mix local.rebar --force
 
 # Copy this application's mix files
+# Cache bust argument (forces fresh dependency fetch)
+ARG CACHE_BUST
+
 COPY cortex_iq_queries/mix.exs ./
 COPY cortex_iq_queries/config ./config
 
 # Copy path dependencies (required for compilation)
 COPY cortex_iq_dashboard_schemas ../cortex_iq_dashboard_schemas
 COPY cortex_iq_core ../cortex_iq_core
-COPY macula_sdk ../macula_sdk
 
 # Get dependencies
-# Configure git to use SSH
-RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-# Get dependencies (uses SSH secret for private GitHub repos)
-RUN --mount=type=ssh mix deps.get --only prod
+RUN mix deps.get --only prod
 
 # Copy application source
 COPY cortex_iq_queries/lib ./lib
@@ -62,16 +63,16 @@ RUN mix release cortex_iq_queries
 FROM alpine:${ALPINE_VERSION} AS runtime
 
 # Install runtime dependencies
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     openssl \
-    ncurses-libs \
-    libstdc++ \
-    libgcc \
+    libncurses6 \
+    libstdc++6 \
+    libssl3 && rm -rf /var/lib/apt/lists/* \
     postgresql-client
 
 # Create non-root user
-RUN addgroup -g 1000 cortexiq && \
-    adduser -D -u 1000 -G cortexiq cortexiq
+RUN groupadd -g 1000 cortexiq && \
+    useradd -u 1000 -g cortexiq -m -s /bin/bash cortexiq
 
 WORKDIR /app
 
@@ -89,8 +90,8 @@ ENV LANG=C.UTF-8
 ENV ERL_MAX_PORTS=1024
 
 # Default environment variables (can be overridden)
-ENV BONDY_URL=ws://bondy.macula-hub.svc.cluster.local:18080/ws
-ENV BONDY_REALM=be.cortexiq.energy
+ENV MACULA_URL=https://macula-gateway:9443
+ENV MACULA_REALM=be.cortexiq.energy
 ENV DATABASE_URL=ecto://postgres:postgres@postgres.macula-hub.svc.cluster.local/mesh_hub
 ENV POOL_SIZE=10
 

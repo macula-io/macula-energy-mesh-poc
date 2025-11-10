@@ -1,4 +1,10 @@
 %{
-  "macula_sdk": {:hex, :macula_sdk, "0.2.0", "e3b1e064c6b9da69598e6c8c486c904e57fe113f081de3c99be931a886b8d9ad", [:rebar3], [], "hexpm", "960eb3ee73d29b386983c008c21078b23a01bc7451fa4a655410893fb1796a04"},
+  "gproc": {:hex, :gproc, "0.9.1", "f1df0364423539cf0b80e8201c8b1839e229e5f9b3ccb944c5834626998f5b8c", [:rebar3], [], "hexpm", "905088e32e72127ed9466f0bac0d8e65704ca5e73ee5a62cb073c3117916d507"},
+  "jiffy": {:hex, :jiffy, "1.1.2", "a9b6c9a7ec268e7cf493d028f0a4c9144f59ccb878b1afe42841597800840a1b", [:rebar3], [], "hexpm", "bb61bc42a720bbd33cb09a410e48bb79a61012c74cb8b3e75f26d988485cf381"},
+  "macula_client_ex": {:hex, :macula_client_ex, "0.3.0", "25a6a0f846f9524d9852c994741ab431e8806d91519839b452ff824b79aeae38", [:mix], [{:macula_sdk, "~> 0.3.0", [hex: :macula_sdk, repo: "hexpm", optional: false]}], "hexpm", "c08806d62cbbb9e41ba63a6f142eed7d8e85853016c8468fa794c1fdc66069f7"},
+  "macula_sdk": {:hex, :macula_sdk, "0.3.0", "71b52563a613bcd70ecdf24ffc2de76b7155d50c9cfc28c8188177abac748f8f", [:rebar3], [{:gproc, "~> 0.9.1", [hex: :gproc, repo: "hexpm", optional: false]}, {:jiffy, "~> 1.1.2", [hex: :jiffy, repo: "hexpm", optional: false]}, {:msgpack, "~> 0.8.1", [hex: :msgpack, repo: "hexpm", optional: false]}, {:quicer, "~> 0.2.15", [hex: :quicer, repo: "hexpm", optional: false]}], "hexpm", "ee914a3f310f6469f69234cafded3e4d9c2a2a579882c960d86e680d100337dd"},
+  "msgpack": {:hex, :msgpack, "0.8.1", "deb35c13291eafe56ad9870374c2eaa92323dc5503d50432ebcaf47052e6d343", [:rebar3], [], "hexpm", "04d9a75bc6f4bed8627ee1e7aa9df37601f510fdc786a84fe932bb21d765565f"},
   "phoenix_pubsub": {:hex, :phoenix_pubsub, "2.2.0", "ff3a5616e1bed6804de7773b92cbccfc0b0f473faf1f63d7daf1206c7aeaaa6f", [:mix], [], "hexpm", "adc313a5bf7136039f63cfd9668fde73bba0765e0614cba80c06ac9460ff3e96"},
+  "quicer": {:hex, :quicer, "0.2.15", "775fcfa09c9ce5a4a00d23c1c8b1e81cd361ebc847e43bb766efac4373cdb1b8", [:rebar3], [{:snabbkaffe, "1.0.10", [hex: :snabbkaffe, repo: "hexpm", optional: false]}], "hexpm", "52236d9384a541341706bcae438e81b209fa21d2045d3df317f8ba5beda6a8e5"},
+  "snabbkaffe": {:hex, :snabbkaffe, "1.0.10", "9be2f54f61fc6862391b666b2b5b76c3fa53598e2989a17cef1b48cf347a8a63", [:rebar3], [], "hexpm", "70a98df36ae756908d55b5770891d443d63c903833e3e87d544036e13d4fac26"},
 }

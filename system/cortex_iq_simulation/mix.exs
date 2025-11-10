@@ -32,8 +32,8 @@ defmodule CortexIqSimulation.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # Client library (Free, Open Source) - connects to standalone gateway
-      {:macula_client_ex, path: "../macula_client_ex", override: true}
+      # Macula Client (Elixir wrapper) - uses local path dependency
+      {:macula_client_ex, path: "../macula_client_ex"}
     ]
   end
 end
