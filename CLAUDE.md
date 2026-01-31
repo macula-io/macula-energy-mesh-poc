@@ -1099,3 +1099,11 @@ The dashboard should make these points visually obvious:
 - **WAMP Protocol**: https://wamp-proto.org/
 - in our scripts, environment variables should not reflect choices in terms of distros, but should reflect their purpose
 - CortexIQ Dashboard DOES NOT need to connect to postgres! All data in the dashboard must come from 2  sources only: eiter by subscribing to a WAMP topic (and processing the events that are published on it) OR cortex_iq_queries, by CALLING a published RPC
+---
+
+## Support
+
+If you find this project valuable, consider supporting its development:
+
+**☕ Buy Me a Coffee:** https://buymeacoffee.com/rlefever
+
