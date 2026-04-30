@@ -16,12 +16,12 @@ ARG ALPINE_VERSION=3.21.0
 FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-alpine-${ALPINE_VERSION} AS builder
 
 # Install build dependencies
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     git \
-    build-essential \
+    build-base \
     openssh-client \
     cmake \
-    libssl-dev && rm -rf /var/lib/apt/lists/*
+    openssl-dev
 
 WORKDIR /app
 
@@ -62,15 +62,15 @@ RUN mix release cortex_iq_homes
 FROM alpine:${ALPINE_VERSION} AS runtime
 
 # Install runtime dependencies
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     openssl \
-    libncurses6 \
-    libstdc++6 \
-    libssl3 && rm -rf /var/lib/apt/lists/*
+    ncurses-libs \
+    libstdc++ \
+    libgcc
 
 # Create non-root user
-RUN groupadd -g 1000 cortexiq && \
-    useradd -u 1000 -g cortexiq -m -s /bin/bash cortexiq
+RUN addgroup -g 1000 cortexiq && \
+    adduser -u 1000 -G cortexiq -h /app -D cortexiq
 
 WORKDIR /app
 

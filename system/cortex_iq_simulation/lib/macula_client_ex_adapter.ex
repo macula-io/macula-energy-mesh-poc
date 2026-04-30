@@ -5,7 +5,7 @@ defmodule MaculaClientEx.Client do
   Provides compatibility layer for code that was written for MaculaClientEx.Client
   but now uses the macula Erlang package directly.
 
-  This is a thin wrapper - just delegates to :macula_sdk Erlang module.
+  This is a thin wrapper - just delegates to :macula_client Erlang module.
   """
 
   use GenServer
@@ -51,12 +51,12 @@ defmodule MaculaClientEx.Client do
 
   @impl true
   def init(opts) do
-    url = Keyword.fetch!(opts, :url) |> to_string() |> String.to_charlist()
-    realm = Keyword.fetch!(opts, :realm) |> to_string() |> String.to_charlist()
+    url = Keyword.fetch!(opts, :url) |> to_string()
+    realm = Keyword.fetch!(opts, :realm) |> to_string()
 
     erl_opts = %{realm: realm}
 
-    case :macula_sdk.connect(url, erl_opts) do
+    case :macula_client.connect(url, erl_opts) do
       {:ok, client_pid} ->
         {:ok, %State{client_pid: client_pid, url: url, realm: realm, status: :connected}}
       {:error, reason} ->
@@ -66,21 +66,21 @@ defmodule MaculaClientEx.Client do
 
   @impl true
   def handle_call({:publish, topic, kwargs, _options}, _from, state) do
-    erl_topic = String.to_charlist(to_string(topic))
-    result = :macula_sdk.publish(state.client_pid, erl_topic, kwargs, %{})
+    erl_topic = to_string(topic)
+    result = :macula_client.publish(state.client_pid, erl_topic, kwargs)
     {:reply, result, state}
   end
 
   @impl true
   def handle_call({:subscribe, topic, handler_fun}, _from, state) do
-    erl_topic = String.to_charlist(to_string(topic))
+    erl_topic = to_string(topic)
 
     callback = fn event_data ->
       formatted_data = %{args: [], kwargs: event_data}
       handler_fun.(to_string(topic), formatted_data)
     end
 
-    case :macula_sdk.subscribe(state.client_pid, erl_topic, callback) do
+    case :macula_client.subscribe(state.client_pid, erl_topic, callback) do
       {:ok, _ref} -> {:reply, :ok, state}
       {:error, reason} -> {:reply, {:error, reason}, state}
     end
@@ -88,23 +88,21 @@ defmodule MaculaClientEx.Client do
 
   @impl true
   def handle_call({:register, procedure, handler_fun}, _from, state) do
-    erl_procedure = String.to_charlist(to_string(procedure))
-
-    callback = fn args, kwargs, details ->
-      handler_fun.(args, kwargs, details)
-    end
-
-    result = :macula_sdk.register(state.client_pid, erl_procedure, callback)
-    {:reply, result, state}
+    # TODO: RPC server functionality needs to be implemented differently
+    # in the HTTP/3 architecture. The macula_client module doesn't have
+    # a register/3 function - RPC registration requires using macula_rpc_server.
+    # For now, we'll return an error that indicates this needs implementation.
+    Logger.warning("RPC registration not yet supported in HTTP/3 client: #{procedure}")
+    {:reply, {:error, :rpc_registration_not_implemented}, state}
   end
 
   @impl true
   def handle_call({:call, procedure, kwargs, options}, _from, state) do
-    erl_procedure = String.to_charlist(to_string(procedure))
+    erl_procedure = to_string(procedure)
     timeout = Map.get(options, :timeout, 30000)
     erl_opts = %{timeout: timeout}
 
-    result = :macula_sdk.call(state.client_pid, erl_procedure, kwargs, erl_opts)
+    result = :macula_client.call(state.client_pid, erl_procedure, kwargs, erl_opts)
     {:reply, result, state}
   end
 
@@ -116,7 +114,7 @@ defmodule MaculaClientEx.Client do
   @impl true
   def terminate(_reason, state) do
     if state.client_pid do
-      :macula_sdk.disconnect(state.client_pid)
+      :macula_client.disconnect(state.client_pid)
     end
     :ok
   end

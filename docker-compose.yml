@@ -4,10 +4,14 @@
 #
 # Services:
 # - bondy: WAMP router (realm hub)
-# - postgres: Database for dashboard
-# - dashboard: CortexIQ Dashboard (hub + web UI)
-# - homes_1, homes_2: Home simulation payloads
-# - utilities: Energy provider payload
+# - postgres: Database for dashboard and read models
+# - dashboard: CortexIQ Dashboard (Phoenix LiveView web UI)
+# - simulation: Simulation clock service
+# - projections: Event projections to database (CQRS write-side)
+# - queries: Query API via WAMP RPC (CQRS read-side)
+# - homes_1, homes_2: Home simulation bots (50 total homes)
+# - utilities: Energy provider bots (5 providers)
+# - excalidraw: Collaborative whiteboarding for architecture diagrams
 ####################################################################################################
 
 version: '3.8'
@@ -20,15 +24,18 @@ services:
     image: leapsight/bondy:latest
     container_name: macula_bondy
     hostname: bondy
+    user: "0:0"  # Run as root for demo (fixes permissions)
     environment:
       BONDY_ERL_NODENAME: bondy@bondy
       BONDY_ERL_DISTRIBUTED_COOKIE: macula_cookie_change_in_production
     ports:
       - "18080:18080"  # WebSocket
       - "18081:18081"  # HTTP API
-    volumes:
+    # volumes:
       # - ./dev-env/bondy_config:/bondy/etc  # Commented out due to permission issues
-      - bondy_data:/bondy/data
+      # - bondy_data:/bondy/data  # Disabled temporarily due to permissions
+    tmpfs:
+      - /bondy/data:rw,noexec,nosuid,size=1g
     networks:
       - macula_network
     healthcheck:
@@ -195,6 +202,119 @@ services:
     networks:
       - macula_network
     restart: unless-stopped
+
+  ################################################################################
+  # Simulation Service - Simulation clock
+  # Broadcasts simulation time events
+  ################################################################################
+  simulation:
+    build:
+      context: ./system
+      dockerfile: cortex_iq_simulation/Dockerfile
+    container_name: macula_simulation
+    hostname: simulation
+    environment:
+      # Macula Configuration
+      MACULA_REALM_URL: ws://bondy:18080/ws
+      MACULA_REALM: be.cortexiq.energy
+
+      # Simulation Configuration
+      SIMULATION_SPEED: ${SIMULATION_SPEED:-105120}
+      SIMULATION_START_DATE: ${SIMULATION_START_DATE:-2025-01-01T00:00:00Z}
+
+      # Release Configuration
+      RELEASE_NODE: simulation@simulation
+      RELEASE_COOKIE: macula_cookie_change_in_production
+    depends_on:
+      bondy:
+        condition: service_healthy
+    networks:
+      - macula_network
+    restart: unless-stopped
+
+  ################################################################################
+  # Projections Service - Event projections to database
+  # Subscribes to events and writes to read models
+  ################################################################################
+  projections:
+    build:
+      context: ./system
+      dockerfile: cortex_iq_projections/Dockerfile
+    container_name: macula_projections
+    hostname: projections
+    environment:
+      # Macula Configuration
+      MACULA_REALM_URL: ws://bondy:18080/ws
+      MACULA_REALM: be.cortexiq.energy
+
+      # Database Configuration
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/cortex_iq_dashboard_dev
+      POOL_SIZE: 10
+
+      # Release Configuration
+      RELEASE_NODE: projections@projections
+      RELEASE_COOKIE: macula_cookie_change_in_production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      bondy:
+        condition: service_healthy
+    networks:
+      - macula_network
+    restart: unless-stopped
+
+  ################################################################################
+  # Queries Service - WAMP RPC query API
+  # Provides read-side queries for dashboard
+  ################################################################################
+  queries:
+    build:
+      context: ./system
+      dockerfile: cortex_iq_queries/Dockerfile
+    container_name: macula_queries
+    hostname: queries
+    environment:
+      # Macula Configuration
+      MACULA_REALM_URL: ws://bondy:18080/ws
+      MACULA_REALM: be.cortexiq.energy
+
+      # Database Configuration
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/cortex_iq_dashboard_dev
+      POOL_SIZE: 10
+
+      # Release Configuration
+      RELEASE_NODE: queries@queries
+      RELEASE_COOKIE: macula_cookie_change_in_production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      bondy:
+        condition: service_healthy
+      projections:
+        condition: service_started
+    networks:
+      - macula_network
+    restart: unless-stopped
+
+  ################################################################################
+  # Excalidraw - Collaborative Whiteboarding
+  # For creating and sharing architecture diagrams during demos
+  ################################################################################
+  excalidraw:
+    image: excalidraw/excalidraw:latest
+    container_name: macula_excalidraw
+    hostname: excalidraw
+    ports:
+      - "3000:80"
+    networks:
+      - macula_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 ################################################################################
 # Networks
